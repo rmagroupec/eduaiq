@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us - EduAiQ{% endblock %}
+
+{% block description %}Get in touch with EduAiQ — questions about courses, the AI Lab, Olympiads, fee payments, or franchise opportunities. Call, message, or send us a note directly.{% endblock %}
+
+{% block content %}
+<section class="inner-banner-wrap">
+<div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
+<div class="container">
+<div class="inner-banner-content">
+<h1 class="inner-title">Contact Us</h1>
+<div class="breadcrumb-content">
+<ul class="breadcrumb">
+
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+<section style="padding-top: 70px;">
+<div class="container">
+<div class="row g-3">
+<div class="col-md-4">
+<div class="iconbox-border d-flex align-items-center">
+<div class="iconbox-icon">
+<i aria-hidden="true" class="fas fa-clock"></i>
+</div>
+<div class="iconbox-content">
+<h5 style="margin-bottom: 5px;">Avg. Response Time</h5>
+<p style="margin-bottom: 0;">Within 24 business hours</p>
+</div>
+</div>
+</div>
+<div class="col-md-4">
+<div class="iconbox-border d-flex align-items-center">
+<div class="iconbox-icon" style="background-color: #41246D;">
+<i aria-hidden="true" class="fas fa-calendar-check"></i>
+</div>
+<div class="iconbox-content">
+<h5 style="margin-bottom: 5px;">Support Hours</h5>
+<p style="margin-bottom: 0;">Mon-Sat, 9 AM - 7 PM IST</p>
+</div>
+</div>
+</div>
+<div class="col-md-4">
+<div class="iconbox-border d-flex align-items-center">
+<div class="iconbox-icon">
+<i aria-hidden="true" class="fab fa-whatsapp"></i>
+</div>
+<div class="iconbox-content">
+<h5 style="margin-bottom: 5px;">Fastest Way To Reach Us</h5>
+<p style="margin-bottom: 0;">WhatsApp for quick questions</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<div class="contact-page-section">
+<div class="container">
+<div class="contact-form-inner" style="margin-top: 60px;">
+<div class="pattern-overlay zigzag-patten"></div>
+<div class="row align-items-center">
+<div class="col-lg-6">
+<div class="contact-detail-container">
+<div class="section-head">
+<div class="title-divider"></div>
+<h2 class="section-title">We'd Love To Hear From You</h2>
+<div class="section-disc">
+<p>Questions about a course, the AI Lab, Olympiad registration, fee
+                                                payments, or franchise opportunities? Reach us directly — we
+                                                usually respond within a business day.</p>
+</div>
+</div>
+<div class="contact-details-list">
+<ul>
+<li>
+<span class="icon">
+<i aria-hidden="true" class="fas fa-phone-alt"></i>
+</span>
+<div class="details-content">
+<h5>Phone Number :</h5>
+<span><a href="tel:+918052350041">8052350041</a> //</span>
+<span><a href="tel:+917985267620">7985267620</a></span>
+<p style="margin: 6px 0 0; font-size: 13px; color: #a7a7a7;">Best
+                                                        for urgent questions during support hours</p>
+</div>
+</li>
+<li>
+<span class="icon">
+<i aria-hidden="true" class="fab fa-whatsapp"></i>
+</span>
+<div class="details-content">
+<h5>WhatsApp :</h5>
+<span><a href="https://whatsapp.com/channel/0029VbDa70SHltY9CSw9IP2B" target="_blank">Join our WhatsApp channel</a></span>
+<p style="margin: 6px 0 0; font-size: 13px; color: #a7a7a7;">
+                                                        Fastest way to get updates and quick answers</p>
+</div>
+</li>
+<li>
+<span class="icon">
+<i aria-hidden="true" class="fab fa-instagram"></i>
+</span>
+<div class="details-content">
+<h5>Instagram :</h5>
+<span><a href="https://www.instagram.com/eduaiq_2026?utm_source=qr&amp;igsh=MTY2bXJuZXZyZTliag==" target="_blank">@eduaiq_2026</a></span>
+<p style="margin: 6px 0 0; font-size: 13px; color: #a7a7a7;">
+                                                        Course updates, Olympiad announcements, and student stories
+                                                    </p>
+</div>
+</li>
+
+</ul>
+</div>
+</div>
+</div>
+<div class="col-lg-6">
+<div class="contact-from-wrap">
+<div class="pattern-overlay circle-patten"></div>
+<form class="contact-from">
+    {% csrf_token %}
+<p class="input-icon-group">
+<input name="name" placeholder="Enter Name*" type="text"/>
+<i aria-hidden="true" class="fas fa-user input-icon"></i>
+</p>
+<p class="input-icon-group">
+<input name="email" placeholder="Enter Email*" type="email"/>
+<i aria-hidden="true" class="fas fa-envelope input-icon"></i>
+</p>
+<p class="input-icon-group">
+<input name="subject" placeholder="Enter Subject*" type="text"/>
+<i aria-hidden="true" class="fas fa-tag input-icon"></i>
+</p>
+<p class="input-icon-group">
+<input name="phone" placeholder="Enter Phone*" type="number"/>
+<i aria-hidden="true" class="fas fa-phone input-icon"></i>
+</p>
+<p class="width-full">
+<textarea placeholder="Enter Message*" rows="8"></textarea>
+</p>
+<p class="width-full">
+<input name="submit" type="submit" value="Submit Now"/>
+</p>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

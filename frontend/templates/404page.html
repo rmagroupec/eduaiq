@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}404 page – Educator - University & School Education HTML5 Template{% endblock %}
+
+{% block content %}
+<div class="no-content-section error404-container">
+<div class="pattern-overlay circle-patten"></div>
+<div class="container">
+<div class="no-content-wrap">
+<div class="pattern-overlay zigzag-patten"></div>
+<div class="title-wrap">
+<span>404</span>
+<h1>Oops! That page can't be found</h1>
+</div>
+<div class="search-form-wrap">
+<p>It looks like nothing was found at this location. Maybe try one of the links below or a search?</p>
+<form class="search-form">
+    {% csrf_token %}
+<input name="search" placeholder="Search..." type="text"/>
+<button class="search-btn"><i class="fas fa-search"></i></button>
+</form>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script>
+(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1f05d051ee69787',t:'MTc4NDcwMTQ3Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
+    </script>
+{% endblock %}

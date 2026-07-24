@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Faq – Educator - University & School Education HTML5 Template{% endblock %}
+
+{% block content %}
+<section class="inner-banner-wrap">
+<div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
+<div class="container">
+<div class="inner-banner-content">
+<h1 class="inner-title">Faq</h1>
+</div>
+</div>
+</div>
+</section>
+
+
+<div class="faq-page-section">
+<div class="container">
+<div class="faq-page-container">
+<div class="row">
+<div class="col-lg-7">
+<div class="section-head">
+<div class="title-divider"></div>
+<h2 class="section-title">
+                                        Frequently Asked Questions
+                                    </h2>
+<div class="section-disc">
+<p>
+                                            Magna voluptatum dolorem! Dolores! Sociosqu commodo nobis imperdiet lacinia? Magni! Felis, elementum nobis imperdiet lacinia nobis imperdiet lacinia imperdiet lacinia nobis imperdiet lacinia nobis.
+                                        </p>
+</div>
+</div>
+<div class="accordion-content" id="accordion-tab-one" role="tablist">
+<div aria-labelledby="accordion-A" class="card tab-pane fade show active" id="accordion-A" role="tabpanel">
+<div class="card-header" id="qus-A" role="tab">
+<h5 class="mb-0">
+<a aria-controls="collapse-one" aria-expanded="true" data-bs-toggle="collapse" href="#collapse-one">
+                                                    Why choose us for your education?
+                                                </a>
+</h5>
+</div>
+<div aria-labelledby="qus-A" class="collapse show" data-bs-parent="#accordion-tab-one" id="collapse-one" role="tabpanel">
+<div class="card-body">
+                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.
+                                            </div>
+</div>
+</div>
+<div aria-labelledby="accordion-B" class="card tab-pane" id="accordion-B" role="tabpanel">
+<div class="card-header" id="qus-B" role="tab">
+<h5 class="mb-0">
+<a aria-controls="collapse-two" aria-expanded="false" class="collapsed" data-bs-toggle="collapse" href="#collapse-two">
+                                                    Why choose us for your education?
+                                                </a>
+</h5>
+</div>
+<div aria-labelledby="qus-B" class="collapse" data-bs-parent="#accordion-tab-one" id="collapse-two" role="tabpanel">
+<div class="card-body">
+                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.
+                                            </div>
+</div>
+</div>
+<div aria-labelledby="accordion-C" class="card tab-pane" id="accordion-C" role="tabpanel">
+<div class="card-header" id="qus-C" role="tab">
+<h5 class="mb-0">
+<a aria-controls="collapse-three" aria-expanded="true" class="collapsed" data-bs-toggle="collapse" href="#collapse-three">
+                                                    What We Offer To You?
+                                                </a>
+</h5>
+</div>
+<div aria-labelledby="qus-C" class="collapse" data-bs-parent="#accordion-tab-one" id="collapse-three" role="tabpanel">
+<div class="card-body">
+                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.
+                                            </div>
+</div>
+</div>
+<div aria-labelledby="accordion-D" class="card tab-pane" id="accordion-D" role="tabpanel">
+<div class="card-header" id="qus-D" role="tab">
+<h5 class="mb-0">
+<a aria-controls="collapse-four" aria-expanded="true" class="collapsed" data-bs-toggle="collapse" href="#collapse-four">
+                                                    How We Provide Services For You?
+                                                </a>
+</h5>
+</div>
+<div aria-labelledby="qus-D" class="collapse" data-bs-parent="#accordion-tab-one" id="collapse-four" role="tabpanel">
+<div class="card-body">
+                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.
+                                            </div>
+</div>
+</div>
+<div aria-labelledby="accordion-E" class="card tab-pane" id="accordion-E" role="tabpanel">
+<div class="card-header" id="qus-E" role="tab">
+<h5 class="mb-0">
+<a aria-controls="collapse-five" aria-expanded="true" class="collapsed" data-bs-toggle="collapse" href="#collapse-five">
+                                                    Are we affordable for your courses ?
+                                                </a>
+</h5>
+</div>
+<div aria-labelledby="qus-E" class="collapse" data-bs-parent="#accordion-tab-one" id="collapse-five" role="tabpanel">
+<div class="card-body">
+                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.
+                                            </div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-lg-5">
+<div class="qsn-form-container">
+<h4>Any Questions? Ask Us!!</h4>
+<div class="pattern-overlay zigzag-patten"></div>
+<form>
+    {% csrf_token %}
+<p>
+<input name="name" placeholder="Your Name*" type="text"/>
+</p>
+<p>
+<input name="email" placeholder="Your Email*" type="email"/>
+</p>
+<p>
+<input name="number" placeholder="Mobile Number*" type="number"/>
+</p>
+<p>
+<textarea placeholder="Enter your message*" rows="8"></textarea>
+</p>
+<p>
+<input name="submit" type="submit" value="SUBMIT QUESTIONS"/>
+</p>
+</form>
+</div>
+</div>
+</div>
+</div>
+<div class="faq-page-container">
+<div class="row">
+<div class="col-lg-5">
+<div class="faq-testimonial">
+<figure class="faq-image">
+<div class="pattern-overlay c-patten"></div>
+<div class="pattern-overlay circle-patten"></div>
+<img alt="" src="{% static 'assets/img/educator-img33.png' %}"/>
+</figure>
+<div class="testimonial-content">
+<span class="quote-icon">
+<i class="fas fa-quote-left"></i>
+</span>
+<h4 class="quot-title">Give Us A Chance To Prove It!</h4>
+<p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo."</p>
+</div>
+</div>
+</div>
+<div class="col-lg-7">
+<div class="faq-content-wrap">
+<div class="section-head">
+<div class="title-divider"></div>
+<h2 class="section-title">
+                                            Benefits &amp; What we do?
+                                        </h2>
+<div class="section-disc">
+<p>
+                                                Magna voluptatum dolorem! Dolores! Sociosqu commodo nobis imperdiet lacinia? Magni! Felis, elementum nobis imperdiet.
+                                            </p>
+</div>
+</div>
+<div class="accordion-content" id="accordion-tab-two" role="tablist">
+<div aria-labelledby="accordion-F" class="card tab-pane fade show active" id="accordion-F" role="tabpanel">
+<div class="card-header" id="qus-F" role="tab">
+<h5 class="mb-0">
+<a aria-controls="collapse-six" aria-expanded="true" data-bs-toggle="collapse" href="#collapse-six">
+                                                        We teach everything you can think of !
+                                                    </a>
+</h5>
+</div>
+<div aria-labelledby="qus-F" class="collapse show" data-bs-parent="#accordion-tab-two" id="collapse-six" role="tabpanel">
+<div class="card-body">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.
+                                                </div>
+</div>
+</div>
+<div aria-labelledby="accordion-G" class="card tab-pane" id="accordion-G" role="tabpanel">
+<div class="card-header" id="qus-G" role="tab">
+<h5 class="mb-0">
+<a aria-controls="collapse-seven" aria-expanded="false" class="collapsed" data-bs-toggle="collapse" href="#collapse-seven">
+                                                        We makes your career special.
+                                                    </a>
+</h5>
+</div>
+<div aria-labelledby="qus-G" class="collapse" data-bs-parent="#accordion-tab-two" id="collapse-seven" role="tabpanel">
+<div class="card-body">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.
+                                                </div>
+</div>
+</div>
+<div aria-labelledby="accordion-H" class="card tab-pane" id="accordion-H" role="tabpanel">
+<div class="card-header" id="qus-H" role="tab">
+<h5 class="mb-0">
+<a aria-controls="collapse-eight" aria-expanded="true" class="collapsed" data-bs-toggle="collapse" href="#collapse-eight">
+                                                        We guarantee success with our career.
+                                                    </a>
+</h5>
+</div>
+<div aria-labelledby="qus-H" class="collapse" data-bs-parent="#accordion-tab-two" id="collapse-eight" role="tabpanel">
+<div class="card-body">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.
+                                                </div>
+</div>
+</div>
+<div aria-labelledby="accordion-I" class="card tab-pane" id="accordion-I" role="tabpanel">
+<div class="card-header" id="qus-I" role="tab">
+<h5 class="mb-0">
+<a aria-controls="collapse-nine" aria-expanded="true" class="collapsed" data-bs-toggle="collapse" href="#collapse-nine">
+                                                       We help you to uplift your knowledge.
+                                                    </a>
+</h5>
+</div>
+<div aria-labelledby="qus-I" class="collapse" data-bs-parent="#accordion-tab-two" id="collapse-nine" role="tabpanel">
+<div class="card-body">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.
+                                                </div>
+</div>
+</div>
+<div aria-labelledby="accordion-J" class="card tab-pane" id="accordion-J" role="tabpanel">
+<div class="card-header" id="qus-J" role="tab">
+<h5 class="mb-0">
+<a aria-controls="collapse-ten" aria-expanded="true" class="collapsed" data-bs-toggle="collapse" href="#collapse-ten">
+                                                        We make possible to teach in a tight timeframe.
+                                                    </a>
+</h5>
+</div>
+<div aria-labelledby="qus-J" class="collapse" data-bs-parent="#accordion-tab-two" id="collapse-ten" role="tabpanel">
+<div class="card-body">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.
+                                                </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script>
+(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1f05d0148129787',t:'MTc4NDcwMTQ3Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
+    </script>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}EduAIQ{% endblock %}</title>
+    <meta name="description" content="{% block description %}EduAIQ - AI Powered Education Platform{% endblock %}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'assets/img/educator-fabicon-300x300.png' %}">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/bootstrap/css/bootstrap.min.css' %}" media="all">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/fontawesome/css/all.min.css' %}">
+
+    <!-- ElementsKit -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/elementskit-icon-pack/assets/css/ekiticons.css' %}">
+
+    <!-- Progress Bar -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/progressbar-fill-visible/css/progressBar.css' %}">
+
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/jquery-ui/jquery-ui.min.css' %}">
+
+    <!-- Modal Video -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/modal-video/modal-video.min.css' %}">
+
+    <!-- Fancybox -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/fancybox/dist/jquery.fancybox.min.css' %}">
+
+    <!-- Slick Slider -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/slick/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/slick/slick-theme.css' %}">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;500;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+    {% block css %}
+    {% endblock %}
+
+</head>
+
+<body>
+
+    <!-- Site Loader -->
+    <div class="site-loader" id="siteLoader">
+        <div class="preloader-content">
+            <img alt="" src="{% static 'assets/img/loader1.gif' %}">
+        </div>
+    </div>
+
+    <div id="page" class="full-page">
+
+        <!-- Header -->
+        {% include 'partials/header.html' %}
+
+        <!-- Main Content -->
+        <main id="content">
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <!-- Footer -->
+        {% include 'partials/footer.html' %}
+
+        <!-- Back to top -->
+        <a class="to-top-icon" href="#" id="backTotop">
+            <i class="fas fa-chevron-up"></i>
+        </a>
+
+        <!-- Search overlay -->
+        <div class="header-search-form">
+            <div class="container">
+                <div class="header-search-container">
+                    <form class="search-form" method="get" role="search">
+                        <input name="s" placeholder="Enter your text..." type="text">
+                    </form>
+                    <a class="search-close" href="#">
+                        <i class="fas fa-times"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- jQuery -->
+    <script src="{% static 'assets/vendors/jquery/jquery.js' %}"></script>
+
+    <!-- Bootstrap -->
+    <script src="{% static 'assets/vendors/bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <!-- Waypoints -->
+    <script src="{% static 'assets/vendors/waypoint/jquery.waypoints.min.js' %}"></script>
+
+    <!-- jQuery UI -->
+    <script src="{% static 'assets/vendors/jquery-ui/jquery-ui.min.js' %}"></script>
+
+    <!-- Progress Bar -->
+    <script src="{% static 'assets/vendors/progressbar-fill-visible/js/progressBar.min.js' %}"></script>
+
+    <!-- Counter -->
+    <script src="{% static 'assets/vendors/countdown-date-loop-counter/loopcounter.js' %}"></script>
+    <script src="{% static 'assets/vendors/counterup/jquery.counterup.js' %}"></script>
+
+    <!-- Modal Video -->
+    <script src="{% static 'assets/vendors/modal-video/jquery-modal-video.min.js' %}"></script>
+
+    <!-- Masonry -->
+    <script src="{% static 'assets/vendors/masonry/masonry.pkgd.min.js' %}"></script>
+
+    <!-- Fancybox -->
+    <script src="{% static 'assets/vendors/fancybox/dist/jquery.fancybox.min.js' %}"></script>
+
+    <!-- Slick -->
+    <script src="{% static 'assets/vendors/slick/slick.min.js' %}"></script>
+
+    <!-- Slick Nav -->
+    <script src="{% static 'assets/vendors/slick-nav/jquery.slicknav.js' %}"></script>
+
+    <!-- Custom JS -->
+    <script src="{% static 'assets/js/custom.js' %}"></script>
+
+    {% block js %}
+    {% endblock %}
+
+</body>
+
+</html>

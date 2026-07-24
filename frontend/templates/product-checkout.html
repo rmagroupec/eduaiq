@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pay Fee - EduAiQ | Secure Online Fee Payment{% endblock %}
+
+{% block description %}Pay your EduAiQ course fee, Olympiad fee, or franchise application fee securely online via Razorpay — UPI, cards, and net banking supported.{% endblock %}
+
+{% block content %}
+<section class="inner-banner-wrap">
+<div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
+<div class="container">
+<div class="inner-banner-content">
+<h1 class="inner-title">Pay Fee</h1>
+<div class="breadcrumb-content">
+<ul class="breadcrumb">
+
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+<div class="checkout-section">
+<div class="container">
+<div class="row">
+<div class="col-md-7 right-sidebar">
+<div class="checkout-field-wrap">
+<h3 class="cheakout-title">Payer Details</h3>
+<div class="row">
+<div class="col-sm-6">
+<div class="form-group">
+<label>Full Name <abbr class="label-star">*</abbr></label>
+<input name="full_name" placeholder="Student / Applicant Name" type="text"/>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="form-group">
+<label>Phone Number <abbr class="label-star">*</abbr></label>
+<input name="phone" placeholder="10-digit mobile number" type="text"/>
+</div>
+</div>
+<div class="col-sm-12">
+<div class="form-group">
+<label>Email Address <abbr class="label-star">*</abbr></label>
+<input name="email" placeholder="Email Address" type="email"/>
+</div>
+</div>
+<div class="col-sm-12">
+<div class="form-group">
+<label>What Are You Paying For? <abbr class="label-star">*</abbr></label>
+<select id="feeCategory" name="fee_category">
+<option value="course">Course Fee</option>
+<option value="olympiad">Olympiad Registration Fee</option>
+<option value="skill">Skill Development Program Fee</option>
+<option value="franchise">Franchise Application Fee</option>
+</select>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="form-group">
+<label>Roll Number / Student ID (if any)</label>
+<input name="roll_number" placeholder="Optional" type="text"/>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="form-group last-form-group">
+<label>Institution / School Name (if applicable)</label>
+<input name="institution" placeholder="Optional" type="text"/>
+</div>
+</div>
+</div>
+</div>
+<div class="special-notes-wrap">
+<div class="col-sm-12">
+<h3 class="Information-title">Additional Information</h3>
+<div class="form-group">
+<label>Notes (optional)</label>
+<textarea placeholder="Anything we should know — e.g. a specific batch, course name, or reference number" rows="3"></textarea>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-5">
+<aside class="sidebar">
+<div class="widget-bg widget-table-summary">
+<h3 class="cheakout-title">Fee Summary</h3>
+<table>
+<thead>
+<tr>
+<th>
+                                                    Item
+                                                </th>
+<th class="text-right">
+                                                    Amount
+                                                </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+                                                    Selected category
+                                                </td>
+<td class="text-right">
+                                                    As applicable
+                                                </td>
+</tr>
+<tr>
+<td>
+<strong>Total Payable</strong>
+</td>
+<td class="text-right">
+<strong>Confirmed on payment screen</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<p style="font-size: 13px; color: #787878; margin-top: 15px; margin-bottom: 0;">
+                                        Exact fee amounts vary by course, olympiad level, or program. The final
+                                        amount is confirmed on the secure payment screen before you pay.
+                                    </p>
+</div>
+<div class="widget-bg widget-paymet-bank">
+<div class="payment-wrap">
+<h3 class="cheakout-title">Payment Method</h3>
+<div class="form-group">
+<div class="custom-radio-field">
+<label>
+<input checked="" name="pay_method" type="radio" value="razorpay"/>
+<span class="radio-field"></span>
+                                                    UPI / Cards / Net Banking (via Razorpay)
+                                                </label>
+</div>
+<div class="desc">
+                                                Secure payment processed by Razorpay. You'll receive a payment
+                                                confirmation by email and SMS once your transaction is complete.
+                                            </div>
+</div>
+</div>
+<a class="button-round-secondary" href="https://rzp.io/rzp/azhKQ22i" style="display:block; text-align:center;">PROCEED TO PAY</a>
+</div>
+<div class="icon-list-content widget-bg" style="background-color:#41246D; margin-top: 30px;">
+<h5 class="bg-title" style="background-color:#ffffff;color:#111111;">Need Help?</h5>
+<ul>
+<li>
+<a href="/page/support/">Visit the Support page</a>
+</li>
+<li>
+<a href="/contact/">Contact Us directly</a>
+</li>
+<li>
+<a href="tel:+918052350041">Call 8052350041</a>
+</li>
+</ul>
+</div>
+</aside>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

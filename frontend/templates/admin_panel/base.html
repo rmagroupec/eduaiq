@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+        content="{% block description %}EduAIQ Admin Dashboard{% endblock %}">
+
+    <title>{% block title %}EduAIQ Admin{% endblock %}</title>
+
+    <!-- Favicon -->
+    <link rel="icon"
+          type="image/png"
+          href="{% static 'admin_assets/images/favicon.png' %}"
+          sizes="16x16">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'admin_assets/css/remixicon.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/lib/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/lib/apexcharts.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/lib/dataTables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/lib/flatpickr.min.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/lib/full-calendar.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/lib/calendar.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/style.css' %}">
+
+    {% block css %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- Theme Customizer -->
+    {% include 'admin_panel/includes/theme-customizer.html' %}
+
+    <!-- Sidebar -->
+    {% include 'admin_panel/includes/sidebar.html' %}
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+
+        <!-- Header -->
+        {% include 'admin_panel/includes/header.html' %}
+
+        <div class="dashboard-main-body">
+
+            {% block content %}
+            {% endblock %}
+
+        </div>
+
+    </main>
+
+    <!-- JS -->
+    <script src="{% static 'admin_assets/js/lib/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'admin_assets/js/lib/bootstrap.bundle.min.js' %}"></script>
+
+    <script src="{% static 'admin_assets/js/lib/apexcharts.min.js' %}"></script>
+    <script src="{% static 'admin_assets/js/lib/dataTables.min.js' %}"></script>
+    <script src="{% static 'admin_assets/js/lib/iconify-icon.min.js' %}"></script>
+    <script src="{% static 'admin_assets/js/lib/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'admin_assets/js/lib/flatpickr.min.js' %}"></script>
+    <script src="{% static 'admin_assets/js/lib/fullcalendar.min.js' %}"></script>
+
+    <!-- Main Script -->
+    <script src="{% static 'admin_assets/js/app.js' %}"></script>
+
+    {% block js %}{% endblock %}
+
+</body>
+
+</html>

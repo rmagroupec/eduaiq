@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Career – Educator - University & School Education HTML5 Template{% endblock %}
+
+{% block content %}
+<section class="inner-banner-wrap">
+<div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
+<div class="container">
+<div class="inner-banner-content">
+<h1 class="inner-title">Career</h1>
+</div>
+</div>
+</div>
+</section>
+
+
+<div class="carrer-page-section">
+<div class="container">
+<div class="vacancy-section">
+<div class="section-head text-center">
+<div class="row">
+<div class="col-lg-8 offset-lg-2">
+<div class="career-section-head">
+<div class="title-divider-center"></div>
+<h2 class="section-title">Let's Join With Us !!</h2>
+<div class="section-disc">
+<p>
+                                                Magna voluptatum dolorem! Dolores! Sociosqu commodo nobis imperdiet lacinia? Magni! Felis, elementum nobis imperdiet lacinia nobis imperdiet lacinia.
+                                            </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="vacancy-container">
+<div class="row">
+<div class="col-lg-8">
+<div class="vacancy-content-wrap">
+<div class="row">
+<div class="col-md-6">
+<div class="vacancy-content">
+<div class="pattern-overlay zigzag-patten"></div>
+<span>Full Time / Part Time</span>
+<h4>Science Professor</h4>
+<p>Magna voluptatum dolorem! Dolores! Sociosqu commodo nobis imperdiet lacinia nobis.</p>
+<a class="button-round-primary" href="#">APPLY NOW</a>
+</div>
+</div>
+<div class="col-md-6">
+<div class="vacancy-content">
+<span>Full Time</span>
+<h4>Gardener</h4>
+<p>Magna voluptatum dolorem! Dolores! Sociosqu commodo nobis imperdiet lacinia nobis.</p>
+<a class="button-round-primary" href="#">APPLY NOW</a>
+</div>
+</div>
+<div class="col-md-6">
+<div class="vacancy-content">
+<span>Part Time</span>
+<h4>Receptionist</h4>
+<p>Magna voluptatum dolorem! Dolores! Sociosqu commodo nobis imperdiet lacinia nobis.</p>
+<a class="button-round-primary" href="#">APPLY NOW</a>
+</div>
+</div>
+<div class="col-md-6">
+<div class="vacancy-content">
+<div class="pattern-overlay c-patten"></div>
+<span>Full Time / Part Time</span>
+<h4>Security Guard</h4>
+<p>Magna voluptatum dolorem! Dolores! Sociosqu commodo nobis imperdiet lacinia nobis.</p>
+<a class="button-round-primary" href="#">APPLY NOW</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-lg-4">
+<div class="vacancy-form">
+<h4 class="form-title">Join Our Team</h4>
+<form>
+    {% csrf_token %}
+<p>
+<input name="name" placeholder="Your Name*" type="text"/>
+</p>
+<p>
+<input name="name" placeholder="Your Email*" type="text"/>
+</p>
+<p>
+<input name="name" placeholder="Your Position*" type="text"/>
+</p>
+<p>
+<textarea placeholder="Enter your message" rows="7"></textarea>
+</p>
+<p>
+<input name="submit" type="submit" value="SEND APPLICATION"/>
+</p>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="about-service-wrap">
+<div class="pattern-overlay circle-patten"></div>
+<div class="container">
+<div class="section-head">
+<div class="row no-gutters align-items-end">
+<div class="col-lg-6">
+<div class="title-divider"></div>
+<h2 class="section-title">
+                                        Our Institute Has Been Present For Over 25 Years In Giving Education
+                                    </h2>
+</div>
+<div class="col-lg-6">
+<div class="section-disc">
+<p>
+                                            Magina voluptatum doloriem! Dolores! Sociosqii commodiin nobis imperdiet lacinia? Magni! Felis, elementum nobis imperdiet lacinia nobis imperdiet lacinia commodo nobis imper lacinia nobis imperd..
+                                        </p>
+</div>
+</div>
+</div>
+</div>
+<div class="iconbox-container d-flex flex-wrap justify-content-center">
+<div class="iconbox-item-3 d-flex flex-wrap">
+<div class="iconbox-border d-flex align-items-center">
+<div class="iconbox-icon">
+<i aria-hidden="true" class="fas fa-award"></i>
+</div>
+<div class="iconbox-content">
+<h4>Award winning</h4>
+<p>Lorem ipsum dolor sit amet, consec teturing.</p>
+</div>
+</div>
+</div>
+<div class="iconbox-item-3 d-flex flex-wrap">
+<div class="iconbox-border d-flex align-items-center">
+<div class="iconbox-icon">
+<i aria-hidden="true" class="fas fa-hand-holding-usd"></i>
+</div>
+<div class="iconbox-content">
+<h4>Well allowance</h4>
+<p>Lorem ipsum dolor sit amet, consec teturing.</p>
+</div>
+</div>
+</div>
+<div class="iconbox-item-3 d-flex flex-wrap">
+<div class="iconbox-border d-flex align-items-center">
+<div class="iconbox-icon">
+<i aria-hidden="true" class="fas fa-heartbeat"></i>
+</div>
+<div class="iconbox-content">
+<h4>Full Insurance</h4>
+<p>Lorem ipsum dolor sit amet, consec teturing.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script>
+(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1f05cff4bec9787',t:'MTc4NDcwMTQ3NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
+    </script>
+{% endblock %}

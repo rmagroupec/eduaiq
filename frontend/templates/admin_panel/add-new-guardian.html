@@ -1,0 +1,233 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
+
+{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+<div class="">
+<h1 class="fw-semibold mb-4 h6 text-primary-light">Add New Guardian</h1>
+<div class="">
+<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
+<a class="text-secondary-light hover-text-primary hover-underline d-none" href="guardian-list"> /
+        guardian</a>
+<span class="text-secondary-light">/ Add New Guardian</span>
+</div>
+</div>
+<a class="btn btn-primary-600 d-flex align-items-center gap-6 d-none" href="add-new-guardian">
+<span class="d-flex text-md">
+<i class="ri-add-large-line"></i>
+</span>
+    Add Guardian
+  </a>
+</div>
+<form action="#" class="mt-24">
+    {% csrf_token %}
+<div class="row gy-3">
+<div class="col-xl-12">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Personal Info</h6>
+</div>
+<div class="card-body p-20">
+<div class="row gy-3">
+<div class="col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="guardianType">Guardian
+                                            Type
+                                        </label>
+<select class="form-control form-select" id="guardianType">
+<option disabled="" value="Select Guardian">Select Guardian</option>
+<option value="Father">Father</option>
+<option value="Mother">Mother</option>
+<option value="Brother">Brother</option>
+<option value="Sister">Sister</option>
+<option value="Uncle">Uncle</option>
+</select>
+</div>
+</div>
+<div class="col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="guardianName">Guardian
+                                            Name
+                                        </label>
+<input class="form-control" id="guardianName" placeholder="Enter guardian name" type="text"/>
+</div>
+</div>
+<div class="col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="phoneNumber">Instagram
+                                        </label>
+<input class="form-control" id="phoneNumber" placeholder="Enter phone number" type="tel"/>
+</div>
+</div>
+<div class="col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="occupation">Occupation
+                                        </label>
+<input class="form-control" id="occupation" placeholder="Enter occupation" type="text"/>
+</div>
+</div>
+<div class="col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="guardianAddress">Guardian
+                                            Address
+                                        </label>
+<input class="form-control" id="guardianAddress" placeholder="Enter guardian address" type="text"/>
+</div>
+</div>
+<div class="col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Teacher
+                                            Photo <span class="text-danger-600">*</span> </label>
+<div class="drop-zone height-44-px p-4 d-flex justify-content-center align-items-center text-center fw-medium text-md cursor-pointer border border-neutral-400 radius-8 border-dashed bg-hover-neutral-200">
+<span class="drop-zone__prompt">Darg &amp; drop a file here or click</span>
+<input class="drop-zone__input" name="myFile" type="file"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-xl-12">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Login Details</h6>
+</div>
+<div class="card-body p-20">
+<div class="row gy-3">
+<div class="col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="myEmail">Email
+                                            <span class="text-danger-600">*</span>
+</label>
+<input class="form-control" id="myEmail" placeholder="Enter Email" type="email"/>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="your-password">Password
+                                            <span class="text-danger-600">*</span>
+</label>
+<div class="position-relative">
+<input class="form-control" id="your-password" placeholder="Enter your password" type="password"/>
+<span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#your-password"></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-12">
+<div class="d-flex align-items-center justify-content-center gap-3 mt-8">
+<button class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-50 py-11 radius-8" type="reset">
+                            Reset
+                        </button>
+<button class="btn btn-primary-600 border border-primary-600 text-md px-28 py-12 radius-8" type="submit">
+                            Save Changes
+                        </button>
+</div>
+</div>
+</div>
+</form>
+{% endblock %}
+
+{% block js %}
+    <script>
+
+    // ================== Password Show Hide Js Start ==========
+    function initializePasswordToggle(toggleSelector) {
+        $(toggleSelector).on('click', function () {
+            $(this).toggleClass("ri-eye-off-line");
+            var input = $($(this).attr("data-toggle"));
+            if (input.attr("type") === "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
+    }
+    // Call the function
+    initializePasswordToggle('.toggle-password');
+    // ========================= Password Show Hide Js End ===========================
+
+    // ========================== Drag & Drop Upload photo Js start ========================
+    document.querySelectorAll(".drop-zone__input").forEach((inputElement) => {
+        const dropZoneElement = inputElement.closest(".drop-zone");
+
+        dropZoneElement.addEventListener("click", (e) => {
+            inputElement.click();
+        });
+
+        inputElement.addEventListener("change", (e) => {
+            if (inputElement.files.length) {
+                updateThumbnail(dropZoneElement, inputElement.files[0]);
+            }
+        });
+
+        dropZoneElement.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropZoneElement.classList.add("drop-zone--over");
+        });
+
+        ["dragleave", "dragend"].forEach((type) => {
+            dropZoneElement.addEventListener(type, (e) => {
+                dropZoneElement.classList.remove("drop-zone--over");
+            });
+        });
+
+        dropZoneElement.addEventListener("drop", (e) => {
+            e.preventDefault();
+
+            if (e.dataTransfer.files.length) {
+                inputElement.files = e.dataTransfer.files;
+                updateThumbnail(dropZoneElement, e.dataTransfer.files[0]);
+            }
+
+            dropZoneElement.classList.remove("drop-zone--over");
+        });
+    });
+
+    /**
+     * Updates the thumbnail on a drop zone element.
+     *
+     * @param {HTMLElement} dropZoneElement
+     * @param {File} file
+     */
+    function updateThumbnail(dropZoneElement, file) {
+        let thumbnailElement = dropZoneElement.querySelector(".drop-zone__thumb");
+
+        // First time - remove the prompt
+        if (dropZoneElement.querySelector(".drop-zone__prompt")) {
+            dropZoneElement.querySelector(".drop-zone__prompt").remove();
+        }
+
+        // First time - there is no thumbnail element, so lets create it
+        if (!thumbnailElement) {
+            thumbnailElement = document.createElement("div");
+            thumbnailElement.classList.add("drop-zone__thumb");
+            dropZoneElement.appendChild(thumbnailElement);
+        }
+
+        thumbnailElement.dataset.label = file.name;
+
+        // Show thumbnail for image files
+        if (file.type.startsWith("image/")) {
+            const reader = new FileReader();
+
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                thumbnailElement.style.backgroundImage = `url('${reader.result}')`;
+            };
+        } else {
+            thumbnailElement.style.backgroundImage = null;
+        }
+    }
+    // ========================== Drag & Drop Upload photo Js end ========================
+
+
+    </script>
+{% endblock %}

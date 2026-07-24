@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Apply For Franchise - EduAiQ{% endblock %}
+
+{% block description %}Apply to become an EduAiQ franchise partner. Fill out the franchise application form with your territory, investment capacity, and background to get started.{% endblock %}
+
+{% block content %}
+<section class="inner-banner-wrap">
+<div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
+<div class="container">
+<div class="inner-banner-content">
+<h1 class="inner-title">Apply For Franchise</h1>
+<div class="breadcrumb-content">
+<ul class="breadcrumb">
+
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+<section class="contact-page-section">
+<div class="container">
+<div class="contact-form-inner" style="margin-top: 100px;">
+<div class="pattern-overlay zigzag-patten"></div>
+<div class="row">
+<div class="col-lg-5">
+<div class="contact-detail-container">
+<div class="section-head">
+<div class="title-divider"></div>
+<h2 class="section-title">Before You Apply</h2>
+<p>
+                                            Franchise applications are reviewed on a per-territory basis. Haven't
+                                            reviewed the program details yet? Start with the Growth Partner Kit
+                                            first — it covers commission structure, onboarding, and territory
+                                            guidelines.
+                                        </p>
+</div>
+<div class="contact-details-list">
+<ul>
+<li>
+<div class="icon">
+<i aria-hidden="true" class="fas fa-book"></i>
+</div>
+<div class="details-content">
+<h5>Not Reviewed The Kit Yet?</h5>
+<span><a href="/page/growth-partner-kit/">See what's in the Growth Partner Kit</a></span>
+</div>
+</li>
+<li>
+<div class="icon">
+<i aria-hidden="true" class="fas fa-clock"></i>
+</div>
+<div class="details-content">
+<h5>Review Timeline</h5>
+<span>Applications are typically reviewed within 5-7 business days</span>
+</div>
+</li>
+<li>
+<div class="icon">
+<i aria-hidden="true" class="fas fa-phone-alt"></i>
+</div>
+<div class="details-content">
+<h5>Questions Before Applying?</h5>
+<span><a href="tel:+918052350041">Call 8052350041</a> or <a href="/contact/">contact us</a></span>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="col-lg-7">
+<div class="contact-from-wrap">
+<div class="pattern-overlay circle-patten"></div>
+<form class="contact-from">
+    {% csrf_token %}
+<p>
+<input name="applicant_name" placeholder="Full Name*" type="text"/>
+</p>
+<p>
+<input name="email" placeholder="Email Address*" type="email"/>
+</p>
+<p>
+<input name="phone" placeholder="Phone Number*" type="number"/>
+</p>
+<p>
+<input name="city" placeholder="Proposed City / Territory*" type="text"/>
+</p>
+<p>
+<select name="investment_range" required="">
+<option disabled="" selected="" value="">Investment Capacity*</option>
+<option value="under-5l">Under ₹5 Lakh</option>
+<option value="5-10l">₹5-10 Lakh</option>
+<option value="10-25l">₹10-25 Lakh</option>
+<option value="above-25l">Above ₹25 Lakh</option>
+</select>
+</p>
+<p>
+<select name="business_background" required="">
+<option disabled="" selected="" value="">Current Background*</option>
+<option value="education">Existing education business</option>
+<option value="business">Other business owner</option>
+<option value="professional">Working professional</option>
+<option value="fresh">New to business ownership</option>
+</select>
+</p>
+<p class="width-full">
+<textarea placeholder="Relevant experience (running a coaching center, school, business, etc. — optional)" rows="3"></textarea>
+</p>
+<p class="width-full">
+<textarea placeholder="Why are you interested in an EduAiQ franchise?*" rows="4"></textarea>
+</p>
+<p class="width-full">
+<label style="font-size: 13px; color: #414141; font-weight: 400;">
+<input name="agree" style="width: auto; margin-right: 8px;" type="checkbox"/>
+                                                I understand this application does not guarantee territory
+                                                approval and agree to be contacted regarding it.
+                                            </label>
+</p>
+<p class="width-full">
+<input name="submit" type="submit" value="Submit Franchise Application"/>
+</p>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+{% endblock %}

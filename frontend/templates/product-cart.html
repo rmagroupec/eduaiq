@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cart – Educator - University & School Education HTML5 Template{% endblock %}
+
+{% block content %}
+<section class="inner-banner-wrap mb-0">
+<div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
+<div class="container">
+<div class="inner-banner-content">
+<h1 class="inner-title">Product Cart</h1>
+</div>
+</div>
+</div>
+</section>
+
+
+<div class="carts-section">
+<div class="container">
+<div class="cart-list-inner">
+<div class="row">
+<div class="col-lg-7 left-item-total">
+<form action="#">
+    {% csrf_token %}
+<div class="table-responsive">
+<table class="table">
+<thead>
+<tr>
+<th></th>
+<th>Product</th>
+<th>Price</th>
+<th>Quantity</th>
+<th>Sub Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="" data-column="Product Image">
+<button aria-label="Close" class="close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
+<span class="cartImage"><img alt="image" src="{% static 'assets/img/img029.jpg' %}"/></span>
+</td>
+<td data-column="Product Name"><strong class="product-name"> Lenevo laptop</strong></td>
+<td class="Price" data-column="Price">$250.00</td>
+<td class="count-input" data-column="Quantity">
+<input name="qty" type="number" value="1"/>
+</td>
+<td data-column="Sub Total"><strong>$250.00</strong></td>
+</tr>
+<tr>
+<td class="" data-column="Product Image">
+<button aria-label="Close" class="close" data-dismiss="alert"><span aria-hidden="true">×</span></button>
+<span class="cartImage"><img alt="image" src="{% static 'assets/img/img034.jpg' %}"/></span>
+</td>
+<td data-column="Product Name"><strong class="product-name">Acer Notebook</strong></td>
+<td class="Price" data-column="Price"> $325.00</td>
+<td class="count-input" data-column="Quantity">
+<input name="qty" type="number" value="1"/>
+</td>
+<td data-column="Sub Total"><strong>$325.00</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="update-btn">
+<a class="button-round-secondary" href="#">update cart</a>
+</div>
+</div>
+<div class="updateArea">
+<div class="input-group-wrapper">
+<input class="form-control" placeholder="coupon Code" type="text"/>
+<a class="button-round-secondary" href="#">apply coupon</a>
+</div>
+</div>
+</form>
+</div>
+<div class="col-lg-5 right-total">
+<form>
+    {% csrf_token %}
+<div class="balance-amt-wrapper">
+<div class="totalAmountArea">
+<h5 class="balance-title">Cart Totals</h5>
+<ul class="list-unstyled">
+<li>Subtotal <span>$210.00</span></li>
+<li>Total <span class="grandTotal">$228.00</span></li>
+</ul>
+</div>
+<div class="checkBtnArea text-right">
+<a class="button-round-secondary" href="/checkout/">PROCEED TO CHECKOUT</a>
+</div>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script>
+(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1f05d0b3aa39787',t:'MTc4NDcwMTQ3Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
+    </script>
+{% endblock %}

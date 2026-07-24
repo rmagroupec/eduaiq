@@ -1,0 +1,337 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shop – Educator - University & School Education HTML5 Template{% endblock %}
+
+{% block content %}
+<section class="inner-banner-wrap mb-0">
+<div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
+<div class="container">
+<div class="inner-banner-content">
+<h1 class="inner-title">Archives: Shop</h1>
+</div>
+</div>
+</div>
+</section>
+
+
+<div class="product-outer-wrap product-wrap">
+<div class="container">
+<div class="row">
+<div class="col-lg-8 right-sidebar">
+<div class="product-notices-wrapper">
+<p class="product-result-count">Showing all 6 results</p>
+<form method="get">
+    {% csrf_token %}
+<select aria-label="Shop order" class="orderby" name="orderby">
+<option selected="selected" value="menu_order">Default sorting</option>
+<option value="popularity">Sort by popularity</option>
+<option value="rating">Sort by average rating</option>
+<option value="date">Sort by latest</option>
+<option value="price">Sort by price: low to high</option>
+<option value="price-desc">Sort by price: high to low</option>
+</select>
+</form>
+</div>
+<div class="product-item-wrapper">
+<div class="row">
+<div class="col-sm-6">
+<div class="product-item text-center">
+<figure class="product-image">
+<a href="/product/sample-product/">
+<img alt="" src="{% static 'assets/img/img034.jpg' %}"/>
+</a>
+<span class="onsale">Sale</span>
+</figure>
+<div class="product-content">
+<h4>Acer Notebook</h4>
+<div class="product-price">
+<del>$350.00</del>
+<ins>$325.50</ins>
+</div>
+<a class="button-round-secondary" href="/cart/">Add to cart</a>
+</div>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="product-item text-center">
+<figure class="product-image">
+<a href="/product/sample-product/">
+<img alt="" src="{% static 'assets/img/img031.jpg' %}"/>
+</a>
+</figure>
+<div class="product-content">
+<h4>Desktop Set</h4>
+<div class="product-price">
+<ins>$650.00</ins>
+</div>
+<a class="button-round-secondary" href="/cart/">Add to cart</a>
+</div>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="product-item text-center">
+<figure class="product-image">
+<a href="/product/sample-product/">
+<img alt="" src="{% static 'assets/img/img029.jpg' %}"/>
+</a>
+</figure>
+<div class="product-content">
+<h4>Lenevo Laptop</h4>
+<div class="product-price">
+<ins>$250.00</ins>
+</div>
+<a class="button-round-secondary" href="/cart/">Add to cart</a>
+</div>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="product-item text-center">
+<figure class="product-image">
+<a href="/product/sample-product/">
+<img alt="" src="{% static 'assets/img/img030.jpg' %}"/>
+</a>
+</figure>
+<div class="product-content">
+<h4>Office Chair</h4>
+<div class="product-price">
+<del>$85.00</del>
+<ins>$80.00</ins>
+</div>
+<a class="button-round-secondary" href="/cart/">Add to cart</a>
+</div>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="product-item text-center">
+<figure class="product-image">
+<a href="/product/sample-product/">
+<img alt="" src="{% static 'assets/img/img032.jpg' %}"/>
+</a>
+</figure>
+<div class="product-content">
+<h4>Office Table</h4>
+<div class="product-price">
+<ins>$135.50</ins>
+</div>
+<a class="button-round-secondary" href="/cart/">Add to cart</a>
+</div>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="product-item text-center">
+<figure class="product-image">
+<a href="/product/sample-product/">
+<img alt="" src="{% static 'assets/img/img033.jpg' %}"/>
+</a>
+<span class="onsale">Sale</span>
+</figure>
+<div class="product-content">
+<h4>Stationary Set</h4>
+<div class="product-price">
+<del>$55.00</del>
+<ins>$48.50</ins>
+</div>
+<a class="button-round-secondary" href="/cart/">Add to cart</a>
+</div>
+</div>
+</div>
+</div>
+
+<div class="post-navigation-wrap">
+<nav>
+<ul class="pagination">
+<li>
+<a href="#">
+<i class="fas fa-arrow-left"></i>
+</a>
+</li>
+<li class="active"><a href="#">1</a></li>
+<li><a href="#">2</a></li>
+<li><a href="#">3</a></li>
+<li>
+<a href="#">
+<i class="fas fa-arrow-right"></i>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="col-lg-4 secondary">
+<div class="sidebar">
+<aside class="widget search_widget">
+<form>
+    {% csrf_token %}
+<input name="search" placeholder="Search.." type="text"/>
+<button class="search-btn">
+<i class="fas fa-search"></i>
+</button>
+</form>
+</aside>
+<aside class="widget price_handel_widget text-center">
+<p class="widget-title-dash-border">Filter Price</p>
+<form class="price-handel">
+    {% csrf_token %}
+<div id="slider-range"></div>
+<div class="price-amout">
+<button class="button-round-secondary" type="submit">Filter</button>
+<div class="price-label">
+<span class="symbol">$</span>
+<input id="maxAmount" readonly="" type="text"/>
+</div>
+</div>
+</form>
+</aside>
+<aside class="widget widget_category_product_thumb colum-3">
+<div class="text-center">
+<p class="widget-title-dash-border">Categories</p>
+</div>
+<ul>
+<li>
+<figure class="product-thumb">
+<a href="/product/sample-product/"><img alt="" src="{% static 'assets/img/img029.jpg' %}"/></a>
+</figure>
+<div class="product-content">
+<h5>Electronics </h5>
+<span class="count">(2)</span>
+</div>
+</li>
+<li>
+<figure class="product-thumb">
+<a href="/product/sample-product/"><img alt="" src="{% static 'assets/img/img033.jpg' %}"/></a>
+</figure>
+<div class="product-content">
+<h5>Office kits</h5>
+<span class="count">(4)</span>
+</div>
+</li>
+<li>
+<figure class="product-thumb">
+<a href="/product/sample-product/"><img alt="" src="{% static 'assets/img/img031.jpg' %}"/></a>
+</figure>
+<div class="product-content">
+<h5>Accessories</h5>
+<span class="count">(5)</span>
+</div>
+</li>
+</ul>
+</aside>
+<aside class="widget widget_product_post widget-product-thumb">
+<div class="text-center">
+<p class="widget-title-dash-border">Recent Product</p>
+</div>
+<ul>
+<li>
+<figure class="product-thumb">
+<a href="/product/sample-product/"><img alt="" src="{% static 'assets/img/img029.jpg' %}"/></a>
+</figure>
+<div class="product-content">
+<h5>
+<a href="/product/sample-product/">Acer Notebook</a>
+</h5>
+<div class="entry-meta">
+<span class="byline">
+<a href="/product/sample-product/">Demoteam</a>
+</span>
+<span class="posted-on">
+<a href="/product/sample-product/">August 17, 2023</a>
+</span>
+</div>
+</div>
+</li>
+<li>
+<figure class="product-thumb">
+<a href="/product/sample-product/"><img alt="" src="{% static 'assets/img/img030.jpg' %}"/></a>
+</figure>
+<div class="product-content">
+<h5>
+<a href="/product/sample-product/">Office Chair</a>
+</h5>
+<div class="entry-meta">
+<span class="byline">
+<a href="/product/sample-product/">Demoteam</a>
+</span>
+<span class="posted-on">
+<a href="/product/sample-product/">August 17, 2023</a>
+</span>
+</div>
+</div>
+</li>
+<li>
+<figure class="product-thumb">
+<a href="/product/sample-product/"><img alt="" src="{% static 'assets/img/img031.jpg' %}"/></a>
+</figure>
+<div class="product-content">
+<h5>
+<a href="/product/sample-product/">Desktop Set</a>
+</h5>
+<div class="entry-meta">
+<span class="byline">
+<a href="/product/sample-product/">Demoteam</a>
+</span>
+<span class="posted-on">
+<a href="/product/sample-product/">August 17, 2023</a>
+</span>
+</div>
+</div>
+</li>
+<li>
+<figure class="product-thumb">
+<a href="/product/sample-product/"><img alt="" src="{% static 'assets/img/img032.jpg' %}"/></a>
+</figure>
+<div class="product-content">
+<h5>
+<a href="/product/sample-product/">Study Table</a>
+</h5>
+<div class="entry-meta">
+<span class="byline">
+<a href="/product/sample-product/">Demoteam</a>
+</span>
+<span class="posted-on">
+<a href="/product/sample-product/">August 17, 2023</a>
+</span>
+</div>
+</div>
+</li>
+</ul>
+</aside>
+<aside class="widget widget_gallery">
+<div class="text-center">
+<p class="widget-title-dash-border">Product Gallery</p>
+</div>
+<div class="gallery gallery-colum-3">
+<figure class="gallery-item">
+<a href="/product/sample-product/"><img alt="" src="{% static 'assets/img/img029.jpg' %}"/></a>
+</figure>
+<figure class="gallery-item">
+<a href="/product/sample-product/"><img alt="" src="{% static 'assets/img/img030.jpg' %}"/></a>
+</figure>
+<figure class="gallery-item">
+<a href="/product/sample-product/"><img alt="" src="{% static 'assets/img/img031.jpg' %}"/></a>
+</figure>
+<figure class="gallery-item">
+<a href="/product/sample-product/"><img alt="" src="{% static 'assets/img/img032.jpg' %}"/></a>
+</figure>
+<figure class="gallery-item">
+<a href="/product/sample-product/"><img alt="" src="{% static 'assets/img/img033.jpg' %}"/></a>
+</figure>
+<figure class="gallery-item">
+<a href="/product/sample-product/"><img alt="" src="{% static 'assets/img/img034.jpg' %}"/></a>
+</figure>
+</div>
+</aside>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script>
+(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1f05d093e429787',t:'MTc4NDcwMTQ3Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
+    </script>
+{% endblock %}

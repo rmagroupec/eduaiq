@@ -1,0 +1,43 @@
+/* ==========================================================
+   ElementsKit icon fallback fix
+   ----------------------------------------------------------
+   The site's `.icon.icon-*` classes rely on a custom webfont
+   (elementskit.woff) that is missing from this project's
+   vendor folder:
+     frontend/static/assets/vendors/elementskit-icon-pack/assets/fonts/
+   Until that real font file is sourced, this override swaps
+   the specific icon classes actually used on the site over to
+   Font Awesome glyphs — which ARE present and working — so the
+   icons render instead of showing empty boxes.
+
+   Append this to the end of style.css.
+   ========================================================== */
+
+.icon.icon-Helmet::before,
+.icon.icon-design::before,
+.icon.icon-microscope::before,
+.icon.icon-Consultancy::before,
+.icon.icon-pencil_art::before,
+.icon.icon-management::before,
+.icon.icon-atomic::before,
+.icon.icon-Money-2::before,
+.icon.icon-trophy1::before,
+.icon.icon-medal1::before,
+.icon.icon-man::before,
+.icon.icon-right-arrow::before {
+  font-family: "Font Awesome 5 Free" !important;
+  font-weight: 900;
+}
+
+.icon.icon-Helmet::before { content: "\f807"; }        /* hard-hat */
+.icon.icon-design::before { content: "\f568"; }         /* drafting-compass */
+.icon.icon-microscope::before { content: "\f610"; }     /* microscope */
+.icon.icon-Consultancy::before { content: "\f2b5"; }    /* handshake */
+.icon.icon-pencil_art::before { content: "\f5ac"; }      /* pen-fancy */
+.icon.icon-management::before { content: "\f0ae"; }      /* tasks */
+.icon.icon-atomic::before { content: "\f5d2"; }          /* atom */
+.icon.icon-Money-2::before { content: "\f53a"; }         /* money-bill-wave */
+.icon.icon-trophy1::before { content: "\f091"; }         /* trophy */
+.icon.icon-medal1::before { content: "\f5a2"; }          /* medal */
+.icon.icon-man::before { content: "\f183"; }             /* male */
+.icon.icon-right-arrow::before { content: "\f30b"; }     /* long-arrow-alt-right */

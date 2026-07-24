@@ -1,0 +1,2650 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
+
+{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+<div class="">
+<h1 class="fw-semibold mb-4 h6 text-primary-light">Student Details</h1>
+<div class="">
+<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
+<a class="text-secondary-light hover-text-primary hover-underline" href="student-list"> /
+                        Student</a>
+<span class="text-secondary-light">/ Student Details</span>
+</div>
+</div>
+<button class="my-sidebar-btn btn btn-primary-600 d-flex align-items-center gap-6 bg-base text-primary-light bg-hover-primary-600" type="button">
+<span class="d-flex text-md">
+<i class="ri-lock-2-line"></i>
+</span>
+                Login Details
+            </button>
+</div>
+<div class="mt-24">
+<div class="card h-100">
+<div class="card-body p-24">
+<div class="d-flex gap-32 flex-md-row flex-column">
+<div class="max-w-300-px w-100 text-center">
+<figure class="mb-24 w-120-px h-120-px mx-auto rounded-circle overflow-hidden">
+<img alt="Student Image" class="w-100 h-100 object-fit-cover" src="{% static 'admin_assets/images/thumbs/student-details-img.png' %}"/>
+</figure>
+<h2 class="h6 text-primary-light mb-16 fw-semibold">Seth Hallam</h2>
+<p class="mb-0">Admission No: <span class="text-primary-600 fw-semibold">AD1256589</span>
+</p>
+<p class="mb-0">Admission No: <span class="text-primary-light fw-semibold">10</span> </p>
+<div class="mt-32 d-flex gap-16 w-100">
+<button class="btn border fw-medium border-danger-600 bg-hover-danger-200 text-danger-600 text-md d-flex justify-content-center align-items-center gap-8 flex-grow-1 px-12 py-8 radius-8" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
+<span class="d-flex text-lg">
+<i class="ri-delete-bin-2-line"></i>
+</span>
+                                    Suspend
+                                </button>
+<a class="btn btn-primary-600 border fw-medium border-primary-600 text-md d-flex justify-content-center align-items-center gap-8 flex-grow-1 px-12 py-8 radius-8" href="edit-student">
+<span class="d-flex text-lg">
+<i class="ri-edit-line"></i>
+</span>
+                                    Edit
+                                </a>
+</div>
+</div>
+<div class="">
+<span class="h-100 w-1-px bg-neutral-200"></span>
+</div>
+<div class="flex-grow-1">
+<div class="pb-16 border-bottom d-flex align-items-center justify-content-between gap-20">
+<h3 class="h6 text-primary-light text-lg mb-0 fw-semibold">Personal Info</h3>
+<span class="bg-success-100 text-success-600 px-16 py-4 radius-4 fw-medium text-sm">Active</span>
+</div>
+<div class="mt-16 d-flex flex-column gap-8">
+<div class="d-flex gap-4">
+<span class="fw-semibold text-sm text-primary-light w-110-px">Class</span>
+<span class="fw-normal text-sm text-secondary-light">: 1 (A), 2(A), 3(A)</span>
+</div>
+<div class="d-flex gap-4">
+<span class="fw-semibold text-sm text-primary-light w-110-px">Section</span>
+<span class="fw-normal text-sm text-secondary-light">: A</span>
+</div>
+<div class="d-flex gap-4">
+<span class="fw-semibold text-sm text-primary-light w-110-px">Roll No</span>
+<span class="fw-normal text-sm text-secondary-light">: 10</span>
+</div>
+<div class="d-flex gap-4">
+<span class="fw-semibold text-sm text-primary-light w-110-px">Gender</span>
+<span class="fw-normal text-sm text-secondary-light">: Male</span>
+</div>
+<div class="d-flex gap-4">
+<span class="fw-semibold text-sm text-primary-light w-110-px">Date Of Birth</span>
+<span class="fw-normal text-sm text-secondary-light">: 10 Nov 2006</span>
+</div>
+<div class="d-flex gap-4">
+<span class="fw-semibold text-sm text-primary-light w-110-px">Category</span>
+<span class="fw-normal text-sm text-secondary-light">: General</span>
+</div>
+<div class="d-flex gap-4">
+<span class="fw-semibold text-sm text-primary-light w-110-px">Academic Year</span>
+<span class="fw-normal text-sm text-secondary-light">: Jun 2025/2026</span>
+</div>
+<div class="d-flex gap-4">
+<span class="fw-semibold text-sm text-primary-light w-110-px">Phone Number</span>
+<span class="fw-normal text-sm text-primary-600">: 789678456</span>
+</div>
+<div class="d-flex gap-4">
+<span class="fw-semibold text-sm text-primary-light w-110-px">Email</span>
+<span class="fw-normal text-sm text-primary-600">: set@example.com</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="my-16">
+<ul class="nav nav-pills bordered-tab mb-3" id="pills-tab" role="tablist">
+<li class="nav-item" role="presentation">
+<button aria-controls="pills-studentDetails" aria-selected="true" class="nav-link d-flex align-items-center gap-8 text-secondary-light fw-medium text-sm text-hover-primary-600 text-capitalize bg-transparent px-20 py-12 active" data-bs-target="#pills-studentDetails" data-bs-toggle="pill" id="pills-studentDetails-tab" role="tab" type="button">
+<span class="d-flex tab-icon line-height-1 text-md">
+<i class="ri-group-line"></i>
+</span>
+                            Student Details
+                        </button>
+</li>
+<li class="nav-item" role="presentation">
+<button aria-controls="pills-attendance" aria-selected="false" class="nav-link d-flex align-items-center gap-8 text-secondary-light fw-medium text-sm text-hover-primary-600 text-capitalize bg-transparent px-20 py-12" data-bs-target="#pills-attendance" data-bs-toggle="pill" id="pills-attendance-tab" role="tab" type="button">
+<span class="d-flex tab-icon line-height-1 text-md">
+<i class="ri-calendar-check-line"></i>
+</span>
+                            Attendance
+                        </button>
+</li>
+<li class="nav-item" role="presentation">
+<button aria-controls="pills-leave" aria-selected="false" class="nav-link d-flex align-items-center gap-8 text-secondary-light fw-medium text-sm text-hover-primary-600 text-capitalize bg-transparent px-20 py-12" data-bs-target="#pills-leave" data-bs-toggle="pill" id="pills-leave-tab" role="tab" type="button">
+<span class="d-flex tab-icon line-height-1 text-md">
+<i class="ri-login-box-line"></i>
+</span>
+                            Leave
+                        </button>
+</li>
+<li class="nav-item" role="presentation">
+<button aria-controls="pills-fees" aria-selected="false" class="nav-link d-flex align-items-center gap-8 text-secondary-light fw-medium text-sm text-hover-primary-600 text-capitalize bg-transparent px-20 py-12" data-bs-target="#pills-fees" data-bs-toggle="pill" id="pills-fees-tab" role="tab" type="button">
+<span class="d-flex tab-icon line-height-1 text-md">
+<i class="ri-money-dollar-box-line"></i>
+</span>
+                            Fees
+                        </button>
+</li>
+<li class="nav-item" role="presentation">
+<button aria-controls="pills-exam" aria-selected="false" class="nav-link d-flex align-items-center gap-8 text-secondary-light fw-medium text-sm text-hover-primary-600 text-capitalize bg-transparent px-20 py-12" data-bs-target="#pills-exam" data-bs-toggle="pill" id="pills-exam-tab" role="tab" type="button">
+<span class="d-flex tab-icon line-height-1 text-md">
+<i class="ri-file-edit-line"></i>
+</span>
+                            exam
+                        </button>
+</li>
+<li class="nav-item" role="presentation">
+<button aria-controls="pills-library" aria-selected="false" class="nav-link d-flex align-items-center gap-8 text-secondary-light fw-medium text-sm text-hover-primary-600 text-capitalize bg-transparent px-20 py-12" data-bs-target="#pills-library" data-bs-toggle="pill" id="pills-library-tab" role="tab" type="button">
+<span class="d-flex tab-icon line-height-1 text-md">
+<i class="ri-book-line"></i>
+</span>
+                            library
+                        </button>
+</li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+
+<div aria-labelledby="pills-studentDetails-tab" class="tab-pane fade show active" id="pills-studentDetails" role="tabpanel" tabindex="0">
+<div class="row gy-4">
+<div class="col-12">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Parent Guardian Detail</h6>
+</div>
+<div class="card-body p-0">
+<div class="bg-hover-neutral-50 p-20">
+<div class="row g-4">
+<div class="col-sm-4">
+<div class="d-flex align-items-center gap-12">
+<figure class="w-48-px h-48-px rounded-circle overflow-hidden mb-0">
+<img alt="Guardian Image" class="flex-shrink-0 w-100 h-100 object-fit-cover" src="{% static 'admin_assets/images/thumbs/guardian-img1.png' %}"/>
+</figure>
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Robert Fox
+                                                            </h6>
+<span class="">Father</span>
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Phone</h6>
+<span class="">+19854 65642</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Email</h6>
+<span class="">father@example.com</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-hover-neutral-50 p-20">
+<div class="row g-4">
+<div class="col-sm-4">
+<div class="d-flex align-items-center gap-12">
+<figure class="w-48-px h-48-px rounded-circle overflow-hidden mb-0">
+<img alt="Guardian Image" class="flex-shrink-0 w-100 h-100 object-fit-cover" src="{% static 'admin_assets/images/thumbs/guardian-img2.png' %}"/>
+</figure>
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Brooklyn
+                                                                Simmons</h6>
+<span class="">Mother</span>
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Phone</h6>
+<span class="">+19854 65642</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Email</h6>
+<span class="">mother@example.com</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-hover-neutral-50 p-20">
+<div class="row g-4">
+<div class="col-sm-4">
+<div class="d-flex align-items-center gap-12">
+<figure class="w-48-px h-48-px rounded-circle overflow-hidden mb-0">
+<img alt="Guardian Image" class="flex-shrink-0 w-100 h-100 object-fit-cover" src="{% static 'admin_assets/images/thumbs/guardian-img1.png' %}"/>
+</figure>
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Robert Fox
+                                                            </h6>
+<span class="">Guardian (Father)</span>
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Phone</h6>
+<span class="">+19854 65642</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Email</h6>
+<span class="">father@example.com</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Previous School Details</h6>
+</div>
+<div class="card-body p-0">
+<div class="p-20">
+<div class="row gy-4">
+<div class="col-sm-12">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Previous School
+                                                            Name</h6>
+<span class="">Stuyvesant High School</span>
+</div>
+</div>
+<div class="col-sm-12">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Current School
+                                                            Name</h6>
+<span class="">Bronx High School of Science</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Address</h6>
+</div>
+<div class="card-body p-0">
+<div class="p-20">
+<div class="row gy-4">
+<div class="col-sm-12">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Current Address
+                                                        </h6>
+<span class="">8502 Preston Rd. Inglewood, Maine 98380</span>
+</div>
+</div>
+<div class="col-sm-12">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Permanent Address
+                                                        </h6>
+<span class="">2118 Thornridge Cir. Syracuse, Connecticut
+                                                            35624</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Bank Details</h6>
+</div>
+<div class="card-body p-0">
+<div class="p-20">
+<div class="row gy-4">
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Bank Name</h6>
+<span class="">Bank of America</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Branch</h6>
+<span class="">New York</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">IFSC Code</h6>
+<span class="">5283209832</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Medical Details</h6>
+</div>
+<div class="card-body p-0">
+<div class="p-20">
+<div class="row gy-4">
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Blood Group</h6>
+<span class="">O+</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Height</h6>
+<span class="">5.2</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Weight</h6>
+<span class="">60kg</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Documents</h6>
+</div>
+<div class="card-body p-20">
+<div class="p-10 border radius-8">
+<div class="d-flex align-items-center justify-content-between gap-20">
+<div class="d-flex align-items-center gap-12">
+<span class="w-36-px h-36-px radius-4 bg-neutral-50 d-flex justify-content-center align-items-center text-xl">
+<i class="ri-file-text-line"></i>
+</span>
+<span class="text-md text-secondary-light">BirthCertificate.pdf</span>
+</div>
+<button class="w-36-px h-36-px radius-4 bg-primary-50 bg-hover-primary-100 text-primary-600 d-flex justify-content-center align-items-center text-xl" type="button">
+<i class="ri-download-2-line"></i>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Hostel</h6>
+</div>
+<div class="card-body p-0">
+<div class="p-20">
+<div class="row gy-4">
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Hostel</h6>
+<span class="">Boys Hostel 101</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Room No.</h6>
+<span class="">Room No.</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Room Type</h6>
+<span class="">One Bed</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-12">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Description</h6>
+</div>
+<div class="card-body p-0">
+<div class="p-20">
+<p class="text-secondary-light">Known for their punctuality and positive
+                                                attitude,
+                                                [he/she/they] consistently demonstrates a strong commitment to academic
+                                                excellence
+                                                and co-curricular participation. [He/She/They] maintains good behavior,
+                                                shows
+                                                respect toward teachers and peers, and actively engages in classroom
+                                                discussions and
+                                                group activities. </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<div aria-labelledby="pills-attendance-tab" class="tab-pane fade" id="pills-attendance" role="tabpanel" tabindex="0">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Attendance</h6>
+</div>
+<div class="card-body p-0">
+<div class="px-20 pt-20">
+<div class="row row-cols-xxl-5 row-cols-lg-3 row-cols-sm-2 row-cols-1 g-3">
+<div class="col">
+<div class="card px-20 py-28 shadow-2 radius-8 h-100 border border-neutral-200 shadow-none gradient-bg-end-7">
+<div class="card-body p-0">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+<div>
+<h6 class="fw-semibold mb-2">227</h6>
+<span class="fw-medium text-secondary-light text-sm">Total
+                                                                Present</span>
+</div>
+<span class="mb-0 w-48-px h-48-px bg-success-600 text-white flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+<img alt="Present Icon" src="{% static 'admin_assets/images/icons/attendence-icon1.png' %}"/>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div class="col">
+<div class="card px-20 py-28 shadow-2 radius-8 h-100 border border-neutral-200 shadow-none gradient-bg-end-8">
+<div class="card-body p-0">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+<div>
+<h6 class="fw-semibold mb-2">70</h6>
+<span class="fw-medium text-secondary-light text-sm">Total
+                                                                Absent</span>
+</div>
+<span class="mb-0 w-48-px h-48-px bg-danger-600 text-white flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+<img alt="Absent Icon" src="{% static 'admin_assets/images/icons/attendence-icon2.png' %}"/>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div class="col">
+<div class="card px-20 py-28 shadow-2 radius-8 h-100 border border-neutral-200 shadow-none gradient-bg-end-9">
+<div class="card-body p-0">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+<div>
+<h6 class="fw-semibold mb-2">27</h6>
+<span class="fw-medium text-secondary-light text-sm">Half
+                                                                Day</span>
+</div>
+<span class="mb-0 w-48-px h-48-px bg-purple-600 text-white flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+<img alt="Calendar Icon" src="{% static 'admin_assets/images/icons/attendence-icon3.png' %}"/>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div class="col">
+<div class="card px-20 py-28 shadow-2 radius-8 h-100 border border-neutral-200 shadow-none gradient-bg-end-10">
+<div class="card-body p-0">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+<div>
+<h6 class="fw-semibold mb-2">28</h6>
+<span class="fw-medium text-secondary-light text-sm">Total
+                                                                Late</span>
+</div>
+<span class="mb-0 w-48-px h-48-px bg-info-600 text-white flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+<img alt="Clock Icon" src="{% static 'admin_assets/images/icons/attendence-icon4.png' %}"/>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div class="col">
+<div class="card px-20 py-28 shadow-2 radius-8 h-100 border border-neutral-200 shadow-none gradient-bg-end-11">
+<div class="card-body p-0">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+<div>
+<h6 class="fw-semibold mb-2">12</h6>
+<span class="fw-medium text-secondary-light text-sm">Total
+                                                                Holiday</span>
+</div>
+<span class="mb-0 w-48-px h-48-px bg-orange text-white flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+<img alt="Holiday Icon" src="{% static 'admin_assets/images/icons/attendence-icon5.png' %}"/>
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-24 mb-16 mx-20">
+<div class="d-flex flex-wrap align-items-center gap-24 justify-content-between flex-wrap">
+<div class="d-flex flex-wrap align-items-center gap-16">
+<div class="">
+<select class="form-control form-select">
+<option value="Jun 2025/2026">Jun 2025/2026</option>
+<option value="Jun 2026/2027">Jun 2026/2027</option>
+<option value="Jun 2027/2028">Jun 2027/2028</option>
+<option value="Jun 2028/2029">Jun 2028/2029</option>
+</select>
+</div>
+<div class="dropdown">
+<button aria-expanded="false" class="px-12 py-8 border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
+<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
+<i class="ri-file-upload-line text-md line-height-1"></i>
+                                                        Export
+                                                    </span>
+<span class="">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<ul class="dropdown-menu p-12 border bg-base shadow">
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
+<i class="ri-file-3-line"></i>
+                                                            PDF
+                                                        </button>
+</li>
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
+<i class="ri-file-excel-line"></i>
+                                                            Excel
+                                                        </button>
+</li>
+</ul>
+</div>
+</div>
+<div class="d-flex align-items-center flex-wrap gap-8">
+<p class="text-primary-light text-sm fw-medium mb-0">
+                                                Present:
+                                                <span class="fw-semibold text-success-600">P </span>
+</p>
+<p class="text-primary-light text-sm fw-medium mb-0">
+                                                Absent:
+                                                <span class="fw-semibold text-danger-600">A </span>
+</p>
+<p class="text-primary-light text-sm fw-medium mb-0">
+                                                Holiday:
+                                                <span class="fw-semibold text-warning-600">H </span>
+</p>
+<p class="text-primary-light text-sm fw-medium mb-0">
+                                                Late:
+                                                <span class="fw-semibold text-info-600">L </span>
+</p>
+<p class="text-primary-light text-sm fw-medium mb-0">
+                                                Half Day:
+                                                <span class="fw-semibold text-purple-600">F </span>
+</p>
+</div>
+</div>
+</div>
+<div class="table-responsive overflow-x-auto">
+<table class="table mb-0 table-heading-dark-mode">
+<thead>
+<tr>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">Month
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">1</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">2</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">3</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">4</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">5</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">6</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">7</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">8</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">9</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">10
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">11
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">12
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">13
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">14
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">15
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">15
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">16
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">17
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">18
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">19
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">20
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">21
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">22
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">23
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">24
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">25
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">26
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">27
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">28
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">29
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">30
+                                                </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="px-10 py-16 text-sm">Jan</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">H</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">A</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">F</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">L</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">H</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">A</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">L</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">h</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">F</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">H</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">P</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">A</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">H</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">p</span>
+</td>
+<td class="px-10 py-14 text-sm text-uppercase">
+<span class="attendance">p</span>
+</td>
+</tr>
+<tr>
+<td class="px-10 py-16 text-sm">Feb</td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+</tr>
+<tr>
+<td class="px-10 py-16 text-sm">Mar</td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+</tr>
+<tr>
+<td class="px-10 py-16 text-sm">Apr</td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+</tr>
+<tr>
+<td class="px-10 py-16 text-sm">May</td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+</tr>
+<tr>
+<td class="px-10 py-16 text-sm">May</td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
+</tr>
+<tr>
+<td class="px-10 py-16 text-sm">Jun</td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+</tr>
+<tr>
+<td class="px-10 py-16 text-sm">Ju</td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+</tr>
+<tr>
+<td class="px-10 py-16 text-sm">Aug</td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+</tr>
+<tr>
+<td class="px-10 py-16 text-sm">Sep</td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+</tr>
+<tr>
+<td class="px-10 py-16 text-sm">Oct</td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+</tr>
+<tr>
+<td class="px-10 py-16 text-sm">Nov</td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+</tr>
+<tr>
+<td class="px-10 py-16 text-sm">Dec</td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+
+<div aria-labelledby="pills-leave-tab" class="tab-pane fade" id="pills-leave" role="tabpanel" tabindex="0">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-10 px-20 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Leave </h6>
+<button class="apply-leave-btn btn btn-primary-600 d-flex align-items-center gap-6 py-8 text-sm" type="button">
+<span class="d-flex text-sm">
+<i class="ri-calendar-close-line"></i>
+</span>
+                                    Apply Leave
+                                </button>
+</div>
+<div class="card-body p-0 dataTable-wrapper">
+<div class="d-flex flex-wrap align-items-center gap-24 justify-content-between px-20 py-12">
+<div class="d-flex flex-wrap align-items-center gap-16">
+<form class="navbar-search dt-search m-0">
+    {% csrf_token %}
+<input aria-controls="dataTable" class="dt-input bg-transparent radius-4" name="search" placeholder="Search..." type="text"/>
+<iconify-icon class="icon" icon="ion:search-outline"></iconify-icon>
+</form>
+<div class="">
+<select class="form-control form-select">
+<option value="Year 2025/2026">Year 2025/2026</option>
+<option value="Year 2026/2027">Year 2026/2027</option>
+<option value="Year 2027/2028">Year 2027/2028</option>
+<option value="Year 2028/2029">Year 2028/2029</option>
+</select>
+</div>
+<div class="dropdown">
+<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
+<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
+<i class="ri-file-upload-line text-md line-height-1"></i>
+                                                    Export
+                                                </span>
+<span class="">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<ul class="dropdown-menu p-12 border bg-base shadow">
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
+<i class="ri-file-3-line"></i>
+                                                        PDF
+                                                    </button>
+</li>
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
+<i class="ri-file-excel-line"></i>
+                                                        Excel
+                                                    </button>
+</li>
+</ul>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8 text-secondary-light">
+<span class="">
+                                            Rows per page:
+                                        </span>
+<div class="dt-length">
+<select aria-controls="dataTable" class="dt-input form-control form-select" name="dataTable_length">
+<option value="5">5</option>
+<option selected="" value="10">10</option>
+<option value="25">25</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+</div>
+</div>
+</div>
+<table class="table bordered-table mb-0 table-heading-dark-mode w-100 data-table" data-page-length="10" id="dataTable">
+<thead>
+<tr>
+<th scope="col">
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                        S.L
+                                                    </label>
+</div>
+</th>
+<th scope="col">Leave Type</th>
+<th scope="col">Date</th>
+<th scope="col">Duration</th>
+<th scope="col">Apply Date</th>
+<th scope="col">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                        01
+                                                    </label>
+</div>
+</td>
+<td>Medical Leave</td>
+<td>07 May 2025 - 08 may 2025</td>
+<td>1</td>
+<td>07 May 2025 </td>
+<td>
+<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">Approved</span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                        02
+                                                    </label>
+</div>
+</td>
+<td>Special Leave</td>
+<td>07 May 2025 - 08 may 2025</td>
+<td>3</td>
+<td>07 May 2025 </td>
+<td>
+<span class="bg-warning-100 text-warning-600 px-20 py-4 radius-4 fw-medium text-sm">Pending</span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                        03
+                                                    </label>
+</div>
+</td>
+<td>Medical Leave</td>
+<td>07 May 2025 - 08 may 2025</td>
+<td>5</td>
+<td>07 May 2025 </td>
+<td>
+<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">Approved</span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                        04
+                                                    </label>
+</div>
+</td>
+<td>Casual Leave</td>
+<td>07 May 2025 - 08 may 2025</td>
+<td>6</td>
+<td>07 May 2025 </td>
+<td>
+<span class="bg-warning-100 text-warning-600 px-20 py-4 radius-4 fw-medium text-sm">Pending</span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                        05
+                                                    </label>
+</div>
+</td>
+<td>Medical Leave</td>
+<td>07 May 2025 - 08 may 2025</td>
+<td>1</td>
+<td>07 May 2025 </td>
+<td>
+<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">Approved</span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                        06
+                                                    </label>
+</div>
+</td>
+<td>Special Leave</td>
+<td>07 May 2025 - 08 may 2025</td>
+<td>2</td>
+<td>07 May 2025 </td>
+<td>
+<span class="bg-danger-100 text-danger-600 px-20 py-4 radius-4 fw-medium text-sm">Rejected</span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                        07
+                                                    </label>
+</div>
+</td>
+<td>Medical Leave</td>
+<td>07 May 2025 - 08 may 2025</td>
+<td>5</td>
+<td>07 May 2025 </td>
+<td>
+<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">Approved</span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                        08
+                                                    </label>
+</div>
+</td>
+<td>Casual Leave</td>
+<td>07 May 2025 - 08 may 2025</td>
+<td>6</td>
+<td>07 May 2025 </td>
+<td>
+<span class="bg-danger-100 text-danger-600 px-20 py-4 radius-4 fw-medium text-sm">Rejected</span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                        09
+                                                    </label>
+</div>
+</td>
+<td>Medical Leave</td>
+<td>07 May 2025 - 08 may 2025</td>
+<td>1</td>
+<td>07 May 2025 </td>
+<td>
+<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">Approved</span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                        10
+                                                    </label>
+</div>
+</td>
+<td>Special Leave</td>
+<td>07 May 2025 - 08 may 2025</td>
+<td>2</td>
+<td>07 May 2025 </td>
+<td>
+<span class="bg-danger-100 text-danger-600 px-20 py-4 radius-4 fw-medium text-sm">Rejected</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+<div aria-labelledby="pills-fees-tab" class="tab-pane fade" id="pills-fees" role="tabpanel" tabindex="0">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-10 px-20 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Fees </h6>
+<button class="collect-fees-btn btn btn-primary-600 d-flex align-items-center gap-6 py-8 text-sm" type="button">
+<span class="d-flex text-sm">
+<i class="ri-calendar-close-line"></i>
+</span>
+                                    Collect Fees
+                                </button>
+</div>
+<div class="card-body p-0 dataTable-wrapper">
+<div class="p-20">
+<div class="row g-3">
+<div class="col-xl-3 col-sm-6">
+<div class="card px-20 py-28 shadow-2 radius-8 h-100 border border-neutral-200 shadow-none gradient-bg-end-10">
+<div class="card-body p-0">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+<div>
+<h6 class="fw-semibold mb-2">$10,500</h6>
+<span class="fw-medium text-secondary-light text-sm">Total
+                                                                Amount</span>
+</div>
+<span class="mb-0 w-48-px h-48-px bg-info-600 text-white flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+<img alt="Clock Icon" src="{% static 'admin_assets/images/icons/fees-icon1.png' %}"/>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div class="col-xl-3 col-sm-6">
+<div class="card px-20 py-28 shadow-2 radius-8 h-100 border border-neutral-200 shadow-none gradient-bg-end-8">
+<div class="card-body p-0">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+<div>
+<h6 class="fw-semibold mb-2">$200</h6>
+<span class="fw-medium text-secondary-light text-sm">Total
+                                                                Fine</span>
+</div>
+<span class="mb-0 w-48-px h-48-px bg-danger-600 text-white flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+<img alt="Absent Icon" src="{% static 'admin_assets/images/icons/fees-icon2.png' %}"/>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div class="col-xl-3 col-sm-6">
+<div class="card px-20 py-28 shadow-2 radius-8 h-100 border border-neutral-200 shadow-none gradient-bg-end-7">
+<div class="card-body p-0">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+<div>
+<h6 class="fw-semibold mb-2">$7,500</h6>
+<span class="fw-medium text-secondary-light text-sm">Total
+                                                                Paid </span>
+</div>
+<span class="mb-0 w-48-px h-48-px bg-success-600 text-white flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+<img alt="Present Icon" src="{% static 'admin_assets/images/icons/fees-icon3.png' %}"/>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div class="col-xl-3 col-sm-6">
+<div class="card px-20 py-28 shadow-2 radius-8 h-100 border border-neutral-200 shadow-none gradient-bg-end-11">
+<div class="card-body p-0">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+<div>
+<h6 class="fw-semibold mb-2">$3,000</h6>
+<span class="fw-medium text-secondary-light text-sm">Total
+                                                                Due</span>
+</div>
+<span class="mb-0 w-48-px h-48-px bg-orange text-white flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+<img alt="Holiday Icon" src="{% static 'admin_assets/images/icons/fees-icon4.png' %}"/>
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="d-flex flex-wrap align-items-center gap-24 justify-content-between px-20 pb-16">
+<div class="d-flex flex-wrap align-items-center gap-16">
+<form class="navbar-search dt-search m-0">
+    {% csrf_token %}
+<input aria-controls="dataTable" class="dt-input bg-transparent radius-4" name="search" placeholder="Search..." type="text"/>
+<iconify-icon class="icon" icon="ion:search-outline"></iconify-icon>
+</form>
+<div class="">
+<select class="form-control form-select">
+<option value="Year 2025/2026">Year 2025/2026</option>
+<option value="Year 2026/2027">Year 2026/2027</option>
+<option value="Year 2027/2028">Year 2027/2028</option>
+<option value="Year 2028/2029">Year 2028/2029</option>
+</select>
+</div>
+<div class="dropdown">
+<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
+<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
+<i class="ri-file-upload-line text-md line-height-1"></i>
+                                                    Export
+                                                </span>
+<span class="">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<ul class="dropdown-menu p-12 border bg-base shadow">
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
+<i class="ri-file-3-line"></i>
+                                                        PDF
+                                                    </button>
+</li>
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
+<i class="ri-file-excel-line"></i>
+                                                        Excel
+                                                    </button>
+</li>
+</ul>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8 text-secondary-light">
+<span class="">
+                                            Rows per page:
+                                        </span>
+<div class="dt-length">
+<select aria-controls="dataTable" class="dt-input form-control form-select" name="dataTable_length">
+<option value="5">5</option>
+<option selected="" value="10">10</option>
+<option value="25">25</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+</div>
+</div>
+</div>
+<table class="table bordered-table mb-0 table-heading-dark-mode w-100 data-table" data-page-length="10" id="dataTableTwo">
+<thead>
+<tr>
+<th scope="col">
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                        S.L
+                                                    </label>
+</div>
+</th>
+<th scope="col">Fees Type</th>
+<th scope="col">Due Date</th>
+<th scope="col">Payment Type</th>
+<th scope="col">Amount</th>
+<th scope="col">Discount</th>
+<th scope="col">Fine</th>
+<th scope="col">Paid</th>
+<th scope="col">Due</th>
+<th scope="col">Paid Date</th>
+<th scope="col">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">01</label>
+</div>
+</td>
+<td>May Month Fees</td>
+<td>05 May 2025</td>
+<td>Bank</td>
+<td>$700.50</td>
+<td>10%</td>
+<td>$50</td>
+<td>$700.50</td>
+<td>$0</td>
+<td>12 May 2025</td>
+<td>
+<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                                    Paid
+                                                </span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">02</label>
+</div>
+</td>
+<td>June Month Fees</td>
+<td>05 Jun 2025</td>
+<td>Cash</td>
+<td>$680.00</td>
+<td>5%</td>
+<td>$30</td>
+<td>$350.00</td>
+<td>$330.00</td>
+<td>09 Jun 2025</td>
+<td>
+<span class="bg-warning-100 text-warning-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                                    Partial
+                                                </span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">03</label>
+</div>
+</td>
+<td>July Month Fees</td>
+<td>05 Jul 2025</td>
+<td>Bank</td>
+<td>$700.00</td>
+<td>10%</td>
+<td>$0</td>
+<td>$0.00</td>
+<td>$700.00</td>
+<td>-</td>
+<td>
+<span class="bg-danger-100 text-danger-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                                    Unpaid
+                                                </span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">04</label>
+</div>
+</td>
+<td>August Month Fees</td>
+<td>05 Aug 2025</td>
+<td>Online</td>
+<td>$750.00</td>
+<td>15%</td>
+<td>$40</td>
+<td>$750.00</td>
+<td>$0</td>
+<td>07 Aug 2025</td>
+<td>
+<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                                    Paid
+                                                </span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">05</label>
+</div>
+</td>
+<td>September Month Fees</td>
+<td>05 Sep 2025</td>
+<td>Bank</td>
+<td>$720.00</td>
+<td>10%</td>
+<td>$25</td>
+<td>$360.00</td>
+<td>$360.00</td>
+<td>10 Sep 2025</td>
+<td>
+<span class="bg-warning-100 text-warning-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                                    Partial
+                                                </span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">06</label>
+</div>
+</td>
+<td>June month fees</td>
+<td>05 Jun 2025</td>
+<td>Cash</td>
+<td>$700.50</td>
+<td>5%</td>
+<td>$0</td>
+<td>$665.00</td>
+<td>$35.50</td>
+<td>07 Jun 2025</td>
+<td><span class="bg-warning-100 text-warning-600 px-20 py-4 radius-4 fw-medium text-sm">Partial</span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">07</label>
+</div>
+</td>
+<td>July month fees</td>
+<td>05 Jul 2025</td>
+<td>Bank</td>
+<td>$700.50</td>
+<td>10%</td>
+<td>$25</td>
+<td>$700.50</td>
+<td>$0</td>
+<td>06 Jul 2025</td>
+<td><span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">Paid</span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">08</label>
+</div>
+</td>
+<td>August month fees</td>
+<td>05 Aug 2025</td>
+<td>Card</td>
+<td>$700.50</td>
+<td>0%</td>
+<td>$0</td>
+<td>$0</td>
+<td>$700.50</td>
+<td>-</td>
+<td><span class="bg-danger-100 text-danger-600 px-20 py-4 radius-4 fw-medium text-sm">Unpaid</span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">09</label>
+</div>
+</td>
+<td>September month fees</td>
+<td>05 Sep 2025</td>
+<td>Online</td>
+<td>$700.50</td>
+<td>5%</td>
+<td>$15</td>
+<td>$350.00</td>
+<td>$350.50</td>
+<td>08 Sep 2025</td>
+<td><span class="bg-warning-100 text-warning-600 px-20 py-4 radius-4 fw-medium text-sm">Partial</span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">10</label>
+</div>
+</td>
+<td>October month fees</td>
+<td>05 Oct 2025</td>
+<td>Bank</td>
+<td>$700.50</td>
+<td>10%</td>
+<td>$20</td>
+<td>$700.50</td>
+<td>$0</td>
+<td>06 Oct 2025</td>
+<td><span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">Paid</span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">11</label>
+</div>
+</td>
+<td>November month fees</td>
+<td>05 Nov 2025</td>
+<td>Cash</td>
+<td>$700.50</td>
+<td>0%</td>
+<td>$0</td>
+<td>$0</td>
+<td>$700.50</td>
+<td>-</td>
+<td><span class="bg-danger-100 text-danger-600 px-20 py-4 radius-4 fw-medium text-sm">Unpaid</span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">12</label>
+</div>
+</td>
+<td>December month fees</td>
+<td>05 Dec 2025</td>
+<td>Online</td>
+<td>$700.50</td>
+<td>15%</td>
+<td>$0</td>
+<td>$595.00</td>
+<td>$105.50</td>
+<td>10 Dec 2025</td>
+<td><span class="bg-warning-100 text-warning-600 px-20 py-4 radius-4 fw-medium text-sm">Partial</span>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">13</label>
+</div>
+</td>
+<td>January month fees</td>
+<td>05 Jan 2026</td>
+<td>Bank</td>
+<td>$700.50</td>
+<td>10%</td>
+<td>$0</td>
+<td>$700.50</td>
+<td>$0</td>
+<td>06 Jan 2026</td>
+<td><span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">Paid</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+<div aria-labelledby="pills-exam-tab" class="tab-pane fade" id="pills-exam" role="tabpanel" tabindex="0">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Exam </h6>
+</div>
+<div class="card-body p-20 d-flex flex-column gap-20">
+<div class="border radius-8 overflow-hidden">
+<button class="custom-accordion-btn text-md fw-semibold text-secondary-light w-100 py-10 px-20 d-flex align-items-center gap-12 justify-content-between" type="button">
+                                        First Semester
+                                        <span class="arrow-icon text-lg d-flex line-height-1">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<div class="custom-accordion-content table-bottom-info-none">
+<table class="table bordered-table mb-0 table-heading-dark-mode w-100 data-table" data-page-length="10" id="firstSemesterTable">
+<thead>
+<tr>
+<th class="text-start" scope="col">Subject</th>
+<th class="text-start" scope="col">Max Marks</th>
+<th class="text-start" scope="col">Min Marks</th>
+<th class="text-start" scope="col">Marks Obtained</th>
+<th class="text-start" scope="col">Grade</th>
+<th class="text-start" scope="col">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="text-start">Bangla</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">80</td>
+<td class="text-start">A+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">English</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">60</td>
+<td class="text-start">B+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">ICT</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">70</td>
+<td class="text-start">A+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">Physics </td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">60 </td>
+<td class="text-start">B</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">Chemistry </td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">48 </td>
+<td class="text-start">B</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">Mathematics</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">80</td>
+<td class="text-start">A+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Rank: 30
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Total: 600
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+</td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Total Obtain Marks: 398
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Grande: A
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Results: Pass
+                                                    </td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+<div class="border radius-8 overflow-hidden">
+<button class="custom-accordion-btn text-md fw-semibold text-secondary-light w-100 py-10 px-20 d-flex align-items-center gap-12 justify-content-between" type="button">
+                                        Monthly Test (Jun-2025)
+                                        <span class="arrow-icon text-lg d-flex line-height-1">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<div class="custom-accordion-content table-bottom-info-none">
+<table class="table bordered-table mb-0 table-heading-dark-mode w-100 data-table" data-page-length="10" id="monthlyTestJun">
+<thead>
+<tr>
+<th class="text-start" scope="col">Subject</th>
+<th class="text-start" scope="col">Max Marks</th>
+<th class="text-start" scope="col">Min Marks</th>
+<th class="text-start" scope="col">Marks Obtained</th>
+<th class="text-start" scope="col">Grade</th>
+<th class="text-start" scope="col">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="text-start">Bangla</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">80</td>
+<td class="text-start">A+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">English</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">60</td>
+<td class="text-start">B+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">ICT</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">70</td>
+<td class="text-start">A+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">Physics </td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">60 </td>
+<td class="text-start">B</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">Chemistry </td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">48 </td>
+<td class="text-start">B</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">Mathematics</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">80</td>
+<td class="text-start">A+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Rank: 30
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Total: 600
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+</td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Total Obtain Marks: 398
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Grande: A
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Results: Pass
+                                                    </td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+<div class="border radius-8 overflow-hidden">
+<button class="custom-accordion-btn text-md fw-semibold text-secondary-light w-100 py-10 px-20 d-flex align-items-center gap-12 justify-content-between" type="button">
+                                        Weekly Test(Jun-2025)
+                                        <span class="arrow-icon text-lg d-flex line-height-1">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<div class="custom-accordion-content table-bottom-info-none">
+<table class="table bordered-table mb-0 table-heading-dark-mode w-100 data-table" data-page-length="10" id="weeklyTestJun">
+<thead>
+<tr>
+<th class="text-start" scope="col">Subject</th>
+<th class="text-start" scope="col">Max Marks</th>
+<th class="text-start" scope="col">Min Marks</th>
+<th class="text-start" scope="col">Marks Obtained</th>
+<th class="text-start" scope="col">Grade</th>
+<th class="text-start" scope="col">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="text-start">Bangla</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">80</td>
+<td class="text-start">A+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">English</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">60</td>
+<td class="text-start">B+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">ICT</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">70</td>
+<td class="text-start">A+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">Physics </td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">60 </td>
+<td class="text-start">B</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">Chemistry </td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">48 </td>
+<td class="text-start">B</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">Mathematics</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">80</td>
+<td class="text-start">A+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Rank: 30
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Total: 600
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+</td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Total Obtain Marks: 398
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Grande: A
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Results: Pass
+                                                    </td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+<div class="border radius-8 overflow-hidden">
+<button class="custom-accordion-btn text-md fw-semibold text-secondary-light w-100 py-10 px-20 d-flex align-items-center gap-12 justify-content-between" type="button">
+                                        Weekly Test(May-2025)
+                                        <span class="arrow-icon text-lg d-flex line-height-1">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<div class="custom-accordion-content table-bottom-info-none">
+<table class="table bordered-table mb-0 table-heading-dark-mode w-100 data-table" data-page-length="10" id="weeklyTestMay">
+<thead>
+<tr>
+<th class="text-start" scope="col">Subject</th>
+<th class="text-start" scope="col">Max Marks</th>
+<th class="text-start" scope="col">Min Marks</th>
+<th class="text-start" scope="col">Marks Obtained</th>
+<th class="text-start" scope="col">Grade</th>
+<th class="text-start" scope="col">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="text-start">Bangla</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">80</td>
+<td class="text-start">A+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">English</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">60</td>
+<td class="text-start">B+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">ICT</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">70</td>
+<td class="text-start">A+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">Physics </td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">60 </td>
+<td class="text-start">B</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">Chemistry </td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">48 </td>
+<td class="text-start">B</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">Mathematics</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">80</td>
+<td class="text-start">A+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Rank: 30
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Total: 600
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+</td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Total Obtain Marks: 398
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Grande: A
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Results: Pass
+                                                    </td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+<div class="border radius-8 overflow-hidden">
+<button class="custom-accordion-btn text-md fw-semibold text-secondary-light w-100 py-10 px-20 d-flex align-items-center gap-12 justify-content-between" type="button">
+                                        weeklyTestMay
+                                        <span class="arrow-icon text-lg d-flex line-height-1">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<div class="custom-accordion-content table-bottom-info-none">
+<table class="table bordered-table mb-0 table-heading-dark-mode w-100 data-table" data-page-length="10" id="monthlyTestMay">
+<thead>
+<tr>
+<th class="text-start" scope="col">Subject</th>
+<th class="text-start" scope="col">Max Marks</th>
+<th class="text-start" scope="col">Min Marks</th>
+<th class="text-start" scope="col">Marks Obtained</th>
+<th class="text-start" scope="col">Grade</th>
+<th class="text-start" scope="col">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="text-start">Bangla</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">80</td>
+<td class="text-start">A+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">English</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">60</td>
+<td class="text-start">B+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">ICT</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">70</td>
+<td class="text-start">A+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">Physics </td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">60 </td>
+<td class="text-start">B</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">Chemistry </td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">48 </td>
+<td class="text-start">B</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+<tr>
+<td class="text-start">Mathematics</td>
+<td class="text-start">100.00</td>
+<td class="text-start">35.00</td>
+<td class="text-start">80</td>
+<td class="text-start">A+</td>
+<td class="text-start">
+<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Pass</span>
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Rank: 30
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Total: 600
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+</td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Total Obtain Marks: 398
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Grande: A
+                                                    </td>
+<td class="text-primary-light fw-semibold text-md border-top border-bottom border-neutral-200 text-start bg-neutral-50">
+                                                        Results: Pass
+                                                    </td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<div aria-labelledby="pills-library-tab" class="tab-pane fade" id="pills-library" role="tabpanel" tabindex="0">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-10 px-20 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Library </h6>
+</div>
+<div class="card-body p-0 dataTable-wrapper">
+<div class="d-flex flex-wrap align-items-center gap-24 justify-content-between px-20 py-16">
+<div class="d-flex flex-wrap align-items-center gap-16">
+<form class="navbar-search dt-search m-0">
+    {% csrf_token %}
+<input aria-controls="dataTable" class="dt-input bg-transparent radius-4" name="search" placeholder="Search..." type="text"/>
+<iconify-icon class="icon" icon="ion:search-outline"></iconify-icon>
+</form>
+<div class="">
+<select class="form-control form-select">
+<option value="Year 2025/2026">Year 2025/2026</option>
+<option value="Year 2026/2027">Year 2026/2027</option>
+<option value="Year 2027/2028">Year 2027/2028</option>
+<option value="Year 2028/2029">Year 2028/2029</option>
+</select>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8 text-secondary-light">
+<span class="">
+                                            Rows per page:
+                                        </span>
+<div class="dt-length">
+<select aria-controls="dataTable" class="dt-input form-control form-select" name="dataTable_length">
+<option value="5">5</option>
+<option selected="" value="10">10</option>
+<option value="25">25</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+</div>
+</div>
+</div>
+<table class="table bordered-table mb-0 table-heading-dark-mode w-100 data-table" data-page-length="10" id="dataTableLibrary">
+<thead>
+<tr>
+<th class="text-start" scope="col">S.L</th>
+<th class="text-start" scope="col">Book Name</th>
+<th class="text-start" scope="col">Book Category</th>
+<th class="text-start" scope="col">Book Number</th>
+<th class="text-start" scope="col">Taken ON</th>
+<th class="text-start" scope="col">Last Date</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="text-start">01</td>
+<td class="text-start">
+<div class="d-flex align-items-center">
+<img alt="Library Image" class="flex-shrink-0 me-12 radius-4 w-36-px h-36-px" src="{% static 'admin_assets/images/thumbs/library-img1.png' %}"/>
+<div class="">
+<h6 class="text-md mb-0 fw-medium flex-grow-1 text-secondary-light">
+                                                            Marigold (NCERT)
+                                                        </h6>
+</div>
+</div>
+</td>
+<td class="text-start">English</td>
+<td class="text-start">8512</td>
+<td class="text-start"> 05 May 2025</td>
+<td class="text-start">05 Jun 2025</td>
+</tr>
+<tr>
+<td class="text-start">02</td>
+<td class="text-start">
+<div class="d-flex align-items-center">
+<img alt="Library Image" class="flex-shrink-0 me-12 radius-4 w-36-px h-36-px" src="{% static 'admin_assets/images/thumbs/library-img2.png' %}"/>
+<div class="">
+<h6 class="text-md mb-0 fw-medium flex-grow-1 text-secondary-light">
+                                                            Number Magic
+                                                        </h6>
+</div>
+</div>
+</td>
+<td class="text-start">Mathematics</td>
+<td class="text-start">85620</td>
+<td class="text-start"> 05 May 2025</td>
+<td class="text-start">05 Jun 2025</td>
+</tr>
+<tr>
+<td class="text-start">03</td>
+<td class="text-start">
+<div class="d-flex align-items-center">
+<img alt="Library Image" class="flex-shrink-0 me-12 radius-4 w-36-px h-36-px" src="{% static 'admin_assets/images/thumbs/library-img3.png' %}"/>
+<div class="">
+<h6 class="text-md mb-0 fw-medium flex-grow-1 text-secondary-light">
+                                                            Mental Math
+                                                        </h6>
+</div>
+</div>
+</td>
+<td class="text-start">Mathematics</td>
+<td class="text-start">8512</td>
+<td class="text-start"> 05 May 2025</td>
+<td class="text-start">05 Jun 2025</td>
+</tr>
+<tr>
+<td class="text-start">04</td>
+<td class="text-start">
+<div class="d-flex align-items-center">
+<img alt="Library Image" class="flex-shrink-0 me-12 radius-4 w-36-px h-36-px" src="{% static 'admin_assets/images/thumbs/library-img4.png' %}"/>
+<div class="">
+<h6 class="text-md mb-0 fw-medium flex-grow-1 text-secondary-light">
+                                                            Our Environment
+                                                        </h6>
+</div>
+</div>
+</td>
+<td class="text-start">Environmental Studies</td>
+<td class="text-start">85620</td>
+<td class="text-start"> 05 May 2025</td>
+<td class="text-start">05 Jun 2025</td>
+</tr>
+<tr>
+<td class="text-start">05</td>
+<td class="text-start">
+<div class="d-flex align-items-center">
+<img alt="Library Image" class="flex-shrink-0 me-12 radius-4 w-36-px h-36-px" src="{% static 'admin_assets/images/thumbs/library-img5.png' %}"/>
+<div class="">
+<h6 class="text-md mb-0 fw-medium flex-grow-1 text-secondary-light">
+                                                            Brainvita
+                                                        </h6>
+</div>
+</div>
+</td>
+<td class="text-start">General Knowledge</td>
+<td class="text-start">8512</td>
+<td class="text-start"> 05 May 2025</td>
+<td class="text-start">05 Jun 2025</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script>
+
+    // Data Table start
+    let table = new DataTable('#dataTable');
+    let tableTwo = new DataTable('#dataTableTwo');
+    let tableThree = new DataTable('#dataTableThree');
+    let tableFour = new DataTable('#dataTableFour');
+    let firstSemesterTable = new DataTable('#firstSemesterTable');
+    let monthlyTestJun = new DataTable('#monthlyTestJun');
+    let weeklyTestJun = new DataTable('#weeklyTestJun');
+    let weeklyTestMay = new DataTable('#weeklyTestMay');
+    let monthlyTestMay = new DataTable('#monthlyTestMay');
+    let dataTableLibrary = new DataTable('#dataTableLibrary');
+    let loginDetailsTable = new DataTable('#loginDetailsTable');
+
+    // ✅ Data Table start
+    $('.data-table').each(function () {
+        const $table = $(this);
+        const tableInstance = new DataTable(this);
+
+        // Handle search input (inside same wrapper)
+        $table.closest('.dataTable-wrapper').find('.dt-search .dt-input').on('keyup', function () {
+            tableInstance.search(this.value).draw();
+        });
+
+        // Handle page length change (inside same wrapper)
+        $table.closest('.dataTable-wrapper').find('.dt-length .dt-input').on('change', function () {
+            const value = $(this).val();
+            tableInstance.page.len(value).draw();
+        });
+    });
+    // ✅ Data Table end
+
+    // Dynamic Class added to the (absent/present/late/holiday)
+    $(document).ready(function () {
+        $('.attendance').each(function () {
+            let value = $(this).text().trim().toUpperCase();
+
+            if (value === 'P') {
+                $(this).addClass('text-success-600')
+            } else if (value === 'A') {
+                $(this).addClass('text-danger-600')
+            } else if (value === 'H') {
+                $(this).addClass('text-warning-600')
+            } else if (value === 'F') {
+                $(this).addClass('text-purple-600')
+            } else if (value === 'L') {
+                $(this).addClass('text-info-600')
+            }
+        });
+    });
+    // Dynamic Class added to the (absent/present/late/holiday)
+
+
+    // Custom accordion js start
+    $(document).on('click', '.custom-accordion-btn', function () {
+        $('.custom-accordion-btn').not(this).removeClass('active').siblings('.custom-accordion-content').slideUp();
+
+        // Toggle current one
+        $(this).toggleClass('active');
+        $(this).siblings('.custom-accordion-content').slideToggle();
+    });
+
+    // Keep first accordion open by default
+    $(document).ready(function () {
+        const firstAccordion = $('.custom-accordion-btn').first();
+        firstAccordion.addClass('active');
+        firstAccordion.siblings('.custom-accordion-content').show();
+    });
+    // Custom accordion js end
+
+
+    // Sidebar js start
+    $('.my-sidebar-btn').on('click', function () {
+        $('.my-sidebar').addClass('active');
+        $('.overlay').addClass('active');
+    });
+    $('.close-my-sidebar, .overlay').on('click', function () {
+        $('.my-sidebar').removeClass('active');
+        $('.overlay').removeClass('active');
+    });
+
+
+    $('.apply-leave-btn').on('click', function () {
+        $('.apply-leave').addClass('active');
+        $('.overlay').addClass('active');
+    });
+    $('.close-apply-leave, .overlay').on('click', function () {
+        $('.apply-leave').removeClass('active');
+        $('.overlay').removeClass('active');
+    });
+    // Sidebar js end
+
+    $('.collect-fees-btn').on('click', function () {
+        $('.collect-fees').addClass('active');
+        $('.overlay').addClass('active');
+    });
+    $('.close-collect-fees, .overlay').on('click', function () {
+        $('.collect-fees').removeClass('active');
+        $('.overlay').removeClass('active');
+    });
+    // Sidebar js end
+
+
+    </script>
+{% endblock %}

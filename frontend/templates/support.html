@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Support - EduAiQ | Help Center{% endblock %}
+
+{% block description %}EduAiQ Support — help with fee payments, Olympiad registration, course access, and account issues. Browse common questions or reach our support team directly.{% endblock %}
+
+{% block content %}
+<section class="inner-banner-wrap">
+<div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
+<div class="container">
+<div class="inner-banner-content">
+<h1 class="inner-title">Support</h1>
+<div class="breadcrumb-content">
+<ul class="breadcrumb">
+
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+<section class="home-feature-section" style="margin-top: 110px;">
+<div class="container">
+<div class="row">
+<div class="col-lg-6 offset-lg-3">
+<div class="title-divider"></div>
+<h2 class="feature-section-title text-center">How Can We Help?</h2>
+<p class="feature-section-info text-center">
+                                Browse a topic below, check the common questions further down, or reach our
+                                support team directly if you're still stuck.
+                            </p>
+</div>
+</div>
+<div class="feature-wrapper">
+<div class="feature-type">
+<div class="feature-icon">
+<h5 class="meta-no">1</h5>
+<i class="fas fa-chart-line"></i>
+</div>
+<h4 class="feature-heading">Fee &amp; Payment Issues</h4>
+<p class="feature-info">Payment didn't go through, need a receipt, or want to confirm
+                                what you're being charged for.</p>
+<a class="right-arrow-link" href="/checkout/">
+<i class="fas fa-long-arrow-alt-right"></i>
+</a>
+</div>
+<div class="feature-type">
+<div class="feature-icon">
+<h5 class="meta-no">2</h5>
+<i aria-hidden="true" class="fas fa-person"></i>
+</div>
+<h4 class="feature-heading">Olympiad Registration</h4>
+<p class="feature-info">Trouble with the registration form, curriculum questions, or
+                                confirming your exam details.</p>
+<a class="right-arrow-link" href="/page/olympiad-form/">
+<i class="fas fa-long-arrow-alt-right"></i>
+</a>
+</div>
+<div class="feature-type">
+<div class="feature-icon">
+<h5 class="meta-no">3</h5>
+<i class="fas fa-brain"></i>
+</div>
+<h4 class="feature-heading">Course &amp; AI Lab Access</h4>
+<p class="feature-info">Can't access a course, AI Lab module, or AI Book you've already
+                                registered for.</p>
+<a class="right-arrow-link" href="/page/ai-lab/">
+<i class="fas fa-long-arrow-alt-right"></i>
+</a>
+</div>
+</div>
+</div>
+</section>
+
+<section class="faq-page-container">
+<div class="container">
+<div class="row">
+<div class="col-lg-7">
+<div class="section-head">
+<div class="title-divider"></div>
+<h2 class="section-title">
+                                    Common Questions
+                                </h2>
+<div class="section-disc">
+<p>
+                                        The quickest answers to what we're asked most often. If yours isn't here,
+                                        just reach out directly.
+                                    </p>
+</div>
+</div>
+<div class="accordion-content" id="accordion-support" role="tablist">
+<div class="card">
+<div class="card-header" id="sup-head-1" role="tab">
+<h5 class="mb-0">
+<a aria-controls="sup-collapse-1" aria-expanded="true" data-bs-toggle="collapse" href="#sup-collapse-1">
+                                                My payment went through but I haven't received a confirmation.
+                                            </a>
+</h5>
+</div>
+<div aria-labelledby="sup-head-1" class="collapse show" data-bs-parent="#accordion-support" id="sup-collapse-1" role="tabpanel">
+<div class="card-body">
+                                            Confirmations are sent by email and SMS shortly after a successful
+                                            Razorpay payment. If it's been more than a few hours, check your spam
+                                            folder first, then contact us with the phone number or email you used
+                                            during payment so we can look up the transaction.
+                                        </div>
+</div>
+</div>
+<div class="card">
+<div class="card-header" id="sup-head-2" role="tab">
+<h5 class="mb-0">
+<a aria-controls="sup-collapse-2" aria-expanded="false" class="collapsed" data-bs-toggle="collapse" href="#sup-collapse-2">
+                                                Can I change the Olympiad subject or grade level after registering?
+                                            </a>
+</h5>
+</div>
+<div aria-labelledby="sup-head-2" class="collapse" data-bs-parent="#accordion-support" id="sup-collapse-2" role="tabpanel">
+<div class="card-body">
+                                            Yes, as long as it's requested before the registration window for that
+                                            cycle closes. Contact us with the name and phone number used on the
+                                            original form and the subject/level you'd like instead.
+                                        </div>
+</div>
+</div>
+<div class="card">
+<div class="card-header" id="sup-head-3" role="tab">
+<h5 class="mb-0">
+<a aria-controls="sup-collapse-3" aria-expanded="false" class="collapsed" data-bs-toggle="collapse" href="#sup-collapse-3">
+                                                I can't log in to see my course or AI Lab progress.
+                                            </a>
+</h5>
+</div>
+<div aria-labelledby="sup-head-3" class="collapse" data-bs-parent="#accordion-support" id="sup-collapse-3" role="tabpanel">
+<div class="card-body">
+                                            Double-check you're using the same email or phone number used at
+                                            registration. If access still isn't working, contact support with your
+                                            registered email so we can check your account status directly.
+                                        </div>
+</div>
+</div>
+<div class="card">
+<div class="card-header" id="sup-head-4" role="tab">
+<h5 class="mb-0">
+<a aria-controls="sup-collapse-4" aria-expanded="false" class="collapsed" data-bs-toggle="collapse" href="#sup-collapse-4">
+                                                How do I register a whole school or class for an Olympiad?
+                                            </a>
+</h5>
+</div>
+<div aria-labelledby="sup-head-4" class="collapse" data-bs-parent="#accordion-support" id="sup-collapse-4" role="tabpanel">
+<div class="card-body">
+                                            School-group registrations are handled directly rather than through the
+                                            individual Olympiad Form. Call us at the number below and we'll walk
+                                            you through group registration and any applicable group pricing.
+                                        </div>
+</div>
+</div>
+<div class="card">
+<div class="card-header" id="sup-head-5" role="tab">
+<h5 class="mb-0">
+<a aria-controls="sup-collapse-5" aria-expanded="false" class="collapsed" data-bs-toggle="collapse" href="#sup-collapse-5">
+                                                I'm interested in becoming a franchise or growth partner — where do I start?
+                                            </a>
+</h5>
+</div>
+<div aria-labelledby="sup-head-5" class="collapse" data-bs-parent="#accordion-support" id="sup-collapse-5" role="tabpanel">
+<div class="card-body">
+                                            Start with the <a href="/page/growth-partner-kit/">Growth Partner Kit</a>
+                                            for a no-commitment overview, then move to the
+                                            <a href="/page/apply-for-franchise/">Apply For Franchise</a> page when
+                                            you're ready to move forward.
+                                        </div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-lg-5">
+<div class="sidebar">
+<div class="widget-bg">
+<h5 class="bg-title">Reach Us Directly</h5>
+<ul>
+<li><i aria-hidden="true" class="fas fa-phone-alt"></i> <span class="list-txt"><a href="tel:+918052350041">8052350041</a></span></li>
+<li><i aria-hidden="true" class="fas fa-phone-alt"></i> <span class="list-txt"><a href="tel:+917985267620">7985267620</a></span></li>
+<li><i aria-hidden="true" class="fab fa-whatsapp"></i> <span class="list-txt"><a href="https://whatsapp.com/channel/0029VbDa70SHltY9CSw9IP2B" target="_blank">WhatsApp channel</a></span></li>
+<li><i aria-hidden="true" class="fas fa-clock"></i> <span class="list-txt">We usually respond within a business day</span></li>
+</ul>
+</div>
+<div class="icon-list-content widget-bg" style="background-color:#41246D;">
+<h5 class="bg-title" style="background-color:#ffffff;color:#111111;">Still Stuck?</h5>
+<ul>
+<li>
+<a href="/contact/">Send us a message</a>
+</li>
+<li>
+<a href="/checkout/">Go to Pay Fee</a>
+</li>
+<li>
+<a href="/page/olympiad-form/">Go to Olympiad Form</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+{% endblock %}

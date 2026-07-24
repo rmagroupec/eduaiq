@@ -1,0 +1,256 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
+
+{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+<div class="">
+<h1 class="fw-semibold mb-4 h6 text-primary-light">Guardian Details</h1>
+<div class="">
+<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
+<a class="text-secondary-light hover-text-primary hover-underline" href="guardian-list"> /
+                        Guardian</a>
+<span class="text-secondary-light">/ Guardian Details</span>
+</div>
+</div>
+<button class="my-sidebar-btn btn btn-primary-600 d-flex align-items-center gap-6 bg-base text-primary-light bg-hover-primary-600" type="button">
+<span class="d-flex text-md">
+<i class="ri-lock-2-line"></i>
+</span>
+                Login Details
+            </button>
+</div>
+<div class="mt-24">
+<div class="card h-100">
+<div class="card-body p-24">
+<div class="d-flex gap-32 flex-md-row flex-column">
+<div class="max-w-300-px w-100 text-center">
+<figure class="mb-24 w-120-px h-120-px mx-auto rounded-circle overflow-hidden">
+<img alt="guardian Image" class="w-100 h-100 object-fit-cover" src="{% static 'admin_assets/images/thumbs/teacher-details-img.png' %}"/>
+</figure>
+<h2 class="h6 text-primary-light mb-8 fw-semibold">Marvin McKinney</h2>
+<p class="mb-0">ID: <span class="text-primary-600 fw-semibold"> AD1256589</span>
+</p>
+<div class="mt-20 d-flex gap-16 w-100">
+<a class="btn btn-primary-600 border fw-medium border-primary-600 text-md d-flex justify-content-center align-items-center gap-8 flex-grow-1 px-12 py-8 radius-8" href="edit-guardian">
+<span class="d-flex text-lg">
+<i class="ri-edit-line"></i>
+</span>
+                                    Edit
+                                </a>
+</div>
+</div>
+<div class="">
+<span class="h-100 w-1-px bg-neutral-200"></span>
+</div>
+<div class="flex-grow-1">
+<div class="pb-16 border-bottom d-flex align-items-center justify-content-between gap-20">
+<h3 class="h6 text-primary-light text-lg mb-0 fw-semibold">Personal Info</h3>
+</div>
+<div class="mt-16 d-flex flex-column gap-20">
+<div class="d-flex gap-4">
+<span class="fw-semibold text-sm text-primary-light w-110-px">Guardians Type</span>
+<span class="fw-normal text-sm text-secondary-light">: Father</span>
+</div>
+<div class="d-flex gap-4">
+<span class="fw-semibold text-sm text-primary-light w-110-px">Phone Number</span>
+<span class="fw-normal text-sm text-secondary-light">: +1 21541214</span>
+</div>
+<div class="d-flex gap-4">
+<span class="fw-semibold text-sm text-primary-light w-110-px">Occupation</span>
+<span class="fw-normal text-sm text-secondary-light">: N/A</span>
+</div>
+<div class="d-flex gap-4">
+<span class="fw-semibold text-sm text-primary-light w-110-px">Address</span>
+<span class="fw-normal text-sm text-secondary-light">: 8502 Preston Rd. Inglewood,
+                                        Maine 98380</span>
+</div>
+<div class="d-flex gap-4">
+<span class="fw-semibold text-sm text-primary-light w-110-px">Join Date</span>
+<span class="fw-normal text-sm text-secondary-light">: 10 Nov 2006</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-16">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Profile Detail</h6>
+</div>
+<div class="card-body p-0">
+<div class="">
+<div class="bg-hover-neutral-50 p-20">
+<div class="row g-4">
+<div class="col-sm-4">
+<div class="d-flex align-items-center gap-12">
+<figure class="w-48-px h-48-px rounded-circle overflow-hidden mb-0">
+<img alt="Guardian Image" class="flex-shrink-0 w-100 h-100 object-fit-cover" src="{% static 'admin_assets/images/thumbs/guardian-img1.png' %}"/>
+</figure>
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Robert Fox
+                                                </h6>
+<span class="">Father</span>
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Class</h6>
+<span class="">+19854 65642</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Roll No</h6>
+<span class="">father@example.com</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-hover-neutral-50 p-20">
+<div class="row g-4">
+<div class="col-sm-4">
+<div class="d-flex align-items-center gap-12">
+<figure class="w-48-px h-48-px rounded-circle overflow-hidden mb-0">
+<img alt="Guardian Image" class="flex-shrink-0 w-100 h-100 object-fit-cover" src="{% static 'admin_assets/images/thumbs/guardian-img2.png' %}"/>
+</figure>
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Brooklyn
+                                                    Simmons</h6>
+<span class="">Mother</span>
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Class</h6>
+<span class="">+19854 65642</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Roll No</h6>
+<span class="">mother@example.com</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script>
+
+    // Data Table start
+    let table = new DataTable('#dataTable');
+    let tableTwo = new DataTable('#dataTableTwo');
+    let tableThree = new DataTable('#dataTableThree');
+    let tableFour = new DataTable('#dataTableFour');
+    let firstSemesterTable = new DataTable('#firstSemesterTable');
+    let monthlyTestJun = new DataTable('#monthlyTestJun');
+    let weeklyTestJun = new DataTable('#weeklyTestJun');
+    let weeklyTestMay = new DataTable('#weeklyTestMay');
+    let monthlyTestMay = new DataTable('#monthlyTestMay');
+    let dataTableLibrary = new DataTable('#dataTableLibrary');
+    let loginDetailsTable = new DataTable('#loginDetailsTable');
+
+    // ✅ Data Table start
+    $('.data-table').each(function () {
+        const $table = $(this);
+        const tableInstance = new DataTable(this);
+
+        // Handle search input (inside same wrapper)
+        $table.closest('.dataTable-wrapper').find('.dt-search .dt-input').on('keyup', function () {
+            tableInstance.search(this.value).draw();
+        });
+
+        // Handle page length change (inside same wrapper)
+        $table.closest('.dataTable-wrapper').find('.dt-length .dt-input').on('change', function () {
+            const value = $(this).val();
+            tableInstance.page.len(value).draw();
+        });
+    });
+    // ✅ Data Table end
+
+    // Dynamic Class added to the (absent/present/late/holiday)
+    $(document).ready(function () {
+        $('.attendance').each(function () {
+            let value = $(this).text().trim().toUpperCase();
+
+            if (value === 'P') {
+                $(this).addClass('text-success-600')
+            } else if (value === 'A') {
+                $(this).addClass('text-danger-600')
+            } else if (value === 'H') {
+                $(this).addClass('text-warning-600')
+            } else if (value === 'F') {
+                $(this).addClass('text-purple-600')
+            } else if (value === 'L') {
+                $(this).addClass('text-info-600')
+            }
+        });
+    });
+    // Dynamic Class added to the (absent/present/late/holiday)
+
+
+    // Custom accordion js start
+    $(document).on('click', '.custom-accordion-btn', function () {
+        $('.custom-accordion-btn').not(this).removeClass('active').siblings('.custom-accordion-content').slideUp();
+
+        // Toggle current one
+        $(this).toggleClass('active');
+        $(this).siblings('.custom-accordion-content').slideToggle();
+    });
+
+    // Keep first accordion open by default
+    $(document).ready(function () {
+        const firstAccordion = $('.custom-accordion-btn').first();
+        firstAccordion.addClass('active');
+        firstAccordion.siblings('.custom-accordion-content').show();
+    });
+    // Custom accordion js end
+
+
+    // Sidebar js start
+    $('.my-sidebar-btn').on('click', function () {
+        $('.my-sidebar').addClass('active');
+        $('.overlay').addClass('active');
+    });
+    $('.close-my-sidebar, .overlay').on('click', function () {
+        $('.my-sidebar').removeClass('active');
+        $('.overlay').removeClass('active');
+    });
+
+
+    $('.apply-leave-btn').on('click', function () {
+        $('.apply-leave').addClass('active');
+        $('.overlay').addClass('active');
+    });
+    $('.close-apply-leave, .overlay').on('click', function () {
+        $('.apply-leave').removeClass('active');
+        $('.overlay').removeClass('active');
+    });
+    // Sidebar js end
+
+    $('.collect-payroll-btn').on('click', function () {
+        $('.collect-payroll').addClass('active');
+        $('.overlay').addClass('active');
+    });
+    $('.close-collect-payroll, .overlay').on('click', function () {
+        $('.collect-payroll').removeClass('active');
+        $('.overlay').removeClass('active');
+    });
+    // Sidebar js end
+
+
+    </script>
+{% endblock %}

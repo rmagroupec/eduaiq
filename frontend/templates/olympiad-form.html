@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Olympiad Registration Form - EduAiQ{% endblock %}
+
+{% block description %}Register for the EduAiQ Math, Science, or AI Olympiad. Fill out the student registration form to secure your spot in the next exam cycle.{% endblock %}
+
+{% block content %}
+<section class="inner-banner-wrap">
+<div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
+<div class="container">
+<div class="inner-banner-content">
+<h1 class="inner-title">Olympiad Registration Form</h1>
+<div class="breadcrumb-content">
+<ul class="breadcrumb">
+
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+<section class="contact-page-section">
+<div class="container">
+<div class="contact-form-inner">
+<div class="pattern-overlay zigzag-patten"></div>
+<div class="row">
+<div class="col-lg-5">
+<div class="contact-detail-container">
+<div class="section-disc">
+<div class="title-divider"></div>
+<h2 class="section-title">Before You Register</h2>
+<p>
+                                            Have these details ready and check the curriculum for your subject and
+                                            grade band so you know exactly what to expect on exam day.
+                                        </p>
+</div>
+<div class="contact-details-list">
+<ul>
+<li>
+<div class="icon">
+<i aria-hidden="true" class="fas fa-book"></i>
+</div>
+<div class="details-content">
+<h5>Check The Curriculum First</h5>
+<span><a href="/page/olympiad-curriculum/">View syllabus by subject &amp; grade</a></span>
+</div>
+</li>
+<li>
+<div class="icon">
+<i aria-hidden="true" class="fas fa-credit-card"></i>
+</div>
+<div class="details-content">
+<h5>Registration Fee</h5>
+<span><a href="/checkout/">Pay Fee after submitting this form</a></span>
+</div>
+</li>
+<li>
+<div class="icon">
+<i aria-hidden="true" class="fas fa-phone-alt"></i>
+</div>
+<div class="details-content">
+<h5>Registering A Whole School?</h5>
+<span><a href="tel:+918052350041">Call 8052350041</a> instead</span>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="col-lg-7">
+<div class="contact-from-wrap">
+<div class="pattern-overlay circle-patten"></div>
+<form class="contact-from">
+    {% csrf_token %}
+<p>
+<input name="student_name" placeholder="Student Full Name*" type="text"/>
+</p>
+<p>
+<input name="dob" placeholder="Date of Birth*" type="date"/>
+</p>
+<p>
+<select name="grade" required="">
+<option disabled="" selected="" value="">Select Grade / Class*</option>
+<option value="3">Grade 3</option>
+<option value="4">Grade 4</option>
+<option value="5">Grade 5</option>
+<option value="6">Grade 6</option>
+<option value="7">Grade 7</option>
+<option value="8">Grade 8</option>
+<option value="9">Grade 9</option>
+<option value="10">Grade 10</option>
+</select>
+</p>
+<p>
+<select name="subject" required="">
+<option disabled="" selected="" value="">Select Olympiad Subject*</option>
+<option value="math">Math Olympiad</option>
+<option value="science">Science Olympiad</option>
+<option value="ai">AI Olympiad</option>
+</select>
+</p>
+<p class="width-full">
+<input name="school" placeholder="School / Institution Name*" type="text"/>
+</p>
+<p>
+<input name="guardian_name" placeholder="Parent / Guardian Name*" type="text"/>
+</p>
+<p>
+<input name="guardian_phone" placeholder="Parent / Guardian Phone*" type="number"/>
+</p>
+<p>
+<input name="email" placeholder="Email Address*" type="email"/>
+</p>
+<p>
+<input name="city" placeholder="City*" type="text"/>
+</p>
+<p class="width-full">
+<textarea placeholder="Previous Olympiad experience, if any (optional)" rows="4"></textarea>
+</p>
+<p class="width-full">
+<input name="submit" type="submit" value="Register &amp; Proceed To Pay Fee"/>
+</p>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+{% endblock %}

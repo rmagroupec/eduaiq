@@ -1,0 +1,1181 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
+
+{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+<div class="">
+<h1 class="fw-semibold mb-4 h6 text-primary-light">Teacher Timetable</h1>
+<div class="">
+<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
+<span class="text-secondary-light">/ Teacher Timetable</span>
+</div>
+</div>
+<button class="my-sidebar-btn btn btn-primary-600 d-flex align-items-center gap-6" type="button">
+<span class="d-flex text-md">
+<i class="ri-add-large-line"></i>
+</span>
+                Add Timetable
+            </button>
+</div>
+<div class="mt-24">
+<div class="card h-100">
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-16 px-20 py-12 border-bottom border-neutral-200">
+<div class="d-flex flex-wrap align-items-center gap-16">
+<div class="dropdown">
+<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
+<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
+<i class="ri-file-upload-line text-md line-height-1"></i>
+                                    Export
+                                </span>
+<span class="">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<ul class="dropdown-menu p-12 border bg-base shadow">
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
+<i class="ri-file-3-line"></i>
+                                        PDF
+                                    </button>
+</li>
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
+<i class="ri-file-excel-line"></i>
+                                        Excel
+                                    </button>
+</li>
+</ul>
+</div>
+<form class="navbar-search dt-search m-0">
+    {% csrf_token %}
+<input class="item-search-input dt-input bg-transparent radius-4" name="search" placeholder="Search..." type="text"/>
+<iconify-icon class="icon" icon="ion:search-outline"></iconify-icon>
+</form>
+<div class="dropdown">
+<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
+<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
+                                    Filter
+                                </span>
+<span class="">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<div class="dropdown-menu border bg-base shadow dropdown-menu-lg p-0">
+<div class="d-flex align-items-center justify-content-between border-bottom py-8 px-16">
+<span class="fw-semibold text-lg text-primary-light">Filter</span>
+<button type="button">
+<i class="ri-close-large-line"></i>
+</button>
+</div>
+<form action="#" class="p-16">
+    {% csrf_token %}
+<div class="row g-3">
+<div class="col-12">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="subject">Gender</label>
+<select class="form-control form-select" id="subject">
+<option value="Select">Select Subject</option>
+<option value="Match">Match</option>
+<option value="English">English</option>
+<option value="Bangla">Bangla</option>
+<option value="Economics">Economics</option>
+<option value="Physics">Physics</option>
+</select>
+</div>
+<div class="col-12">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="status">Status</label>
+<select class="form-control form-select" id="status">
+<option value="Select">Select Status</option>
+<option value="Active">Active</option>
+<option value="Inactive">Inactive</option>
+</select>
+</div>
+<div class="col-6">
+<button class="btn btn-danger-200 text-danger-600 w-100" type="reset">Reset</button>
+</div>
+<div class="col-6">
+<button class="btn btn-primary-600 w-100" type="submit">Apply</button>
+</div>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+<div class="card-body p-20 d-flex flex-column gap-20">
+<div class="overflow-x-auto d-flex scroll-sm pb-8">
+<div class="d-flex gap-16 flex-shrink-0 flex-grow-1">
+<div class="flex-grow-1">
+<h6 class="text-md mb-8">Monday</h6>
+<div class="d-flex flex-column gap-16">
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-warning-100 text-warning-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 1 (A)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: Math</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 16</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">09:00 AM - 09:45 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-info-100 text-info-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 2 (B)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: English</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 10</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">09:50 AM - 10:35 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-success-100 text-success-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 3 (A)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: Science</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 22</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">10:40 AM - 11:25 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-danger-100 text-danger-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 4 (C)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: History</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 8</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">11:30 AM - 12:15 PM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-primary-100 text-primary-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 5 (B)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: CSE</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 25</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">12:20 PM - 01:05 PM</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-grow-1">
+<h6 class="text-md mb-8">Tuesday</h6>
+<div class="d-flex flex-column gap-16">
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-warning-100 text-warning-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 1 (A)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: Math</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 16</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">09:00 AM - 09:45 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-info-100 text-info-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 2 (B)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: English</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 10</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">09:50 AM - 10:35 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-success-100 text-success-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 3 (A)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: Science</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 22</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">10:40 AM - 11:25 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-danger-100 text-danger-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 4 (C)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: History</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 8</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">11:30 AM - 12:15 PM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-primary-100 text-primary-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 5 (B)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: CSE</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 25</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">12:20 PM - 01:05 PM</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-grow-1">
+<h6 class="text-md mb-8">Wednesday</h6>
+<div class="d-flex flex-column gap-16">
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-warning-100 text-warning-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 1 (A)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: Math</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 16</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">09:00 AM - 09:45 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-info-100 text-info-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 2 (B)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: English</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 10</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">09:50 AM - 10:35 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-success-100 text-success-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 3 (A)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: Science</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 22</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">10:40 AM - 11:25 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-danger-100 text-danger-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 4 (C)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: History</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 8</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">11:30 AM - 12:15 PM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-primary-100 text-primary-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 5 (B)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: CSE</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 25</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">12:20 PM - 01:05 PM</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-grow-1">
+<h6 class="text-md mb-8">Thursday</h6>
+<div class="d-flex flex-column gap-16">
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-warning-100 text-warning-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 1 (A)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: Math</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 16</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">09:00 AM - 09:45 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-info-100 text-info-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 2 (B)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: English</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 10</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">09:50 AM - 10:35 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-success-100 text-success-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 3 (A)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: Science</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 22</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">10:40 AM - 11:25 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-danger-100 text-danger-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 4 (C)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: History</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 8</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">11:30 AM - 12:15 PM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-primary-100 text-primary-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 5 (B)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: CSE</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 25</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">12:20 PM - 01:05 PM</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-grow-1">
+<h6 class="text-md mb-8">Friday</h6>
+<div class="d-flex flex-column gap-16">
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-warning-100 text-warning-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 1 (A)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: Math</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 16</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">09:00 AM - 09:45 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-info-100 text-info-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 2 (B)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: English</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 10</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">09:50 AM - 10:35 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-success-100 text-success-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 3 (A)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: Science</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 22</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">10:40 AM - 11:25 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-danger-100 text-danger-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 4 (C)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: History</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 8</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">11:30 AM - 12:15 PM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-primary-100 text-primary-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 5 (B)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: CSE</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 25</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">12:20 PM - 01:05 PM</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-grow-1">
+<h6 class="text-md mb-8">Saturday</h6>
+<div class="d-flex flex-column gap-16">
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-warning-100 text-warning-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 1 (A)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: Math</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 16</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">09:00 AM - 09:45 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-info-100 text-info-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 2 (B)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: English</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 10</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">09:50 AM - 10:35 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-success-100 text-success-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 3 (A)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: Science</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 22</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">10:40 AM - 11:25 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-danger-100 text-danger-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 4 (C)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: History</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 8</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">11:30 AM - 12:15 PM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-primary-100 text-primary-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Class: 5 (B)
+                                        </h6>
+<div class="px-10 py-16 d-flex flex-column gap-10">
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-book-open-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Subject </span>
+<span class="flex-grow-1">: CSE</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-building-4-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="w-64-px flex-shrink-0"> Room No </span>
+<span class="flex-grow-1">: 25</span>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8">
+<span class="d-flex line-height-1 text-secondary-light text-lg">
+<i class="ri-time-line"></i>
+</span>
+<div class="text-primary-light text-sm d-flex">
+<span class="flex-grow-1">12:20 PM - 01:05 PM</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-grow-1">
+<h6 class="text-md mb-8">Sunday</h6>
+<div class="d-flex flex-column gap-16">
+<div class="attendance-card border radius-8 overflow-hidden">
+<h6 class="text-sm bg-warning-100 text-warning-600 fw-semibold py-10 px-16 text-center mb-0 card-title">
+                                            Holiday
+                                        </h6>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script>
+
+    // Sidebar js start
+    $('.my-sidebar-btn').on('click', function () {
+        $('.my-sidebar').addClass('active');
+        $('.overlay').addClass('active');
+    });
+    $('.close-my-sidebar, .overlay').on('click', function () {
+        $('.my-sidebar').removeClass('active');
+        $('.overlay').removeClass('active');
+    });
+    // Sidebar js end
+
+    // Search Item input js start
+    $('.item-search-input').on('input', function () {
+        const inputValue = event.target.value.trim().toLowerCase();
+
+        let items = document.querySelectorAll('.attendance-card .card-title');
+        items.forEach(item => {
+            const itemText = item.innerText.trim().toLowerCase();
+
+            const matched = itemText.includes(inputValue);
+            if (matched) {
+                item.parentElement.classList.remove('d-none');
+            } else {
+                item.parentElement.classList.add('d-none');
+            }
+        });
+    });
+    // Search Item input js end
+
+
+    </script>
+{% endblock %}
