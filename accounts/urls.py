@@ -1,0 +1,56 @@
+"""
+Account URLs Configuration
+Routes for authentication, profile, and user management (JSON API only)
+"""
+
+from django.urls import path
+from . import views
+
+app_name = 'accounts'
+
+urlpatterns = [
+    # ========================================================================
+    # AUTHENTICATION URLS
+    # ========================================================================
+    path('signup/', views.signup, name='signup'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+
+
+    # ========================================================================
+    # PASSWORD MANAGEMENT URLS
+    # ========================================================================
+    path('change-password/', views.change_password, name='change-password'),
+    path('delete-account/', views.delete_account, name='delete-account'),
+
+
+    # ========================================================================
+    # USER PROFILE URLS
+    # ========================================================================
+    path('profile/', views.user_profile, name='profile'),
+    path('profile/edit/', views.user_edit, name='profile-edit'),
+    path('profile/detail/', views.profile_detail, name='profile-detail'),
+    path('profile/detail/edit/', views.profile_edit, name='profile-detail-edit'),
+
+
+    # ========================================================================
+    # USER MANAGEMENT URLS (Admin/Staff)
+    # ========================================================================
+    path('users/', views.user_list, name='user-list'),
+    path('users/<int:pk>/', views.user_detail, name='user-detail'),
+
+
+    # ========================================================================
+    # ROLE MANAGEMENT URLS (Admin/Staff)
+    # ========================================================================
+    path('roles/', views.role_list, name='role-list'),
+
+
+    # ========================================================================
+    # API URLS (JSON/AJAX)
+    # ========================================================================
+    path('api/check-username/', views.check_username, name='check-username'),
+    path('api/check-email/', views.check_email, name='check-email'),
+    path('api/check-phone/', views.check_phone, name='check-phone'),
+    path('api/user-stats/', views.user_stats, name='user-stats'),
+]
