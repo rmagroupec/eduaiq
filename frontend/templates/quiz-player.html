@@ -1,0 +1,646 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quiz - EduAiQ{% endblock %}
+
+{% block content %}
+
+<div class="quiz-container" style="max-width: 900px; margin: 40px auto; padding: 20px;">
+  
+  <div class="quiz-header d-flex justify-content-between align-items-center mb-5">
+    <h2 id="quizTitle">Quiz</h2>
+    <div class="timer text-danger" style="font-size: 24px; font-weight: bold;">
+      <span id="timer">30:00</span>
+    </div>
+  </div>
+
+  <div id="questionContainer" class="card mb-4">
+    <div class="card-body">
+      <h5 id="questionText" class="mb-4"></h5>
+      
+      <div id="optionsContainer" class="options-list">
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <button id="prevBtn" class="btn btn-secondary" onclick="previousQuestion()" disabled>
+      ← Previous
+    </button>
+    <span id="questionCounter" class="text-muted">1 / 2</span>
+    <button id="nextBtn" class="btn btn-secondary" onclick="nextQuestion()">
+      Next →
+    </button>
+  </div>
+
+  <div class="text-center">
+    <button id="submitBtn" class="btn btn-success btn-lg" onclick="submitQuiz()">
+      Submit Quiz
+    </button>
+  </div>
+</div>
+
+<div id="resultsModal" class="modal fade" tabindex="-1" style="display:none;">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="resultTitle" class="modal-title">Results</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="scoreDisplay" class="text-center mb-4">
+          <h2 id="scorePercentage">0%</h2>
+          <p id="scoreMarks">0 / 0 marks</p>
+          <p id="timeTaken">Time: 0 minutes</p>
+        </div>
+
+        <div id="feedbackDisplay" class="feedback-section">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="location.href='/my-learning/'">
+          Back to Learning
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .quiz-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  .quiz-header {
+    padding-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+  }
+
+  .quiz-header h2 {
+    margin: 0;
+    color: #333;
+    font-weight: 700;
+  }
+
+  .timer {
+    color: #e74c3c;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .timer.warning {
+    animation: pulse 1s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .card-body {
+    padding: 30px;
+  }
+
+  #questionText {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .form-check {
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .form-check:hover {
+    background: #e9ecef;
+    border-color: #667eea;
+  }
+
+  .form-check input[type="radio"] {
+    cursor: pointer;
+  }
+
+  .form-check input[type="radio"]:checked + .form-check-label {
+    color: #667eea;
+    font-weight: 600;
+  }
+
+  .form-check-label {
+    margin-bottom: 0;
+    cursor: pointer;
+    font-size: 15px;
+    color: #333;
+  }
+
+  .form-check input[type="radio"]:checked ~ .form-check-label {
+    font-weight: 600;
+    color: #667eea;
+  }
+
+  .d-flex {
+    display: flex;
+  }
+
+  .justify-content-between {
+    justify-content: space-between;
+  }
+
+  .align-items-center {
+    align-items: center;
+  }
+
+  #questionCounter {
+    font-size: 16px;
+    color: #999;
+    font-weight: 500;
+  }
+
+  .btn {
+    padding: 10px 25px;
+    font-weight: 600;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    border: none;
+  }
+
+  .btn-secondary {
+    background: #6c757d;
+    color: white;
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    background: #5a6268;
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+    color: white;
+    font-size: 16px;
+    padding: 14px 40px;
+  }
+
+  .btn-success:hover {
+    background: linear-gradient(135deg, #38d96f, #2ee0c4);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(67, 233, 123, 0.3);
+  }
+
+  .btn-primary {
+    background: #667eea;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #5568d3;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .text-muted {
+    color: #999;
+  }
+
+  .text-danger {
+    color: #e74c3c;
+  }
+
+  .text-success {
+    color: #27ae60;
+  }
+
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+  }
+
+  .modal.show {
+    display: flex;
+  }
+
+  .modal-dialog {
+    max-width: 700px;
+    width: 90%;
+  }
+
+  .modal-content {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 30px rgba(0,0,0,0.2);
+  }
+
+  .modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .btn-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+  }
+
+  .btn-close:hover {
+    color: #333;
+  }
+
+  .modal-body {
+    padding: 30px;
+  }
+
+  .modal-footer {
+    padding: 20px;
+    border-top: 1px solid #ddd;
+    text-align: right;
+  }
+
+  #scoreDisplay {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+  }
+
+  #scorePercentage {
+    font-size: 48px;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 10px;
+  }
+
+  #scoreMarks {
+    font-size: 16px;
+    color: #666;
+    margin: 5px 0;
+  }
+
+  #timeTaken {
+    font-size: 14px;
+    color: #999;
+    margin: 5px 0;
+  }
+
+  .feedback-section {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .feedback-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border-left: 4px solid #667eea;
+  }
+
+  .feedback-item h6 {
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 14px;
+  }
+
+  .feedback-item p {
+    margin: 5px 0;
+    font-size: 13px;
+  }
+
+  .feedback-item .correct {
+    color: #27ae60;
+    font-weight: 500;
+  }
+
+  .feedback-item .incorrect {
+    color: #e74c3c;
+    font-weight: 500;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+
+  .empty-state-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .empty-state-text {
+    color: #999;
+  }
+
+  @media (max-width: 768px) {
+    .quiz-container {
+      margin: 20px;
+      padding: 15px;
+    }
+
+    .quiz-header {
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .quiz-header h2 {
+      font-size: 20px;
+    }
+
+    .timer {
+      font-size: 20px;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    #questionText {
+      font-size: 16px;
+    }
+
+    .form-check {
+      padding: 12px;
+    }
+
+    .btn {
+      padding: 8px 15px;
+      font-size: 13px;
+    }
+
+    .modal-dialog {
+      width: 95%;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .quiz-container {
+      margin: 10px;
+      padding: 10px;
+    }
+
+    .quiz-header {
+      flex-direction: column;
+    }
+
+    #questionText {
+      font-size: 14px;
+    }
+
+    .form-check-label {
+      font-size: 13px;
+    }
+
+    #questionCounter {
+      font-size: 13px;
+    }
+
+    .btn {
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+
+    .btn-success {
+      padding: 10px 20px;
+    }
+
+    #scorePercentage {
+      font-size: 36px;
+    }
+  }
+</style>
+
+<script>
+  const API_BASE_URL = 'http://localhost:8000';
+  let currentQuestionIndex = 0;
+  let quizId = new URLSearchParams(window.location.search).get('id');
+  let attemptId = null;
+  let answers = {};
+  let questions = [];
+  let timerInterval = null;
+  let timeRemaining = 0;
+
+  async function startQuiz() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/quizzes/${quizId}/start/`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        alert('Error: ' + data.error);
+        window.location.href = '/courses/';
+        return;
+      }
+
+      attemptId = data.attempt.id;
+      questions = data.questions;
+      timeRemaining = data.time_limit_minutes * 60;
+
+      document.getElementById('quizTitle').textContent = 'Quiz';
+      displayQuestion(0);
+      startTimer();
+
+    } catch (error) {
+      console.error('Error starting quiz:', error);
+      alert('Failed to start quiz');
+    }
+  }
+
+  function displayQuestion(index) {
+    const question = questions[index];
+
+    document.getElementById('questionText').textContent = question.question_text;
+
+    const optionsContainer = document.getElementById('optionsContainer');
+    optionsContainer.innerHTML = Object.entries(question.options).map(([key, value]) => `
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="radio"
+          id="opt_${key}"
+          name="question"
+          value="option_${key}"
+          ${answers[question.id] === `option_${key}` ? 'checked' : ''}
+          onchange="selectAnswer(${question.id}, 'option_${key}')">
+        <label class="form-check-label" for="opt_${key}">
+          ${value}
+        </label>
+      </div>
+    `).join('');
+
+    document.getElementById('questionCounter').textContent = `${index + 1} / ${questions.length}`;
+    document.getElementById('prevBtn').disabled = index === 0;
+    document.getElementById('nextBtn').disabled = index === questions.length - 1;
+
+    currentQuestionIndex = index;
+  }
+
+  function selectAnswer(questionId, selectedOption) {
+    answers[questionId] = selectedOption;
+  }
+
+  async function submitAnswerToAPI(questionId, selectedOption) {
+    try {
+      await fetch(`${API_BASE_URL}/courses/attempts/${attemptId}/answer/`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify({
+          question_id: questionId,
+          selected_option: selectedOption
+        })
+      });
+    } catch (error) {
+      console.error('Error submitting answer:', error);
+    }
+  }
+
+  function nextQuestion() {
+    if (currentQuestionIndex < questions.length - 1) {
+      displayQuestion(currentQuestionIndex + 1);
+    }
+  }
+
+  function previousQuestion() {
+    if (currentQuestionIndex > 0) {
+      displayQuestion(currentQuestionIndex - 1);
+    }
+  }
+
+  async function submitQuiz() {
+    clearInterval(timerInterval);
+
+    try {
+      for (const [questionId, answer] of Object.entries(answers)) {
+        await submitAnswerToAPI(questionId, answer);
+      }
+
+      const response = await fetch(`${API_BASE_URL}/courses/attempts/${attemptId}/submit/`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+      const result = data.result;
+
+      document.getElementById('resultTitle').textContent = result.passed ? '🎉 PASSED!' : '❌ FAILED';
+      document.getElementById('scorePercentage').textContent = `${result.score_pct}%`;
+      document.getElementById('scoreMarks').textContent = `${result.score_marks} marks`;
+      document.getElementById('timeTaken').textContent = `Time: ${result.time_taken_minutes} minutes`;
+
+      let feedbackHTML = '<h6 style="margin-bottom: 20px; font-size: 16px; font-weight: 600;">Your Answers:</h6>';
+      Object.entries(result.responses).forEach(([qId, answer]) => {
+        const qIndex = parseInt(qId) - 1;
+        const correct = result.correct_answers[qId];
+        const isCorrect = answer === correct;
+
+        feedbackHTML += `
+          <div class="feedback-item">
+            <h6>Q${parseInt(qId)}: ${questions[qIndex]?.question_text}</h6>
+            <p class="${isCorrect ? 'correct' : 'incorrect'}">
+              Your Answer: <strong>${answer}</strong> ${isCorrect ? '✅' : '❌'}
+            </p>
+            ${!isCorrect ? `
+              <p class="correct">
+                Correct Answer: <strong>${correct}</strong>
+              </p>
+            ` : ''}
+          </div>
+        `;
+      });
+
+      document.getElementById('feedbackDisplay').innerHTML = feedbackHTML;
+
+      const modal = document.getElementById('resultsModal');
+      modal.style.display = 'flex';
+
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to submit quiz');
+    }
+  }
+
+  function startTimer() {
+    timerInterval = setInterval(() => {
+      timeRemaining--;
+
+      const minutes = Math.floor(timeRemaining / 60);
+      const seconds = timeRemaining % 60;
+
+      const timerElement = document.getElementById('timer');
+      timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+      if (timeRemaining <= 60) {
+        timerElement.parentElement.classList.add('warning');
+      }
+
+      if (timeRemaining <= 0) {
+        clearInterval(timerInterval);
+        submitQuiz();
+      }
+    }, 1000);
+  }
+
+  document.addEventListener('DOMContentLoaded', startQuiz);
+</script>
+
+{% endblock %}

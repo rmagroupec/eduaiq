@@ -1,0 +1,652 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Learning - EduAiQ{% endblock %}
+
+{% block content %}
+
+<section class="inner-banner-wrap">
+  <div class="inner-baner-container" style="background-color: #f5f5f5;">
+    <div class="container">
+      <div class="inner-banner-content">
+        <h1 class="inner-title">My Learning Dashboard</h1>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="my-learning-section py-5">
+  <div class="container">
+    
+    <div class="filter-section mb-5">
+      <ul class="nav nav-tabs filter-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" data-filter="all" href="#">All Courses</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-filter="ongoing" href="#">Ongoing</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-filter="completed" href="#">Completed</a>
+        </li>
+      </ul>
+
+      <div class="search-box mt-3">
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="Search courses..."
+          class="form-control">
+      </div>
+    </div>
+
+    <div class="stats-section mb-5">
+      <div class="row">
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-book"></i>
+            </div>
+            <div class="stat-content">
+              <h6>Total Courses</h6>
+              <p id="totalCourses">0</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="stat-content">
+              <h6>Completed</h6>
+              <p id="completedCourses">0</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-hourglass-half"></i>
+            </div>
+            <div class="stat-content">
+              <h6>In Progress</h6>
+              <p id="ongoingCourses">0</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-content">
+              <h6>Avg Progress</h6>
+              <p id="avgProgress">0%</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="enrollmentsGrid" class="row">
+      <p class="text-center col-12">Loading your courses...</p>
+    </div>
+
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <div class="empty-state-icon">📚</div>
+      <h4 class="empty-state-title">No Courses Yet</h4>
+      <p class="empty-state-text">Start learning by exploring our course catalog</p>
+      <a href="/courses/" class="btn btn-primary">Browse Courses</a>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .my-learning-section {
+    background: #f8f9fa;
+    min-height: calc(100vh - 200px);
+  }
+
+  .filter-tabs {
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .filter-tabs .nav-link {
+    color: #666;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 12px 20px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .filter-tabs .nav-link:hover {
+    color: #667eea;
+  }
+
+  .filter-tabs .nav-link.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+  }
+
+  .search-box {
+    max-width: 400px;
+  }
+
+  .search-box input {
+    padding: 10px 15px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+
+  .search-box input:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+
+  .stats-section {
+    margin-bottom: 40px;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+  }
+
+  .stat-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .stat-card:nth-child(2) .stat-icon {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+  }
+
+  .stat-card:nth-child(3) .stat-icon {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+  }
+
+  .stat-card:nth-child(4) .stat-icon {
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+  }
+
+  .stat-content h6 {
+    font-size: 12px;
+    font-weight: 600;
+    color: #999;
+    margin: 0 0 5px 0;
+    text-transform: uppercase;
+  }
+
+  .stat-content p {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+  }
+
+  .enrollment-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .enrollment-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  }
+
+  .enrollment-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: #f0f0f0;
+    position: relative;
+  }
+
+  .enrollment-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+
+  .enrollment-card:hover .enrollment-image img {
+    transform: scale(1.05);
+  }
+
+  .enrollment-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(102, 126, 234, 0.9);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .enrollment-body {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .enrollment-body h5 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    color: #333;
+    line-height: 1.4;
+  }
+
+  .enrollment-body p {
+    font-size: 12px;
+    color: #999;
+    margin: 0 0 15px 0;
+  }
+
+  .progress-section {
+    margin: 15px 0;
+    flex-grow: 1;
+  }
+
+  .progress-bar-wrapper {
+    background: #e9ecef;
+    height: 8px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 10px;
+    transition: width 0.3s;
+  }
+
+  .progress-text {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+  }
+
+  .completed-badge {
+    background: #d4edda;
+    color: #155724;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .enrollment-date {
+    font-size: 11px;
+    color: #999;
+    margin-bottom: 15px;
+  }
+
+  .enrollment-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+  }
+
+  .btn {
+    padding: 9px 15px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 5px;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-primary {
+    background: #667eea;
+    color: white;
+    flex: 1;
+  }
+
+  .btn-primary:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+  }
+
+  .btn-outline-secondary {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+  }
+
+  .btn-outline-secondary:hover {
+    background: #667eea;
+    color: white;
+  }
+
+  .btn-sm {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .empty-state-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+  }
+
+  .empty-state-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .empty-state-text {
+    color: #999;
+    margin-bottom: 25px;
+  }
+
+  .no-results {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    color: #999;
+  }
+
+  .no-results-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+  }
+
+  @media (max-width: 768px) {
+    .stat-card {
+      flex-direction: column;
+      text-align: center;
+      gap: 10px;
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      font-size: 20px;
+    }
+
+    .enrollment-body {
+      padding: 15px;
+    }
+
+    .enrollment-body h5 {
+      font-size: 14px;
+    }
+
+    .search-box {
+      max-width: 100%;
+    }
+
+    .filter-tabs .nav-link {
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .enrollment-image {
+      height: 150px;
+    }
+
+    .enrollment-body {
+      padding: 12px;
+    }
+
+    .enrollment-body h5 {
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .stat-content p {
+      font-size: 20px;
+    }
+
+    .enrollment-actions {
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .btn {
+      width: 100%;
+    }
+
+    .filter-tabs {
+      overflow-x: auto;
+    }
+
+    .filter-tabs .nav-link {
+      white-space: nowrap;
+    }
+  }
+</style>
+
+<script>
+  const API_BASE_URL = 'http://localhost:8000';
+  let allEnrollments = [];
+  let currentFilter = 'all';
+  let currentSearch = '';
+
+  async function loadMyEnrollments() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/my-enrollments/?page=1&page_size=50`, {
+        headers: {'Accept': 'application/json'},
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+      allEnrollments = data.results || [];
+
+      updateStats();
+      displayEnrollments('all');
+
+    } catch (error) {
+      console.error('Error:', error);
+      document.getElementById('enrollmentsGrid').innerHTML = `
+        <div class="col-12">
+          <p class="text-danger text-center">Failed to load enrollments</p>
+        </div>
+      `;
+    }
+  }
+
+  function updateStats() {
+    const total = allEnrollments.length;
+    const completed = allEnrollments.filter(e => e.is_completed).length;
+    const ongoing = total - completed;
+    const avgProgress = total > 0 
+      ? Math.round(allEnrollments.reduce((sum, e) => sum + parseFloat(e.progress_pct), 0) / total)
+      : 0;
+
+    document.getElementById('totalCourses').textContent = total;
+    document.getElementById('completedCourses').textContent = completed;
+    document.getElementById('ongoingCourses').textContent = ongoing;
+    document.getElementById('avgProgress').textContent = avgProgress + '%';
+  }
+
+  function displayEnrollments(filter) {
+    currentFilter = filter;
+
+    let filtered = allEnrollments;
+
+    if (filter === 'ongoing') {
+      filtered = allEnrollments.filter(e => !e.is_completed);
+    } else if (filter === 'completed') {
+      filtered = allEnrollments.filter(e => e.is_completed);
+    }
+
+    if (currentSearch) {
+      filtered = filtered.filter(e => 
+        e.course.title.toLowerCase().includes(currentSearch.toLowerCase())
+      );
+    }
+
+    if (filtered.length === 0) {
+      document.getElementById('enrollmentsGrid').innerHTML = `
+        <div class="col-12">
+          <div class="no-results">
+            <div class="no-results-icon">🔍</div>
+            <p>No courses found</p>
+          </div>
+        </div>
+      `;
+      document.getElementById('emptyState').style.display = 'none';
+      return;
+    }
+
+    document.getElementById('enrollmentsGrid').innerHTML = filtered.map(enrollment => `
+      <div class="col-md-6 col-lg-4 mb-4">
+        <div class="enrollment-card">
+          <div class="enrollment-image">
+            <img src="${enrollment.course.thumbnail || 'https://via.placeholder.com/400x200'}" 
+                 alt="${enrollment.course.title}">
+            ${enrollment.is_completed ? 
+              '<span class="enrollment-badge">✅ Completed</span>' : 
+              '<span class="enrollment-badge">📚 In Progress</span>'
+            }
+          </div>
+          
+          <div class="enrollment-body">
+            <h5>${enrollment.course.title}</h5>
+            <p>${enrollment.course.category || 'Professional Course'}</p>
+            
+            ${enrollment.is_completed ? `
+              <div class="completed-badge">
+                ✅ Completed on ${new Date(enrollment.completion_date).toLocaleDateString()}
+              </div>
+            ` : `
+              <div class="progress-section">
+                <div class="progress-bar-wrapper">
+                  <div class="progress-bar" style="width: ${enrollment.progress_pct}%"></div>
+                </div>
+                <div class="progress-text">
+                  Progress: <strong>${Math.round(enrollment.progress_pct)}%</strong>
+                </div>
+              </div>
+            `}
+            
+            <div class="enrollment-date">
+              Enrolled: ${new Date(enrollment.enrollment_date).toLocaleDateString()}
+            </div>
+            
+            <div class="enrollment-actions">
+              <a href="/course/?slug=${enrollment.course.slug}" class="btn btn-primary">
+                ${enrollment.is_completed ? 'Review Course' : 'Continue'}
+              </a>
+              <button class="btn btn-outline-secondary btn-sm" 
+                      onclick="updateProgress(${enrollment.id}, '${enrollment.course.slug}')">
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    document.getElementById('emptyState').style.display = 'none';
+  }
+
+  async function updateProgress(enrollmentId, courseSlug) {
+    const progressPct = prompt('Enter progress percentage (0-100):');
+
+    if (progressPct === null) return;
+    
+    if (isNaN(progressPct) || progressPct < 0 || progressPct > 100) {
+      alert('Please enter a valid percentage between 0 and 100');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/enrollments/${enrollmentId}/progress/`, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify({progress_pct: parseFloat(progressPct)})
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert('Progress updated successfully!');
+        loadMyEnrollments();
+      } else {
+        alert('Failed to update progress');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error updating progress');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    loadMyEnrollments();
+
+    document.querySelectorAll('.filter-tabs .nav-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.filter-tabs .nav-link').forEach(l => {
+          l.classList.remove('active');
+        });
+        this.classList.add('active');
+        displayEnrollments(this.dataset.filter);
+      });
+    });
+
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+      currentSearch = this.value;
+      displayEnrollments(currentFilter);
+    });
+  });
+</script>
+
+{% endblock %}

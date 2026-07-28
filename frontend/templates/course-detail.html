@@ -1,277 +1,616 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Course-Detail – Educator - University & School Education HTML5 Template{% endblock %}
+{% block title %}Course Detail – EduAiQ{% endblock %}
 
 {% block content %}
-<section class="inner-banner-wrap">
-<div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
-<div class="container">
-<div class="inner-banner-content">
-<h1 class="inner-title">Course Detail</h1>
-</div>
-</div>
-</div>
+
+<section class="inner-banner-wrap" id="courseBanner">
+  <div class="inner-baner-container" style="background-color: #f5f5f5;">
+    <div class="container">
+      <div class="inner-banner-content">
+        <h1 class="inner-title" id="courseTitle">Loading...</h1>
+      </div>
+    </div>
+  </div>
 </section>
 
-
 <div class="course-detail-section">
-<div class="pattern-overlay circle-patten"></div>
-<div class="course-detail-inner">
-<div class="container">
-<div class="row">
-<div class="col-lg-8">
-<div class="course-detail-container">
-<div class="course-description">
-<div class="course-tag">
-<div class="row align-items-center justify-content-center">
-<div class="col-md-4 text-center pink-border">
-<div class="course-teach-tag d-flex align-items-end justify-content-center">
-<figure class="author-img">
-<img alt="" src="{% static 'assets/img/educator-img23.jpg' %}"/>
-</figure>
-<div>
-<h6 class="author-name">James mdith</h6>
-<span class="tag-discription">Chief Instructor</span>
-</div>
-</div>
-</div>
-<div class="col-md-3 text-center pink-border">
-<span>Category :</span>
-<h5>Management</h5>
-</div>
-<div class="col-md-2 text-center pink-border">
-<span>20 Reviews :</span>
-<div class="rating-start-wrap">
-<div class="rating-start">
-<span style="width: 80%"></span>
-</div>
-</div>
-</div>
-<div class="col-md-3 text-center pink-border">
-<span>Price :</span>
-<h3>$39.99</h3>
-</div>
-</div>
-</div>
-<figure class="course-imgage figure-round-border">
-<img alt="" src="{% static 'assets/img/educator-img14.jpg' %}"/>
-</figure>
-</div>
-<div class="tab-container">
-<div class="responsive-tabs">
-<ul class="nav nav-tabs" role="tablist">
-<li class="nav-item">
-<a class="nav-link active" data-bs-toggle="tab" href="#pane-A" id="tab-A" role="tab">
-                                                        Overview
-                                                    </a>
-</li>
-<li class="nav-item">
-<a class="nav-link" data-bs-toggle="tab" href="#pane-B" id="tab-B" role="tab">
-                                                        Instructor
-                                                    </a>
-</li>
-<li class="nav-item">
-<a class="nav-link" data-bs-toggle="tab" href="#pane-C" id="tab-C" role="tab">
-                                                        Reviews
-                                                    </a>
-</li>
-</ul>
-<div class="tab-content" id="nav-tab-content" role="tablist">
-<div aria-labelledby="tab-A" class="card tab-pane fade show active" id="pane-A" role="tabpanel">
-<div class="card-header" id="heading-A" role="tab">
-<h5 class="mb-0">
-<a aria-controls="collapse-A" aria-expanded="true" data-bs-toggle="collapse" href="#collapse-A">
-                                                                Overview
-                                                            </a>
-</h5>
-</div>
-<div aria-labelledby="heading-A" class="collapse show" data-bs-parent="#nav-tab-content" id="collapse-A" role="tabpanel">
-<div class="card-body">
-<h5>COURSE DESCRIPTION</h5>
-<p>
-                                                                Reprehenderit hic bibendum repellendus, repellat auctor! Integer temporibus, facilisis iaculis alias senectus, non quam molestiae incidunt cubilia, fuga? Quasi natoque dicta a fuga dapibus dolore molestie sociis erat, convallis quibusdam possimus semper nonummy mattis, quasi.
-                                                            </p>
-<h5>
-                                                                CERTIFICATION
-                                                            </h5>
-<p>
-                                                                Autem nec quaerat cubilia magnam eu mauris hic hac nisi eos nobis officiis corrupti consequuntur molestie urna volutpat! Quos diamlorem convallis vestibulum doloremque iste facilisi.
-                                                            </p>
-<h5>LEARNING OUTCOMES</h5>
-<ul>
-<li>Over 37 lectures and 55.5 hours of content!</li>
-<li>Testing Training Included.</li>
-<li>Learn Software Testing and Automation basics from a professional trainer from your own desk.</li>
-<li>Information packed practical training starting from basics to advanced testing techniques.</li>
-<li>Best suitable for beginners to advanced level users and who learn faster when demonstrated.</li>
-<li>Course content designed by considering current software testing technology and the job market.</li>
-<li>Practical assignments at the end of every session.</li>
-<li>Practical learning experience with live project work and examples.</li>
-</ul>
-</div>
-</div>
-</div>
-<div aria-labelledby="tab-B" class="card tab-pane fade" id="pane-B" role="tabpanel">
-<div class="card-header" id="heading-B" role="tab">
-<h5 class="mb-0">
-<a aria-controls="collapse-B" aria-expanded="false" class="collapsed" data-bs-toggle="collapse" href="#collapse-B">
-                                                                Instructor
-                                                            </a>
-</h5>
-</div>
-<div aria-labelledby="heading-B" class="collapse" data-bs-parent="#nav-tab-content" id="collapse-B" role="tabpanel">
-<div class="card-body">
-<div class="instructor-detail">
-<figure class="instructor-img">
-<img alt="" src="{% static 'assets/img/educator-img26.jpg' %}"/>
-</figure>
-<strong>James Scott</strong>
-<em>Management Instructor</em>
-<p>
-                                                                    Smply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.Smply dummy text of the printing and typesetting industry
-                                                                </p>
-</div>
-<div class="instructor-detail">
-<figure class="instructor-img">
-<img alt="" src="{% static 'assets/img/educator-img21.jpg' %}"/>
-</figure>
-<strong>Sammy Alam</strong>
-<em>Business Instructor</em>
-<p>
-                                                                    Smply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.Smply dummy text of the printing and typesetting industry
-                                                                </p>
-</div>
-</div>
-</div>
-</div>
-<div aria-labelledby="tab-C" class="card tab-pane fade" id="pane-C" role="tabpanel">
-<div class="card-header" id="heading-C" role="tab">
-<h5 class="mb-0">
-<a aria-controls="collapse-C" aria-expanded="true" data-bs-toggle="collapse" href="#collapse-C">
-                                                                Reviews
-                                                            </a>
-</h5>
-</div>
-<div aria-labelledby="heading-C" class="collapse" data-bs-parent="#nav-tab-content" id="collapse-C" role="tabpanel">
-<div class="card-body">
-<p>
-                                                                Veritatis quae necessitatibus provident qui consectetuer, quaerat adipiscing dignissimos? Class penatibus posuere odio ultrices delectus iure, consectetuer mollis eros ut? Sunt ultrices. Euismod parturient corporis, nemo iaculis montes voluptate architecto.
-                                                            </p>
-<p>
-                                                                ” Montes vel pellentesque amet, viverra officiis. Metus conubia illo aut doloribus exercitation, potenti, cupidatat ullam. “
-                                                            </p>
-<p>
-                                                                ” Voluptate sapiente. Quibusdam nostrud consectetuer id, architecto tellus placerat veniam enim arcu. “
-                                                            </p>
-<p>
-                                                                ” Enim dui ipsa egestas tortor cum adipiscing. Natoque magnam ridiculus eaque impedit pellentesque ornare non. “
-                                                            </p>
-<p>
-                                                                ” Fermentum excepturi. Per, etiam harum sociosqu eu per aperiam commodo ultrices eros voluptates, ligula consectetuer. “
-                                                            </p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-lg-4 order-lg-first">
-<div class="sidebar">
-<div class="video-widget">
-<iframe allowfullscreen="" height="315" src="https://www.youtube.com/embed/IUN664s7N-c" title="video" width="560"></iframe>
-</div>
-<div class="widget-bg widget-service icon-list-content brochure">
-<ul>
-<li>
-<i aria-hidden="true" class="far fa-clock"></i>
-<span>Time Duration : 12 weeks</span>
-</li>
-<li>
-<i aria-hidden="true" class="fas fa-book-open"></i>
-<span>Study Lecture : 20 Lectures</span>
-</li>
-<li>
-<i aria-hidden="true" class="fas fa-list"></i>
-<span>Skill Level : Advance Course</span>
-</li>
-<li>
-<i aria-hidden="true" class="fas fa-users"></i>
-<span>No. Of Students : 120 Students</span>
-</li>
-<li>
-<i aria-hidden="true" class="fas fa-percent"></i>
-<span>Pass Percentage : 90%</span>
-</li>
-<li>
-<i aria-hidden="true" class="fas fa-file-alt"></i>
-<span>Certificate : Yes</span>
-</li>
-</ul>
-<div class="enroll-coures-btn">
-<a class="button-round-primary" href="/contact/">Enroll course</a>
-</div>
-</div>
-<div class="widget widget-bg widget-post-thumb">
-<h5 class="bg-title">More Courses For You !</h5>
-<ul>
-<li>
-<figure class="post-thumb">
-<a href="/blog/sample-post/"><img alt="" src="{% static 'assets/img/educator-img12.jpg' %}"/></a>
-</figure>
-<div class="post-content">
-<h5>
-<a href="/blog/sample-post/">Begineer's Managing Course</a>
-</h5>
-</div>
-</li>
-<li>
-<figure class="post-thumb">
-<a href="/blog/sample-post/"><img alt="" src="{% static 'assets/img/educator-img13.jpg' %}"/></a>
-</figure>
-<div class="post-content">
-<h5>
-<a href="/blog/sample-post/">Advance Business Study</a>
-</h5>
-</div>
-</li>
-<li>
-<figure class="post-thumb">
-<a href="/blog/sample-post/"><img alt="" src="{% static 'assets/img/educator-img14.jpg' %}"/></a>
-</figure>
-<div class="post-content">
-<h5>
-<a href="/blog/sample-post/">
-                                                            Advance Tech &amp; Art Course</a>
-</h5>
-</div>
-</li>
-<li>
-<figure class="post-thumb">
-<a href="/blog/sample-post/"><img alt="" src="{% static 'assets/img/educator-img15.jpg' %}"/></a>
-</figure>
-<div class="post-content">
-<h5>
-<a href="/blog/sample-post/">
-                                                            Begineer's Science Course</a>
-</h5>
-</div>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-{% endblock %}
+  <div class="container">
+    <div class="row">
+      
+      <div class="col-lg-8">
+        
+        <div class="course-detail-container mb-5">
+          <figure class="course-image figure-round-border mb-4">
+            <img id="courseThumbnail" src="" alt="Course" style="width: 100%; height: 400px; object-fit: cover;">
+          </figure>
 
-{% block js %}
-    <script src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-    <script>
-(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1f05cfa8a989787',t:'MTc4NDcwMTQ3NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
-    </script>
+          <div class="course-tag">
+            <div class="row align-items-center justify-content-center">
+              <div class="col-md-3 text-center pink-border">
+                <div class="course-teach-tag">
+                  <div>
+                    <h6 class="author-name" id="instructorName">-</h6>
+                    <span class="tag-discription">Instructor</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 text-center pink-border">
+                <span>Category:</span>
+                <h5 id="categoryName">-</h5>
+              </div>
+              <div class="col-md-3 text-center pink-border">
+                <span>Level:</span>
+                <h5 id="courseLevel">-</h5>
+              </div>
+              <div class="col-md-3 text-center pink-border">
+                <span>Price:</span>
+                <h3 id="coursePrice">₹-</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-container">
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" data-bs-toggle="tab" href="#overview">Overview</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="tab" href="#modules">Modules & Lessons</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="tab" href="#quizzes">Quizzes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="tab" href="#instructor">Instructor</a>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            
+            <div id="overview" class="tab-pane fade show active">
+              <div class="card">
+                <div class="card-body">
+                  <h5>COURSE DESCRIPTION</h5>
+                  <p id="courseDescription">-</p>
+                  
+                  <h5 class="mt-4">WHAT YOU'LL LEARN</h5>
+                  <ul id="learningOutcomes">
+                    <li>Comprehensive course content</li>
+                  </ul>
+                  
+                  <h5 class="mt-4">COURSE HIGHLIGHTS</h5>
+                  <div class="row" id="courseStats">
+                    <div class="col-md-4">
+                      <p><strong id="modulesCount">0</strong> Modules</p>
+                    </div>
+                    <div class="col-md-4">
+                      <p><strong id="lessonsCount">0</strong> Lessons</p>
+                    </div>
+                    <div class="col-md-4">
+                      <p><strong id="durationWeeks">0</strong> Weeks</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="modules" class="tab-pane fade">
+              <div id="modulesList"></div>
+            </div>
+
+            <div id="quizzes" class="tab-pane fade">
+              <div id="quizzesList"></div>
+            </div>
+
+            <div id="instructor" class="tab-pane fade">
+              <div class="card">
+                <div class="card-body">
+                  <div class="instructor-detail">
+                    <h5 id="instructorFullName">-</h5>
+                    <p id="instructorEmail">-</p>
+                    <p id="instructorPhone">-</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="sidebar sticky-top">
+          
+          <div class="widget-bg widget-service brochure">
+            <div class="mb-4">
+              <h3 id="sidebarPrice" class="price">₹-</h3>
+              <button id="enrollBtn" class="btn btn-success btn-lg w-100 mb-2">
+                Enroll Now
+              </button>
+              <div id="enrollmentStatus"></div>
+            </div>
+
+            <ul class="icon-list-content">
+              <li>
+                <i class="far fa-clock"></i>
+                <span id="sidebarDuration">- weeks</span>
+              </li>
+              <li>
+                <i class="fas fa-book-open"></i>
+                <span id="sidebarLessons">- Lessons</span>
+              </li>
+              <li>
+                <i class="fas fa-users"></i>
+                <span id="sidebarStudents">- Students</span>
+              </li>
+              <li>
+                <i class="fas fa-star"></i>
+                <span id="sidebarRating">- Rating</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="widget-bg widget-service mt-4">
+            <h5 class="mb-3">Course Includes</h5>
+            <ul>
+              <li>📚 <span id="modulesIncludes">0</span> Modules</li>
+              <li>📖 <span id="lessonsIncludes">0</span> Lessons</li>
+              <li>❓ <span id="quizzesIncludes">0</span> Quizzes</li>
+              <li>📜 Certificate of Completion</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  .course-detail-section {
+    padding: 40px 0;
+    background: #fff;
+  }
+
+  .course-image {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .course-tag {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+  }
+
+  .pink-border {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 10px;
+  }
+
+  .course-teach-tag {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .author-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+  }
+
+  .tag-discription {
+    font-size: 12px;
+    color: #999;
+  }
+
+  .tab-container {
+    margin-top: 30px;
+  }
+
+  .nav-tabs {
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 20px;
+  }
+
+  .nav-tabs .nav-link {
+    color: #666;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 12px 20px;
+    font-weight: 500;
+  }
+
+  .nav-tabs .nav-link.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+    background: none;
+  }
+
+  .nav-tabs .nav-link:hover {
+    color: #667eea;
+  }
+
+  .tab-content {
+    padding: 20px 0;
+  }
+
+  .tab-pane {
+    animation: fadeIn 0.3s;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .card-body {
+    padding: 25px;
+  }
+
+  .card-body h5 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+  }
+
+  .card-body p {
+    line-height: 1.7;
+    color: #666;
+  }
+
+  .card-body ul {
+    padding-left: 20px;
+  }
+
+  .card-body li {
+    margin-bottom: 8px;
+    color: #666;
+  }
+
+  .module-item {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #667eea;
+  }
+
+  .module-item h6 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+  }
+
+  .lessons-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .lessons-list li {
+    padding: 8px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 14px;
+  }
+
+  .lessons-list li:last-child {
+    border-bottom: none;
+  }
+
+  .duration {
+    color: #999;
+    font-size: 12px;
+  }
+
+  .quiz-card {
+    background: white;
+    border: 2px solid #667eea;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .quiz-card h6 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .quiz-card p {
+    font-size: 13px;
+    color: #666;
+    margin: 5px 0;
+  }
+
+  .quiz-card .btn {
+    margin-top: 15px;
+  }
+
+  .instructor-detail {
+    padding: 20px;
+  }
+
+  .instructor-detail h5 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .instructor-detail p {
+    font-size: 14px;
+    color: #666;
+    margin: 5px 0;
+  }
+
+  .sidebar {
+    top: 100px;
+  }
+
+  .widget-bg {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .widget-bg h5 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+  }
+
+  .widget-bg ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .widget-bg li {
+    padding: 8px 0;
+    color: #666;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .icon-list-content li i {
+    color: #667eea;
+    font-size: 14px;
+    min-width: 20px;
+  }
+
+  .price {
+    font-size: 28px;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 15px;
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+    border: none;
+    font-weight: 600;
+  }
+
+  .btn-success:hover {
+    background: linear-gradient(135deg, #38d96f, #2ee0c4);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(67, 233, 123, 0.3);
+  }
+
+  .btn-primary {
+    background: #667eea;
+    border: none;
+    font-weight: 600;
+  }
+
+  .btn-primary:hover {
+    background: #5568d3;
+  }
+
+  .alert {
+    border-radius: 8px;
+    border: none;
+  }
+
+  .alert-success {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+  }
+
+  .empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 768px) {
+    .pink-border {
+      margin: 5px;
+      padding: 10px;
+    }
+
+    .sidebar {
+      margin-top: 30px;
+      position: relative !important;
+      top: auto !important;
+    }
+
+    .nav-tabs .nav-link {
+      font-size: 13px;
+      padding: 10px 12px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .course-image {
+      height: 250px !important;
+    }
+
+    .pink-border {
+      font-size: 13px;
+    }
+
+    .nav-tabs {
+      flex-wrap: wrap;
+    }
+
+    .nav-tabs .nav-link {
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+  }
+</style>
+
+<script>
+  const API_BASE_URL = 'http://localhost:8000';
+  const courseSlug = new URLSearchParams(window.location.search).get('slug') || 
+                     window.location.pathname.split('/').pop();
+
+  async function loadCourseDetail() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/${courseSlug}/`);
+      const data = await response.json();
+      const course = data.course;
+
+      document.getElementById('courseTitle').textContent = course.title;
+      document.getElementById('courseThumbnail').src = course.thumbnail;
+      document.getElementById('courseDescription').textContent = course.description;
+      document.getElementById('coursePrice').textContent = `₹${course.price}`;
+      document.getElementById('courseLevel').textContent = course.level || 'Beginner';
+      document.getElementById('categoryName').textContent = course.category.name;
+      document.getElementById('instructorName').textContent = course.instructor?.username || 'N/A';
+
+      document.getElementById('sidebarPrice').textContent = `₹${course.price}`;
+      document.getElementById('sidebarDuration').textContent = `${course.duration_weeks} weeks`;
+      document.getElementById('sidebarLessons').textContent = `${course.total_lessons} Lessons`;
+      document.getElementById('sidebarStudents').textContent = `${course.total_students} Students`;
+      document.getElementById('sidebarRating').textContent = `${course.average_rating} ⭐`;
+      
+      document.getElementById('modulesCount').textContent = course.total_modules;
+      document.getElementById('lessonsCount').textContent = course.total_lessons;
+      document.getElementById('durationWeeks').textContent = course.duration_weeks;
+      
+      document.getElementById('modulesIncludes').textContent = course.total_modules;
+      document.getElementById('lessonsIncludes').textContent = course.total_lessons;
+      document.getElementById('quizzesIncludes').textContent = course.quizzes?.length || 0;
+
+      if (course.instructor) {
+        document.getElementById('instructorFullName').textContent = course.instructor.username;
+        document.getElementById('instructorEmail').textContent = `Email: ${course.instructor.email}`;
+        document.getElementById('instructorPhone').textContent = `Phone: ${course.instructor.phone}`;
+      }
+
+      if (course.modules && course.modules.length > 0) {
+        document.getElementById('modulesList').innerHTML = course.modules.map(module => `
+          <div class="card mb-3">
+            <div class="card-header">
+              <h6 class="mb-0">${module.title}</h6>
+              <small class="text-muted">${module.lessons?.length || 0} lessons</small>
+            </div>
+            <div class="card-body">
+              <ul class="lessons-list">
+                ${module.lessons ? module.lessons.map(lesson => `
+                  <li>
+                    <span>
+                      ${lesson.content_type === 'video' ? '🎥' : '📖'} 
+                      ${lesson.title}
+                    </span>
+                    <span class="duration">${lesson.duration_minutes} min</span>
+                  </li>
+                `).join('') : ''}
+              </ul>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      if (course.quizzes && course.quizzes.length > 0) {
+        document.getElementById('quizzesList').innerHTML = course.quizzes.map(quiz => `
+          <div class="quiz-card">
+            <h6>${quiz.title}</h6>
+            <p class="text-muted">${quiz.description}</p>
+            <ul style="list-style: none; padding: 0; margin: 10px 0; font-size: 12px;">
+              <li>❓ Questions: ${quiz.total_questions}</li>
+              <li>⏱️ Time: ${quiz.time_limit_minutes} minutes</li>
+              <li>✅ Pass: ${quiz.passing_score_pct}%</li>
+            </ul>
+            <button class="btn btn-sm btn-primary" onclick="startQuiz(${quiz.id})">
+              Take Quiz
+            </button>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('enrollBtn').onclick = () => enrollCourse(course.slug, course.price);
+
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to load course details');
+    }
+  }
+
+  async function enrollCourse(slug, price) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/${slug}/enroll/`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify({covered_by_plan: false, amount_paid: price})
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        document.getElementById('enrollmentStatus').innerHTML = `
+          <div class="alert alert-success">
+            ✅ Successfully enrolled!
+          </div>
+        `;
+        setTimeout(() => window.location.href = '/my-learning/', 2000);
+      } else {
+        alert('Error: ' + (data.error || 'Enrollment failed'));
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  function startQuiz(quizId) {
+    window.location.href = `/quiz/?id=${quizId}`;
+  }
+
+  document.addEventListener('DOMContentLoaded', loadCourseDetail);
+</script>
+
 {% endblock %}

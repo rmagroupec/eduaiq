@@ -20,10 +20,15 @@ from django.conf.urls.static import static
 from django.urls import include, path
 
 urlpatterns = [
+    # Admin Panel
     path('admin/', admin.site.urls),
-    path('courses/', include('courses.urls')),
-    path('accounts/', include('accounts.urls')),
-    path('', include('frontend.urls')),
+    
+    # API Routes
+    path('accounts/', include('accounts.urls')),      # Login, signup, profile API
+    path('courses/', include('courses.urls')),        # Courses, quiz, enrollment API
+    
+    # Frontend Routes (HTML Templates)
+    path('', include('frontend.urls')),               # Home, course pages, quiz player
 ]
 
 # Serve static and media files in development.
