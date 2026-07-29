@@ -83,9 +83,9 @@ urlpatterns = [
     path('admin-panel/courses/add/', views.admin_add_course, name='admin_add_course'),
     path('admin-panel/courses/edit/', views.admin_edit_course, name='admin_edit_course'),
     path('admin-panel/courses/details/', views.admin_course_details, name='admin_course_details'),
-    path('admin-panel/<slug:page_name>/', views.admin_page_router, name='admin_page_router'),
     path('register/', views.register_view, name='register'),
     path('register/submit/', views.register_submit, name='register_submit'),
     path('admin-panel/login/', views.login_view, name='login'),
+    path('admin-panel/<slug:page_name>/', views.admin_page_router, name='admin_page_router'),
     path('admin-panel/logout/', views.logout_view, name='logout'),
 ]
