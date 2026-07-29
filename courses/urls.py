@@ -58,4 +58,10 @@ urlpatterns = [
     # ========================================================================
     path('my-enrollments/', views.my_enrollments, name='my-enrollments'),
     path('enrollments/<int:pk>/progress/', views.update_progress, name='enrollment-progress'),
+
+    # ========================================================================
+    # ADMIN QUIZ PATHS
+    # ========================================================================
+    path('admin/quizzes/', views.quiz_list, name='admin-quiz-list'),
+    path('admin/attempts/', views.admin_attempts, name='admin-quiz-attempts'),
 ]
