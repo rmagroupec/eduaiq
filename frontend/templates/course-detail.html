@@ -493,15 +493,36 @@
 </style>
 
 <script>
-  const API_BASE_URL = 'http://localhost:8000';
+  const API_BASE_URL = window.location.origin;
   const courseSlug = new URLSearchParams(window.location.search).get('slug') || 
                      window.location.pathname.split('/').pop();
+  let isEnrolled = false;
 
   async function loadCourseDetail() {
     try {
+      // 1. Check enrollment status first
+      try {
+        const enrollResponse = await fetch(`${API_BASE_URL}/courses/my-enrollments/`, {
+          credentials: 'include'
+        });
+        if (enrollResponse.ok) {
+          const enrollData = await enrollResponse.json();
+          window.myEnrollments = enrollData.results || [];
+        }
+      } catch (e) {
+        console.error('Error fetching enrollments:', e);
+      }
+
+      // 2. Load course details
       const response = await fetch(`${API_BASE_URL}/courses/courses/${courseSlug}/`);
       const data = await response.json();
       const course = data.course;
+
+      // Match enrollment
+      const matchingEnrollment = window.myEnrollments?.find(e => e.course.id === course.id);
+      if (matchingEnrollment) {
+        isEnrolled = true;
+      }
 
       document.getElementById('courseTitle').textContent = course.title;
       document.getElementById('courseThumbnail').src = course.thumbnail;
@@ -540,15 +561,37 @@
             </div>
             <div class="card-body">
               <ul class="lessons-list">
-                ${module.lessons ? module.lessons.map(lesson => `
-                  <li>
-                    <span>
-                      ${lesson.content_type === 'video' ? '🎥' : '📖'} 
-                      ${lesson.title}
-                    </span>
-                    <span class="duration">${lesson.duration_minutes} min</span>
-                  </li>
-                `).join('') : ''}
+                ${module.lessons ? module.lessons.map(lesson => {
+                  const clickable = isEnrolled || lesson.is_preview;
+                  let onclickHandler = '';
+                  let linkStyle = 'text-decoration: none; color: inherit;';
+                  
+                  if (clickable) {
+                    linkStyle = 'text-decoration: none; color: #0d6efd; font-weight: 500;';
+                    if (lesson.content_type === 'quiz') {
+                      onclickHandler = `onclick="goToQuizForLesson(${lesson.id})"`;
+                    } else {
+                      onclickHandler = `onclick="location.href='/lesson/?id=${lesson.id}'"`;
+                    }
+                  } else {
+                    onclickHandler = `onclick="alert('Please enroll in this course to access this lesson.')"`;
+                    linkStyle = 'text-decoration: none; color: #999; cursor: not-allowed;';
+                  }
+
+                  return `
+                    <li style="cursor: pointer;" ${onclickHandler}>
+                      <span>
+                        ${lesson.content_type === 'video' ? '🎥' : '📖'} 
+                        <a href="javascript:void(0)" style="${linkStyle}">
+                          ${lesson.title}
+                        </a>
+                        ${lesson.is_preview ? '<span class="badge bg-success ms-2" style="font-size: 10px;">Preview</span>' : ''}
+                        ${!clickable ? '<span class="text-muted ms-2" style="font-size: 10px;">🔒 Locked</span>' : ''}
+                      </span>
+                      <span class="duration">${lesson.duration_minutes} min</span>
+                    </li>
+                  `;
+                }).join('') : ''}
               </ul>
             </div>
           </div>
@@ -556,27 +599,70 @@
       }
 
       if (course.quizzes && course.quizzes.length > 0) {
-        document.getElementById('quizzesList').innerHTML = course.quizzes.map(quiz => `
-          <div class="quiz-card">
-            <h6>${quiz.title}</h6>
-            <p class="text-muted">${quiz.description}</p>
-            <ul style="list-style: none; padding: 0; margin: 10px 0; font-size: 12px;">
-              <li>❓ Questions: ${quiz.total_questions}</li>
-              <li>⏱️ Time: ${quiz.time_limit_minutes} minutes</li>
-              <li>✅ Pass: ${quiz.passing_score_pct}%</li>
-            </ul>
-            <button class="btn btn-sm btn-primary" onclick="startQuiz(${quiz.id})">
-              Take Quiz
-            </button>
-          </div>
-        `).join('');
+        document.getElementById('quizzesList').innerHTML = course.quizzes.map(quiz => {
+          const enrollCheck = isEnrolled;
+          let btnHTML = '';
+          if (enrollCheck) {
+            btnHTML = `
+              <button class="btn btn-sm btn-primary" onclick="startQuiz(${quiz.id})">
+                Take Quiz
+              </button>
+            `;
+          } else {
+            btnHTML = `
+              <button class="btn btn-sm btn-secondary" onclick="alert('Please enroll in the course to take the quiz.')" disabled>
+                🔒 Enroll to Access
+              </button>
+            `;
+          }
+          return `
+            <div class="quiz-card">
+              <h6>${quiz.title}</h6>
+              <p class="text-muted">${quiz.description}</p>
+              <ul style="list-style: none; padding: 0; margin: 10px 0; font-size: 12px;">
+                <li>❓ Questions: ${quiz.total_questions}</li>
+                <li>⏱️ Time: ${quiz.time_limit_minutes} minutes</li>
+                <li>✅ Pass: ${quiz.passing_score_pct}%</li>
+              </ul>
+              ${btnHTML}
+            </div>
+          `;
+        }).join('');
       }
 
-      document.getElementById('enrollBtn').onclick = () => enrollCourse(course.slug, course.price);
+      // Configure Enrollment sidebar button
+      const enrollBtn = document.getElementById('enrollBtn');
+      if (isEnrolled) {
+        enrollBtn.textContent = 'Continue Learning';
+        enrollBtn.className = 'btn btn-primary btn-lg w-100 mb-2';
+        enrollBtn.onclick = () => window.location.href = '/my-learning/';
+        document.getElementById('enrollmentStatus').innerHTML = `
+          <div class="alert alert-info py-2 text-center" style="font-size: 12px;">
+            You are enrolled in this course!
+          </div>
+        `;
+      } else {
+        enrollBtn.onclick = () => enrollCourse(course.slug, course.price);
+      }
 
     } catch (error) {
       console.error('Error:', error);
       alert('Failed to load course details');
+    }
+  }
+
+  async function goToQuizForLesson(lessonId) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/quiz/`);
+      const data = await res.json();
+      if (data.quiz) {
+        window.location.href = `/quiz/?id=${data.quiz.id}`;
+      } else {
+        alert('No quiz linked to this lesson!');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error fetching quiz details.');
     }
   }
 

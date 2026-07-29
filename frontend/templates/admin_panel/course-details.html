@@ -1,0 +1,172 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Course Details - EduAIQ Admin{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Course Details</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/courses/">/ Courses</a>
+      <span class="text-secondary-light" id="breadcrumbTitle">/ Loading...</span>
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-secondary" href="/admin-panel/courses/">
+      <i class="ri-arrow-left-line"></i> Back
+    </a>
+    <a id="editCourseBtn" class="btn btn-primary-600" href="#">
+      <i class="ri-edit-line"></i> Edit Course
+    </a>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- General Metadata -->
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-center mb-4">
+          <img id="courseThumbnail" src="https://via.placeholder.com/300x180" alt="Thumbnail" class="img-fluid rounded mb-3" style="width: 100%; height: 180px; object-fit: cover;">
+          <h5 class="card-title mb-1" id="courseTitle">Loading...</h5>
+          <span class="badge bg-success" id="courseStatus">Draft</span>
+        </div>
+        <hr>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span>Category:</span>
+            <strong id="courseCategory">-</strong>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span>Price:</span>
+            <strong id="coursePrice">₹0.00</strong>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span>Delivery Mode:</span>
+            <strong class="text-capitalize" id="courseDelivery">-</strong>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span>Version:</span>
+            <strong id="courseVersion">1</strong>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span>Modules count:</span>
+            <strong id="modulesCount">0</strong>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed description & Modules list -->
+  <div class="col-md-8">
+    <div class="card mb-4">
+      <div class="card-header bg-light">
+        <h6 class="mb-0">Course Description</h6>
+      </div>
+      <div class="card-body">
+        <p id="courseDesc" class="text-muted mb-0">Loading description...</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header bg-light">
+        <h6 class="mb-0">Modules & Lessons Structure</h6>
+      </div>
+      <div class="card-body" id="modulesStructure">
+        <p class="text-center text-muted py-3">Loading modules...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+  const querySlug = new URLSearchParams(window.location.search).get('slug');
+
+  async function loadCourseDetails() {
+    if (!querySlug) {
+      alert('No course slug specified!');
+      window.location.href = '/admin-panel/courses/';
+      return;
+    }
+
+    // Set Edit course link
+    document.getElementById('editCourseBtn').href = `/admin-panel/courses/edit/?slug=${querySlug}`;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/${querySlug}/`);
+      const data = await response.json();
+      const c = data.course;
+
+      document.getElementById('breadcrumbTitle').textContent = `/ ${c.title}`;
+      document.getElementById('courseTitle').textContent = c.title;
+      document.getElementById('courseDesc').textContent = c.description || 'No description provided.';
+      document.getElementById('coursePrice').textContent = `₹${c.price}`;
+      document.getElementById('courseCategory').textContent = c.category?.name || 'N/A';
+      document.getElementById('courseDelivery').textContent = c.delivery_mode.replace('_', ' ');
+      document.getElementById('courseVersion').textContent = c.version;
+      document.getElementById('modulesCount').textContent = c.modules?.length || 0;
+      
+      const statusBadge = document.getElementById('courseStatus');
+      statusBadge.textContent = c.status.replace('_', ' ');
+      statusBadge.className = `badge ${getStatusBadgeClass(c.status)}`;
+
+      if (c.thumbnail) {
+        document.getElementById('courseThumbnail').src = c.thumbnail;
+      }
+
+      // Render modules and lessons list
+      const modulesContainer = document.getElementById('modulesStructure');
+      if (!c.modules || c.modules.length === 0) {
+        modulesContainer.innerHTML = `<p class="text-center text-muted py-3">No modules found for this course.</p>`;
+        return;
+      }
+
+      modulesContainer.innerHTML = c.modules.map(mod => `
+        <div class="border rounded p-3 mb-3 bg-neutral-50">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0 text-dark">${mod.title}</h6>
+            <span class="badge bg-secondary-600">Module ${mod.order}</span>
+          </div>
+          <p class="text-sm text-secondary-light mb-3">${mod.description || 'No description'}</p>
+          
+          <div class="ps-3 border-start border-2">
+            <span class="text-xs fw-semibold text-primary-light d-block mb-2">Lessons list:</span>
+            <ul class="list-group">
+              ${mod.lessons && mod.lessons.length > 0 ? mod.lessons.map(les => `
+                <li class="list-group-item d-flex justify-content-between align-items-center py-2 text-sm">
+                  <span>
+                    ${les.content_type === 'video' ? '🎥' : '📖'} ${les.title}
+                    ${les.is_preview ? '<span class="badge bg-success ms-2 text-xxs">Preview</span>' : ''}
+                  </span>
+                  <span class="text-muted text-xs">${les.duration_minutes} min</span>
+                </li>
+              `).join('') : '<li class="list-group-item text-muted text-sm py-2">No lessons added yet.</li>'}
+            </ul>
+          </div>
+        </div>
+      `).join('');
+
+    } catch (e) {
+      console.error(e);
+      alert('Error fetching course detailed data.');
+    }
+  }
+
+  function getStatusBadgeClass(status) {
+    switch (status) {
+      case 'published': return 'bg-success';
+      case 'draft': return 'bg-secondary';
+      case 'in_review': return 'bg-warning text-dark';
+      case 'changes_requested': return 'bg-info text-dark';
+      case 'archived': return 'bg-dark';
+      default: return 'bg-primary';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadCourseDetails);
+</script>
+{% endblock %}

@@ -3,7 +3,6 @@
 <html data-theme="light" lang="en">
 <head>
     <meta charset="utf-8"/>
-    <meta content="IE=edge" http-equiv="X-UAcompat"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Login - EduAiQ</title>
     <link href="{% static 'admin_assets/images/favicon.png' %}" rel="icon" sizes="16x16" type="image/png"/>
@@ -11,376 +10,82 @@
     <link href="{% static 'admin_assets/css/lib/bootstrap.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'admin_assets/css/style.css' %}" rel="stylesheet"/>
     <style>
-        .login-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f5f5f5;
-        }
-        .login-card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 40px;
-            max-width: 450px;
-            width: 100%;
-        }
-        .login-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .login-header h2 {
-            font-size: 28px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        .login-header p {
-            color: #666;
-            font-size: 14px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-            font-size: 14px;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-            box-sizing: border-box;
-        }
-        .form-group input:focus {
-            outline: none;
-            border-color: #0066cc;
-            box-shadow: 0 0 0 3px rgba(0,102,204,0.1);
-        }
-        .password-wrapper {
-            position: relative;
-        }
-        .toggle-password {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #666;
-            font-size: 18px;
-            padding: 0;
-        }
-        .toggle-password:hover {
-            color: #0066cc;
-        }
-        .alert {
-            padding: 12px 16px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            display: none;
-        }
-        .alert.show {
-            display: block;
-        }
-        .alert-danger {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .btn-login {
-            width: 100%;
-            padding: 12px;
-            background-color: #0066cc;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .btn-login:hover {
-            background-color: #0052a3;
-        }
-        .btn-login:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        .login-footer {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .login-footer p {
-            color: #666;
-            font-size: 14px;
-        }
-        .login-footer a {
-            color: #0066cc;
-            text-decoration: none;
-        }
-        .login-footer a:hover {
-            text-decoration: underline;
-        }
-        .logo {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .logo img {
-            max-height: 50px;
-        }
-        .spinner-border {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            vertical-align: text-bottom;
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #0066cc;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 8px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        .login-container{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f5f5f5;}
+        .login-card{background:#fff;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.1);padding:40px;max-width:450px;width:100%;}
+        .login-header{text-align:center;margin-bottom:30px;}
+        .login-header h2{font-size:28px;font-weight:bold;color:#333;margin-bottom:10px;}
+        .login-header p{color:#666;font-size:14px;}
+        .form-group{margin-bottom:20px;}
+        .form-group label{display:block;margin-bottom:8px;color:#333;font-weight:500;font-size:14px;}
+        .form-group input{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:4px;font-size:14px;box-sizing:border-box;}
+        .password-wrapper{position:relative;}
+        .toggle-password{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#666;font-size:18px;padding:0;}
+        .alert{padding:12px 16px;border-radius:4px;margin-bottom:20px;font-size:14px;}
+        .alert-danger{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;}
+        .btn-login{width:100%;padding:12px;background:#0066cc;color:#fff;border:none;border-radius:4px;font-size:16px;font-weight:500;cursor:pointer;}
+        .login-footer{text-align:center;margin-top:20px;}
+        .login-footer a{color:#0066cc;text-decoration:none;}
+        .logo{text-align:center;margin-bottom:20px;}
+        .logo img{max-height:50px;}
     </style>
 </head>
 <body>
     <div class="login-container">
         <div class="login-card">
-            <!-- Logo -->
             <div class="logo">
-                <img alt="EduAiQ Logo" src="{% static 'admin_assets/images/logo.png' %}" style="max-height: 50px;"/>
+                <img alt="EduAiQ Logo" src="{% static 'admin_assets/images/logo.png' %}"/>
             </div>
-
-            <!-- Header -->
             <div class="login-header">
                 <h2>Welcome Back 👋</h2>
                 <p>Log in to your EduAiQ account to continue</p>
             </div>
 
-            <!-- Error Alert -->
-            <div id="errorAlert" class="alert alert-danger"></div>
+            {% if form_errors %}
+            <div class="alert alert-danger">
+                {% for err in form_errors %}❌ {{ err }}<br>{% endfor %}
+            </div>
+            {% endif %}
 
-            <!-- Success Alert -->
-            <div id="successAlert" class="alert alert-success"></div>
-
-            <!-- Login Form -->
-            <form id="loginForm" method="POST">
+            <form method="POST">
                 {% csrf_token %}
-
-                <!-- Username/Email -->
                 <div class="form-group">
                     <label for="username">Username or Email Address</label>
-                    <input 
-                        type="text" 
-                        id="username" 
-                        name="username" 
-                        placeholder="Enter your username or email" 
-                        required
-                        autocomplete="username"
-                    />
+                    <input type="text" id="username" name="username" value="{{ old_username|default:'' }}"
+                        placeholder="Enter your username or email" required autocomplete="username" />
                 </div>
-
-                <!-- Password -->
                 <div class="form-group">
                     <label for="password">Password</label>
                     <div class="password-wrapper">
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            placeholder="Enter your password" 
-                            required
-                            autocomplete="current-password"
-                        />
-                        <button 
-                            type="button" 
-                            class="toggle-password" 
-                            onclick="togglePassword()"
-                            aria-label="Toggle password visibility"
-                        >
+                        <input type="password" id="password" name="password"
+                            placeholder="Enter your password" required autocomplete="current-password" />
+                        <button type="button" class="toggle-password" onclick="togglePassword()" aria-label="Toggle password visibility">
                             <i class="ri-eye-line"></i>
                         </button>
                     </div>
                 </div>
-
-                <!-- Submit Button -->
-                <button type="submit" class="btn-login" id="loginBtn">
-                    Log in
-                </button>
+                <button type="submit" class="btn-login" style="text-align:center;">Log in</button>
             </form>
 
-            <!-- Register Link -->
             <div class="login-footer">
-                <p>
-                    Don't have an account? 
-                    <a href="/register/">Create account</a>
-                </p>
+                <p>Don't have an account? <a href="{% url 'register' %}">Create account</a></p>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="{% static 'admin_assets/js/lib/jquery-3.7.1.min.js' %}"></script>
     <script src="{% static 'admin_assets/js/lib/bootstrap.bundle.min.js' %}"></script>
-
     <script>
-        // Get CSRF token from form
-        function getCsrfToken() {
-            return document.querySelector('[name=csrfmiddlewaretoken]').value;
-        }
-
-        // Toggle password visibility
         function togglePassword() {
             const passwordField = document.getElementById('password');
             const toggleBtn = document.querySelector('.toggle-password i');
-
             if (passwordField.type === 'password') {
                 passwordField.type = 'text';
-                toggleBtn.classList.remove('ri-eye-line');
-                toggleBtn.classList.add('ri-eye-off-line');
+                toggleBtn.classList.replace('ri-eye-line', 'ri-eye-off-line');
             } else {
                 passwordField.type = 'password';
-                toggleBtn.classList.remove('ri-eye-off-line');
-                toggleBtn.classList.add('ri-eye-line');
+                toggleBtn.classList.replace('ri-eye-off-line', 'ri-eye-line');
             }
         }
-
-        // Show alert
-        function showAlert(type, message) {
-            const errorAlert = document.getElementById('errorAlert');
-            const successAlert = document.getElementById('successAlert');
-
-            if (type === 'error') {
-                errorAlert.textContent = message;
-                errorAlert.classList.add('show');
-                successAlert.classList.remove('show');
-                errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } else if (type === 'success') {
-                successAlert.textContent = message;
-                successAlert.classList.add('show');
-                errorAlert.classList.remove('show');
-                successAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }
-
-        // Hide alert
-        function hideAlert() {
-            document.getElementById('errorAlert').classList.remove('show');
-            document.getElementById('successAlert').classList.remove('show');
-        }
-
-        // Handle login form submission
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const loginBtn = document.getElementById('loginBtn');
-
-            // Validation
-            if (!username || !password) {
-                showAlert('error', '❌ Please enter username and password');
-                return;
-            }
-
-            // Show loading state
-            loginBtn.disabled = true;
-            loginBtn.innerHTML = '<span class="spinner-border"></span>Logging in...';
-
-            try {
-                const response = await fetch('http://localhost:8000/accounts/login/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCsrfToken()
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        username: username,
-                        password: password
-                    })
-                });
-
-                const data = await response.json();
-                console.log('API Response:', data);
-
-                if (data.success) {
-                    // ✅ Login successful
-                    showAlert('success', '✅ Login successful! Redirecting...');
-
-                    // Store user info in localStorage
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    localStorage.setItem('is_authenticated', 'true');
-
-                    // Redirect based on user role
-                    setTimeout(() => {
-                        if (data.user.is_staff || data.user.is_superuser) {
-                            // Admin - redirect to dashboard
-                            window.location.href = '/admin-panel/dashboard/';
-                        } else {
-                            // Student - redirect to learning dashboard
-                            window.location.href = '/my-learning/';
-                        }
-                    }, 1500);
-
-                } else {
-                    // ❌ Login failed
-                    showAlert('error', '❌ ' + (data.error || 'Invalid username or password'));
-                    loginBtn.disabled = false;
-                    loginBtn.innerHTML = 'Log in';
-                }
-
-            } catch (error) {
-                console.error('Login error:', error);
-                showAlert('error', '❌ Connection error. Please check your internet and try again.');
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = 'Log in';
-            }
-        });
-
-        // Hide alerts when user starts typing
-        document.getElementById('username').addEventListener('input', hideAlert);
-        document.getElementById('password').addEventListener('input', hideAlert);
-
-        // Check if user is already logged in
-        window.addEventListener('DOMContentLoaded', function() {
-            // Check if redirected from successful registration
-            if (localStorage.getItem('registration_success') === 'true') {
-                const username = localStorage.getItem('registered_username');
-                showAlert('success', `✅ Successfully registered! Welcome ${username}! Now log in with your credentials.`);
-                
-                // Clear the registration success flag
-                localStorage.removeItem('registration_success');
-                localStorage.removeItem('registered_username');
-            }
-
-            if (localStorage.getItem('is_authenticated') === 'true') {
-                // Redirect already logged in users
-                const user = JSON.parse(localStorage.getItem('user') || '{}');
-                if (user.is_staff || user.is_superuser) {
-                    window.location.href = '/admin-panel/dashboard/';
-                } else {
-                    window.location.href = '/my-learning/';
-                }
-            }
-        });
     </script>
 </body>
 </html>

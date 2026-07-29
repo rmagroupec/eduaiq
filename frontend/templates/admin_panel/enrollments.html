@@ -1,0 +1,101 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Enrollment & Progress Tracking - EduAIQ Admin{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Student Enrollments</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/ Enrollments</span>
+    </div>
+  </div>
+</div>
+
+<div class="card h-100">
+  <div class="card-header border-bottom py-16 px-24">
+    <h5 class="card-title mb-0">Enrolled Student Trajectories</h5>
+  </div>
+  <div class="card-body p-24">
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Enrollment ID</th>
+            <th>Thumbnail</th>
+            <th>Course Title</th>
+            <th>Category</th>
+            <th>Price Paid</th>
+            <th>Progress</th>
+            <th>Enrolled Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="enrollmentsTableBody">
+          <tr>
+            <td colspan="8" class="text-center py-5 text-muted">
+              <i class="ri-loader-4-line ri-spin align-middle me-2"></i> Loading enrollments...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+
+  async function loadAdminEnrollments() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/my-enrollments/`);
+      const data = await response.json();
+      const tbody = document.getElementById('enrollmentsTableBody');
+      const results = data.results || [];
+
+      if (results.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No student enrollments found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = results.map(e => `
+        <tr>
+          <td># ${e.id}</td>
+          <td>
+            <img src="${e.course?.thumbnail || 'https://via.placeholder.com/80x50'}" alt="${e.course?.title}" style="width: 80px; height: 50px; object-fit: cover; border-radius: 4px;">
+          </td>
+          <td class="fw-semibold text-dark">${e.course?.title || 'Unknown Course'}</td>
+          <td>${e.course?.category || 'N/A'}</td>
+          <td class="fw-bold">₹${e.amount_paid || '0.00'}</td>
+          <td>
+            <div class="d-flex align-items-center gap-10">
+              <div class="progress" style="width: 100px; height: 8px;">
+                <div class="progress-bar bg-success" role="progressbar" style="width: ${e.progress_pct}%" aria-valuenow="${e.progress_pct}" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <span class="text-sm font-semibold text-primary-light">${Math.round(e.progress_pct)}%</span>
+            </div>
+          </td>
+          <td class="text-muted text-sm">${new Date(e.enrollment_date).toLocaleDateString()}</td>
+          <td>
+            <span class="badge ${e.is_completed ? 'bg-success' : 'bg-warning text-dark'}">
+              ${e.is_completed ? 'Completed' : 'Ongoing'}
+            </span>
+          </td>
+        </tr>
+      `).join('');
+    } catch (e) {
+      console.error(e);
+      document.getElementById('enrollmentsTableBody').innerHTML = `
+        <tr>
+          <td colspan="8" class="text-center py-4 text-danger">Failed to load enrollments.</td>
+        </tr>
+      `;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadAdminEnrollments);
+</script>
+{% endblock %}

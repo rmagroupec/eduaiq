@@ -1,0 +1,244 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Module Management - EduAIQ Admin{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Course Modules</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/ Modules</span>
+    </div>
+  </div>
+  <button class="btn btn-primary-600 d-flex align-items-center gap-6" id="addModuleBtn" data-bs-toggle="modal" data-bs-target="#addModuleModal" disabled>
+    <span class="d-flex text-md"><i class="ri-add-large-line"></i></span>
+    Add Module
+  </button>
+</div>
+
+<!-- Select Course Selector -->
+<div class="card mb-24">
+  <div class="card-body p-24">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <label for="courseSelect" class="form-label fw-semibold text-primary-light">Select Course to View/Manage Modules:</label>
+        <select id="courseSelect" class="form-select" onchange="onCourseChange()">
+          <option value="" disabled selected>-- Select Course --</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card h-100">
+  <div class="card-body p-24">
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Order</th>
+            <th>ID</th>
+            <th>Module Title</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="modulesTableBody">
+          <tr>
+            <td colspan="6" class="text-center py-4 text-muted">
+              Select a course above to load modules.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Add Module Modal -->
+<div class="modal fade" id="addModuleModal" tabindex="-1" aria-labelledby="addModuleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="addModuleModalLabel">Add Module</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addModuleForm" onsubmit="submitModule(event)">
+          <div class="mb-3">
+            <label for="modTitle" class="form-label">Module Title <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="modTitle" name="title" required>
+          </div>
+          <div class="mb-3">
+            <label for="modOrder" class="form-label">Order <span class="text-danger">*</span></label>
+            <input type="number" class="form-control" id="modOrder" name="order" value="1" min="1" required>
+          </div>
+          <div class="mb-3">
+            <label for="modDesc" class="form-label">Description</label>
+            <textarea class="form-control" id="modDesc" name="description" rows="3"></textarea>
+          </div>
+          <div class="text-end">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary btn-sm">Save Module</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+  let selectedCourseSlug = '';
+
+  async function loadCourses() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/`);
+      const data = await response.json();
+      const select = document.getElementById('courseSelect');
+      const results = data.results || [];
+
+      results.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.slug;
+        opt.textContent = c.title;
+        select.appendChild(opt);
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  function onCourseChange() {
+    const select = document.getElementById('courseSelect');
+    selectedCourseSlug = select.value;
+    document.getElementById('addModuleBtn').disabled = !selectedCourseSlug;
+    loadAdminModules();
+  }
+
+  async function loadAdminModules() {
+    if (!selectedCourseSlug) return;
+    const tbody = document.getElementById('modulesTableBody');
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted"><i class="ri-loader-4-line ri-spin align-middle me-2"></i> Loading modules...</td></tr>`;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/${selectedCourseSlug}/`);
+      const data = await response.json();
+      const c = data.course || {};
+      const modules = c.modules || [];
+
+      if (modules.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No modules found for this course.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = modules.map(m => `
+        <tr>
+          <td><span class="badge bg-primary-100 text-primary-600 fw-bold"># ${m.order}</span></td>
+          <td>${m.id}</td>
+          <td class="fw-semibold text-dark">${m.title}</td>
+          <td class="text-muted text-sm">${m.description || '-'}</td>
+          <td>
+            <span class="badge bg-success">Active</span>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteModule(${m.id}, '${m.title}')">
+              <i class="ri-delete-bin-line"></i> Delete
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    } catch (e) {
+      console.error(e);
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Failed to load modules.</td></tr>`;
+    }
+  }
+
+  async function submitModule(e) {
+    e.preventDefault();
+    if (!selectedCourseSlug) return;
+
+    const form = document.getElementById('addModuleForm');
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((val, key) => data[key] = val);
+
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(`${API_BASE_URL}/courses/courses/${selectedCourseSlug}/modules/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(data),
+        credentials: 'include'
+      });
+
+      const resData = await response.json();
+      if (response.ok || resData.success) {
+        alert('Module added successfully!');
+        const modalEl = document.getElementById('addModuleModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal.hide();
+        form.reset();
+        loadAdminModules();
+      } else {
+        alert('Failed to save module: ' + JSON.stringify(resData.errors || resData.error));
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error saving module.');
+    }
+  }
+
+  async function deleteModule(id, name) {
+    if (!confirm(`Are you sure you want to delete the module "${name}"?`)) {
+      return;
+    }
+
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(`${API_BASE_URL}/courses/modules/${id}/`, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRFToken': csrfToken
+        },
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        alert('Module deleted successfully!');
+        loadAdminModules();
+      } else {
+        const data = await response.json();
+        alert('Failed to delete module: ' + (data.error || 'Server error'));
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error deleting module.');
+    }
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener('DOMContentLoaded', loadCourses);
+</script>
+{% endblock %}

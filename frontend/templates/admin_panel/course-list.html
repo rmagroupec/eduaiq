@@ -1,0 +1,177 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Course List - EduAIQ Admin{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Course List</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/ Course List</span>
+    </div>
+  </div>
+  <a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/courses/add/">
+    <span class="d-flex text-md">
+      <i class="ri-add-large-line"></i>
+    </span>
+    Add Course
+  </a>
+</div>
+
+<div class="card h-100">
+  <div class="card-body p-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 px-20 py-12 border-bottom border-neutral-200">
+      <div class="d-flex flex-wrap align-items-center gap-16">
+        <form class="navbar-search dt-search m-0" onsubmit="event.preventDefault(); loadAdminCourses();">
+          <input id="adminCourseSearch" class="form-control bg-transparent radius-4" placeholder="Search courses..." type="text" onkeyup="loadAdminCourses()"/>
+        </form>
+      </div>
+    </div>
+    
+    <div class="table-responsive p-20">
+      <table class="table table-bordered align-middle" id="coursesTable">
+        <thead class="table-light">
+          <tr>
+            <th>Thumbnail</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Delivery Mode</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Version</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="coursesTableBody">
+          <tr>
+            <td colspan="8" class="text-center py-5 text-muted">
+              <i class="ri-loader-4-line ri-spin align-middle me-2"></i> Loading courses...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+
+  async function loadAdminCourses() {
+    const searchVal = document.getElementById('adminCourseSearch').value.trim();
+    let url = `${API_BASE_URL}/courses/courses/`;
+    if (searchVal) {
+      url += `?q=${encodeURIComponent(searchVal)}`;
+    }
+
+    try {
+      const response = await fetch(url, { credentials: 'include' });
+      const data = await response.json();
+      const results = data.results || [];
+      const tbody = document.getElementById('coursesTableBody');
+
+      if (results.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No courses found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = results.map(c => `
+        <tr>
+          <td>
+            <img src="${c.thumbnail || 'https://via.placeholder.com/80x50'}" alt="${c.title}" style="width: 80px; height: 50px; object-fit: cover; border-radius: 4px;">
+          </td>
+          <td class="fw-semibold text-dark">${c.title}</td>
+          <td>${c.category_name || 'N/A'}</td>
+          <td class="text-capitalize">${c.delivery_mode.replace('_', ' ')}</td>
+          <td class="fw-bold">₹${c.price}</td>
+          <td>
+            <span class="badge ${getStatusBadgeClass(c.status)}">
+              ${c.status.replace('_', ' ')}
+            </span>
+          </td>
+          <td>v${c.version}</td>
+          <td>
+            <div class="d-flex gap-2">
+              <a class="btn btn-sm btn-outline-info" href="/admin-panel/courses/details/?slug=${c.slug}">
+                <i class="ri-eye-line"></i> View
+              </a>
+              <a class="btn btn-sm btn-outline-primary" href="/admin-panel/courses/edit/?slug=${c.slug}">
+                <i class="ri-edit-line"></i> Edit
+              </a>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteCourse('${c.slug}', '${c.title}')">
+                <i class="ri-delete-bin-line"></i> Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    } catch (e) {
+      console.error(e);
+      document.getElementById('coursesTableBody').innerHTML = `
+        <tr>
+          <td colspan="8" class="text-center py-4 text-danger">Failed to load courses from API.</td>
+        </tr>
+      `;
+    }
+  }
+
+  function getStatusBadgeClass(status) {
+    switch (status) {
+      case 'published': return 'bg-success';
+      case 'draft': return 'bg-secondary';
+      case 'in_review': return 'bg-warning text-dark';
+      case 'changes_requested': return 'bg-info text-dark';
+      case 'archived': return 'bg-dark';
+      default: return 'bg-primary';
+    }
+  }
+
+  async function deleteCourse(slug, title) {
+    if (!confirm(`Are you sure you want to delete the course "${title}"?`)) {
+      return;
+    }
+
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(`${API_BASE_URL}/courses/courses/${slug}/`, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRFToken': csrfToken
+        },
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        alert('Course deleted successfully!');
+        loadAdminCourses();
+      } else {
+        const data = await response.json();
+        alert('Failed to delete course: ' + (data.error || 'Server error'));
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error deleting course.');
+    }
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener('DOMContentLoaded', loadAdminCourses);
+</script>
+{% endblock %}

@@ -1,0 +1,436 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Courses - EduAiQ{% endblock %}
+
+{% block description %}Explore the comprehensive catalog of courses offered by EduAiQ. Search and filter by category or level.{% endblock %}
+
+{% block content %}
+
+<!-- Banner Section -->
+<section class="inner-banner-wrap mb-0">
+  <div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
+    <div class="container">
+      <div class="inner-banner-content">
+        <h1 class="inner-title">All Available Courses</h1>
+        <div class="breadcrumb-content">
+          <ul class="breadcrumb">
+            <li><a href="/">Home</a></li>
+            <li>Courses</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Filter & Control Section -->
+<section class="filter-section py-4 bg-light border-bottom">
+  <div class="container">
+    <div class="row g-3 align-items-center">
+      <!-- Search Input -->
+      <div class="col-md-4">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+          <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Search courses...">
+        </div>
+      </div>
+
+      <!-- Category Filter -->
+      <div class="col-md-3">
+        <select id="categoryFilter" class="form-select">
+          <option value="">All Categories</option>
+          <!-- Dynamic options will be loaded here -->
+        </select>
+      </div>
+
+      <!-- Level Filter -->
+      <div class="col-md-3">
+        <select id="levelFilter" class="form-select">
+          <option value="">All Levels</option>
+          <option value="beginner">Beginner</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="advanced">Advanced</option>
+        </select>
+      </div>
+
+      <!-- Reset button -->
+      <div class="col-md-2 text-md-end">
+        <button id="resetBtn" class="btn btn-outline-secondary w-100" onclick="resetFilters()">
+          <i class="fas fa-undo"></i> Reset
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Course List Grid -->
+<div class="home-course-section py-5">
+  <div class="container">
+    <div class="inner-course-wrap">
+      <div id="coursesGrid" class="row d-flex justify-content-center justify-content-xl-start">
+        <p class="text-center w-100 py-5">Loading courses...</p>
+      </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination-wrap d-flex justify-content-center align-items-center mt-5 gap-3">
+      <button id="prevPageBtn" class="btn btn-outline-primary" onclick="changePage(-1)" disabled>
+        <i class="fas fa-arrow-left"></i> Previous
+      </button>
+      <span id="pageInfo" class="text-muted fw-bold">Page 1</span>
+      <button id="nextPageBtn" class="btn btn-outline-primary" onclick="changePage(1)" disabled>
+        Next <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .inner-course {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 30px;
+  }
+
+  .post {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+  }
+
+  .post:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+  }
+
+  .feature-image {
+    position: relative;
+    overflow: hidden;
+    height: 220px;
+    margin: 0;
+  }
+
+  .feature-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .post:hover .feature-image img {
+    transform: scale(1.1);
+  }
+
+  .cat-meta {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(102, 126, 234, 0.9);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+    z-index: 5;
+  }
+
+  .entry-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .entry-content h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+
+  .entry-content h4 a {
+    color: #333;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .entry-content h4 a:hover {
+    color: #667eea;
+  }
+
+  .course-desc {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.6;
+  }
+
+  .rating-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .rating-info {
+    color: #999;
+    font-size: 13px;
+  }
+
+  .rating-start-wrap {
+    width: 80px;
+    height: 15px;
+    background: #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .rating-start {
+    height: 100%;
+    background: linear-gradient(90deg, #ffc107, #ff9800);
+    border-radius: 10px;
+  }
+
+  .price-delivery {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .course-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #667eea;
+  }
+
+  .delivery-mode {
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    background: #f1f3f9;
+    padding: 4px 10px;
+    border-radius: 5px;
+    text-transform: uppercase;
+  }
+
+  .entry-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+  }
+
+  .entry-meta a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #667eea;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s;
+    background: rgba(102, 126, 234, 0.08);
+    padding: 8px 15px;
+    border-radius: 5px;
+  }
+
+  .entry-meta a:hover {
+    background: rgba(102, 126, 234, 0.15);
+    color: #5568d3;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+  }
+
+  .empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+</style>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+  let currentPage = 1;
+  const pageSize = 6;
+  let totalCount = 0;
+
+  async function initPage() {
+    await loadCategoriesFilter();
+    await loadCourses();
+    
+    // Attach change event listeners for automatic filtering
+    document.getElementById('searchInput').addEventListener('input', debounce(() => {
+      currentPage = 1;
+      loadCourses();
+    }, 300));
+    
+    document.getElementById('categoryFilter').addEventListener('change', () => {
+      currentPage = 1;
+      loadCourses();
+    });
+    
+    document.getElementById('levelFilter').addEventListener('change', () => {
+      currentPage = 1;
+      loadCourses();
+    });
+  }
+
+  async function loadCategoriesFilter() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/categories/`);
+      const data = await response.json();
+      
+      const filter = document.getElementById('categoryFilter');
+      if (data.results && data.results.length > 0) {
+        data.results.forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat.id;
+          opt.textContent = cat.name;
+          filter.appendChild(opt);
+        });
+      }
+    } catch (e) {
+      console.error('Error loading filter categories:', e);
+    }
+  }
+
+  async function loadCourses() {
+    const searchVal = document.getElementById('searchInput').value.trim();
+    const categoryVal = document.getElementById('categoryFilter').value;
+    const levelVal = document.getElementById('levelFilter').value;
+
+    let url = `${API_BASE_URL}/courses/courses/?page=${currentPage}&page_size=${pageSize}`;
+    if (searchVal) url += `&q=${encodeURIComponent(searchVal)}`;
+    if (categoryVal) url += `&category=${categoryVal}`;
+    if (levelVal) url += `&level=${levelVal}`;
+
+    try {
+      const grid = document.getElementById('coursesGrid');
+      grid.innerHTML = '<p class="text-center w-100 py-5"><i class="fas fa-spinner fa-spin"></i> Loading courses...</p>';
+
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      const results = data.results || [];
+      totalCount = data.count || results.length;
+
+      if (results.length === 0) {
+        grid.innerHTML = `
+          <div class="col-12">
+            <div class="empty-state">
+              <div class="empty-state-icon">📚</div>
+              <h4>No Courses Found</h4>
+              <p>Try modifying your search or filter options.</p>
+            </div>
+          </div>
+        `;
+        updatePagination(false, false);
+        return;
+      }
+
+      grid.innerHTML = results.map(course => `
+        <div class="col-sm-6 col-lg-4 inner-course">
+          <article class="post">
+            <figure class="feature-image">
+              <img src="${course.thumbnail || 'https://via.placeholder.com/400x220'}" alt="${course.title}"/>
+              <span class="cat-meta">${course.category_name || 'Course'}</span>
+            </figure>
+            <div class="entry-content">
+              <h4>
+                <a href="/course/?slug=${course.slug}">
+                  ${course.title}
+                </a>
+              </h4>
+              <p class="course-desc">${course.description || 'No description available for this course.'}</p>
+              
+              <div class="price-delivery">
+                <span class="course-price">₹${course.price}</span>
+                <span class="delivery-mode">${course.delivery_mode.replace('_', ' ')}</span>
+              </div>
+              
+              <div class="entry-meta">
+                <a href="/course/?slug=${course.slug}">
+                  VIEW COURSE
+                  <i class="fas fa-long-arrow-alt-right"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+      `).join('');
+
+      // Check pagination states
+      const hasNext = (currentPage * pageSize) < totalCount;
+      const hasPrev = currentPage > 1;
+      updatePagination(hasPrev, hasNext);
+
+    } catch (e) {
+      console.error('Error loading courses:', e);
+      document.getElementById('coursesGrid').innerHTML = `
+        <div class="col-12">
+          <div class="empty-state">
+            <div class="empty-state-icon">⚠️</div>
+            <h4>Error Loading Courses</h4>
+            <p>Could not reach the server. Please try again later.</p>
+          </div>
+        </div>
+      `;
+      updatePagination(false, false);
+    }
+  }
+
+  function updatePagination(hasPrev, hasNext) {
+    document.getElementById('prevPageBtn').disabled = !hasPrev;
+    document.getElementById('nextPageBtn').disabled = !hasNext;
+    document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${Math.ceil(totalCount / pageSize) || 1}`;
+  }
+
+  function changePage(direction) {
+    currentPage += direction;
+    loadCourses();
+    window.scrollTo({ top: 300, behavior: 'smooth' });
+  }
+
+  function resetFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('categoryFilter').value = '';
+    document.getElementById('levelFilter').value = '';
+    currentPage = 1;
+    loadCourses();
+  }
+
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', initPage);
+</script>
+
+{% endblock %}

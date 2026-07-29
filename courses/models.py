@@ -196,9 +196,10 @@ class Lesson(models.Model):
                 self.quiz
             except Quiz.DoesNotExist:
                 raise ValidationError("A 'quiz' content type lesson must have a related Quiz object.")
-        if self.content_type in ['video', 'live'] and not self.content_url:
-            raise ValidationError(f"'{self.get_content_type_display()}' lessons require a content_url")
-        if self.content_type in ['pdf', 'text', 'assignment']:
+        if self.content_type in ['video', 'live']:
+            if not self.content_url and not self.content_file:
+                raise ValidationError(f"'{self.get_content_type_display()}' lessons require either content_url or content_file")
+        if self.content_type in ['pdf', 'assignment']:
             if not self.content_url and not self.content_file:
                 raise ValidationError(f"'{self.get_content_type_display()}' lessons require either content_url or content_file")
 

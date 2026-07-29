@@ -124,21 +124,82 @@
                     Fill in the details to get started
                 </p>
 </div>
-<form action="#" class="d-flex flex-column gap-24">
+{% if form_errors %}
+<div class="alert alert-danger">
+<ul class="mb-0 ps-16">
+{% for error in form_errors %}
+<li>{{ error }}</li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+{% if form_errors %}
+<div class="alert alert-danger">
+<ul class="mb-0 ps-16">
+{% for error in form_errors %}
+<li>{{ error }}</li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+{% if form_errors %}
+<div class="alert alert-danger">
+<ul class="mb-0 ps-16">
+{% for error in form_errors %}
+<li>{{ error }}</li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+{% if form_errors %}
+<div class="alert alert-danger">
+<ul class="mb-0 ps-16">
+{% for error in form_errors %}
+<li>{{ error }}</li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+{% if form_errors %}
+<div class="alert alert-danger">
+<ul class="mb-0 ps-16">
+{% for error in form_errors %}
+<li>{{ error }}</li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+{% if form_errors %}
+<div class="alert alert-danger">
+<ul class="mb-0 ps-16">
+{% for error in form_errors %}
+<li>{{ error }}</li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+<form action="{% url 'register_submit' %}" method="post" class="d-flex flex-column gap-24">
     {% csrf_token %}
-<!-- Full Name -->
+<!-- Username -->
 <div>
 <label class="text-sm fw-semibold text-primary-light mb-8">
-                        Full Name <span class="text-danger-600">*</span>
+                        Username <span class="text-danger-600">*</span>
 </label>
-<input class="form-control" placeholder="Enter your full name" type="text"/>
+<input class="form-control" name="username" value="{{ old_username|default:'' }}" placeholder="Enter your username" type="text"/>
 </div>
 <!-- Email -->
 <div>
 <label class="text-sm fw-semibold text-primary-light mb-8">
                         Email Address <span class="text-danger-600">*</span>
 </label>
-<input class="form-control" placeholder="Enter your email" type="email"/>
+<input class="form-control" name="email" value="{{ old_email|default:'' }}" placeholder="Enter your email" type="email"/>
+</div>
+<!-- Phone -->
+<div>
+<label class="text-sm fw-semibold text-primary-light mb-8">
+                        Phone Number <span class="text-danger-600">*</span>
+</label>
+<input class="form-control" name="phone" value="{{ old_phone|default:'' }}" placeholder="Enter your phone number" type="text"/>
 </div>
 <!-- Password -->
 <div>
@@ -147,7 +208,7 @@
                         <span class="text-danger-600">*</span>
 </label>
 <div class="position-relative">
-<input class="form-control" id="password" placeholder="Enter your password" required="" type="password"/>
+<input class="form-control" id="password" name="password1" placeholder="Enter your password" required="" type="password"/>
 <button aria-label="Toggle password visibility" class="toggle-password btn p-0 border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light cursor-pointer ri-eye-line" data-toggle="#password" type="button">
 </button>
 </div>
@@ -159,7 +220,7 @@
                             <span class="text-danger-600">*</span>
 </label>
 <div class="position-relative">
-<input class="form-control" id="confirmPassword" placeholder="Enter your password" required="" type="password"/>
+<input class="form-control" id="confirmPassword" name="password2" placeholder="Enter your password" required="" type="password"/>
 <button aria-label="Toggle password visibility" class="toggle-password btn p-0 border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light cursor-pointer ri-eye-line" data-toggle="#confirmPassword" type="button">
 </button>
 </div>
@@ -169,12 +230,12 @@
 <label class="text-sm fw-semibold text-primary-light mb-8">
                         Select Role
                     </label>
-<select class="form-select">
+<select class="form-select" name="role">
 <option value="">Choose your role</option>
-<option>Student</option>
-<option>Teacher</option>
-<option>Guardian</option>
-<option>Admin</option>
+<option value="student" {% if old_role == 'student' %}selected{% endif %}>Student</option>
+<option value="teacher" {% if old_role == 'teacher' %}selected{% endif %}>Teacher</option>
+<option value="guardian" {% if old_role == 'guardian' %}selected{% endif %}>Guardian</option>
+<option value="admin" {% if old_role == 'admin' %}selected{% endif %}>Admin</option>
 </select>
 </div>
 <!-- Terms -->
@@ -190,7 +251,7 @@
 <!-- Login Link -->
 <div class="mt-24 text-center text-sm">
                 Already have an account?
-                <a class="text-primary-600 fw-semibold text-decoration-underline" href="/login/">
+                <a class="text-primary-600 fw-semibold text-decoration-underline" href="/admin-panel/login/">
                     Log In
                 </a>
 </div>

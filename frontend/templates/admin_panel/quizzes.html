@@ -1,0 +1,270 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Quiz Management - EduAIQ Admin{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Quizzes</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/ Quizzes</span>
+    </div>
+  </div>
+</div>
+
+<!-- Select Course Selector -->
+<div class="card mb-24">
+  <div class="card-body p-24">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <label for="courseSelect" class="form-label fw-semibold text-primary-light">Select Course to View Quizzes:</label>
+        <select id="courseSelect" class="form-select" onchange="onCourseChange()">
+          <option value="" disabled selected>-- Select Course --</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card h-100">
+  <div class="card-body p-24">
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Quiz ID</th>
+            <th>Lesson Context</th>
+            <th>Questions Count</th>
+            <th>Duration</th>
+            <th>Passing Score</th>
+            <th>Anti-Cheating</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="quizzesTableBody">
+          <tr>
+            <td colspan="7" class="text-center py-4 text-muted">
+              Select a course above to load quizzes.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Quiz Settings Modal -->
+<div class="modal fade" id="editQuizModal" tabindex="-1" aria-labelledby="editQuizModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="editQuizModalLabel">Edit Quiz Settings</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editQuizForm" onsubmit="submitQuizEdit(event)">
+          <input type="hidden" id="editQuizId">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="passingScore" class="form-label">Passing Score (%) <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" id="passingScore" name="passing_score_pct" min="1" max="100" required>
+            </div>
+            <div class="col-md-6">
+              <label for="timeLimit" class="form-label">Time Limit (Minutes) <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" id="timeLimit" name="time_limit_minutes" min="1" required>
+            </div>
+            <div class="col-md-6">
+              <label for="attemptsAllowed" class="form-label">Attempts Allowed <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" id="attemptsAllowed" name="attempts_allowed" min="1" required>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-check mt-32">
+                <input class="form-check-input" type="checkbox" id="shuffleQuestions" name="shuffle_questions" value="true">
+                <label class="form-check-label" for="shuffleQuestions">Shuffle Questions</label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="showCorrectAnswers" name="show_correct_answers" value="true">
+                <label class="form-check-label" for="showCorrectAnswers">Show Correct Answers to Students</label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="enableAntiCheating" name="enable_anti_cheating" value="true">
+                <label class="form-check-label" for="enableAntiCheating">Enable Anti-Cheating Proctoring</label>
+              </div>
+            </div>
+          </div>
+          <div class="text-end mt-4">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary btn-sm">Save Settings</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+  let selectedCourseSlug = '';
+
+  async function loadCourses() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/`);
+      const data = await response.json();
+      const select = document.getElementById('courseSelect');
+      const results = data.results || [];
+
+      results.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.slug;
+        opt.textContent = c.title;
+        select.appendChild(opt);
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  function onCourseChange() {
+    selectedCourseSlug = document.getElementById('courseSelect').value;
+    loadAdminQuizzes();
+  }
+
+  async function loadAdminQuizzes() {
+    if (!selectedCourseSlug) return;
+    const tbody = document.getElementById('quizzesTableBody');
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted"><i class="ri-loader-4-line ri-spin align-middle me-2"></i> Loading quizzes...</td></tr>`;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/${selectedCourseSlug}/`);
+      const data = await response.json();
+      const c = data.course || {};
+      const quizzes = c.quizzes || [];
+
+      if (quizzes.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">No quizzes linked to this course.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = quizzes.map(q => `
+        <tr>
+          <td># ${q.id}</td>
+          <td class="fw-semibold text-dark">${q.title}</td>
+          <td>${q.total_questions} Questions</td>
+          <td>${q.time_limit_minutes} Mins</td>
+          <td>${q.passing_score_pct} %</td>
+          <td>
+            <span class="badge ${q.enable_anti_cheating ? 'bg-danger' : 'bg-secondary'}">
+              ${q.enable_anti_cheating ? '📷 Proctoring Active' : 'Off'}
+            </span>
+          </td>
+          <td>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-primary" onclick="openEditQuizModal(${q.id})">
+                <i class="ri-settings-4-line"></i> Configure Rules
+              </button>
+              <a href="/admin-panel/quiz-logs/?quiz=${q.id}" class="btn btn-sm btn-outline-info">
+                <i class="ri-file-list-3-line"></i> View logs
+              </a>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    } catch (e) {
+      console.error(e);
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Failed to load quizzes.</td></tr>`;
+    }
+  }
+
+  async function openEditQuizModal(id) {
+    document.getElementById('editQuizId').value = id;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/quizzes/${id}/`);
+      const data = await response.json();
+      const q = data.quiz;
+
+      document.getElementById('passingScore').value = q.passing_score_pct;
+      document.getElementById('timeLimit').value = q.time_limit_minutes;
+      document.getElementById('attemptsAllowed').value = q.attempts_allowed;
+      document.getElementById('shuffleQuestions').checked = q.shuffle_questions;
+      document.getElementById('showCorrectAnswers').checked = q.show_correct_answers;
+      document.getElementById('enableAntiCheating').checked = q.enable_anti_cheating;
+
+      const modalEl = document.getElementById('editQuizModal');
+      const modal = new bootstrap.Modal(modalEl);
+      modal.show();
+    } catch (e) {
+      console.error(e);
+      alert('Error fetching quiz details.');
+    }
+  }
+
+  async function submitQuizEdit(e) {
+    e.preventDefault();
+    const id = document.getElementById('editQuizId').value;
+    const form = document.getElementById('editQuizForm');
+    
+    // Construct request body with boolean support
+    const data = {
+      passing_score_pct: parseInt(document.getElementById('passingScore').value),
+      time_limit_minutes: parseInt(document.getElementById('timeLimit').value),
+      attempts_allowed: parseInt(document.getElementById('attemptsAllowed').value),
+      shuffle_questions: document.getElementById('shuffleQuestions').checked,
+      show_correct_answers: document.getElementById('showCorrectAnswers').checked,
+      enable_anti_cheating: document.getElementById('enableAntiCheating').checked
+    };
+
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(`${API_BASE_URL}/courses/quizzes/${id}/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(data),
+        credentials: 'include'
+      });
+
+      const resData = await response.json();
+      if (response.ok || resData.success) {
+        alert('Quiz rules updated successfully!');
+        const modalEl = document.getElementById('editQuizModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal.hide();
+        loadAdminQuizzes();
+      } else {
+        alert('Failed to update: ' + JSON.stringify(resData.errors || resData.error));
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error saving quiz updates.');
+    }
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener('DOMContentLoaded', loadCourses);
+</script>
+{% endblock %}

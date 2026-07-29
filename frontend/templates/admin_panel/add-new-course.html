@@ -1,0 +1,206 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Add New Course - EduAIQ Admin{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Add New Course</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/courses/">/ Courses</a>
+      <span class="text-secondary-light">/ Add Course</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header border-bottom py-16 px-24">
+    <h5 class="card-title mb-0">Course Details Form</h5>
+  </div>
+  <div class="card-body p-24">
+    <form id="addCourseForm" onsubmit="submitCourse(event)" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row g-3">
+        <!-- Title -->
+        <div class="col-md-6">
+          <label class="form-label" for="title">Course Title <span class="text-danger">*</span></label>
+          <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Python Basics" required oninput="generateSlug()"/>
+        </div>
+
+        <!-- Slug -->
+        <div class="col-md-6">
+          <label class="form-label" for="slug">Course Slug <span class="text-danger">*</span></label>
+          <input type="text" id="slug" name="slug" class="form-control" placeholder="e.g. python-basics" required/>
+        </div>
+
+        <!-- Category -->
+        <div class="col-md-6">
+          <label class="form-label" for="category">Category <span class="text-danger">*</span></label>
+          <select id="category" name="category" class="form-select" required>
+            <option value="" disabled selected>Select Category</option>
+            <!-- Categories loaded dynamically -->
+          </select>
+        </div>
+
+        <!-- Delivery Mode -->
+        <div class="col-md-6">
+          <label class="form-label" for="delivery_mode">Delivery Mode <span class="text-danger">*</span></label>
+          <select id="delivery_mode" name="delivery_mode" class="form-select" required>
+            <option value="hybrid">Hybrid — Video + Content</option>
+            <option value="video_lecture">Video Lecture Based</option>
+            <option value="content_based">Content/Reading Based</option>
+          </select>
+        </div>
+
+        <!-- Price -->
+        <div class="col-md-4">
+          <label class="form-label" for="price">Price (INR) <span class="text-danger">*</span></label>
+          <input type="number" id="price" name="price" class="form-control" placeholder="e.g. 1999" min="1" step="0.01" required/>
+        </div>
+
+        <!-- Status -->
+        <div class="col-md-4">
+          <label class="form-label" for="status">Status <span class="text-danger">*</span></label>
+          <select id="status" name="status" class="form-select" required>
+            <option value="draft">Draft</option>
+            <option value="in_review">In Review</option>
+            <option value="published">Published</option>
+            <option value="archived">Archived</option>
+          </select>
+        </div>
+
+        <!-- Version -->
+        <div class="col-md-4">
+          <label class="form-label" for="version">Version <span class="text-danger">*</span></label>
+          <input type="number" id="version" name="version" class="form-control" value="1" min="1" required/>
+        </div>
+
+        <!-- Thumbnail -->
+        <div class="col-12">
+          <label class="form-label" for="thumbnail">Course Thumbnail</label>
+          <input type="file" id="thumbnail" name="thumbnail" class="form-control" accept="image/*" onchange="previewSelectedImage(event)"/>
+          <div id="newThumbnailPreviewContainer" style="display: none; margin-top: 10px;">
+            <label class="form-label d-block text-sm text-secondary-light">Selected Image Preview:</label>
+            <img id="newThumbnailPreview" src="" alt="Preview" style="width: 150px; height: 100px; object-fit: cover; border: 1px solid #ddd; border-radius: 4px;">
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="col-12">
+          <label class="form-label" for="description">Course Description</label>
+          <textarea id="description" name="description" class="form-control" rows="5" placeholder="Provide a detailed description of the course contents..."></textarea>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="col-12 mt-4 text-end">
+          <a class="btn btn-outline-secondary me-2" href="/admin-panel/courses/">Cancel</a>
+          <button type="submit" class="btn btn-primary-600">Save Course</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+
+  function previewSelectedImage(event) {
+    const file = event.target.files[0];
+    const previewContainer = document.getElementById('newThumbnailPreviewContainer');
+    const previewImg = document.getElementById('newThumbnailPreview');
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        previewImg.src = e.target.result;
+        previewContainer.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    } else {
+      previewImg.src = '';
+      previewContainer.style.display = 'none';
+    }
+  }
+
+  function generateSlug() {
+    const titleVal = document.getElementById('title').value;
+    const slugVal = titleVal.toLowerCase()
+                            .replace(/[^a-z0-9\s-]/g, '')
+                            .replace(/\s+/g, '-')
+                            .replace(/-+/g, '-');
+    document.getElementById('slug').value = slugVal;
+  }
+
+  async function loadCategories() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/categories/`);
+      const data = await response.json();
+      const select = document.getElementById('category');
+      
+      if (data.results) {
+        data.results.forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat.id;
+          opt.textContent = cat.name;
+          select.appendChild(opt);
+        });
+      }
+    } catch (e) {
+      console.error('Error loading categories:', e);
+    }
+  }
+
+  async function submitCourse(e) {
+    e.preventDefault();
+    const form = document.getElementById('addCourseForm');
+    const formData = new FormData(form);
+
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(`${API_BASE_URL}/courses/courses/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrfToken
+        },
+        body: formData,
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (response.ok || data.success) {
+        alert('Course created successfully!');
+        window.location.href = '/admin-panel/courses/';
+      } else {
+        let errMsg = data.error || 'Validation failed.';
+        if (data.errors) {
+          errMsg += '\n' + Object.entries(data.errors).map(([f, errs]) => `${f}: ${errs.join(', ')}`).join('\n');
+        }
+        alert(errMsg);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error saving course.');
+    }
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener('DOMContentLoaded', loadCategories);
+</script>
+{% endblock %}

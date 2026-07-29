@@ -465,7 +465,7 @@
 </style>
 
 <script>
-  const API_BASE_URL = 'http://localhost:8000';
+  const API_BASE_URL = window.location.origin;
   let currentQuestionIndex = 0;
   let quizId = new URLSearchParams(window.location.search).get('id');
   let attemptId = null;

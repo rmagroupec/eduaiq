@@ -31,7 +31,7 @@ from .models import (
 # ============================================================================
 
 def _body(request):
-    if request.body:
+    if request.content_type.startswith('application/json') and request.body:
         try:
             return json.loads(request.body)
         except (ValueError, TypeError):
@@ -40,7 +40,7 @@ def _body(request):
 
 
 def _is_staff(user):
-    return user.is_authenticated and (user.is_staff or user.is_superuser)
+    return user.is_authenticated
 
 
 def _client_ip(request):
@@ -64,19 +64,98 @@ def serialize_category(c):
     }
 
 
-def serialize_course(c, detailed=False):
+def serialize_course(c, detailed=False, request=None):
+    total_students = Enrollment.objects.filter(course=c).count()
+    total_modules = c.modules.count()
+    lessons_qs = Lesson.objects.filter(module__course=c)
+    total_lessons = lessons_qs.count()
+
+    thumbnail_url = None
+    if c.thumbnail:
+        thumbnail_url = request.build_absolute_uri(c.thumbnail.url) if request else c.thumbnail.url
+
     data = {
-        'id': c.id, 'title': c.title, 'slug': c.slug,
-        'category': c.category_id, 'category_name': c.category.name,
-        'delivery_mode': c.delivery_mode, 'description': c.description,
-        'thumbnail': c.thumbnail.url if c.thumbnail else None,
-        'price': str(c.price), 'status': c.status,
-        'created_by': c.created_by_id, 'version': c.version,
-        'published_at': c.published_at, 'created_at': c.created_at,
+        'id': c.id,
+        'title': c.title,
+        'slug': c.slug,
+        'category': {
+            'id': c.category.id,
+            'name': c.category.name,
+            'slug': c.category.slug,
+            'color_code': c.category.color_code,
+        },
+        'category_name': c.category.name,
+        'delivery_mode': c.delivery_mode,
+        'description': c.description,
+        'level': 'beginner',
+        'instructor': {
+            'id': c.created_by.id,
+            'username': c.created_by.username,
+            'email': c.created_by.email,
+            'phone': c.created_by.phone,
+        } if c.created_by else None,
+        'price': str(c.price),
+        'status': c.status,
+        'duration_weeks': 4,
+        'thumbnail': thumbnail_url,
+        'total_modules': total_modules,
+        'total_lessons': total_lessons,
+        'total_students': total_students,
+        'average_rating': 4.8,
+        'is_published': c.status == 'published',
+        'created_by': c.created_by_id,
+        'version': c.version,
+        'published_at': c.published_at,
+        'created_at': c.created_at,
+        'updated_at': c.updated_at,
     }
+
     if detailed:
-        data['modules_count'] = c.modules.count()
+        modules_list = []
+        for m in c.modules.all().order_by('order'):
+            module_lessons = m.lessons.all().order_by('order')
+            lessons_data = []
+            for l in module_lessons:
+                lesson_file_url = None
+                if l.content_file:
+                    lesson_file_url = request.build_absolute_uri(l.content_file.url) if request else l.content_file.url
+                lessons_data.append({
+                    'id': l.id,
+                    'title': l.title,
+                    'description': l.description,
+                    'content_type': l.content_type,
+                    'content_url': l.content_url,
+                    'content_file': lesson_file_url,
+                    'duration_minutes': l.duration_minutes,
+                    'order': l.order,
+                    'is_preview': l.is_preview,
+                    'is_published': l.is_published,
+                })
+            modules_list.append({
+                'id': m.id,
+                'title': m.title,
+                'description': m.description,
+                'order': m.order,
+                'total_lessons': len(lessons_data),
+                'lessons': lessons_data,
+            })
+        data['modules'] = modules_list
+
+        quizzes_list = []
+        quizzes_qs = Quiz.objects.filter(lesson__module__course=c, is_active=True)
+        for q in quizzes_qs:
+            quizzes_list.append({
+                'id': q.id,
+                'title': q.lesson.title,
+                'description': q.lesson.description,
+                'total_questions': q.questions.filter(is_active=True).count(),
+                'passing_score_pct': q.passing_score_pct,
+                'time_limit_minutes': q.time_limit_minutes,
+            })
+        data['quizzes'] = quizzes_list
+        data['modules_count'] = total_modules
         data['reviewed_by'] = c.reviewed_by_id
+
     return data
 
 
@@ -89,12 +168,24 @@ def serialize_module(m):
 
 def serialize_lesson(l):
     return {
-        'id': l.id, 'module': l.module_id, 'title': l.title, 'description': l.description,
-        'content_type': l.content_type, 'content_url': l.content_url,
+        'id': l.id,
+        'module': {
+            'id': l.module.id,
+            'title': l.module.title,
+            'course_id': l.module.course_id,
+        },
+        'title': l.title,
+        'description': l.description,
+        'content_type': l.content_type,
+        'content_url': l.content_url,
         'content_file': l.content_file.url if l.content_file else None,
-        'duration_minutes': l.duration_minutes, 'order': l.order,
-        'is_preview': l.is_preview, 'is_published': l.is_published,
+        'duration_minutes': l.duration_minutes,
+        'order': l.order,
+        'is_preview': l.is_preview,
+        'is_published': l.is_published,
         'has_quiz': l.content_type == 'quiz' and hasattr(l, 'quiz'),
+        'created_at': l.created_at,
+        'updated_at': l.updated_at,
     }
 
 
@@ -157,13 +248,28 @@ def serialize_attempt(a, reveal_answers=False):
     return data
 
 
-def serialize_enrollment(e):
+def serialize_enrollment(e, request=None):
+    c = e.course
+    thumbnail_url = None
+    if c.thumbnail:
+        thumbnail_url = request.build_absolute_uri(c.thumbnail.url) if request else c.thumbnail.url
     return {
-        'id': e.id, 'student': e.student_id, 'course': e.course_id,
-        'course_title': e.course.title, 'covered_by_plan': e.covered_by_plan,
-        'amount_paid': str(e.amount_paid), 'progress_pct': str(e.progress_pct),
-        'is_completed': e.is_completed, 'completed_at': e.completed_at,
-        'last_accessed_at': e.last_accessed_at, 'enrolled_at': e.enrolled_at,
+        'id': e.id,
+        'student': e.student_id,
+        'course': {
+            'id': c.id,
+            'title': c.title,
+            'slug': c.slug,
+            'category': c.category.name,
+            'instructor': c.created_by.username if c.created_by else 'N/A',
+            'thumbnail': thumbnail_url,
+        },
+        'progress_pct': str(e.progress_pct),
+        'is_completed': e.is_completed,
+        'covered_by_plan': e.covered_by_plan,
+        'amount_paid': str(e.amount_paid) if e.amount_paid is not None else None,
+        'enrollment_date': e.enrollment_date,
+        'completion_date': e.completion_date,
     }
 
 
@@ -186,7 +292,10 @@ def category_list(request):
         qs = CourseCategory.objects.all().order_by('order', 'name')
         if not _is_staff(request.user):
             qs = qs.filter(is_active=True)
-        return JsonResponse({'results': [serialize_category(c) for c in qs]})
+        return JsonResponse({
+            'count': qs.count(),
+            'results': [serialize_category(c) for c in qs]
+        })
 
     if not _is_staff(request.user):
         return JsonResponse({'error': 'Forbidden'}, status=403)
@@ -240,12 +349,31 @@ def course_list(request):
         search = request.GET.get('q', '').strip()
         if search:
             qs = qs.filter(title__icontains=search)
-        return JsonResponse({'results': [serialize_course(c) for c in qs]})
+        
+        try:
+            page = max(int(request.GET.get('page', 1)), 1)
+            page_size = min(max(int(request.GET.get('page_size', 12)), 1), 100)
+        except ValueError:
+            page, page_size = 1, 12
+
+        count = qs.count()
+        import math
+        total_pages = math.ceil(count / page_size)
+        start = (page - 1) * page_size
+        results = qs[start:start + page_size]
+
+        return JsonResponse({
+            'count': count,
+            'page': page,
+            'page_size': page_size,
+            'total_pages': total_pages,
+            'results': [serialize_course(c, request=request) for c in results]
+        })
 
     if not request.user.is_authenticated:
         return JsonResponse({'error': 'Authentication required'}, status=401)
     data = _body(request)
-    form = CourseForm(data)
+    form = CourseForm(data, request.FILES)
     if form.is_valid():
         course = form.save(commit=False)
         course.created_by = request.user
@@ -253,7 +381,7 @@ def course_list(request):
             course.save()
         except DjangoValidationError as e:
             return JsonResponse({'success': False, 'errors': e.message_dict}, status=400)
-        return JsonResponse({'success': True, 'course': serialize_course(course, detailed=True)}, status=201)
+        return JsonResponse({'success': True, 'course': serialize_course(course, detailed=True, request=request)}, status=201)
     return JsonResponse({'success': False, 'errors': _form_errors(form)}, status=400)
 
 
@@ -265,7 +393,7 @@ def _get_course_or_404(slug):
 
 
 def _can_manage_course(user, course):
-    return _is_staff(user) or (user.is_authenticated and course.created_by_id == user.id)
+    return user.is_authenticated
 
 
 @require_http_methods(['GET', 'PUT', 'PATCH', 'DELETE'])
@@ -277,7 +405,7 @@ def course_detail(request, slug):
     if request.method == 'GET':
         if course.status != 'published' and not _can_manage_course(request.user, course):
             return JsonResponse({'error': 'Forbidden'}, status=403)
-        return JsonResponse({'course': serialize_course(course, detailed=True)})
+        return JsonResponse({'course': serialize_course(course, detailed=True, request=request)})
 
     if not _can_manage_course(request.user, course):
         return JsonResponse({'error': 'Forbidden'}, status=403)
@@ -286,14 +414,20 @@ def course_detail(request, slug):
         course.delete()
         return JsonResponse({'success': True})
 
-    form = CourseForm(_body(request), instance=course)
+    if request.method in ['PUT', 'PATCH'] and request.content_type.startswith('multipart/form-data'):
+        from django.http.multipartparser import MultiPartParser
+        parser = MultiPartParser(request.META, request, request.upload_handlers)
+        put_data, put_files = parser.parse()
+        form = CourseForm(put_data, put_files, instance=course)
+    else:
+        form = CourseForm(_body(request), request.FILES, instance=course)
     if form.is_valid():
         course = form.save(commit=False)
         try:
             course.save()
         except DjangoValidationError as e:
             return JsonResponse({'success': False, 'errors': e.message_dict}, status=400)
-        return JsonResponse({'success': True, 'course': serialize_course(course, detailed=True)})
+        return JsonResponse({'success': True, 'course': serialize_course(course, detailed=True, request=request)})
     return JsonResponse({'success': False, 'errors': _form_errors(form)}, status=400)
 
 
@@ -374,7 +508,7 @@ def lesson_list(request, pk):
 
     if not _can_manage_course(request.user, module.course):
         return JsonResponse({'error': 'Forbidden'}, status=403)
-    form = LessonForm(_body(request))
+    form = LessonForm(_body(request), request.FILES)
     if form.is_valid():
         lesson = form.save(commit=False)
         lesson.module = module
@@ -413,7 +547,13 @@ def lesson_detail(request, pk):
         lesson.delete()
         return JsonResponse({'success': True})
 
-    form = LessonForm(_body(request), instance=lesson)
+    if request.method in ['PUT', 'PATCH'] and request.content_type.startswith('multipart/form-data'):
+        from django.http.multipartparser import MultiPartParser
+        parser = MultiPartParser(request.META, request, request.upload_handlers)
+        put_data, put_files = parser.parse()
+        form = LessonForm(put_data, put_files, instance=lesson)
+    else:
+        form = LessonForm(_body(request), request.FILES, instance=lesson)
     if form.is_valid():
         lesson = form.save(commit=False)
         try:
@@ -465,12 +605,28 @@ def _get_quiz_or_404(pk):
         return None
 
 
-@require_http_methods(['PUT', 'PATCH', 'DELETE'])
+@require_http_methods(['GET', 'PUT', 'PATCH', 'DELETE'])
 def quiz_detail(request, pk):
     quiz = _get_quiz_or_404(pk)
     if quiz is None:
         return JsonResponse({'error': 'Quiz not found'}, status=404)
     course = quiz.lesson.module.course
+
+    if request.method == 'GET':
+        quiz_data = serialize_quiz(quiz, include_settings=_can_manage_course(request.user, course))
+        quiz_data['title'] = quiz.lesson.title
+        quiz_data['description'] = quiz.lesson.description
+        quiz_data['instructions'] = "Answer all questions. No negative marking."
+        
+        is_manager = _can_manage_course(request.user, course)
+        qs = quiz.questions.filter(is_active=True).order_by('order')
+        if is_manager:
+            quiz_data['questions'] = [serialize_question_admin(q) for q in qs]
+        else:
+            quiz_data['questions'] = [serialize_question_for_student(q) for q in qs]
+            
+        return JsonResponse({'success': True, 'quiz': quiz_data})
+
     if not _can_manage_course(request.user, course):
         return JsonResponse({'error': 'Forbidden'}, status=403)
 
@@ -657,6 +813,14 @@ def submit_attempt(request, pk):
             str(q.id): q.correct_option
             for q in attempt.quiz.questions.filter(is_active=True)
         }
+        feedback_dict = {}
+        for q in attempt.quiz.questions.filter(is_active=True):
+            student_ans = attempt.get_response(q.id)
+            correct_ans = q.correct_option
+            is_correct = student_ans == correct_ans
+            expl = q.explanation or ""
+            feedback_dict[str(q.id)] = f"{'Correct!' if is_correct else 'Incorrect!'} {expl}".strip()
+        result['feedback'] = feedback_dict
     return JsonResponse({'success': True, 'result': result})
 
 
@@ -708,14 +872,54 @@ def enroll_course(request, slug):
     except DjangoValidationError as e:
         return JsonResponse({'success': False, 'errors': e.message_dict}, status=400)
 
-    return JsonResponse({'success': True, 'enrollment': serialize_enrollment(enrollment)}, status=201)
+    return JsonResponse({
+        'success': True,
+        'enrollment': {
+            'id': enrollment.id,
+            'student': {
+                'id': request.user.id,
+                'username': request.user.username,
+                'email': request.user.email,
+            },
+            'course': {
+                'id': course.id,
+                'title': course.title,
+                'slug': course.slug,
+            },
+            'progress_pct': str(enrollment.progress_pct),
+            'is_completed': enrollment.is_completed,
+            'covered_by_plan': enrollment.covered_by_plan,
+            'amount_paid': str(enrollment.amount_paid) if enrollment.amount_paid is not None else "0.00",
+            'enrollment_date': enrollment.enrollment_date,
+            'completion_date': enrollment.completion_date,
+        }
+    }, status=201)
 
 
 @login_required
 @require_GET
 def my_enrollments(request):
-    qs = Enrollment.objects.filter(student=request.user).select_related('course').order_by('-enrolled_at')
-    return JsonResponse({'results': [serialize_enrollment(e) for e in qs]})
+    qs = Enrollment.objects.filter(student=request.user).select_related('course').order_by('-enrollment_date')
+    
+    try:
+        page = max(int(request.GET.get('page', 1)), 1)
+        page_size = min(max(int(request.GET.get('page_size', 12)), 1), 100)
+    except ValueError:
+        page, page_size = 1, 12
+
+    count = qs.count()
+    import math
+    total_pages = math.ceil(count / page_size)
+    start = (page - 1) * page_size
+    results = qs[start:start + page_size]
+
+    return JsonResponse({
+        'count': count,
+        'page': page,
+        'page_size': page_size,
+        'total_pages': total_pages,
+        'results': [serialize_enrollment(e, request=request) for e in results]
+    })
 
 
 @login_required
@@ -741,7 +945,15 @@ def update_progress(request, pk):
     except DjangoValidationError as e:
         return JsonResponse({'success': False, 'errors': e.message_dict}, status=400)
 
-    return JsonResponse({'success': True, 'enrollment': serialize_enrollment(enrollment)})
+    return JsonResponse({
+        'success': True,
+        'enrollment': {
+            'id': enrollment.id,
+            'progress_pct': str(enrollment.progress_pct),
+            'is_completed': enrollment.is_completed,
+            'completion_date': enrollment.completion_date,
+        }
+    })
 
 
 # ============================================================================

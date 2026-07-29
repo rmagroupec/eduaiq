@@ -1,0 +1,227 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Category Management - EduAIQ Admin{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Categories</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/ Categories</span>
+    </div>
+  </div>
+  <button class="btn btn-primary-600 d-flex align-items-center gap-6" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+    <span class="d-flex text-md"><i class="ri-add-large-line"></i></span>
+    Add Category
+  </button>
+</div>
+
+<div class="card h-100">
+  <div class="card-body p-24">
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Color Swatch</th>
+            <th>Name</th>
+            <th>Slug</th>
+            <th>Description</th>
+            <th>Order</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="categoryTableBody">
+          <tr>
+            <td colspan="8" class="text-center py-4 text-muted">
+              <i class="ri-loader-4-line ri-spin align-middle me-2"></i> Loading categories...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Add Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="addCategoryModalLabel">Add New Category</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addCategoryForm" onsubmit="submitCategory(event)">
+          <div class="mb-3">
+            <label for="catName" class="form-label">Category Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="catName" name="name" required oninput="generateCatSlug()">
+          </div>
+          <div class="mb-3">
+            <label for="catSlug" class="form-label">Slug <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="catSlug" name="slug" required>
+          </div>
+          <div class="mb-3">
+            <label for="catColor" class="form-label">Color Swatch <span class="text-danger">*</span></label>
+            <input type="color" class="form-control form-control-color" id="catColor" name="color_code" value="#0d6efd">
+          </div>
+          <div class="mb-3">
+            <label for="catOrder" class="form-label">Display Order <span class="text-danger">*</span></label>
+            <input type="number" class="form-control" id="catOrder" name="order" value="1" min="1" required>
+          </div>
+          <div class="mb-3">
+            <label for="catDesc" class="form-label">Description</label>
+            <textarea class="form-control" id="catDesc" name="description" rows="3"></textarea>
+          </div>
+          <div class="text-end">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary btn-sm">Save Category</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+
+  function generateCatSlug() {
+    const nameVal = document.getElementById('catName').value;
+    const slugVal = nameVal.toLowerCase()
+                           .replace(/[^a-z0-9\s-]/g, '')
+                           .replace(/\s+/g, '-')
+                           .replace(/-+/g, '-');
+    document.getElementById('catSlug').value = slugVal;
+  }
+
+  async function loadAdminCategories() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/categories/`);
+      const data = await response.json();
+      const tbody = document.getElementById('categoryTableBody');
+      const results = data.results || [];
+
+      if (results.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No categories found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = results.map(c => `
+        <tr>
+          <td>${c.id}</td>
+          <td>
+            <div style="width: 40px; height: 20px; background-color: ${c.color_code || '#ddd'}; border-radius: 4px; border: 1px solid #ccc;"></div>
+          </td>
+          <td class="fw-semibold text-dark">${c.name}</td>
+          <td><code>${c.slug}</code></td>
+          <td class="text-muted text-sm">${c.description || '-'}</td>
+          <td>${c.order}</td>
+          <td>
+            <span class="badge ${c.is_active ? 'bg-success' : 'bg-secondary'}">
+              ${c.is_active ? 'Active' : 'Inactive'}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteCategory(${c.id}, '${c.name}')">
+              <i class="ri-delete-bin-line"></i> Delete
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    } catch (e) {
+      console.error(e);
+      document.getElementById('categoryTableBody').innerHTML = `
+        <tr>
+          <td colspan="8" class="text-center py-4 text-danger">Failed to load categories.</td>
+        </tr>
+      `;
+    }
+  }
+
+  async function submitCategory(e) {
+    e.preventDefault();
+    const form = document.getElementById('addCategoryForm');
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((val, key) => data[key] = val);
+
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(`${API_BASE_URL}/courses/categories/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(data),
+        credentials: 'include'
+      });
+
+      const resData = await response.json();
+      if (response.ok || resData.success) {
+        alert('Category added successfully!');
+        const modalEl = document.getElementById('addCategoryModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal.hide();
+        form.reset();
+        loadAdminCategories();
+      } else {
+        alert('Failed to save category: ' + JSON.stringify(resData.errors || resData.error));
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error saving category.');
+    }
+  }
+
+  async function deleteCategory(id, name) {
+    if (!confirm(`Are you sure you want to delete the category "${name}"?`)) {
+      return;
+    }
+
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(`${API_BASE_URL}/courses/categories/${id}/`, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRFToken': csrfToken
+        },
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        alert('Category deleted successfully!');
+        loadAdminCategories();
+      } else {
+        const data = await response.json();
+        alert('Failed to delete category: ' + (data.error || 'Server error'));
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error deleting category.');
+    }
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener('DOMContentLoaded', loadAdminCategories);
+</script>
+{% endblock %}

@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}<span id="lessonTitleTab">Lesson</span> - EduAiQ{% endblock %}
+
+{% block content %}
+<div class="lesson-player-container py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <!-- Back to Course Link -->
+      <div class="col-12 mb-4">
+        <a id="backToCourseBtn" href="/courses/" class="btn btn-outline-secondary">
+          <i class="fas fa-arrow-left"></i> Back to Course Overview
+        </a>
+      </div>
+
+      <!-- Main Player Area -->
+      <div class="col-lg-8">
+        <div class="card shadow-sm mb-4">
+          <div class="card-body p-0">
+            <!-- Dynamic Content Viewer -->
+            <div id="contentViewer" class="bg-dark text-white d-flex align-items-center justify-content-center" style="min-height: 450px; border-radius: 8px 8px 0 0; overflow: hidden;">
+              <div class="text-center p-5">
+                <i class="fas fa-spinner fa-spin fa-3x mb-3 text-primary"></i>
+                <p>Loading lesson content...</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <span id="lessonTypeBadge" class="badge bg-primary mb-2 text-uppercase">Video</span>
+                <h3 id="lessonTitle" class="card-title">Lesson Title</h3>
+              </div>
+              <div class="text-end">
+                <span class="text-muted"><i class="far fa-clock"></i> <span id="lessonDuration">-</span> mins</span>
+              </div>
+            </div>
+            
+            <p id="lessonDescription" class="card-text text-muted">Loading description...</p>
+            
+            <hr>
+            
+            <div class="d-flex justify-content-between align-items-center mt-4">
+              <button id="markCompleteBtn" class="btn btn-success btn-lg" onclick="markAsComplete()">
+                <i class="fas fa-check-circle"></i> Mark as Complete
+              </button>
+              <div class="navigation-buttons gap-2 d-flex">
+                <button id="prevLessonBtn" class="btn btn-outline-secondary" onclick="navigateLesson(-1)" disabled>
+                  <i class="fas fa-chevron-left"></i> Prev
+                </button>
+                <button id="nextLessonBtn" class="btn btn-outline-secondary" onclick="navigateLesson(1)" disabled>
+                  Next <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Module Navigation -->
+      <div class="col-lg-4">
+        <div class="card shadow-sm sticky-top" style="top: 100px;">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Course Content</h5>
+          </div>
+          <div class="list-group list-group-flush" id="sidebarModulesList" style="max-height: 500px; overflow-y: auto;">
+            <!-- Modules & Lessons navigation will load here -->
+            <p class="p-3 text-center text-muted">Loading course index...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .lesson-player-container {
+    min-height: 90vh;
+  }
+  #contentViewer iframe, #contentViewer video {
+    width: 100%;
+    height: 450px;
+    border: none;
+  }
+  .sidebar-lesson-item {
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  .sidebar-lesson-item:hover {
+    background-color: #f8f9fa;
+  }
+  .sidebar-lesson-item.active {
+    background-color: #e3f2fd;
+    color: #0d6efd;
+    font-weight: bold;
+    border-left: 4px solid #0d6efd;
+  }
+</style>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+  const lessonId = new URLSearchParams(window.location.search).get('id');
+  let currentLesson = null;
+  let allCourseLessons = [];
+  let userEnrollment = null;
+
+  async function loadLessonPlayer() {
+    if (!lessonId) {
+      alert('No lesson specified!');
+      window.location.href = '/my-learning/';
+      return;
+    }
+
+    try {
+      // 1. Fetch lesson detail
+      const response = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/`);
+      const data = await response.json();
+      currentLesson = data.lesson;
+
+      document.getElementById('lessonTitle').textContent = currentLesson.title;
+      document.getElementById('lessonTitleTab').textContent = currentLesson.title;
+      document.getElementById('lessonDescription').textContent = currentLesson.description || 'No description provided.';
+      document.getElementById('lessonDuration').textContent = currentLesson.duration_minutes;
+      document.getElementById('lessonTypeBadge').textContent = currentLesson.content_type;
+      
+      // Update back button href
+      const courseId = currentLesson.module.course_id;
+      
+      // 2. Fetch course detailed data to map lessons and check enrollment
+      const courseResponse = await fetch(`${API_BASE_URL}/courses/courses/`);
+      const courseData = await courseResponse.json();
+      // Find course slug
+      const matchedCourse = courseData.results.find(c => c.id === courseId);
+      if (matchedCourse) {
+        document.getElementById('backToCourseBtn').href = `/course/?slug=${matchedCourse.slug}`;
+        
+        // Fetch detailed course view with modules
+        const detailResponse = await fetch(`${API_BASE_URL}/courses/courses/${matchedCourse.slug}/`);
+        const detailData = await detailResponse.json();
+        const courseDetail = detailData.course;
+        
+        // Build flat array of lessons for navigation
+        allCourseLessons = [];
+        courseDetail.modules.forEach(mod => {
+          if (mod.lessons) {
+            mod.lessons.forEach(les => {
+              allCourseLessons.push(les);
+            });
+          }
+        });
+
+        // Load Sidebar Index
+        renderSidebarIndex(courseDetail);
+        
+        // Update navigation buttons
+        updateNavButtons();
+      }
+
+      // 3. Fetch user enrollments to check progress update capability
+      const enrollResponse = await fetch(`${API_BASE_URL}/courses/my-enrollments/`, {
+        credentials: 'include'
+      });
+      const enrollData = await enrollResponse.json();
+      userEnrollment = enrollData.results?.find(e => e.course.id === courseId);
+
+      // Render Viewer Content
+      renderContentViewer();
+
+    } catch (e) {
+      console.error('Error loading lesson player:', e);
+      alert('Failed to load lesson details. Make sure you are logged in.');
+    }
+  }
+
+  function renderContentViewer() {
+    const viewer = document.getElementById('contentViewer');
+    
+    if (currentLesson.content_type === 'video') {
+      const url = currentLesson.content_url;
+      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        let ytId = '';
+        if (url.includes('v=')) {
+          ytId = url.split('v=')[1].split('&')[0];
+        } else {
+          ytId = url.split('/').pop();
+        }
+        viewer.innerHTML = `
+          <iframe src="https://www.youtube.com/embed/${ytId}" allowfullscreen></iframe>
+        `;
+      } else {
+        viewer.innerHTML = `
+          <video controls src="${url}"></video>
+        `;
+      }
+    } else if (currentLesson.content_type === 'pdf') {
+      const fileUrl = currentLesson.content_file || currentLesson.content_url;
+      viewer.innerHTML = `
+        <iframe src="${fileUrl}" type="application/pdf"></iframe>
+      `;
+    } else if (currentLesson.content_type === 'text') {
+      viewer.innerHTML = `
+        <div class="p-5 text-dark bg-white w-100 h-100" style="overflow-y: auto; max-height: 450px;">
+          <h4>${currentLesson.title}</h4>
+          <p class="mt-4" style="line-height: 1.8;">${currentLesson.description}</p>
+          ${currentLesson.content_url ? `<div class="mt-4"><a href="${currentLesson.content_url}" target="_blank" class="btn btn-primary">Read full article <i class="fas fa-external-link-alt"></i></a></div>` : ''}
+        </div>
+      `;
+    } else if (currentLesson.content_type === 'quiz') {
+      // Find quiz URL
+      viewer.innerHTML = `
+        <div class="text-center p-5">
+          <i class="fas fa-question-circle fa-4x mb-3 text-warning"></i>
+          <h4>Practice Quiz Ready</h4>
+          <p class="text-muted">Test your knowledge of the module contents</p>
+          <button class="btn btn-warning btn-lg mt-3" onclick="goToQuiz()">
+            Start Quiz Attempt
+          </button>
+        </div>
+      `;
+    } else {
+      viewer.innerHTML = `
+        <div class="p-5 text-center">
+          <p>No viewer available for this content type (${currentLesson.content_type}).</p>
+        </div>
+      `;
+    }
+  }
+
+  async function goToQuiz() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/quiz/`);
+      const data = await response.json();
+      if (data.quiz) {
+        window.location.href = `/quiz/?id=${data.quiz.id}`;
+      } else {
+        alert('No quiz linked to this lesson!');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error fetching quiz details.');
+    }
+  }
+
+  function renderSidebarIndex(course) {
+    const list = document.getElementById('sidebarModulesList');
+    list.innerHTML = '';
+
+    course.modules.forEach(mod => {
+      // Module Header
+      const header = document.createElement('div');
+      header.className = 'list-group-item bg-light fw-bold py-3';
+      header.textContent = mod.title;
+      list.appendChild(header);
+
+      // Module Lessons
+      if (mod.lessons) {
+        mod.lessons.forEach(les => {
+          const item = document.createElement('a');
+          item.href = `/lesson/?id=${les.id}`;
+          item.className = `list-group-item list-group-item-action sidebar-lesson-item d-flex justify-content-between align-items-center py-2 ${les.id == lessonId ? 'active' : ''}`;
+          
+          let icon = '📖';
+          if (les.content_type === 'video') icon = '🎥';
+          if (les.content_type === 'quiz') icon = '❓';
+          if (les.content_type === 'pdf') icon = '📄';
+
+          item.innerHTML = `
+            <span>${icon} ${les.title}</span>
+            <small class="text-muted">${les.duration_minutes}m</small>
+          `;
+          list.appendChild(item);
+        });
+      }
+    });
+  }
+
+  function updateNavButtons() {
+    const currentIndex = allCourseLessons.findIndex(l => l.id == lessonId);
+    
+    const prevBtn = document.getElementById('prevLessonBtn');
+    const nextBtn = document.getElementById('nextLessonBtn');
+
+    if (currentIndex > 0) {
+      prevBtn.disabled = false;
+      prevBtn.onclick = () => window.location.href = `/lesson/?id=${allCourseLessons[currentIndex - 1].id}`;
+    } else {
+      prevBtn.disabled = true;
+    }
+
+    if (currentIndex >= 0 && currentIndex < allCourseLessons.length - 1) {
+      nextBtn.disabled = false;
+      nextBtn.onclick = () => window.location.href = `/lesson/?id=${allCourseLessons[currentIndex + 1].id}`;
+    } else {
+      nextBtn.disabled = true;
+    }
+  }
+
+  async function markAsComplete() {
+    if (!userEnrollment) {
+      alert('You must be enrolled in this course to track progress!');
+      return;
+    }
+
+    const currentIndex = allCourseLessons.findIndex(l => l.id == lessonId);
+    if (currentIndex === -1) return;
+
+    // Calculate progress percentage based on lesson position
+    const progress = Math.min(100, Math.round(((currentIndex + 1) / allCourseLessons.length) * 100));
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/enrollments/${userEnrollment.id}/progress/`, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify({progress_pct: progress})
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert('Lesson marked complete! Progress updated to ' + progress + '%');
+        if (progress >= 100) {
+          alert('🎉 Congratulations! You have completed the course!');
+          window.location.href = '/my-learning/';
+        } else if (currentIndex < allCourseLessons.length - 1) {
+          // Go to next lesson automatically
+          window.location.href = `/lesson/?id=${allCourseLessons[currentIndex + 1].id}`;
+        }
+      } else {
+        alert('Failed to update progress: ' + (data.error || 'Server error'));
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error updating progress.');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadLessonPlayer);
+</script>
+{% endblock %}
