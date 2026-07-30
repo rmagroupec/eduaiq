@@ -25,7 +25,9 @@ urlpatterns = [
     
     # API Routes
     path('accounts/', include('accounts.urls')),      # Login, signup, profile API
-    path('courses/', include('courses.urls')),        # Courses, quiz, enrollment API
+    path('courses/', include('courses.urls')), 
+    path('api/', include('institutions.urls')), 
+    # Courses, quiz, enrollment API
     
     # Frontend Routes (HTML Templates)
     path('', include('frontend.urls')),               # Home, course pages, quiz player
