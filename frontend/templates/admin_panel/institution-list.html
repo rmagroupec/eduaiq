@@ -1,0 +1,307 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAIQ - Institution List{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Institution List</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Institution List</span>
+    </div>
+  </div>
+  <a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/add-new-institution/">
+    <span class="d-flex text-md">
+      <i class="ri-add-large-line"></i>
+    </span>
+    Add Institution
+  </a>
+</div>
+
+<div class="card h-100 mt-24">
+  <div class="card-body p-24">
+    <!-- Filters Control -->
+    <div class="row gy-3 mb-24 align-items-end">
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="typeFilter">Type</label>
+        <select class="form-control form-select radius-8" id="typeFilter">
+          <option value="">All Types</option>
+          <option value="school">School</option>
+          <option value="college">College</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="statusFilter">Status</label>
+        <select class="form-control form-select radius-8" id="statusFilter">
+          <option value="">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="suspended">Suspended</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="cityFilter">City</label>
+        <input type="text" class="form-control radius-8" id="cityFilter" placeholder="e.g. Delhi">
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-outline-primary-600 w-100 radius-8" id="clearFiltersBtn">
+          Clear Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Search input and paging size -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 pb-20 border-bottom border-neutral-200">
+      <div class="d-flex align-items-center gap-8">
+        <span class="text-sm text-secondary-light">Show</span>
+        <select class="form-select form-select-sm w-auto radius-8" id="pageSizeSelect">
+          <option value="10">10</option>
+          <option value="20" selected>20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        <span class="text-sm text-secondary-light">entries</span>
+      </div>
+      <div class="d-flex align-items-center gap-16">
+        <div class="position-relative">
+          <input type="text" class="form-control form-control-sm ps-32 radius-8" id="searchQuery" placeholder="Search by name...">
+          <i class="ri-search-line position-absolute start-12 top-50 translate-middle-y text-secondary-light"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Table -->
+    <div class="table-responsive mt-24">
+      <table class="table border-neutral-200 table-hover align-middle">
+        <thead>
+          <tr class="bg-neutral-50">
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Type</th>
+            <th scope="col">Board Affiliation</th>
+            <th scope="col">City</th>
+            <th scope="col">State</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody id="institutionTableBody">
+          <tr>
+            <td colspan="8" class="text-center py-40">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination & Meta -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 mt-24">
+      <span class="text-sm text-secondary-light" id="tableInfoSpan">Showing 0 to 0 of 0 entries</span>
+      <nav aria-label="Page navigation" id="paginationNav" class="d-none">
+        <ul class="pagination pagination-primary mb-0 gap-8" id="paginationUl">
+          <!-- Dynamically populated -->
+        </ul>
+      </nav>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+  let currentPage = 1;
+
+  function getCsrfToken() {
+    const match = document.cookie.match(/csrftoken=([^;]+)/);
+    return match ? match[1] : null;
+  }
+
+  function loadInstitutions(page = 1) {
+    currentPage = page;
+    const type = $('#typeFilter').val();
+    const status = $('#statusFilter').val();
+    const city = $('#cityFilter').val();
+    const q = $('#searchQuery').val();
+    const pageSize = $('#pageSizeSelect').val();
+
+    let url = `/api/institutions/?page=${page}&page_size=${pageSize}`;
+    if (type) url += `&type=${type}`;
+    if (status) url += `&status=${status}`;
+    if (city) url += `&city=${encodeURIComponent(city)}`;
+    if (q) url += `&q=${encodeURIComponent(q)}`;
+
+    $.ajax({
+      url: url,
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(response) {
+        renderTable(response);
+        renderPagination(response);
+      },
+      error: function(err) {
+        console.error('Error fetching institutions:', err);
+        $('#institutionTableBody').html(`
+          <tr>
+            <td colspan="8" class="text-center py-40 text-danger-600">
+              <i class="ri-error-warning-line text-xxl d-block mb-8"></i>
+              Failed to load institutions list.
+            </td>
+          </tr>
+        `);
+      }
+    });
+  }
+
+  function renderTable(data) {
+    const tbody = $('#institutionTableBody');
+    tbody.empty();
+
+    if (!data.results || data.results.length === 0) {
+      tbody.html(`
+        <tr>
+          <td colspan="8" class="text-center py-40 text-secondary-light">
+            <i class="ri-folder-open-line text-xxl d-block mb-8"></i>
+            No institutions registered.
+          </td>
+        </tr>
+      `);
+      $('#tableInfoSpan').text('Showing 0 to 0 of 0 entries');
+      return;
+    }
+
+    data.results.forEach(inst => {
+      let badgeClass = 'bg-success-100 text-success-600';
+      if (inst.status === 'pending') badgeClass = 'bg-warning-100 text-warning-600';
+      else if (inst.status === 'suspended') badgeClass = 'bg-danger-100 text-danger-600';
+
+      tbody.append(`
+        <tr>
+          <td><span class="text-secondary-light fw-medium">${inst.id}</span></td>
+          <td><h6 class="text-md mb-0 fw-semibold text-neutral-800">${inst.name}</h6></td>
+          <td><span class="text-uppercase text-sm fw-medium">${inst.type}</span></td>
+          <td>${inst.board_affiliation || '-'}</td>
+          <td>${inst.city}</td>
+          <td>${inst.state}</td>
+          <td><span class="px-16 py-4 radius-4 fw-medium text-sm ${badgeClass}">${inst.status.toUpperCase()}</span></td>
+          <td class="text-center">
+            <div class="d-flex align-items-center justify-content-center gap-8">
+              <a href="/admin-panel/institution-details/?id=${inst.id}" class="btn btn-sm btn-outline-neutral-300 text-secondary-light px-8 py-4 radius-8" title="View Details">
+                <i class="ri-eye-line text-md"></i>
+              </a>
+              <a href="/admin-panel/edit-institution/?id=${inst.id}" class="btn btn-sm btn-outline-primary-600 text-primary-600 px-8 py-4 radius-8" title="Edit">
+                <i class="ri-edit-2-line text-md"></i>
+              </a>
+              <button class="btn btn-sm btn-outline-danger px-8 py-4 radius-8 delete-inst-btn" data-id="${inst.id}" title="Delete">
+                <i class="ri-delete-bin-line text-md"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `);
+    });
+
+    const page = data.page;
+    const pageSize = data.page_size;
+    const count = data.count;
+    const startEntry = (page - 1) * pageSize + 1;
+    const endEntry = Math.min(page * pageSize, count);
+    $('#tableInfoSpan').text(`Showing ${startEntry} to ${endEntry} of ${count} entries`);
+  }
+
+  function renderPagination(data) {
+    const nav = $('#paginationNav');
+    const ul = $('#paginationUl');
+    ul.empty();
+
+    if (data.total_pages <= 1) {
+      nav.addClass('d-none');
+      return;
+    }
+
+    nav.removeClass('d-none');
+
+    // Prev Button
+    const prevDisabled = data.page === 1 ? 'disabled' : '';
+    ul.append(`
+      <li class="page-item ${prevDisabled}">
+        <button class="page-link py-6 px-12" data-page="${data.page - 1}" ${prevDisabled}>Previous</button>
+      </li>
+    `);
+
+    // Page numbers
+    for (let i = 1; i <= data.total_pages; i++) {
+      const activeClass = i === data.page ? 'active' : '';
+      ul.append(`
+        <li class="page-item ${activeClass}">
+          <button class="page-link py-6 px-12" data-page="${i}">${i}</button>
+        </li>
+      `);
+    }
+
+    // Next Button
+    const nextDisabled = data.page === data.total_pages ? 'disabled' : '';
+    ul.append(`
+      <li class="page-item ${nextDisabled}">
+        <button class="page-link py-6 px-12" data-page="${data.page + 1}" ${nextDisabled}>Next</button>
+      </li>
+    `);
+  }
+
+  // Filter triggers
+  $('#typeFilter, #statusFilter, #pageSizeSelect').on('change', function() {
+    loadInstitutions(1);
+  });
+
+  $('#cityFilter, #searchQuery').on('keyup', function() {
+    loadInstitutions(1);
+  });
+
+  $('#clearFiltersBtn').on('click', function() {
+    $('#typeFilter').val('');
+    $('#statusFilter').val('');
+    $('#cityFilter').val('');
+    $('#searchQuery').val('');
+    loadInstitutions(1);
+  });
+
+  $(document).on('click', '#paginationUl .page-link', function(e) {
+    e.preventDefault();
+    const page = $(this).data('page');
+    if (page) loadInstitutions(page);
+  });
+
+  // Delete Action
+  $(document).on('click', '.delete-inst-btn', function() {
+    const instId = $(this).data('id');
+    if (!confirm('Are you sure you want to delete this institution? This will fail if there are dependent records.')) {
+      return;
+    }
+    const token = getCsrfToken();
+
+    $.ajax({
+      url: `/api/institutions/${instId}/`,
+      type: 'DELETE',
+      headers: { 'X-CSRFToken': token },
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        showToast('Institution deleted successfully!', 'success');
+        loadInstitutions(currentPage);
+      },
+      error: function(err) {
+        showToast('Failed to delete institution. Note: Only staff roles can delete, and only if there are no related active records.', 'error');
+      }
+    });
+  });
+
+  loadInstitutions();
+});
+</script>
+{% endblock %}

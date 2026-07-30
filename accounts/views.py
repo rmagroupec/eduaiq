@@ -84,7 +84,11 @@ def serialize_role(role):
 
 
 def _is_staff(user):
-    return user.is_authenticated and (user.is_staff or user.is_superuser)
+    return user.is_authenticated and (
+        user.is_staff or 
+        user.is_superuser or 
+        getattr(user, 'role', None) in ('staff', 'super_admin', 'teacher', 'admin')
+    )
 
 
 # ============================================================================
@@ -231,6 +235,9 @@ def user_list(request):
     status = request.GET.get('status')
     if status:
         qs = qs.filter(status=status)
+    exclude_has_profile = request.GET.get('exclude_has_profile')
+    if exclude_has_profile == 'true':
+        qs = qs.filter(student_profile__isnull=True)
 
     try:
         page = max(int(request.GET.get('page', 1)), 1)

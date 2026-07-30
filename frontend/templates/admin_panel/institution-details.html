@@ -1,0 +1,262 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAIQ - Institution Details{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Institution Details</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/institution-list/">Institution List</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Institution Details</span>
+    </div>
+  </div>
+  <div class="d-flex gap-8">
+    <a id="editInstBtn" href="#" class="btn btn-outline-primary-600 radius-8"><i class="ri-edit-2-line"></i> Edit Institution</a>
+    <a id="addStudentInstBtn" href="#" class="btn btn-primary-600 radius-8"><i class="ri-add-line"></i> Add Student here</a>
+  </div>
+</div>
+
+<div class="row gy-4 mt-8">
+  <!-- Left Side: Profile Info Card -->
+  <div class="col-xl-4 col-lg-5">
+    <div class="card h-100 radius-12 p-24">
+      <div class="text-center pb-24 border-bottom border-neutral-200">
+        <div class="w-80-px h-80-px bg-primary-100 text-primary-600 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-16">
+          <i class="ri-building-line text-xxl"></i>
+        </div>
+        <h5 class="h6 mb-8 text-primary-light fw-bold" id="instName">Loading...</h5>
+        <span class="px-16 py-4 radius-4 fw-semibold text-sm text-uppercase" id="instStatusBadge">-</span>
+      </div>
+
+      <div class="pt-24">
+        <h6 class="text-md fw-semibold text-primary-light mb-16">Information Summary</h6>
+        
+        <div class="d-flex flex-column gap-12">
+          <div class="d-flex justify-content-between">
+            <span class="text-secondary-light text-sm fw-medium">Type</span>
+            <span class="text-primary-light text-sm fw-bold text-uppercase" id="instType">-</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-secondary-light text-sm fw-medium">Board Affiliation</span>
+            <span class="text-primary-light text-sm fw-semibold" id="instBoard">-</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-secondary-light text-sm fw-medium">City</span>
+            <span class="text-primary-light text-sm fw-semibold" id="instCity">-</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-secondary-light text-sm fw-medium">State</span>
+            <span class="text-primary-light text-sm fw-semibold" id="instState">-</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-secondary-light text-sm fw-medium">Total Students Onboarded</span>
+            <span class="text-primary-light text-sm fw-bold" id="instStudentsCount">0</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-secondary-light text-sm fw-medium">Partner Onboarded ID</span>
+            <span class="text-primary-light text-sm fw-semibold" id="instPartner">-</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-secondary-light text-sm fw-medium">Created Date</span>
+            <span class="text-primary-light text-sm fw-semibold" id="instCreated">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side: Details & Tabs -->
+  <div class="col-xl-8 col-lg-7">
+    <div class="card h-100 radius-12 p-24">
+      <ul class="nav nav-tabs border-bottom mb-24" id="detailsTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active fw-semibold" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-pane" type="button" role="tab" aria-controls="overview-pane" aria-selected="true">Address & Administrator</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link fw-semibold" id="roster-tab" data-bs-toggle="tab" data-bs-target="#roster-pane" type="button" role="tab" aria-controls="roster-pane" aria-selected="false">Student Roster</button>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="detailsTabContent">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade show active" id="overview-pane" role="tabpanel" aria-labelledby="overview-tab">
+          <div class="mb-24">
+            <h6 class="text-md fw-semibold text-primary-light mb-8">Physical Address</h6>
+            <div class="bg-neutral-50 radius-8 p-16 border text-secondary-light" id="instAddress">
+              -
+            </div>
+          </div>
+
+          <div>
+            <h6 class="text-md fw-semibold text-primary-light mb-16">Administrator Profile Details</h6>
+            <div class="row gy-3">
+              <div class="col-md-6">
+                <div class="d-flex border-bottom pb-8 mb-8">
+                  <span class="fw-semibold text-primary-light w-150-px">Username</span>
+                  <span class="text-secondary-light" id="adminUsername">-</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex border-bottom pb-8 mb-8">
+                  <span class="fw-semibold text-primary-light w-150-px">Email ID</span>
+                  <span class="text-secondary-light" id="adminEmail">-</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex border-bottom pb-8 mb-8">
+                  <span class="fw-semibold text-primary-light w-150-px">Account User ID</span>
+                  <span class="text-secondary-light" id="adminId">-</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Student Roster Tab -->
+        <div class="tab-pane fade" id="roster-pane" role="tabpanel" aria-labelledby="roster-tab">
+          <div class="d-flex align-items-center justify-content-between mb-16">
+            <h6 class="text-md fw-semibold text-primary-light mb-0">Registered Roster</h6>
+            <a id="viewAllStudentsLink" href="#" class="btn btn-sm btn-outline-primary-600 radius-8">View full list directory</a>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table border-neutral-200 table-hover align-middle">
+              <thead>
+                <tr class="bg-neutral-50">
+                  <th>Adm No</th>
+                  <th>Student Name</th>
+                  <th>Grade</th>
+                  <th>Section</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="rosterTableBody">
+                <tr>
+                  <td colspan="5" class="text-center py-20 text-secondary-light">No students registered yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const instId = urlParams.get('id');
+
+  if (!instId) {
+    showToast("No institution ID specified.", "error");
+    setTimeout(() => {
+      window.location.href = "/admin-panel/institution-list/";
+    }, 1500);
+    return;
+  }
+
+  // Load details
+  function loadInstitutionDetails() {
+    $.ajax({
+      url: `/api/institutions/${instId}/`,
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(response) {
+        const inst = response.institution;
+        if (!inst) {
+          showToast("Institution details not found.", "error");
+          return;
+        }
+
+        // Action links
+        $('#editInstBtn').attr('href', `/admin-panel/edit-institution/?id=${inst.id}`);
+        $('#addStudentInstBtn').attr('href', `/admin-panel/add-new-student/?institution_id=${inst.id}`);
+        $('#viewAllStudentsLink').attr('href', `/admin-panel/student-list/?institution_id=${inst.id}`);
+
+        // Left Card info
+        $('#instName').text(inst.name);
+        $('#instType').text(inst.type);
+        $('#instBoard').text(inst.board_affiliation || '-');
+        $('#instCity').text(inst.city);
+        $('#instState').text(inst.state);
+        $('#instStudentsCount').text(inst.total_students || 0);
+        $('#instPartner').text(inst.onboarded_by_partner_id || '-');
+        
+        if (inst.created_at) {
+          const date = new Date(inst.created_at);
+          $('#instCreated').text(date.toLocaleDateString());
+        }
+
+        // Status badge color
+        let badgeClass = 'bg-success-100 text-success-600';
+        if (inst.status === 'pending') badgeClass = 'bg-warning-100 text-warning-600';
+        else if (inst.status === 'suspended') badgeClass = 'bg-danger-100 text-danger-600';
+        $('#instStatusBadge').text(inst.status).addClass(badgeClass);
+
+        // Overview tab
+        $('#instAddress').text(inst.address);
+        if (inst.admin_user) {
+          $('#adminUsername').text(inst.admin_user.username);
+          $('#adminEmail').text(inst.admin_user.email);
+          $('#adminId').text(inst.admin_user.id);
+        } else {
+          $('#adminUsername').text('-');
+          $('#adminEmail').text('-');
+          $('#adminId').text('-');
+        }
+
+        // Load nested students
+        loadStudentsRoster();
+      },
+      error: function(err) {
+        showToast("Failed to load details.", "error");
+      }
+    });
+  }
+
+  function loadStudentsRoster() {
+    $.ajax({
+      url: `/api/institutions/${instId}/students/?page_size=10`,
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(response) {
+        const tbody = $('#rosterTableBody');
+        tbody.empty();
+
+        if (!response.results || response.results.length === 0) {
+          tbody.html('<tr><td colspan="5" class="text-center py-20 text-secondary-light">No students registered yet.</td></tr>');
+          return;
+        }
+
+        response.results.forEach(student => {
+          let badgeClass = 'bg-success-100 text-success-600';
+          if (student.status === 'inactive') badgeClass = 'bg-neutral-100 text-neutral-600';
+          else if (student.status === 'suspended') badgeClass = 'bg-danger-100 text-danger-600';
+
+          tbody.append(`
+            <tr>
+              <td><span class="text-primary-600 fw-medium">${student.admission_no || '-'}</span></td>
+              <td>${student.student_name || 'Unnamed Student'}</td>
+              <td>${student.class_grade || '-'}</td>
+              <td>${student.section || '-'}</td>
+              <td><span class="px-8 py-2 radius-4 text-xs ${badgeClass}">${student.status.toUpperCase()}</span></td>
+            </tr>
+          `);
+        });
+      }
+    });
+  }
+
+  loadInstitutionDetails();
+});
+</script>
+{% endblock %}

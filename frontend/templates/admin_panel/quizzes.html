@@ -212,7 +212,7 @@
       modal.show();
     } catch (e) {
       console.error(e);
-      alert('Error fetching quiz details.');
+      showToast('Error fetching quiz details.', 'error');
     }
   }
 
@@ -245,17 +245,17 @@
 
       const resData = await response.json();
       if (response.ok || resData.success) {
-        alert('Quiz rules updated successfully!');
+        showToast('Quiz rules updated successfully!', 'success');
         const modalEl = document.getElementById('editQuizModal');
         const modal = bootstrap.Modal.getInstance(modalEl);
         modal.hide();
         loadAdminQuizzes();
       } else {
-        alert('Failed to update: ' + JSON.stringify(resData.errors || resData.error));
+        showToast('Failed to update: ' + JSON.stringify(resData.errors || resData.error), 'error');
       }
     } catch (err) {
       console.error(err);
-      alert('Error saving quiz updates.');
+      showToast('Error saving quiz updates.', 'error');
     }
   }
 

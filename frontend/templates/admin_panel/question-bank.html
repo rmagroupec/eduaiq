@@ -302,7 +302,7 @@
       modal.show();
     } catch (e) {
       console.error(e);
-      alert('Error loading question details');
+      showToast('Error loading question details', 'error');
     }
   }
 
@@ -338,17 +338,17 @@
 
       const resData = await response.json();
       if (response.ok || resData.success) {
-        alert('Question updated successfully!');
+        showToast('Question updated successfully!', 'success');
         const modalEl = document.getElementById('editQuestionModal');
         const modal = bootstrap.Modal.getInstance(modalEl);
         modal.hide();
         loadQuizQuestions(quizId);
       } else {
-        alert('Failed to update question: ' + JSON.stringify(resData.errors || resData.error));
+        showToast('Failed to update question: ' + JSON.stringify(resData.errors || resData.error), 'error');
       }
     } catch (err) {
       console.error(err);
-      alert('Error updating question');
+      showToast('Error updating question', 'error');
     }
   }
 
@@ -367,14 +367,14 @@
       });
 
       if (response.ok) {
-        alert('Question deleted successfully!');
+        showToast('Question deleted successfully!', 'success');
         loadQuizQuestions(quizId);
       } else {
-        alert('Failed to delete question');
+        showToast('Failed to delete question', 'error');
       }
     } catch (e) {
       console.error(e);
-      alert('Error deleting question');
+      showToast('Error deleting question', 'error');
     }
   }
 

@@ -37,16 +37,30 @@ from .models import Institution, Student
 # ============================================================================
 
 def _body(request):
+    data = {}
     if request.content_type.startswith('application/json') and request.body:
         try:
-            return json.loads(request.body)
+            data = json.loads(request.body)
         except (ValueError, TypeError):
             pass
-    return request.POST.dict()
+    else:
+        # Django's request.POST is immutable QueryDict, so we copy it
+        data = request.POST.dict()
+
+    if isinstance(data, dict):
+        if 'user_id' in data and 'user' not in data:
+            data['user'] = data['user_id']
+        if 'parent_user_id' in data and 'parent_user' not in data:
+            data['parent_user'] = data['parent_user_id']
+    return data
 
 
 def _is_staff(user):
-    return user.is_authenticated and getattr(user, 'role', None) in ('staff', 'super_admin')
+    return user.is_authenticated and (
+        getattr(user, 'role', None) in ('staff', 'super_admin', 'teacher', 'admin') or
+        getattr(user, 'is_staff', False) or
+        getattr(user, 'is_superuser', False)
+    )
 
 
 def _client_ip(request):

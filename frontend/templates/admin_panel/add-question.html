@@ -145,7 +145,7 @@
       });
     } catch (e) {
       console.error(e);
-      alert('Error loading courses');
+      showToast('Error loading courses', 'error');
     }
   }
 
@@ -242,16 +242,18 @@
 
       const resData = await response.json();
       if (response.ok || resData.success) {
-        alert('Question added successfully!');
-        window.location.href = `/admin-panel/question-bank/?quiz=${quizId}`;
+        showToast('Question added successfully!', 'success');
+        setTimeout(() => {
+          window.location.href = `/admin-panel/question-bank/?quiz=${quizId}`;
+        }, 1500);
       } else {
-        alert('Failed to add question: ' + JSON.stringify(resData.errors || resData.error));
+        showToast('Failed to add question: ' + JSON.stringify(resData.errors || resData.error), 'error');
         btn.disabled = false;
         btn.textContent = 'Add Question';
       }
     } catch (err) {
       console.error(err);
-      alert('Error creating question');
+      showToast('Error creating question', 'error');
       btn.disabled = false;
       btn.textContent = 'Add Question';
     }

@@ -174,7 +174,7 @@
       });
     } catch (e) {
       console.error(e);
-      alert('Error fetching courses list');
+      showToast('Error fetching courses list', 'error');
     }
   }
 
@@ -275,6 +275,34 @@
       is_active: true
     };
 
+    async function handleResponse(response, fallbackMsg) {
+      const contentType = response.headers.get('content-type');
+      let data = null;
+      if (contentType && contentType.includes('application/json')) {
+        try {
+          data = await response.json();
+        } catch (e) {
+          console.error('Failed to parse json:', e);
+        }
+      }
+      
+      if (!response.ok || (data && data.success === false)) {
+        if (data) {
+          const errorContent = data.errors || data.error;
+          if (errorContent) {
+            if (typeof errorContent === 'object') {
+              return Object.entries(errorContent)
+                .map(([key, val]) => `${key === '__all__' ? 'Error' : key}: ${Array.isArray(val) ? val.join(', ') : val}`)
+                .join(' | ');
+            }
+            return errorContent;
+          }
+        }
+        return `${fallbackMsg} (Status: ${response.status})`;
+      }
+      return data;
+    }
+
     try {
       const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
       let lessonId = null;
@@ -301,15 +329,15 @@
           credentials: 'include'
         });
 
-        const lessonData = await lessonResponse.json();
-        if (!lessonResponse.ok || !lessonData.success) {
-          throw new Error(JSON.stringify(lessonData.errors || lessonData.error || 'Failed to create lesson'));
+        const lessonData = await handleResponse(lessonResponse, 'Failed to create lesson');
+        if (typeof lessonData === 'string') {
+          throw new Error(lessonData);
         }
         lessonId = lessonData.lesson.id;
       } else {
         lessonId = document.getElementById('lessonSelect').value;
         if (!lessonId) {
-          alert('Please select an existing lesson.');
+          showToast('Please select an existing lesson.', 'warning');
           btn.disabled = false;
           btn.textContent = 'Create Quiz';
           return;
@@ -327,16 +355,18 @@
         credentials: 'include'
       });
 
-      const quizData = await quizResponse.json();
-      if (!quizResponse.ok || !quizData.success) {
-        throw new Error(JSON.stringify(quizData.errors || quizData.error || 'Failed to initialize quiz settings'));
+      const quizData = await handleResponse(quizResponse, 'Failed to initialize quiz settings');
+      if (typeof quizData === 'string') {
+        throw new Error(quizData);
       }
 
-      alert('Quiz created and configured successfully!');
-      window.location.href = '/admin-panel/quizzes/';
+      showToast('Quiz created and configured successfully!', 'success');
+      setTimeout(() => {
+        window.location.href = '/admin-panel/quizzes/';
+      }, 1500);
     } catch (err) {
       console.error(err);
-      alert('Error details: ' + err.message);
+      showToast('Error details: ' + err.message, 'error');
       btn.disabled = false;
       btn.textContent = 'Create Quiz';
     }

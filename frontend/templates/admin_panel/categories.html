@@ -164,18 +164,18 @@
 
       const resData = await response.json();
       if (response.ok || resData.success) {
-        alert('Category added successfully!');
+        showToast('Category added successfully!', 'success');
         const modalEl = document.getElementById('addCategoryModal');
         const modal = bootstrap.Modal.getInstance(modalEl);
         modal.hide();
         form.reset();
         loadAdminCategories();
       } else {
-        alert('Failed to save category: ' + JSON.stringify(resData.errors || resData.error));
+        showToast('Failed to save category: ' + JSON.stringify(resData.errors || resData.error), 'error');
       }
     } catch (err) {
       console.error(err);
-      alert('Error saving category.');
+      showToast('Error saving category.', 'error');
     }
   }
 
@@ -195,15 +195,15 @@
       });
 
       if (response.ok) {
-        alert('Category deleted successfully!');
+        showToast('Category deleted successfully!', 'success');
         loadAdminCategories();
       } else {
         const data = await response.json();
-        alert('Failed to delete category: ' + (data.error || 'Server error'));
+        showToast('Failed to delete category: ' + (data.error || 'Server error'), 'error');
       }
     } catch (e) {
       console.error(e);
-      alert('Error deleting category.');
+      showToast('Error deleting category.', 'error');
     }
   }
 

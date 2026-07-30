@@ -1,522 +1,319 @@
 {% extends 'admin_panel/base.html' %}
+{% load static %}
 
-{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
-
-{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+{% block title %}EduAIQ - Add New Student{% endblock %}
 
 {% block content %}
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-<div class="">
-<h1 class="fw-semibold mb-4 h6 text-primary-light">Add New Student</h1>
-<div class="">
-<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
-<a class="text-secondary-light hover-text-primary hover-underline" href="student-list"> /
-        Student</a>
-<span class="text-secondary-light">/ Add New Student</span>
-</div>
-</div>
-<a class="btn btn-primary-600 d-flex align-items-center gap-6 d-none" href="add-new-student">
-<span class="d-flex text-md">
-<i class="ri-add-large-line"></i>
-</span>
-    Add Student
-  </a>
-</div>
-<form action="#" class="mt-24">
-    {% csrf_token %}
-<div class="row gy-3">
-<div class="col-lg-12">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Personal Info</h6>
-</div>
-<div class="card-body p-20">
-<div class="row gy-3">
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="academicYear">Academic
-                                            Year <span class="text-danger-600">* </span> </label>
-<select class="form-control form-select" id="academicYear">
-<option value="Jun 2025/2026">Jun 2025/2026</option>
-<option value="Jun 2026/2027">Jun 2026/2027</option>
-<option value="Jun 2027/2028">Jun 2027/2028</option>
-<option value="Jun 2028/2029">Jun 2028/2029</option>
-</select>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="classSelection">Class
-                                            <span class="text-danger-600">* </span> </label>
-<select class="form-control form-select" id="classSelection">
-<option disabled="" value="Select a class">Select a class</option>
-<option value="Primary">Primary</option>
-<option value="High school">High school</option>
-<option value="College">College</option>
-</select>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="section">Section
-                                            <span class="text-danger-600">* </span> </label>
-<select class="form-control form-select" id="section">
-<option disabled="" value="Select section">Select section</option>
-<option value="Science">Science</option>
-<option value="Art">Art</option>
-<option value="Commerce">Commerce</option>
-</select>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="rollNumber">Roll
-                                            Number </label>
-<input class="form-control" id="rollNumber" placeholder="Enter your rollNumber" type="text"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="admissionNo">Admission
-                                            No <span class="text-danger-600">*</span> </label>
-<input class="form-control" id="admissionNo" placeholder="Enter admission number" type="text"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="fullName">Full Name
-                                            <span class="text-danger-600">*</span> </label>
-<input class="form-control" id="fullName" placeholder="Enter your Full Name" type="text"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="category">Category
-                                            <span class="text-danger-600">*</span> </label>
-<input class="form-control" id="category" placeholder="Select a Category" type="text"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="gender">Gender</label>
-<select class="form-control form-select" id="gender">
-<option disabled="" value="Select section">Select Gender</option>
-<option value="Male">Male</option>
-<option value="Female">Female</option>
-</select>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="dateOfBirth">Date Of
-                                            Birth <span class="text-danger-600">*</span> </label>
-<input class="form-control" id="dateOfBirth" type="date"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="phoneNumber">Phone
-                                            Number <span class="text-danger-600">*</span> </label>
-<input class="form-control" id="phoneNumber" placeholder="Enter your Phone Number" type="text"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="studentEmail">Email
-                                            <span class="text-danger-600">*</span> </label>
-<input class="form-control" id="studentEmail" placeholder="Enter your Email" type="text"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Student
-                                            Photo <span class="text-danger-600">*</span> </label>
-<div class="drop-zone height-44-px p-4 d-flex justify-content-center align-items-center text-center fw-medium text-md cursor-pointer border border-neutral-400 radius-8 border-dashed bg-hover-neutral-200">
-<span class="drop-zone__prompt">Darg &amp; drop a file here or click</span>
-<input class="drop-zone__input" name="myFile" type="file"/>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-lg-12">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Parent &amp; Guardian Info </h6>
-</div>
-<div class="card-body p-20">
-<div class="row gy-3">
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="fathersName">Fathers
-                                            Name </label>
-<input class="form-control" id="fathersName" placeholder="Enter Fathers Name" type="text"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="fathersPhoneNumber">Phone
-                                            Number </label>
-<input class="form-control" id="fathersPhoneNumber" placeholder="Enter Fathers Number" type="tel"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="fathersFatherOccupation">Father
-                                            Occupation </label>
-<input class="form-control" id="fathersFatherOccupation" placeholder="Enter Father Occupation" type="text"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Fathers
-                                            Photo <span class="text-danger-600">*</span> </label>
-<div class="drop-zone height-44-px p-4 d-flex justify-content-center align-items-center text-center fw-medium text-md cursor-pointer border border-neutral-400 radius-8 border-dashed bg-hover-neutral-200">
-<span class="drop-zone__prompt">Darg &amp; drop a file here or click</span>
-<input class="drop-zone__input" name="myFile" type="file"/>
-</div>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="mothersName">Mothers
-                                            Name </label>
-<input class="form-control" id="mothersName" placeholder="Enter mothers Name" type="text"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="mothersPhoneNumber">Phone
-                                            Number </label>
-<input class="form-control" id="mothersPhoneNumber" placeholder="Enter mothers Number" type="tel"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="mothersFatherOccupation">Father
-                                            Occupation </label>
-<input class="form-control" id="mothersFatherOccupation" placeholder="Enter Father Occupation" type="text"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Mothers
-                                            Photo <span class="text-danger-600">*</span> </label>
-<div class="drop-zone height-44-px p-4 d-flex justify-content-center align-items-center text-center fw-medium text-md cursor-pointer border border-neutral-400 radius-8 border-dashed bg-hover-neutral-200">
-<span class="drop-zone__prompt">Darg &amp; drop a file here or click</span>
-<input class="drop-zone__input" name="myFile" type="file"/>
-</div>
-</div>
-</div>
-<div class="col-12">
-<div class="mt-24">
-<span class="text-lg fw-bold text-primary-light d-inline-block mb-8">Select a
-                                            Guardian </span>
-<div class="d-flex align-items-center flex-wrap gap-28">
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="selectFather" name="radio" type="radio"/>
-<label class="form-check-label line-height-1 fw-medium text-secondary-light" for="selectFather"> Father </label>
-</div>
-<div class="form-check checked-secondary d-flex align-items-center gap-2">
-<input class="form-check-input" id="selectMother" name="radio" type="radio"/>
-<label class="form-check-label line-height-1 fw-medium text-secondary-light" for="selectMother"> Mother </label>
-</div>
-<div class="form-check checked-success d-flex align-items-center gap-2">
-<input class="form-check-input" id="selectOthers" name="radio" type="radio"/>
-<label class="form-check-label line-height-1 fw-medium text-secondary-light" for="selectOthers"> Others </label>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="guardianName">Guardian
-                                            Name </label>
-<input class="form-control" id="guardianName" placeholder="Enter Guardian Name" type="text"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="guardianEmailTwo">Guardian
-                                            Email </label>
-<input class="form-control" id="guardianEmailTwo" placeholder="Enter Guardian Email" type="email"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="guardianPhoneNumber">Phone
-                                            Number </label>
-<input class="form-control" id="guardianPhoneNumber" placeholder="Enter Guardian Number" type="tel"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="guardianFatherOccupation">Father
-                                            Occupation </label>
-<input class="form-control" id="guardianFatherOccupation" placeholder="Enter Father Occupation" type="text"/>
-</div>
-</div>
-<div class="col-xl-9 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="guardianGuardianAddress">Guardian
-                                            Address </label>
-<input class="form-control" id="guardianGuardianAddress" placeholder="Enter Guardian Address" type="text"/>
-</div>
-</div>
-<div class="col-xl-3 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Guardian
-                                            Photo <span class="text-danger-600">*</span> </label>
-<div class="drop-zone height-44-px p-4 d-flex justify-content-center align-items-center text-center fw-medium text-md cursor-pointer border border-neutral-400 radius-8 border-dashed bg-hover-neutral-200">
-<span class="drop-zone__prompt">Darg &amp; drop a file here or click</span>
-<input class="drop-zone__input" name="myFile" type="file"/>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-lg-12">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Medical Details</h6>
-</div>
-<div class="card-body p-20">
-<div class="row gy-3">
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bloodGroup">Blood
-                                            Group</label>
-<select class="form-control form-select" id="bloodGroup">
-<option disabled="" value="Select blood group">Select blood group</option>
-<option value="A+">A+</option>
-<option value="AB+">AB+</option>
-<option value="A-">A-</option>
-<option value="AB-">AB-</option>
-</select>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="medicalHeight">Height
-                                        </label>
-<input class="form-control" id="medicalHeight" placeholder="Enter height" type="text"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="medicalWeight">Weight
-                                        </label>
-<input class="form-control" id="medicalWeight" placeholder="Enter Weight" type="text"/>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-lg-12">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Bank Details </h6>
-</div>
-<div class="card-body p-20">
-<div class="row gy-3">
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bankAccountNumber">Bank
-                                            Account Number </label>
-<input class="form-control" id="bankAccountNumber" placeholder="Enter bank account number" type="text"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bankName">Bank Name
-                                        </label>
-<input class="form-control" id="bankName" placeholder="Enter bank name" type="text"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="iFSCCode">IFSC Code
-                                        </label>
-<input class="form-control" id="iFSCCode" placeholder="Enter IFSC Code" type="text"/>
-</div>
-</div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="nationalIdentificationNumber">National
-                                            Identification Number</label>
-<input class="form-control" id="nationalIdentificationNumber" placeholder="Enter national identification number" type="text"/>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xxl-6">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Previous School Details</h6>
-</div>
-<div class="card-body p-20">
-<div class="row gy-3">
-<div class="col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="schoolNamee">School
-                                            Name </label>
-<input class="form-control" id="schoolNamee" placeholder="Enter School Name" type="text"/>
-</div>
-</div>
-<div class="col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="Address">Address
-                                        </label>
-<input class="form-control" id="Address" placeholder="Enter Address" type="text"/>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xxl-6">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Address</h6>
-</div>
-<div class="card-body p-20">
-<div class="row gy-3">
-<div class="col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="currentAddress">Current
-                                            Address </label>
-<input class="form-control" id="currentAddress" placeholder="Enter Current Address" type="text"/>
-</div>
-</div>
-<div class="col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="permanentAddress">Permanent
-                                            Address </label>
-<input class="form-control" id="permanentAddress" placeholder="Enter Permanent Address" type="text"/>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xxl-6">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Hostel Details</h6>
-</div>
-<div class="card-body p-20">
-<div class="row gy-3">
-<div class="col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="hostel">Hostel
-                                        </label>
-<input class="form-control" id="hostel" placeholder="Enter Hostel" type="text"/>
-</div>
-</div>
-<div class="col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="roomNo">Room No
-                                        </label>
-<input class="form-control" id="roomNo" placeholder="Enter Room No" type="text"/>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xxl-6">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Upload Documents</h6>
-</div>
-<div class="card-body p-20">
-<div class="row gy-3">
-<div class="col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="docName">Doc Name
-                                        </label>
-<input class="form-control" id="docName" placeholder="Enter Doc Name" type="text"/>
-</div>
-</div>
-<div class="col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Guardian
-                                            Photo <span class="text-danger-600">*</span> </label>
-<div class="drop-zone height-44-px p-4 d-flex justify-content-center align-items-center text-center fw-medium text-md cursor-pointer border border-neutral-400 radius-8 border-dashed bg-hover-neutral-200">
-<span class="drop-zone__prompt">Darg &amp; drop a file here or click</span>
-<input class="drop-zone__input" name="myFile" type="file"/>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xl-12">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Student Details</h6>
-</div>
-<div class="card-body p-20">
-<div class="row gy-3">
-<div class="col-sm-12">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="moreDetails">Details
-                                        </label>
-<textarea class="form-control" id="moreDetails" placeholder="Enter details"></textarea>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xl-12">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Login Details</h6>
-</div>
-<div class="card-body p-20">
-<div class="row gy-3">
-<div class="col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="myEmail">Email
-                                            <span class="text-danger-600">*</span>
-</label>
-<input class="form-control" id="myEmail" placeholder="Enter Email" type="email"/>
-</div>
-</div>
-<div class="col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="your-password">Password
-                                            <span class="text-danger-600">*</span>
-</label>
-<div class="position-relative">
-<input class="form-control" id="your-password" placeholder="Enter your password" type="password"/>
-<span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#your-password"></span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-12">
-<div class="d-flex align-items-center justify-content-center gap-3 mt-8">
-<button class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-50 py-11 radius-8" type="reset">
-                            Cancel
-                        </button>
-<button class="btn btn-primary-600 border border-primary-600 text-md px-28 py-12 radius-8" type="submit">
-                            Save Changes
-                        </button>
-</div>
-</div>
-</div>
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Add Student</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/student-list/">Student List</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Add Student</span>
+    </div>
+  </div>
+</div>
+
+<form id="addStudentForm" class="mt-24" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="row gy-4">
+    <!-- Section 1: Academic Identity -->
+    <div class="col-lg-12">
+      <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+        <div class="card-header border-bottom bg-base py-16 px-24">
+          <h6 class="text-lg fw-semibold mb-0">Academic & System Links</h6>
+        </div>
+        <div class="card-body p-24">
+          <div class="row gy-3">
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="institution">Institution <span class="text-danger-600">*</span></label>
+              <select class="form-control form-select radius-8" id="institution" name="institution" required>
+                <option value="" disabled selected>-- Choose Institution --</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="user">Student User Account <span class="text-danger-600">*</span></label>
+              <select class="form-control form-select radius-8" id="user" name="user_id" required>
+                <option value="" disabled selected>-- Select Student User --</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="parent_user">Parent User Account</label>
+              <select class="form-control form-select radius-8" id="parent_user" name="parent_user_id">
+                <option value="" selected>-- Select Parent User (Optional) --</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Student Details -->
+    <div class="col-lg-12">
+      <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+        <div class="card-header border-bottom bg-base py-16 px-24">
+          <h6 class="text-lg fw-semibold mb-0">Student Personal & Academic Info</h6>
+        </div>
+        <div class="card-body p-24">
+          <div class="row gy-3">
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="admission_no">Admission Number <span class="text-danger-600">*</span></label>
+              <input type="text" class="form-control radius-8" id="admission_no" name="admission_no" placeholder="ADM2026001" required>
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="roll_number">Roll Number</label>
+              <input type="text" class="form-control radius-8" id="roll_number" name="roll_number" placeholder="e.g. 15">
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="class_grade">Class / Grade <span class="text-danger-600">*</span></label>
+              <input type="text" class="form-control radius-8" id="class_grade" name="class_grade" placeholder="e.g. Class 10" required>
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="section">Section</label>
+              <input type="text" class="form-control radius-8" id="section" name="section" placeholder="e.g. A">
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="academic_year">Academic Year <span class="text-danger-600">*</span></label>
+              <input type="text" class="form-control radius-8" id="academic_year" name="academic_year" placeholder="e.g. 2026-27" required>
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="admission_date">Admission Date</label>
+              <input type="date" class="form-control radius-8" id="admission_date" name="admission_date">
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="date_of_birth">Date of Birth</label>
+              <input type="date" class="form-control radius-8" id="date_of_birth" name="date_of_birth">
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="gender">Gender</label>
+              <select class="form-control form-select radius-8" id="gender" name="gender">
+                <option value="prefer_not_to_say">Prefer Not to Say</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="blood_group">Blood Group</label>
+              <select class="form-control form-select radius-8" id="blood_group" name="blood_group">
+                <option value="">Select Blood Group</option>
+                <option value="a+">A+</option>
+                <option value="a-">A-</option>
+                <option value="b+">B+</option>
+                <option value="b-">B-</option>
+                <option value="ab+">AB+</option>
+                <option value="ab-">AB-</option>
+                <option value="o+">O+</option>
+                <option value="o-">O-</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="category">Category</label>
+              <select class="form-control form-select radius-8" id="category" name="category">
+                <option value="general">General</option>
+                <option value="obc">OBC</option>
+                <option value="sc">SC</option>
+                <option value="st">ST</option>
+                <option value="ews">EWS</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="emergency_contact_phone">Emergency Phone</label>
+              <input type="tel" class="form-control radius-8" id="emergency_contact_phone" name="emergency_contact_phone" placeholder="+91XXXXXXXXXX">
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="status">Status</label>
+              <select class="form-control form-select radius-8" id="status" name="status">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="graduated">Graduated</option>
+                <option value="transferred">Transferred</option>
+                <option value="dropped">Dropped Out</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Guardian Info -->
+    <div class="col-lg-12">
+      <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+        <div class="card-header border-bottom bg-base py-16 px-24">
+          <h6 class="text-lg fw-semibold mb-0">Parent & Guardian Details</h6>
+        </div>
+        <div class="card-body p-24">
+          <div class="row gy-3">
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="father_name">Father's Name</label>
+              <input type="text" class="form-control radius-8" id="father_name" name="father_name" placeholder="Father's full name">
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="mother_name">Mother's Name</label>
+              <input type="text" class="form-control radius-8" id="mother_name" name="mother_name" placeholder="Mother's full name">
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="guardian_name">Guardian's Name</label>
+              <input type="text" class="form-control radius-8" id="guardian_name" name="guardian_name" placeholder="Guardian's name (if not parent)">
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="guardian_relation">Guardian Relation</label>
+              <input type="text" class="form-control radius-8" id="guardian_relation" name="guardian_relation" placeholder="e.g. Father, Uncle, Aunt">
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="guardian_phone">Guardian Phone</label>
+              <input type="tel" class="form-control radius-8" id="guardian_phone" name="guardian_phone" placeholder="+91XXXXXXXXXX">
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="guardian_email">Guardian Email</label>
+              <input type="email" class="form-control radius-8" id="guardian_email" name="guardian_email" placeholder="guardian@example.com">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: File Documents -->
+    <div class="col-lg-12">
+      <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+        <div class="card-header border-bottom bg-base py-16 px-24">
+          <h6 class="text-lg fw-semibold mb-0">Documents & Photos</h6>
+        </div>
+        <div class="card-body p-24">
+          <div class="row gy-3">
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="profile_photo">Profile Photo</label>
+              <input type="file" class="form-control radius-8" id="profile_photo" name="profile_photo" accept="image/*">
+            </div>
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="aadhar_or_id_proof">Aadhar / ID Proof (PDF/Image)</label>
+              <input type="file" class="form-control radius-8" id="aadhar_or_id_proof" name="aadhar_or_id_proof">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-12 mt-24">
+      <div class="d-flex align-items-center gap-16 justify-content-end">
+        <a href="/admin-panel/student-list/" class="btn btn-outline-neutral-400 radius-8">Cancel</a>
+        <button type="submit" class="btn btn-primary-600 radius-8" id="submitBtn">Save Student</button>
+      </div>
+    </div>
+
+  </div>
 </form>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const paramInstId = urlParams.get('institution_id');
+
+  // Load Institutions
+  function loadInstitutions() {
+    $.ajax({
+      url: '/api/institutions/?page_size=100',
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(response) {
+        const select = $('#institution');
+        if (response.results && response.results.length > 0) {
+          response.results.forEach(inst => {
+            select.append(`<option value="${inst.id}">${inst.name} (${inst.type})</option>`);
+          });
+          if (paramInstId) {
+            select.val(paramInstId);
+          }
+        }
+      }
+    });
+  }
+
+  // Load Student Users list (role=student)
+  function loadStudentUsers() {
+    $.ajax({
+      url: '/accounts/users/?role=student&exclude_has_profile=true&page_size=200',
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(response) {
+        const select = $('#user');
+        if (response.results && response.results.length > 0) {
+          response.results.forEach(user => {
+            select.append(`<option value="${user.id}">${user.first_name} ${user.last_name} (${user.username})</option>`);
+          });
+        }
+      }
+    });
+  }
+
+  // Load Parent Users list (role=parent)
+  function loadParentUsers() {
+    $.ajax({
+      url: '/accounts/users/?role=parent&page_size=200',
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(response) {
+        const select = $('#parent_user');
+        if (response.results && response.results.length > 0) {
+          response.results.forEach(user => {
+            select.append(`<option value="${user.id}">${user.first_name} ${user.last_name} (${user.username})</option>`);
+          });
+        }
+      }
+    });
+  }
+
+  // Handle Form Submit
+  $('#addStudentForm').on('submit', function(e) {
+    e.preventDefault();
+
+    const instId = $('#institution').val();
+    if (!instId) {
+      showToast("Please select an Institution.", "warning");
+      return;
+    }
+
+    $('#submitBtn').prop('disabled', true).html('Saving...');
+
+    const formData = new FormData(this);
+
+    // CSRF Token header
+    const token = $('[name=csrfmiddlewaretoken]').val();
+
+    $.ajax({
+      url: `/api/institutions/${instId}/students/`,
+      type: 'POST',
+      headers: { 'X-CSRFToken': token },
+      data: formData,
+      processData: false,
+      contentType: false,
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        showToast("Student profile created successfully!", 'success');
+        setTimeout(function() {
+          window.location.href = `/admin-panel/student-list/?institution_id=${instId}`;
+        }, 1500);
+      },
+      error: function(xhr) {
+        $('#submitBtn').prop('disabled', false).html('Save Student');
+        let errorMsg = "Failed to save student.";
+        if (xhr.responseJSON && xhr.responseJSON.errors) {
+          errorMsg = JSON.stringify(xhr.responseJSON.errors, null, 2);
+        }
+        showToast(errorMsg, 'error');
+      }
+    });
+  });
+
+  // Init loads
+  loadInstitutions();
+  loadStudentUsers();
+  loadParentUsers();
+});
+</script>
 {% endblock %}

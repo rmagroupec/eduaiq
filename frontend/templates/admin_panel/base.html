@@ -29,6 +29,142 @@
     <link rel="stylesheet" href="{% static 'admin_assets/css/style.css' %}">
 
     {% block css %}{% endblock %}
+    <style>
+      /* Global Toast Style */
+      .toast-container {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 999999;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        pointer-events: none;
+        max-width: calc(100vw - 48px);
+      }
+      .custom-toast {
+        min-width: 320px;
+        max-width: 420px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        color: #1e293b;
+        border-radius: 12px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        border-left: 6px solid #cbd5e1;
+        pointer-events: auto;
+        position: relative;
+        overflow: hidden;
+        transform: translateX(120%);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+        opacity: 0;
+      }
+      [data-theme="dark"] .custom-toast {
+        background: rgba(30, 41, 59, 0.85);
+        color: #f8fafc;
+        border-color: rgba(71, 85, 105, 0.8);
+      }
+      .custom-toast.show {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      .custom-toast-body {
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .custom-toast-icon {
+        font-size: 22px;
+        flex-shrink: 0;
+      }
+      .custom-toast-content {
+        flex-grow: 1;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.4;
+      }
+      .custom-toast-close {
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+        transition: color 0.15s ease, transform 0.15s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .custom-toast-close:hover {
+        color: #64748b;
+        transform: scale(1.1);
+      }
+      /* Progress Bar at the bottom */
+      .custom-toast-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.05);
+      }
+      .custom-toast-progress::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: inherit;
+        transform-origin: left;
+        animation: toast-progress var(--duration, 4000ms) linear forwards;
+      }
+      @keyframes toast-progress {
+        to {
+          transform: scaleX(0);
+        }
+      }
+      /* Types & Accent Colors */
+      .custom-toast.toast-success {
+        border-left-color: #10b981;
+      }
+      .custom-toast.toast-success .custom-toast-icon {
+        color: #10b981;
+      }
+      .custom-toast.toast-success .custom-toast-progress::after {
+        background: #10b981;
+      }
+      .custom-toast.toast-error {
+        border-left-color: #ef4444;
+      }
+      .custom-toast.toast-error .custom-toast-icon {
+        color: #ef4444;
+      }
+      .custom-toast.toast-error .custom-toast-progress::after {
+        background: #ef4444;
+      }
+      .custom-toast.toast-warning {
+        border-left-color: #f59e0b;
+      }
+      .custom-toast.toast-warning .custom-toast-icon {
+        color: #f59e0b;
+      }
+      .custom-toast.toast-warning .custom-toast-progress::after {
+        background: #f59e0b;
+      }
+      .custom-toast.toast-info {
+        border-left-color: #3b82f6;
+      }
+      .custom-toast.toast-info .custom-toast-icon {
+        color: #3b82f6;
+      }
+      .custom-toast.toast-info .custom-toast-progress::after {
+        background: #3b82f6;
+      }
+    </style>
 </head>
 
 <body>
@@ -67,6 +203,63 @@
 
     <!-- Main Script -->
     <script src="{% static 'admin_assets/js/app.js' %}"></script>
+
+    <script>
+      // Global toast notification helper
+      window.showToast = function(message, type = 'success', duration = 4000) {
+        let container = $('.toast-container');
+        if (container.length === 0) {
+          container = $('<div class="toast-container"></div>').appendTo('body');
+        }
+
+        let iconClass = 'ri-checkbox-circle-fill';
+        if (type === 'error' || type === 'danger') {
+          iconClass = 'ri-error-warning-fill';
+          type = 'error';
+        } else if (type === 'warning') {
+          iconClass = 'ri-alert-fill';
+        } else if (type === 'info') {
+          iconClass = 'ri-information-fill';
+        }
+
+        const toast = $(`
+          <div class="custom-toast toast-${type}">
+            <div class="custom-toast-body">
+              <i class="custom-toast-icon ${iconClass}"></i>
+              <div class="custom-toast-content"></div>
+              <button class="custom-toast-close"><i class="ri-close-line"></i></button>
+            </div>
+            <div class="custom-toast-progress"></div>
+          </div>
+        `);
+
+        // Safely set text content
+        toast.find('.custom-toast-content').text(message);
+        
+        // Pass duration to CSS variable for progress bar
+        toast.find('.custom-toast-progress').css('--duration', `${duration}ms`);
+
+        container.append(toast);
+        toast[0].offsetHeight; // Force reflow
+        toast.addClass('show');
+
+        toast.find('.custom-toast-close').on('click', function() {
+          closeToast(toast);
+        });
+
+        let timer = setTimeout(function() {
+          closeToast(toast);
+        }, duration);
+
+        function closeToast(el) {
+          clearTimeout(timer);
+          el.removeClass('show');
+          setTimeout(function() {
+            el.remove();
+          }, 400);
+        }
+      };
+    </script>
 
     {% block js %}{% endblock %}
 

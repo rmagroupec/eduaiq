@@ -88,8 +88,10 @@
 
   async function loadCourseDetails() {
     if (!querySlug) {
-      alert('No course slug specified!');
-      window.location.href = '/admin-panel/courses/';
+      showToast('No course slug specified!', 'error');
+      setTimeout(() => {
+        window.location.href = '/admin-panel/courses/';
+      }, 1500);
       return;
     }
 
@@ -152,7 +154,7 @@
 
     } catch (e) {
       console.error(e);
-      alert('Error fetching course detailed data.');
+      showToast('Error fetching course detailed data.', 'error');
     }
   }
 

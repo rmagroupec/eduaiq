@@ -1,0 +1,152 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAIQ - Add Institution{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Add Institution</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/institution-list/">Institution List</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Add Institution</span>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-24">
+  <div class="card-header border-bottom bg-base py-16 px-24">
+    <h6 class="text-lg fw-semibold mb-0">Institution Profile Details</h6>
+  </div>
+  <div class="card-body p-24">
+    <form id="addInstitutionForm">
+      {% csrf_token %}
+      <div class="row gy-3">
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="name">Institution Name <span class="text-danger-600">*</span></label>
+          <input type="text" class="form-control radius-8" id="name" name="name" placeholder="Sunrise Public School" required>
+        </div>
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="type">Institution Type <span class="text-danger-600">*</span></label>
+          <select class="form-control form-select radius-8" id="type" name="type" required>
+            <option value="" disabled selected>-- Choose Type --</option>
+            <option value="school">School</option>
+            <option value="college">College</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="board_affiliation">Board Affiliation</label>
+          <input type="text" class="form-control radius-8" id="board_affiliation" name="board_affiliation" placeholder="e.g. CBSE, ICSE, State, University">
+        </div>
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="status">Status</label>
+          <select class="form-control form-select radius-8" id="status" name="status">
+            <option value="pending">Pending</option>
+            <option value="active">Active</option>
+            <option value="suspended">Suspended</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="city">City <span class="text-danger-600">*</span></label>
+          <input type="text" class="form-control radius-8" id="city" name="city" placeholder="e.g. Delhi" required>
+        </div>
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="state">State <span class="text-danger-600">*</span></label>
+          <input type="text" class="form-control radius-8" id="state" name="state" placeholder="e.g. Delhi" required>
+        </div>
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="admin_user">Admin User Account <span class="text-danger-600">*</span></label>
+          <select class="form-control form-select radius-8" id="admin_user" name="admin_user" required>
+            <option value="" disabled selected>-- Select Admin User --</option>
+          </select>
+          <span class="text-xs text-secondary-light">Must be assigned to complete registration.</span>
+        </div>
+        <div class="col-md-12">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="address">Full Physical Address <span class="text-danger-600">*</span></label>
+          <textarea class="form-control radius-8" id="address" name="address" rows="3" placeholder="Enter physical street address..." required></textarea>
+        </div>
+
+        <div class="col-12 mt-24">
+          <div class="d-flex align-items-center gap-16 justify-content-end">
+            <a href="/admin-panel/institution-list/" class="btn btn-outline-neutral-400 radius-8">Cancel</a>
+            <button type="submit" class="btn btn-primary-600 radius-8" id="submitBtn">Save Institution</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+
+  // Load Users List to pick an Admin
+  function loadUsers() {
+    $.ajax({
+      url: '/accounts/users/?page_size=200',
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(response) {
+        const select = $('#admin_user');
+        if (response.results && response.results.length > 0) {
+          response.results.forEach(user => {
+            select.append(`<option value="${user.id}">${user.first_name} ${user.last_name} (${user.username}) - Role: ${user.role}</option>`);
+          });
+        }
+      }
+    });
+  }
+
+  // Submit Handler
+  $('#addInstitutionForm').on('submit', function(e) {
+    e.preventDefault();
+    $('#submitBtn').prop('disabled', true).html('Saving...');
+
+    const match = document.cookie.match(/csrftoken=([^;]+)/);
+    const token = match ? match[1] : $('[name=csrfmiddlewaretoken]').val();
+    
+    // Read values
+    const data = {
+      name: $('#name').val(),
+      type: $('#type').val(),
+      board_affiliation: $('#board_affiliation').val(),
+      status: $('#status').val(),
+      city: $('#city').val(),
+      state: $('#state').val(),
+      admin_user: parseInt($('#admin_user').val()),
+      address: $('#address').val()
+    };
+
+    $.ajax({
+      url: '/api/institutions/',
+      type: 'POST',
+      headers: { 'X-CSRFToken': token },
+      contentType: 'application/json',
+      data: JSON.stringify(data),
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        showToast("Institution registered successfully!", 'success');
+        setTimeout(function() {
+          window.location.href = "/admin-panel/institution-list/";
+        }, 1500);
+      },
+      error: function(xhr) {
+        $('#submitBtn').prop('disabled', false).html('Save Institution');
+        let errorMsg = "Failed to save institution.";
+        if (xhr.responseJSON && xhr.responseJSON.errors) {
+          errorMsg = JSON.stringify(xhr.responseJSON.errors, null, 2);
+        }
+        showToast(errorMsg, 'error');
+      }
+    });
+  });
+
+  loadUsers();
+});
+</script>
+{% endblock %}

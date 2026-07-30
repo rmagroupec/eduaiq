@@ -145,15 +145,15 @@
       });
 
       if (response.ok) {
-        alert('Course deleted successfully!');
+        showToast('Course deleted successfully!', 'success');
         loadAdminCourses();
       } else {
         const data = await response.json();
-        alert('Failed to delete course: ' + (data.error || 'Server error'));
+        showToast('Failed to delete course: ' + (data.error || 'Server error'), 'error');
       }
     } catch (e) {
       console.error(e);
-      alert('Error deleting course.');
+      showToast('Error deleting course.', 'error');
     }
   }
 

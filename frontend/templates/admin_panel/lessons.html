@@ -273,18 +273,18 @@
 
       const resData = await response.json();
       if (response.ok || resData.success) {
-        alert('Lesson added successfully!');
+        showToast('Lesson added successfully!', 'success');
         const modalEl = document.getElementById('addLessonModal');
         const modal = bootstrap.Modal.getInstance(modalEl);
         modal.hide();
         form.reset();
         loadAdminLessons();
       } else {
-        alert('Failed to save lesson: ' + JSON.stringify(resData.errors || resData.error));
+        showToast('Failed to save lesson: ' + JSON.stringify(resData.errors || resData.error), 'error');
       }
     } catch (err) {
       console.error(err);
-      alert('Error saving lesson.');
+      showToast('Error saving lesson.', 'error');
     }
   }
 
@@ -304,15 +304,15 @@
       });
 
       if (response.ok) {
-        alert('Lesson deleted successfully!');
+        showToast('Lesson deleted successfully!', 'success');
         loadAdminLessons();
       } else {
         const data = await response.json();
-        alert('Failed to delete lesson: ' + (data.error || 'Server error'));
+        showToast('Failed to delete lesson: ' + (data.error || 'Server error'), 'error');
       }
     } catch (e) {
       console.error(e);
-      alert('Error deleting lesson.');
+      showToast('Error deleting lesson.', 'error');
     }
   }
 

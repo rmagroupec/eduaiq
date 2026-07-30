@@ -1,823 +1,354 @@
 {% extends 'admin_panel/base.html' %}
 {% load static %}
 
-{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
-
-{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+{% block title %}EduAIQ - Suspended Student List{% endblock %}
 
 {% block content %}
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-<div class="">
-<h1 class="fw-semibold mb-4 h6 text-primary-light">Suspend Student</h1>
-<div class="">
-<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
-<a class="text-secondary-light hover-text-primary hover-underline d-none" href="javascript:void(0)"> /
-        Student</a>
-<span class="text-secondary-light">/ Suspend Student</span>
-</div>
-</div>
-<a class="btn btn-primary-600 d-flex align-items-center gap-6" href="add-new-student">
-<span class="d-flex text-md">
-<i class="ri-add-large-line"></i>
-</span>
-    Add Student
-  </a>
-</div>
-<div class="mt-24">
-<div class="card h-100">
-<div class="card-body p-0 dataTable-wrapper">
-<div class="d-flex align-items-center justify-content-between flex-wrap gap-16 px-20 py-12 border-bottom border-neutral-200">
-<div class="d-flex flex-wrap align-items-center gap-16">
-<div class="dropdown">
-<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
-<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
-<i class="ri-file-upload-line text-md line-height-1"></i>
-                                        Export
-                                    </span>
-<span class="">
-<i class="ri-arrow-down-s-line"></i>
-</span>
-</button>
-<ul class="dropdown-menu p-12 border bg-base shadow">
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
-<i class="ri-file-3-line"></i>
-                                            PDF
-                                        </button>
-</li>
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
-<i class="ri-file-excel-line"></i>
-                                            Excel
-                                        </button>
-</li>
-</ul>
-</div>
-<form class="navbar-search dt-search m-0">
-    {% csrf_token %}
-<input aria-controls="dataTable" class="dt-input bg-transparent radius-4" name="search" placeholder="Search..." type="text"/>
-<iconify-icon class="icon" icon="ion:search-outline"></iconify-icon>
-</form>
-<div class="dropdown">
-<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
-<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
-                                        Filter
-                                    </span>
-<span class="">
-<i class="ri-arrow-down-s-line"></i>
-</span>
-</button>
-<div class="dropdown-menu border bg-base shadow dropdown-menu-lg p-0">
-<div class="d-flex align-items-center justify-content-between border-bottom py-8 px-16">
-<span class="fw-semibold text-lg text-primary-light">Filter</span>
-<button type="button">
-<i class="ri-close-large-line"></i>
-</button>
-</div>
-<form action="#" class="p-16 d-grid grid-cols-2 gap-16">
-    {% csrf_token %}
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="class">Class</label>
-<select class="form-control form-select" id="class">
-<option disabled="" value="Select">Select Class</option>
-<option value="Primary">Primary</option>
-<option value="SSC">SSC</option>
-<option value="HSC">HSC</option>
-<option value="Hons">Hons</option>
-<option value="Masters">Masters</option>
-</select>
-</div>
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="section">Section</label>
-<select class="form-control form-select" id="section">
-<option value="Select">Select Section</option>
-<option value="Arts">Arts</option>
-<option value="Science">Science</option>
-<option value="Commerce">Commerce</option>
-</select>
-</div>
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="gender">Gender</label>
-<select class="form-control form-select" id="gender">
-<option value="Select">Select Gender</option>
-<option value="Male">Male</option>
-<option value="Female">Female</option>
-</select>
-</div>
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="status">Status</label>
-<select class="form-control form-select" id="status">
-<option value="Select">Select Status</option>
-<option value="Active">Active</option>
-<option value="Inactive">Inactive</option>
-</select>
-</div>
-<div class="">
-<button class="btn btn-danger-200 text-danger-600 w-100" type="reset">Reset</button>
-</div>
-<div class="">
-<button class="btn btn-primary-600 w-100" type="submit">Apply</button>
-</div>
-</form>
-</div>
-</div>
-</div>
-<div class="d-flex align-items-center gap-8 text-secondary-light">
-<span class="">
-                                Rows per page:
-                            </span>
-<div class="dt-length">
-<select aria-controls="dataTable" class="dt-input form-control form-select" name="dataTable_length">
-<option value="5">5</option>
-<option selected="" value="10">10</option>
-<option value="25">25</option>
-<option value="50">50</option>
-<option value="100">100</option>
-</select>
-</div>
-</div>
-</div>
-<div class="p-0">
-<table class="table bordered-table mb-0 data-table" data-page-length="10" id="dataTable">
-<thead>
-<tr>
-<th scope="col">
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">
-                                                S.L
-                                            </label>
-</div>
-</th>
-<th scope="col">Admission No</th>
-<th scope="col">Name</th>
-<th scope="col">Class</th>
-<th scope="col">Date of Birth</th>
-<th scope="col">Gender</th>
-<th scope="col">Mobile Number</th>
-<th scope="col">Category</th>
-<th scope="col">Status</th>
-<th scope="col">Action</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">
-                                                01
-                                            </label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52365</span></td>
-<td>
-<div class="d-flex align-items-center">
-<img alt="Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/avatar-img1.png' %}"/>
-<div class="">
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Kathryn Murphy</h6>
-<span class="">Roll No: <span class="fw-semibold">12</span> </span>
-</div>
-</div>
-</td>
-<td>Class 1 (A)</td>
-<td>05 May 2012</td>
-<td>Male</td>
-<td>209.555.0104</td>
-<td>General</td>
-<td> <span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Suspend</span>
-</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-user-3-line"></i>
-                                                        View Teacher
-                                                    </button>
-</li>
-<li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-Teacher.html">
-<i class="ri-edit-2-line"></i>
-                                                        Edit
-                                                    </a>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-money-dollar-box-line"></i>
-                                                        Collect Fees
-                                                    </button>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-error-warning-line"></i>
-                                                        Inactive
-                                                    </button>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal"><i class="ri-delete-bin-6-line"></i>Delete</button>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">
-                                                02
-                                            </label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52365</span></td>
-<td>
-<div class="d-flex align-items-center">
-<img alt="Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/avatar-img2.png' %}"/>
-<div class="">
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Floyd Miles</h6>
-<span class="">Roll No: <span class="fw-semibold">1</span> </span>
-</div>
-</div>
-</td>
-<td>Class 2 (B)</td>
-<td>05 May 2012</td>
-<td>Female</td>
-<td>209.555.0104</td>
-<td>Special</td>
-<td> <span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Suspend</span>
-</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-user-3-line"></i>
-                                                        View Teacher
-                                                    </button>
-</li>
-<li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-Teacher.html">
-<i class="ri-edit-2-line"></i>
-                                                        Edit
-                                                    </a>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-money-dollar-box-line"></i>
-                                                        Collect Fees
-                                                    </button>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-error-warning-line"></i>
-                                                        Inactive
-                                                    </button>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal"><i class="ri-delete-bin-6-line"></i>Delete</button>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">03</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52367</span></td>
-<td>
-<div class="d-flex align-items-center">
-<img alt="Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/avatar-img3.png' %}"/>
-<div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Cody Fisher</h6>
-<span>Roll No: <span class="fw-semibold">7</span></span>
-</div>
-</div>
-</td>
-<td>Class 3 (A)</td>
-<td>12 Feb 2013</td>
-<td>Male</td>
-<td>207.445.9821</td>
-<td>OBC</td>
-<td>
-<span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Suspend</span>
-</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-user-3-line"></i>View Teacher</button></li>
-<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-Teacher.html"><i class="ri-edit-2-line"></i>Edit</a></li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-money-dollar-box-line"></i>Collect Fees</button>
-</li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-error-warning-line"></i>Inactive</button></li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal"><i class="ri-delete-bin-6-line"></i>Delete</button>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">04</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52368</span></td>
-<td>
-<div class="d-flex align-items-center">
-<img alt="Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/avatar-img4.png' %}"/>
-<div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Jane Cooper</h6>
-<span>Roll No: <span class="fw-semibold">8</span></span>
-</div>
-</div>
-</td>
-<td>Class 4 (C)</td>
-<td>17 Mar 2014</td>
-<td>Female</td>
-<td>204.658.4421</td>
-<td>Special</td>
-<td>
-<span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Suspend</span>
-</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-user-3-line"></i>
-                                                        View Teacher
-                                                    </button>
-</li>
-<li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-Teacher.html">
-<i class="ri-edit-2-line"></i>
-                                                        Edit
-                                                    </a>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-money-dollar-box-line"></i>
-                                                        Collect Fees
-                                                    </button>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-error-warning-line"></i>
-                                                        Inactive
-                                                    </button>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal"><i class="ri-delete-bin-6-line"></i>Delete</button>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">05</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52369</span></td>
-<td>
-<div class="d-flex align-items-center">
-<img alt="Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/avatar-img5.png' %}"/>
-<div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Esther Howard</h6>
-<span>Roll No: <span class="fw-semibold">15</span></span>
-</div>
-</div>
-</td>
-<td>Class 5 (B)</td>
-<td>25 Jul 2013</td>
-<td>Female</td>
-<td>209.875.9987</td>
-<td>General</td>
-<td>
-<span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Suspend</span>
-</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-user-3-line"></i>
-                                                        View Teacher
-                                                    </button>
-</li>
-<li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-Teacher.html">
-<i class="ri-edit-2-line"></i>
-                                                        Edit
-                                                    </a>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-money-dollar-box-line"></i>
-                                                        Collect Fees
-                                                    </button>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-error-warning-line"></i>
-                                                        Inactive
-                                                    </button>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal"><i class="ri-delete-bin-6-line"></i>Delete</button>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">06</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52370</span></td>
-<td>
-<div class="d-flex align-items-center">
-<img alt="Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/avatar-img6.png' %}"/>
-<div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Albert Flores</h6>
-<span>Roll No: <span class="fw-semibold">3</span></span>
-</div>
-</div>
-</td>
-<td>Class 6 (A)</td>
-<td>08 Dec 2011</td>
-<td>Male</td>
-<td>208.324.1110</td>
-<td>OBC</td>
-<td>
-<span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Suspend</span>
-</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-user-3-line"></i>
-                                                        View Teacher
-                                                    </button>
-</li>
-<li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-Teacher.html">
-<i class="ri-edit-2-line"></i>
-                                                        Edit
-                                                    </a>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-money-dollar-box-line"></i>
-                                                        Collect Fees
-                                                    </button>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-error-warning-line"></i>
-                                                        Inactive
-                                                    </button>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal"><i class="ri-delete-bin-6-line"></i>Delete</button>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">07</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52371</span></td>
-<td>
-<div class="d-flex align-items-center">
-<img alt="Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/avatar-img7.png' %}"/>
-<div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Jenny Wilson</h6>
-<span>Roll No: <span class="fw-semibold">9</span></span>
-</div>
-</div>
-</td>
-<td>Class 7 (C)</td>
-<td>19 Sep 2010</td>
-<td>Female</td>
-<td>206.211.4567</td>
-<td>General</td>
-<td>
-<span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Suspend</span>
-</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-user-3-line"></i>
-                                                        View Teacher
-                                                    </button>
-</li>
-<li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-Teacher.html">
-<i class="ri-edit-2-line"></i>
-                                                        Edit
-                                                    </a>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-money-dollar-box-line"></i>
-                                                        Collect Fees
-                                                    </button>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-error-warning-line"></i>
-                                                        Inactive
-                                                    </button>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal"><i class="ri-delete-bin-6-line"></i>Delete</button>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">08</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52367</span></td>
-<td>
-<div class="d-flex align-items-center">
-<img alt="Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/avatar-img3.png' %}"/>
-<div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Jane Cooper</h6>
-<span>Roll No: <span class="fw-semibold">5</span></span>
-</div>
-</div>
-</td>
-<td>Class 3 (A)</td>
-<td>12 Jan 2013</td>
-<td>Female</td>
-<td>202.444.0089</td>
-<td>OBC</td>
-<td><span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Suspend</span>
-</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-user-3-line"></i>View Teacher</button></li>
-<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-Teacher.html"><i class="ri-edit-2-line"></i>Edit</a></li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-money-dollar-box-line"></i>Collect Fees</button>
-</li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-error-warning-line"></i>Inactive</button></li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal"><i class="ri-delete-bin-6-line"></i>Delete</button>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">09</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52368</span></td>
-<td>
-<div class="d-flex align-items-center">
-<img alt="Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/avatar-img4.png' %}"/>
-<div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Cameron Williamson</h6>
-<span>Roll No: <span class="fw-semibold">23</span></span>
-</div>
-</div>
-</td>
-<td>Class 4 (C)</td>
-<td>08 Jul 2011</td>
-<td>Male</td>
-<td>203.111.0456</td>
-<td>SC</td>
-<td><span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Suspend</span>
-</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-user-3-line"></i>View Teacher</button></li>
-<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-Teacher.html"><i class="ri-edit-2-line"></i>Edit</a></li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-money-dollar-box-line"></i>Collect Fees</button>
-</li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-error-warning-line"></i>Inactive</button></li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal"><i class="ri-delete-bin-6-line"></i>Delete</button>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">10</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52369</span></td>
-<td>
-<div class="d-flex align-items-center">
-<img alt="Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/avatar-img5.png' %}"/>
-<div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Theresa Webb</h6>
-<span>Roll No: <span class="fw-semibold">10</span></span>
-</div>
-</div>
-</td>
-<td>Class 5 (A)</td>
-<td>18 Nov 2010</td>
-<td>Female</td>
-<td>205.777.0190</td>
-<td>General</td>
-<td><span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Suspend</span>
-</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-user-3-line"></i>View Teacher</button></li>
-<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-Teacher.html"><i class="ri-edit-2-line"></i>Edit</a></li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-money-dollar-box-line"></i>Collect Fees</button>
-</li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-error-warning-line"></i>Inactive</button></li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal"><i class="ri-delete-bin-6-line"></i>Delete</button>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">11</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52370</span></td>
-<td>
-<div class="d-flex align-items-center">
-<img alt="Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/avatar-img6.png' %}"/>
-<div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Marvin McKinney</h6>
-<span>Roll No: <span class="fw-semibold">7</span></span>
-</div>
-</div>
-</td>
-<td>Class 6 (B)</td>
-<td>21 Mar 2011</td>
-<td>Male</td>
-<td>209.660.0912</td>
-<td>General</td>
-<td><span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Suspend</span>
-</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-user-3-line"></i>View Teacher</button></li>
-<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-Teacher.html"><i class="ri-edit-2-line"></i>Edit</a></li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-money-dollar-box-line"></i>Collect Fees</button>
-</li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-error-warning-line"></i>Inactive</button></li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal"><i class="ri-delete-bin-6-line"></i>Delete</button>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">12</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52371</span></td>
-<td>
-<div class="d-flex align-items-center">
-<img alt="Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/avatar-img7.png' %}"/>
-<div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Courtney Henry</h6>
-<span>Roll No: <span class="fw-semibold">15</span></span>
-</div>
-</div>
-</td>
-<td>Class 7 (A)</td>
-<td>10 Feb 2009</td>
-<td>Female</td>
-<td>204.120.0023</td>
-<td>OBC</td>
-<td><span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Suspend</span>
-</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-user-3-line"></i>View Teacher</button></li>
-<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-Teacher.html"><i class="ri-edit-2-line"></i>Edit</a></li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-money-dollar-box-line"></i>Collect Fees</button>
-</li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-error-warning-line"></i>Inactive</button></li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal"><i class="ri-delete-bin-6-line"></i>Delete</button>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Suspended Students</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Suspended Students</span>
+    </div>
+  </div>
+</div>
+
+<div class="card h-100 mt-24">
+  <div class="card-body p-24">
+    <!-- Institution Selector & Search/Filter Controls -->
+    <div class="row gy-3 mb-24 align-items-end">
+      <div class="col-md-4">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="institutionSelect">Select Institution <span class="text-danger-600">*</span></label>
+        <select class="form-control form-select radius-8" id="institutionSelect">
+          <option value="" disabled selected>-- Choose Institution --</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="classGradeFilter">Class / Grade</label>
+        <input type="text" class="form-control radius-8" id="classGradeFilter" placeholder="e.g. Class 10">
+      </div>
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="sectionFilter">Section</label>
+        <input type="text" class="form-control radius-8" id="sectionFilter" placeholder="e.g. A">
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-outline-primary-600 w-100 radius-8" id="clearFiltersBtn">
+          Clear Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Search input and paging size -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 pb-20 border-bottom border-neutral-200">
+      <div class="d-flex align-items-center gap-8">
+        <span class="text-sm text-secondary-light">Show</span>
+        <select class="form-select form-select-sm w-auto radius-8" id="pageSizeSelect">
+          <option value="10">10</option>
+          <option value="20" selected>20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        <span class="text-sm text-secondary-light">entries</span>
+      </div>
+      <div class="d-flex align-items-center gap-16">
+        <div class="position-relative">
+          <input type="text" class="form-control form-control-sm ps-32 radius-8" id="searchQuery" placeholder="Search Admission No...">
+          <i class="ri-search-line position-absolute start-12 top-50 translate-middle-y text-secondary-light"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Table -->
+    <div class="table-responsive mt-24">
+      <table class="table border-neutral-200 table-hover align-middle">
+        <thead>
+          <tr class="bg-neutral-50">
+            <th scope="col">Admission No</th>
+            <th scope="col">Student Name</th>
+            <th scope="col">Roll No</th>
+            <th scope="col">Class & Section</th>
+            <th scope="col">Academic Year</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody id="studentTableBody">
+          <tr>
+            <td colspan="7" class="text-center py-40 text-secondary-light">
+              <i class="ri-information-line text-xxl d-block mb-8"></i>
+              Please select an Institution to view suspended students.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination & Meta -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 mt-24">
+      <span class="text-sm text-secondary-light" id="tableInfoSpan">Showing 0 to 0 of 0 entries</span>
+      <nav aria-label="Page navigation" id="paginationNav" class="d-none">
+        <ul class="pagination pagination-primary mb-0 gap-8" id="paginationUl">
+          <!-- Dynamically populated -->
+        </ul>
+      </nav>
+    </div>
+
+  </div>
 </div>
 {% endblock %}
 
 {% block js %}
-    <script>
+<script>
+$(document).ready(function() {
+  let selectedInstitutionId = "";
+  let currentPage = 1;
 
-    let table = new DataTable('#dataTable');
+  // Read cookies for CSRF
+  function getCsrfToken() {
+    const match = document.cookie.match(/csrftoken=([^;]+)/);
+    return match ? match[1] : null;
+  }
 
-    // ✅ Data Table start
-    $('.data-table').each(function () {
-        const $table = $(this);
-        const tableInstance = new DataTable(this);
-
-        // Handle search input (inside same wrapper)
-        $table.closest('.dataTable-wrapper').find('.dt-search .dt-input').on('keyup', function () {
-            tableInstance.search(this.value).draw();
-        });
-
-        // Handle page length change (inside same wrapper)
-        $table.closest('.dataTable-wrapper').find('.dt-length .dt-input').on('change', function () {
-            const value = $(this).val();
-            tableInstance.page.len(value).draw();
-        });
+  // Load Institutions dropdown
+  function loadInstitutions() {
+    $.ajax({
+      url: '/api/institutions/?page_size=100',
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(response) {
+        const select = $('#institutionSelect');
+        select.find('option:not(:first)').remove();
+        if (response.results && response.results.length > 0) {
+          response.results.forEach(inst => {
+            select.append(`<option value="${inst.id}">${inst.name} (${inst.type})</option>`);
+          });
+          if (response.results.length > 0) {
+            select.val(response.results[0].id);
+          }
+          selectedInstitutionId = select.val();
+          if (selectedInstitutionId) {
+            loadStudents();
+          }
+        }
+      },
+      error: function(err) {
+        console.error('Failed to load institutions:', err);
+      }
     });
-    // ✅ Data Table end
+  }
 
-    </script>
+  // Load students for chosen institution (force status=suspended)
+  function loadStudents(page = 1) {
+    if (!selectedInstitutionId) return;
+
+    currentPage = page;
+    const classGrade = $('#classGradeFilter').val();
+    const section = $('#sectionFilter').val();
+    const q = $('#searchQuery').val();
+    const pageSize = $('#pageSizeSelect').val();
+
+    // Forced filter on suspended
+    let url = `/api/institutions/${selectedInstitutionId}/students/?page=${page}&page_size=${pageSize}&status=suspended`;
+    if (classGrade) url += `&class_grade=${encodeURIComponent(classGrade)}`;
+    if (section) url += `&section=${encodeURIComponent(section)}`;
+    if (q) url += `&q=${encodeURIComponent(q)}`;
+
+    // Show loading
+    $('#studentTableBody').html(`
+      <tr>
+        <td colspan="7" class="text-center py-40">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </td>
+      </tr>
+    `);
+
+    $.ajax({
+      url: url,
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(response) {
+        renderTable(response);
+        renderPagination(response);
+      },
+      error: function(err) {
+        console.error('Error fetching students:', err);
+        $('#studentTableBody').html(`
+          <tr>
+            <td colspan="7" class="text-center py-40 text-danger-600">
+              <i class="ri-error-warning-line text-xxl d-block mb-8"></i>
+              Error loading suspended student roster.
+            </td>
+          </tr>
+        `);
+      }
+    });
+  }
+
+  function renderTable(data) {
+    const tbody = $('#studentTableBody');
+    tbody.empty();
+
+    if (!data.results || data.results.length === 0) {
+      tbody.html(`
+        <tr>
+          <td colspan="7" class="text-center py-40 text-secondary-light">
+            <i class="ri-folder-open-line text-xxl d-block mb-8"></i>
+            No suspended students found.
+          </td>
+        </tr>
+      `);
+      $('#tableInfoSpan').text('Showing 0 to 0 of 0 entries');
+      return;
+    }
+
+    data.results.forEach(student => {
+      const rollNo = student.roll_number || '-';
+      const admissionNo = student.admission_no || '-';
+      const secText = student.section ? `(${student.section})` : '';
+      const classSecText = `${student.class_grade || '-'} ${secText}`;
+      const name = student.student_name || 'Unnamed Student';
+      const photo = student.profile_photo || '/static/admin_assets/images/avatar-default.png';
+
+      const statusBadge = `<span class="px-16 py-4 radius-4 fw-medium text-sm bg-danger-100 text-danger-600">SUSPENDED</span>`;
+
+      tbody.append(`
+        <tr>
+          <td><span class="text-primary-600 fw-medium">${admissionNo}</span></td>
+          <td>
+            <div class="d-flex align-items-center">
+              <img src="${photo}" alt="" class="flex-shrink-0 me-12 radius-8 object-fit-cover" style="width:40px; height:40px;">
+              <div>
+                <h6 class="text-md mb-0 fw-medium text-neutral-800">${name}</h6>
+              </div>
+            </div>
+          </td>
+          <td>${rollNo}</td>
+          <td>${classSecText}</td>
+          <td>${student.academic_year || '-'}</td>
+          <td>${statusBadge}</td>
+          <td class="text-center">
+            <div class="d-flex align-items-center justify-content-center gap-8">
+              <a href="/admin-panel/student-details/?id=${student.id}" class="btn btn-sm btn-outline-neutral-300 text-secondary-light px-8 py-4 radius-8" title="View Profile">
+                <i class="ri-eye-line text-md"></i>
+              </a>
+              <button class="btn btn-sm btn-outline-success text-success-600 px-8 py-4 radius-8 activate-student-btn" data-id="${student.id}" title="Re-activate Student">
+                <i class="ri-check-circle-line text-md"></i> Activate
+              </button>
+            </div>
+          </td>
+        </tr>
+      `);
+    });
+
+    // Update entries text
+    const page = data.page;
+    const pageSize = data.page_size;
+    const count = data.count;
+    const startEntry = (page - 1) * pageSize + 1;
+    const endEntry = Math.min(page * pageSize, count);
+    $('#tableInfoSpan').text(`Showing ${startEntry} to ${endEntry} of ${count} entries`);
+  }
+
+  function renderPagination(data) {
+    const nav = $('#paginationNav');
+    const ul = $('#paginationUl');
+    ul.empty();
+
+    if (data.total_pages <= 1) {
+      nav.addClass('d-none');
+      return;
+    }
+
+    nav.removeClass('d-none');
+
+    // Prev Button
+    const prevDisabled = data.page === 1 ? 'disabled' : '';
+    ul.append(`
+      <li class="page-item ${prevDisabled}">
+        <button class="page-link py-6 px-12" data-page="${data.page - 1}" ${prevDisabled}>Previous</button>
+      </li>
+    `);
+
+    // Page numbers
+    for (let i = 1; i <= data.total_pages; i++) {
+      const activeClass = i === data.page ? 'active' : '';
+      ul.append(`
+        <li class="page-item ${activeClass}">
+          <button class="page-link py-6 px-12" data-page="${i}">${i}</button>
+        </li>
+      `);
+    }
+
+    // Next Button
+    const nextDisabled = data.page === data.total_pages ? 'disabled' : '';
+    ul.append(`
+      <li class="page-item ${nextDisabled}">
+        <button class="page-link py-6 px-12" data-page="${data.page + 1}" ${nextDisabled}>Next</button>
+      </li>
+    `);
+  }
+
+  // Handle Institution Choice
+  $('#institutionSelect').on('change', function() {
+    selectedInstitutionId = $(this).val();
+    loadStudents(1);
+  });
+
+  // Filter triggers
+  $('#classGradeFilter, #sectionFilter').on('keyup', function() {
+    loadStudents(1);
+  });
+
+  $('#pageSizeSelect').on('change', function() {
+    loadStudents(1);
+  });
+
+  $('#searchQuery').on('keyup', function() {
+    loadStudents(1);
+  });
+
+  $('#clearFiltersBtn').on('click', function() {
+    $('#classGradeFilter').val('');
+    $('#sectionFilter').val('');
+    $('#searchQuery').val('');
+    loadStudents(1);
+  });
+
+  // Pagination click handlers
+  $(document).on('click', '#paginationUl .page-link', function(e) {
+    e.preventDefault();
+    const page = $(this).data('page');
+    if (page) loadStudents(page);
+  });
+
+  // Activate trigger
+  $(document).on('click', '.activate-student-btn', function() {
+    const studentId = $(this).data('id');
+    const token = getCsrfToken();
+
+    $.ajax({
+      url: `/api/students/${studentId}/status/`,
+      type: 'PATCH',
+      headers: { 'X-CSRFToken': token },
+      contentType: 'application/json',
+      data: JSON.stringify({ status: 'active' }),
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        showToast('Student activated successfully!', 'success');
+        loadStudents(currentPage);
+      },
+      error: function(err) {
+        showToast('Failed to activate student.', 'error');
+      }
+    });
+  });
+
+  // Initialize page
+  loadInstitutions();
+});
+</script>
 {% endblock %}

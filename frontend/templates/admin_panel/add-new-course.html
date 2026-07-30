@@ -171,18 +171,20 @@
       const data = await response.json();
 
       if (response.ok || data.success) {
-        alert('Course created successfully!');
-        window.location.href = '/admin-panel/courses/';
+        showToast('Course created successfully!', 'success');
+        setTimeout(() => {
+          window.location.href = '/admin-panel/courses/';
+        }, 1500);
       } else {
         let errMsg = data.error || 'Validation failed.';
         if (data.errors) {
-          errMsg += '\n' + Object.entries(data.errors).map(([f, errs]) => `${f}: ${errs.join(', ')}`).join('\n');
+          errMsg += ' | ' + Object.entries(data.errors).map(([f, errs]) => `${f}: ${errs.join(', ')}`).join(' | ');
         }
-        alert(errMsg);
+        showToast(errMsg, 'error');
       }
     } catch (err) {
       console.error(err);
-      alert('Error saving course.');
+      showToast('Error saving course.', 'error');
     }
   }
 

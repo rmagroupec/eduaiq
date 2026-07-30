@@ -126,8 +126,10 @@
 
   async function initEditPage() {
     if (!querySlug) {
-      alert('No course slug specified for editing!');
-      window.location.href = '/admin-panel/courses/';
+      showToast('No course slug specified for editing!', 'error');
+      setTimeout(() => {
+        window.location.href = '/admin-panel/courses/';
+      }, 1500);
       return;
     }
     await loadCategories();
@@ -174,7 +176,7 @@
       }
     } catch (e) {
       console.error(e);
-      alert('Error fetching course data.');
+      showToast('Error fetching course data.', 'error');
     }
   }
 
@@ -197,18 +199,20 @@
       const data = await response.json();
 
       if (response.ok || data.success) {
-        alert('Course updated successfully!');
-        window.location.href = '/admin-panel/courses/';
+        showToast('Course updated successfully!', 'success');
+        setTimeout(() => {
+          window.location.href = '/admin-panel/courses/';
+        }, 1500);
       } else {
         let errMsg = data.error || 'Validation failed.';
         if (data.errors) {
-          errMsg += '\n' + Object.entries(data.errors).map(([f, errs]) => `${f}: ${errs.join(', ')}`).join('\n');
+          errMsg += ' | ' + Object.entries(data.errors).map(([f, errs]) => `${f}: ${errs.join(', ')}`).join(' | ');
         }
-        alert(errMsg);
+        showToast(errMsg, 'error');
       }
     } catch (err) {
       console.error(err);
-      alert('Error saving course changes.');
+      showToast('Error saving course changes.', 'error');
     }
   }
 
