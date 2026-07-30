@@ -1,0 +1,250 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Quiz Results - EduAIQ Admin{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Quiz Results</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/quizzes/">Quizzes</a>
+      <span class="text-secondary-light">/ Results</span>
+    </div>
+  </div>
+</div>
+
+<!-- KPI Cards -->
+<div class="row g-3 mb-24">
+  <div class="col-md-3">
+    <div class="card p-16 d-flex flex-row align-items-center justify-content-between radius-8 border">
+      <div>
+        <span class="text-secondary-light text-sm d-block fw-semibold mb-4">Total Graded</span>
+        <h5 id="statTotalGraded" class="mb-0 text-dark fw-bold">0</h5>
+      </div>
+      <div class="text-primary-600 bg-primary-100 p-8 rounded-circle">
+        <i class="ri-user-star-line text-2xl line-height-1"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-16 d-flex flex-row align-items-center justify-content-between radius-8 border">
+      <div>
+        <span class="text-secondary-light text-sm d-block fw-semibold mb-4">Pass Rate</span>
+        <h5 id="statPassRate" class="mb-0 text-success fw-bold">0%</h5>
+      </div>
+      <div class="text-success-600 bg-success-100 p-8 rounded-circle">
+        <i class="ri-pie-chart-line text-2xl line-height-1"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-16 d-flex flex-row align-items-center justify-content-between radius-8 border">
+      <div>
+        <span class="text-secondary-light text-sm d-block fw-semibold mb-4">Average Score</span>
+        <h5 id="statAvgScore" class="mb-0 text-warning fw-bold">0%</h5>
+      </div>
+      <div class="text-warning-600 bg-warning-100 p-8 rounded-circle">
+        <i class="ri-percent-line text-2xl line-height-1"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-16 d-flex flex-row align-items-center justify-content-between radius-8 border">
+      <div>
+        <span class="text-secondary-light text-sm d-block fw-semibold mb-4">High Score</span>
+        <h5 id="statHighScore" class="mb-0 text-info fw-bold">0%</h5>
+      </div>
+      <div class="text-info-600 bg-info-100 p-8 rounded-circle">
+        <i class="ri-trophy-line text-2xl line-height-1"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filters Card -->
+<div class="card mb-24">
+  <div class="card-body p-24">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label for="quizFilterSelect" class="form-label fw-semibold text-primary-light">Filter by Quiz:</label>
+        <select id="quizFilterSelect" class="form-select" onchange="loadResults()">
+          <option value="">-- All Quizzes --</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="searchStudent" class="form-label fw-semibold text-primary-light">Search Student username:</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0"><i class="ri-search-2-line"></i></span>
+          <input type="text" id="searchStudent" class="form-control border-start-0" placeholder="Type student username..." oninput="debounceSearch()">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- List of Quiz Results -->
+<div class="card h-100">
+  <div class="card-body p-24">
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Result ID</th>
+            <th>Student</th>
+            <th>Quiz</th>
+            <th class="text-center">Score %</th>
+            <th class="text-center">Marks Obtained</th>
+            <th class="text-center">Time Taken (Mins)</th>
+            <th>Status</th>
+            <th>Date Completed</th>
+          </tr>
+        </thead>
+        <tbody id="resultsTableBody">
+          <tr>
+            <td colspan="8" class="text-center py-4 text-muted">
+              Loading results...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+  let searchDebounceTimeout = null;
+
+  async function initPage() {
+    await loadQuizzesList();
+    loadResults();
+  }
+
+  async function loadQuizzesList() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/admin/quizzes/`);
+      const data = await response.json();
+      const select = document.getElementById('quizFilterSelect');
+      const results = data.results || [];
+
+      results.forEach(q => {
+        const opt = document.createElement('option');
+        opt.value = q.id;
+        opt.textContent = `${q.title} (${q.course_title})`;
+        select.appendChild(opt);
+      });
+    } catch (e) {
+      console.error('Error fetching quiz list for filtering', e);
+    }
+  }
+
+  function debounceSearch() {
+    clearTimeout(searchDebounceTimeout);
+    searchDebounceTimeout = setTimeout(loadResults, 300);
+  }
+
+  async function loadResults() {
+    const tbody = document.getElementById('resultsTableBody');
+    tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted"><i class="ri-loader-4-line ri-spin align-middle me-2"></i> Loading results...</td></tr>`;
+
+    const quizId = document.getElementById('quizFilterSelect').value;
+    const query = document.getElementById('searchStudent').value.trim().toLowerCase();
+
+    let url = `${API_BASE_URL}/courses/admin/attempts/?status=graded`;
+    if (quizId) {
+      url = `${API_BASE_URL}/courses/admin/attempts/?quiz=${quizId}&status=graded`;
+    }
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      let results = data.results || [];
+
+      // Client-side filtering by student search query
+      if (query) {
+        results = results.filter(a => 
+          a.student_username.toLowerCase().includes(query) || 
+          a.student_name.toLowerCase().includes(query)
+        );
+      }
+
+      // Calculate Stats
+      calculateStats(results);
+
+      if (results.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No graded quiz results found matching the filters.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = results.map(r => {
+        const formattedDate = r.submitted_at 
+          ? new Date(r.submitted_at).toLocaleString() 
+          : r.completed_at 
+            ? new Date(r.completed_at).toLocaleString() 
+            : '-';
+            
+        const passBadge = r.passed 
+          ? '<span class="badge bg-success-focus text-success-main"><i class="ri-checkbox-circle-fill"></i> Passed</span>' 
+          : '<span class="badge bg-danger-focus text-danger-main"><i class="ri-close-circle-fill"></i> Failed</span>';
+
+        return `
+          <tr>
+            <td class="font-monospace"># ${r.id}</td>
+            <td>
+              <div class="fw-semibold text-dark">${r.student_name}</div>
+              <div class="text-muted text-xs">@${r.student_username}</div>
+            </td>
+            <td>
+              <div class="fw-semibold text-dark">${r.quiz_title}</div>
+            </td>
+            <td class="text-center font-monospace fw-bold ${r.passed ? 'text-success' : 'text-danger'}">${r.score_pct}%</td>
+            <td class="text-center font-monospace">${r.score_marks} pts</td>
+            <td class="text-center font-monospace">${r.time_taken_minutes} mins</td>
+            <td>${passBadge}</td>
+            <td class="text-xs text-muted">${formattedDate}</td>
+          </tr>
+        `;
+      }).join('');
+    } catch (e) {
+      console.error(e);
+      tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-danger">Failed to load quiz results.</td></tr>`;
+    }
+  }
+
+  function calculateStats(results) {
+    const total = results.length;
+    document.getElementById('statTotalGraded').textContent = total;
+
+    if (total === 0) {
+      document.getElementById('statPassRate').textContent = '0%';
+      document.getElementById('statAvgScore').textContent = '0%';
+      document.getElementById('statHighScore').textContent = '0%';
+      return;
+    }
+
+    let passedCount = 0;
+    let scoreSum = 0;
+    let maxScore = 0;
+
+    results.forEach(r => {
+      if (r.passed) passedCount++;
+      const score = parseFloat(r.score_pct) || 0;
+      scoreSum += score;
+      if (score > maxScore) maxScore = score;
+    });
+
+    const passRate = Math.round((passedCount / total) * 100);
+    const avgScore = Math.round(scoreSum / total);
+
+    document.getElementById('statPassRate').textContent = `${passRate}%`;
+    document.getElementById('statAvgScore').textContent = `${avgScore}%`;
+    document.getElementById('statHighScore').textContent = `${Math.round(maxScore)}%`;
+  }
+
+  document.addEventListener('DOMContentLoaded', initPage);
+</script>
+{% endblock %}

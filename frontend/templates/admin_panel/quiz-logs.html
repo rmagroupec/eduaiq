@@ -1,0 +1,172 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Quiz Access Logs - EduAIQ Admin{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Quiz Logs</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/quizzes/">Quizzes</a>
+      <span class="text-secondary-light">/ Logs</span>
+    </div>
+  </div>
+</div>
+
+<!-- Filters Card -->
+<div class="card mb-24">
+  <div class="card-body p-24">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <label for="quizSelect" class="form-label fw-semibold text-primary-light">Select Quiz to View Logs:</label>
+        <select id="quizSelect" class="form-select" onchange="onQuizChange()">
+          <option value="" disabled selected>-- Select Quiz --</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Access Logs List -->
+<div class="card h-100">
+  <div class="card-header bg-white border-bottom py-16 px-24 d-flex justify-content-between align-items-center">
+    <h6 id="logTitleHeader" class="mb-0 text-md fw-semibold text-primary-light">Audit & Proctoring Logs</h6>
+    <span id="logCountBadge" class="badge bg-primary">0 Log entries</span>
+  </div>
+  <div class="card-body p-24">
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th style="width: 80px;">Log ID</th>
+            <th>User / Role</th>
+            <th style="width: 160px;">Action</th>
+            <th>Details / Proctoring Note</th>
+            <th style="width: 130px;">IP Address</th>
+            <th>User Agent</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody id="logsTableBody">
+          <tr>
+            <td colspan="7" class="text-center py-4 text-muted">
+              Select a quiz above to load access logs.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+  let preselectedQuizId = new URLSearchParams(window.location.search).get('quiz');
+
+  async function initPage() {
+    await loadQuizzesList();
+    if (preselectedQuizId) {
+      document.getElementById('quizSelect').value = preselectedQuizId;
+      loadQuizLogs(preselectedQuizId);
+    }
+  }
+
+  async function loadQuizzesList() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/admin/quizzes/`);
+      const data = await response.json();
+      const select = document.getElementById('quizSelect');
+      const results = data.results || [];
+
+      results.forEach(q => {
+        const opt = document.createElement('option');
+        opt.value = q.id;
+        opt.textContent = `${q.title} (${q.course_title})`;
+        select.appendChild(opt);
+      });
+    } catch (e) {
+      console.error('Error fetching quizzes for dropdown', e);
+    }
+  }
+
+  function onQuizChange() {
+    const quizId = document.getElementById('quizSelect').value;
+    loadQuizLogs(quizId);
+  }
+
+  async function loadQuizLogs(quizId) {
+    if (!quizId) return;
+
+    const tbody = document.getElementById('logsTableBody');
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted"><i class="ri-loader-4-line ri-spin align-middle me-2"></i> Loading logs...</td></tr>`;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/quizzes/${quizId}/access-logs/`);
+      const data = await response.json();
+      const results = data.results || [];
+
+      document.getElementById('logCountBadge').textContent = `${results.length} Log entries`;
+
+      if (results.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">No logs recorded for this quiz yet.</td></tr>`;
+        return;
+      }
+
+      // Update header
+      const quizName = document.getElementById('quizSelect').options[document.getElementById('quizSelect').selectedIndex].text;
+      document.getElementById('logTitleHeader').textContent = `Audit & Proctoring Logs: ${quizName}`;
+
+      tbody.innerHTML = results.map(l => {
+        let actionBadge = '';
+        const act = l.action || '';
+        
+        if (act === 'accessed') {
+          actionBadge = '<span class="badge bg-secondary-focus text-secondary-main">Accessed</span>';
+        } else if (act === 'started') {
+          actionBadge = '<span class="badge bg-warning-focus text-warning-main">Started Attempt</span>';
+        } else if (act === 'submitted') {
+          actionBadge = '<span class="badge bg-success-focus text-success-main">Submitted</span>';
+        } else if (act === 'viewed') {
+          actionBadge = '<span class="badge bg-info-focus text-info-main">Viewed Report</span>';
+        } else if (act === 'modified') {
+          actionBadge = '<span class="badge bg-danger-focus text-danger-main">Config Changed</span>';
+        } else {
+          actionBadge = `<span class="badge bg-neutral-100 text-neutral-800 text-capitalize">${act}</span>`;
+        }
+
+        const formattedDate = l.timestamp ? new Date(l.timestamp).toLocaleString() : '-';
+
+        return `
+          <tr>
+            <td class="font-monospace"># ${l.id}</td>
+            <td>
+              <div class="fw-semibold text-dark">${l.user_username || 'Unknown User'}</div>
+              <div class="text-muted text-xs">${l.user_role || 'Staff/User'}</div>
+            </td>
+            <td>${actionBadge}</td>
+            <td>
+              <span class="text-secondary-light text-sm">${l.details || '-'}</span>
+            </td>
+            <td class="font-monospace text-xs">${l.ip_address || '-'}</td>
+            <td>
+              <div class="text-muted text-xs text-truncate" style="max-width: 250px;" title="${l.user_agent || ''}">
+                ${l.user_agent || '-'}
+              </div>
+            </td>
+            <td class="text-xs text-muted">${formattedDate}</td>
+          </tr>
+        `;
+      }).join('');
+    } catch (e) {
+      console.error(e);
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Failed to load quiz logs.</td></tr>`;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', initPage);
+</script>
+{% endblock %}

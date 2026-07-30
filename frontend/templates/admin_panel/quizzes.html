@@ -166,12 +166,21 @@
             </span>
           </td>
           <td>
-            <div class="d-flex gap-2">
-              <button class="btn btn-sm btn-outline-primary" onclick="openEditQuizModal(${q.id})">
-                <i class="ri-settings-4-line"></i> Configure Rules
+            <div class="d-flex flex-wrap gap-2">
+              <button class="btn btn-xs btn-outline-primary" onclick="openEditQuizModal(${q.id})">
+                <i class="ri-settings-4-line"></i> Rules
               </button>
-              <a href="/admin-panel/quiz-logs/?quiz=${q.id}" class="btn btn-sm btn-outline-info">
-                <i class="ri-file-list-3-line"></i> View logs
+              <a href="/admin-panel/question-bank/?quiz=${q.id}" class="btn btn-xs btn-outline-warning">
+                <i class="ri-question-line"></i> Questions
+              </a>
+              <a href="/admin-panel/add-question/?quiz=${q.id}" class="btn btn-xs btn-outline-success">
+                <i class="ri-add-line"></i> + Question
+              </a>
+              <a href="/admin-panel/quiz-attempts/?quiz=${q.id}" class="btn btn-xs btn-outline-dark">
+                <i class="ri-history-line"></i> Attempts
+              </a>
+              <a href="/admin-panel/quiz-logs/?quiz=${q.id}" class="btn btn-xs btn-outline-info">
+                <i class="ri-file-list-3-line"></i> Logs
               </a>
             </div>
           </td>

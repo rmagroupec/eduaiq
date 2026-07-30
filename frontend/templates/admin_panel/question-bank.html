@@ -1,0 +1,424 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Question Bank - EduAIQ Admin{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Question Bank</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/quizzes/">Quizzes</a>
+      <span class="text-secondary-light">/ Question Bank</span>
+    </div>
+  </div>
+  <a id="addQuestionBtn" href="/admin-panel/add-question/" class="btn btn-primary d-flex align-items-center gap-6 disabled">
+    <span class="d-flex text-md"><i class="ri-add-large-line"></i></span>
+    Add Question to Quiz
+  </a>
+</div>
+
+<!-- Select Course & Quiz Selector -->
+<div class="card mb-24">
+  <div class="card-body p-24">
+    <div class="row g-3 align-items-center">
+      <div class="col-md-6">
+        <label for="courseSelect" class="form-label fw-semibold text-primary-light">Select Course:</label>
+        <select id="courseSelect" class="form-select" onchange="onCourseChange()">
+          <option value="" disabled selected>-- Select Course --</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="quizSelect" class="form-label fw-semibold text-primary-light">Select Quiz:</label>
+        <select id="quizSelect" class="form-select" onchange="onQuizChange()" disabled>
+          <option value="" disabled selected>-- Select Quiz --</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card h-100">
+  <div class="card-header bg-white border-bottom py-16 px-24 d-flex justify-content-between align-items-center">
+    <h6 id="quizTitleHeader" class="mb-0 text-md fw-semibold text-primary-light">Questions list</h6>
+    <span id="questionCountBadge" class="badge bg-primary">0 Questions</span>
+  </div>
+  <div class="card-body p-24">
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th style="width: 60px;">Order</th>
+            <th>Question</th>
+            <th>Options</th>
+            <th style="width: 120px;">Correct</th>
+            <th style="width: 80px;">Marks</th>
+            <th style="width: 100px;">Difficulty</th>
+            <th style="width: 150px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="questionsTableBody">
+          <tr>
+            <td colspan="7" class="text-center py-4 text-muted">
+              Select a quiz above to load questions.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Question Modal -->
+<div class="modal fade" id="editQuestionModal" tabindex="-1" aria-labelledby="editQuestionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="editQuestionModalLabel">Edit Question Details</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editQuestionForm" onsubmit="submitQuestionEdit(event)">
+          <input type="hidden" id="editQuestionId">
+          <div class="row g-3">
+            <div class="col-12">
+              <label for="editQuestionText" class="form-label fw-semibold">Question Text <span class="text-danger">*</span></label>
+              <textarea class="form-control" id="editQuestionText" name="question_text" rows="3" required></textarea>
+            </div>
+            
+            <div class="col-md-6">
+              <label for="editOptionA" class="form-label">Option A <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="editOptionA" name="option_a" required>
+            </div>
+            <div class="col-md-6">
+              <label for="editOptionB" class="form-label">Option B <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="editOptionB" name="option_b" required>
+            </div>
+            <div class="col-md-6">
+              <label for="editOptionC" class="form-label">Option C <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="editOptionC" name="option_c" required>
+            </div>
+            <div class="col-md-6">
+              <label for="editOptionD" class="form-label">Option D <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="editOptionD" name="option_d" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="editCorrectOption" class="form-label fw-semibold">Correct Option <span class="text-danger">*</span></label>
+              <select class="form-select" id="editCorrectOption" name="correct_option" required>
+                <option value="A">Option A</option>
+                <option value="B">Option B</option>
+                <option value="C">Option C</option>
+                <option value="D">Option D</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="editMarks" class="form-label">Marks</label>
+              <input type="number" class="form-control" id="editMarks" name="marks" min="1" required>
+            </div>
+            <div class="col-md-3">
+              <label for="editOrder" class="form-label">Order / Position</label>
+              <input type="number" class="form-control" id="editOrder" name="order" min="1" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="editDifficulty" class="form-label">Difficulty</label>
+              <select class="form-select" id="editDifficulty" name="difficulty">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+
+            <div class="col-12">
+              <label for="editExplanation" class="form-label">Explanation / Solution Reference</label>
+              <textarea class="form-control" id="editExplanation" name="explanation" rows="2"></textarea>
+            </div>
+          </div>
+
+          <div class="text-end mt-4">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+  let preselectedQuizId = new URLSearchParams(window.location.search).get('quiz');
+
+  async function initPage() {
+    await loadCourses();
+    if (preselectedQuizId) {
+      loadSpecificQuizContext(preselectedQuizId);
+    }
+  }
+
+  async function loadCourses() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/`);
+      const data = await response.json();
+      const select = document.getElementById('courseSelect');
+      const results = data.results || [];
+
+      results.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.slug;
+        opt.textContent = c.title;
+        select.appendChild(opt);
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function onCourseChange() {
+    const courseSlug = document.getElementById('courseSelect').value;
+    const quizSelect = document.getElementById('quizSelect');
+    quizSelect.innerHTML = '<option value="" disabled selected>-- Loading Quizzes... --</option>';
+    quizSelect.disabled = true;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/${courseSlug}/`);
+      const data = await response.json();
+      const c = data.course || {};
+      const quizzes = c.quizzes || [];
+
+      quizSelect.innerHTML = '<option value="" disabled selected>-- Select Quiz --</option>';
+      if (quizzes.length > 0) {
+        quizzes.forEach(q => {
+          const opt = document.createElement('option');
+          opt.value = q.id;
+          opt.textContent = q.title;
+          quizSelect.appendChild(opt);
+        });
+        quizSelect.disabled = false;
+      } else {
+        quizSelect.innerHTML = '<option value="" disabled selected>-- No quizzes in this course --</option>';
+      }
+    } catch (e) {
+      console.error(e);
+      quizSelect.innerHTML = '<option value="" disabled selected>-- Error loading quizzes --</option>';
+    }
+  }
+
+  function onQuizChange() {
+    const quizId = document.getElementById('quizSelect').value;
+    loadQuizQuestions(quizId);
+  }
+
+  async function loadQuizQuestions(quizId) {
+    if (!quizId) return;
+
+    // Update Add Button
+    const addBtn = document.getElementById('addQuestionBtn');
+    addBtn.href = `/admin-panel/add-question/?quiz=${quizId}`;
+    addBtn.classList.remove('disabled');
+
+    const tbody = document.getElementById('questionsTableBody');
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted"><i class="ri-loader-4-line ri-spin align-middle me-2"></i> Loading questions...</td></tr>`;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/quizzes/${quizId}/questions/`);
+      const data = await response.json();
+      const results = data.results || [];
+
+      document.getElementById('questionCountBadge').textContent = `${results.length} Questions`;
+
+      if (results.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">No questions found in this quiz. Click "+ Add Question" to get started.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = results.map(q => `
+        <tr>
+          <td class="text-center font-monospace">${q.order}</td>
+          <td>
+            <div class="fw-semibold text-dark mb-1">${q.question_text}</div>
+            ${q.explanation ? `<div class="text-muted text-xs"><i class="ri-information-line me-1"></i>${q.explanation}</div>` : ''}
+          </td>
+          <td>
+            <ul class="list-unstyled mb-0 text-xs">
+              <li class="${q.correct_option === 'A' ? 'text-success fw-bold' : 'text-secondary'}"><strong>A:</strong> ${q.option_a}</li>
+              <li class="${q.correct_option === 'B' ? 'text-success fw-bold' : 'text-secondary'}"><strong>B:</strong> ${q.option_b}</li>
+              <li class="${q.correct_option === 'C' ? 'text-success fw-bold' : 'text-secondary'}"><strong>C:</strong> ${q.option_c}</li>
+              <li class="${q.correct_option === 'D' ? 'text-success fw-bold' : 'text-secondary'}"><strong>D:</strong> ${q.option_d}</li>
+            </ul>
+          </td>
+          <td class="text-center">
+            <span class="badge bg-success-focus text-success-main font-monospace">Option ${q.correct_option}</span>
+          </td>
+          <td class="text-center font-monospace">${q.marks}</td>
+          <td class="text-center">
+            <span class="badge ${q.difficulty === 'hard' ? 'bg-danger-focus text-danger-main' : q.difficulty === 'easy' ? 'bg-success-focus text-success-main' : 'bg-warning-focus text-warning-main'} text-capitalize">
+              ${q.difficulty}
+            </span>
+          </td>
+          <td>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-primary" onclick="openEditModal(${q.id})">
+                <i class="ri-edit-line"></i> Edit
+              </button>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteQuestion(${q.id})">
+                <i class="ri-delete-bin-line"></i> Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    } catch (e) {
+      console.error(e);
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Failed to load questions.</td></tr>`;
+    }
+  }
+
+  async function openEditModal(questionId) {
+    document.getElementById('editQuestionId').value = questionId;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/questions/${questionId}/`);
+      const data = await response.json();
+      const q = data.question;
+
+      document.getElementById('editQuestionText').value = q.question_text;
+      document.getElementById('editOptionA').value = q.option_a;
+      document.getElementById('editOptionB').value = q.option_b;
+      document.getElementById('editOptionC').value = q.option_c;
+      document.getElementById('editOptionD').value = q.option_d;
+      document.getElementById('editCorrectOption').value = q.correct_option;
+      document.getElementById('editMarks').value = q.marks;
+      document.getElementById('editOrder').value = q.order;
+      document.getElementById('editDifficulty').value = q.difficulty;
+      document.getElementById('editExplanation').value = q.explanation || '';
+
+      const modalEl = document.getElementById('editQuestionModal');
+      const modal = new bootstrap.Modal(modalEl);
+      modal.show();
+    } catch (e) {
+      console.error(e);
+      alert('Error loading question details');
+    }
+  }
+
+  async function submitQuestionEdit(e) {
+    e.preventDefault();
+    const questionId = document.getElementById('editQuestionId').value;
+    const quizId = document.getElementById('quizSelect').value;
+
+    const data = {
+      question_text: document.getElementById('editQuestionText').value,
+      option_a: document.getElementById('editOptionA').value,
+      option_b: document.getElementById('editOptionB').value,
+      option_c: document.getElementById('editOptionC').value,
+      option_d: document.getElementById('editOptionD').value,
+      correct_option: document.getElementById('editCorrectOption').value,
+      marks: parseInt(document.getElementById('editMarks').value),
+      order: parseInt(document.getElementById('editOrder').value),
+      difficulty: document.getElementById('editDifficulty').value,
+      explanation: document.getElementById('editExplanation').value,
+    };
+
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(`${API_BASE_URL}/courses/questions/${questionId}/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(data),
+        credentials: 'include'
+      });
+
+      const resData = await response.json();
+      if (response.ok || resData.success) {
+        alert('Question updated successfully!');
+        const modalEl = document.getElementById('editQuestionModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal.hide();
+        loadQuizQuestions(quizId);
+      } else {
+        alert('Failed to update question: ' + JSON.stringify(resData.errors || resData.error));
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error updating question');
+    }
+  }
+
+  async function deleteQuestion(questionId) {
+    if (!confirm('Are you sure you want to delete this question?')) return;
+    const quizId = document.getElementById('quizSelect').value;
+
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(`${API_BASE_URL}/courses/questions/${questionId}/`, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRFToken': csrfToken
+        },
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        alert('Question deleted successfully!');
+        loadQuizQuestions(quizId);
+      } else {
+        alert('Failed to delete question');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error deleting question');
+    }
+  }
+
+  async function loadSpecificQuizContext(quizId) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/quizzes/${quizId}/`);
+      const data = await response.json();
+      const quiz = data.quiz;
+
+      // Find which course it belongs to
+      const courseSlug = quiz.course_slug || (quiz.lesson && quiz.lesson.module && quiz.lesson.module.course && quiz.lesson.module.course.slug);
+
+      // We can also load from flat list
+      const flatListResponse = await fetch(`${API_BASE_URL}/courses/admin/quizzes/`);
+      const flatData = await flatListResponse.json();
+      const qInfo = (flatData.results || []).find(q => q.id == quizId);
+
+      if (qInfo) {
+        document.getElementById('courseSelect').value = qInfo.course_slug;
+        await onCourseChange();
+        document.getElementById('quizSelect').value = quizId;
+        document.getElementById('quizTitleHeader').textContent = `Questions inside: ${qInfo.title} (${qInfo.course_title})`;
+        loadQuizQuestions(quizId);
+      }
+    } catch (e) {
+      console.error('Failed to load contextual quiz details', e);
+    }
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener('DOMContentLoaded', initPage);
+</script>
+{% endblock %}

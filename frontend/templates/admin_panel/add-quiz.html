@@ -1,0 +1,365 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Add New Quiz - EduAIQ Admin{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Add Quiz</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/quizzes/">Quizzes</a>
+      <span class="text-secondary-light">/ Add Quiz</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header bg-white border-bottom py-16 px-24">
+    <h6 class="mb-0 text-lg fw-semibold text-primary-light">Create New Quiz</h6>
+  </div>
+  <div class="card-body p-24">
+    <form id="addQuizForm" onsubmit="handleFormSubmit(event)">
+      <div class="row g-4">
+        
+        <!-- Step 1: Course & Module selection -->
+        <div class="col-md-6">
+          <label for="courseSelect" class="form-label fw-semibold text-primary-light">Select Course <span class="text-danger">*</span></label>
+          <select id="courseSelect" class="form-select" onchange="onCourseChange()" required>
+            <option value="" disabled selected>-- Select Course --</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label for="moduleSelect" class="form-label fw-semibold text-primary-light">Select Module <span class="text-danger">*</span></label>
+          <select id="moduleSelect" class="form-select" onchange="onModuleChange()" required disabled>
+            <option value="" disabled selected>-- Select Module --</option>
+          </select>
+        </div>
+
+        <!-- Step 2: Lesson options -->
+        <div class="col-12">
+          <hr class="text-neutral-300 my-12">
+          <h6 class="text-md fw-semibold text-primary-light mb-16">Quiz Lesson Context</h6>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-check form-check-inline mb-12">
+            <input class="form-check-input" type="radio" name="lessonMode" id="modeNew" value="new" checked onchange="toggleLessonMode()">
+            <label class="form-check-label fw-semibold" for="modeNew">Create New Quiz Lesson</label>
+          </div>
+          <div class="form-check form-check-inline mb-12">
+            <input class="form-check-input" type="radio" name="lessonMode" id="modeExisting" value="existing" onchange="toggleLessonMode()">
+            <label class="form-check-label fw-semibold" for="modeExisting">Use Existing Quiz Lesson</label>
+          </div>
+        </div>
+
+        <!-- Create New Lesson Fields -->
+        <div id="newLessonContainer" class="col-12 row g-3">
+          <div class="col-md-6">
+            <label for="lessonTitle" class="form-label fw-semibold">Lesson Title <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="lessonTitle" placeholder="e.g. Chapter 1 Practice Test">
+          </div>
+          <div class="col-md-3">
+            <label for="lessonDuration" class="form-label fw-semibold">Duration (Minutes)</label>
+            <input type="number" class="form-control" id="lessonDuration" value="15" min="1">
+          </div>
+          <div class="col-md-3">
+            <label for="lessonOrder" class="form-label fw-semibold">Order <span class="text-danger">*</span></label>
+            <input type="number" class="form-control" id="lessonOrder" value="1" min="1">
+          </div>
+          <div class="col-12">
+            <label for="lessonDesc" class="form-label fw-semibold">Description</label>
+            <textarea class="form-control" id="lessonDesc" rows="2" placeholder="Brief overview of the quiz..."></textarea>
+          </div>
+        </div>
+
+        <!-- Existing Lesson Selection -->
+        <div id="existingLessonContainer" class="col-12 d-none">
+          <label for="lessonSelect" class="form-label fw-semibold">Select Quiz-type Lesson <span class="text-danger">*</span></label>
+          <select id="lessonSelect" class="form-select">
+            <option value="" disabled selected>-- Select Quiz Lesson --</option>
+          </select>
+          <div class="form-text text-muted">Only lessons of type 'Quiz' that do not already have settings configured will appear here.</div>
+        </div>
+
+        <!-- Step 3: Quiz configurations -->
+        <div class="col-12">
+          <hr class="text-neutral-300 my-12">
+          <h6 class="text-md fw-semibold text-primary-light mb-16">Quiz Settings & Proctoring Rules</h6>
+        </div>
+
+        <div class="col-md-4">
+          <label for="passingScore" class="form-label fw-semibold">Passing Score (%) <span class="text-danger">*</span></label>
+          <input type="number" class="form-control" id="passingScore" value="40" min="0" max="100" required>
+        </div>
+        <div class="col-md-4">
+          <label for="timeLimit" class="form-label fw-semibold">Time Limit (Minutes) <span class="text-danger">*</span></label>
+          <input type="number" class="form-control" id="timeLimit" value="15" min="1" required>
+        </div>
+        <div class="col-md-4">
+          <label for="attemptsAllowed" class="form-label fw-semibold">Attempts Allowed <span class="text-danger">*</span></label>
+          <input type="number" class="form-control" id="attemptsAllowed" value="1" min="1" required>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-check mt-8">
+            <input class="form-check-input" type="checkbox" id="shuffleQuestions" checked>
+            <label class="form-check-label fw-semibold" for="shuffleQuestions">Shuffle Questions</label>
+          </div>
+          <div class="form-text text-muted">Randomize order of questions for each student.</div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-check mt-8">
+            <input class="form-check-input" type="checkbox" id="showCorrectAnswers" checked>
+            <label class="form-check-label fw-semibold" for="showCorrectAnswers">Show Correct Answers</label>
+          </div>
+          <div class="form-text text-muted">Allow students to see correct solutions upon submitting.</div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-check mt-8">
+            <input class="form-check-input" type="checkbox" id="enableAntiCheating" checked>
+            <label class="form-check-label fw-semibold" for="enableAntiCheating">Anti-Cheating Proctoring</label>
+          </div>
+          <div class="form-text text-muted">Take periodic camera snapshots and monitor tab changes.</div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-check mt-8">
+            <input class="form-check-input" type="checkbox" id="requiresAuthentication" checked>
+            <label class="form-check-label fw-semibold" for="requiresAuthentication">Requires Authentication</label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-check mt-8">
+            <input class="form-check-input" type="checkbox" id="randomizeOptions" checked>
+            <label class="form-check-label fw-semibold" for="randomizeOptions">Randomize Options</label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-check mt-8">
+            <input class="form-check-input" type="checkbox" id="shufflePerStudent" checked>
+            <label class="form-check-label fw-semibold" for="shufflePerStudent">Different Randomization Per Student</label>
+          </div>
+        </div>
+
+        <div class="col-12 mt-32 text-end">
+          <a href="/admin-panel/quizzes/" class="btn btn-outline-secondary me-8">Cancel</a>
+          <button type="submit" id="submitBtn" class="btn btn-primary">Create Quiz</button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+
+  async function loadCourses() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/`);
+      const data = await response.json();
+      const select = document.getElementById('courseSelect');
+      const results = data.results || [];
+
+      results.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.slug;
+        opt.textContent = c.title;
+        select.appendChild(opt);
+      });
+    } catch (e) {
+      console.error(e);
+      alert('Error fetching courses list');
+    }
+  }
+
+  async function onCourseChange() {
+    const courseSlug = document.getElementById('courseSelect').value;
+    const moduleSelect = document.getElementById('moduleSelect');
+    moduleSelect.innerHTML = '<option value="" disabled selected>-- Loading Modules... --</option>';
+    moduleSelect.disabled = true;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/${courseSlug}/modules/`);
+      const data = await response.json();
+      const results = data.results || [];
+
+      moduleSelect.innerHTML = '<option value="" disabled selected>-- Select Module --</option>';
+      if (results.length > 0) {
+        results.forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m.id;
+          opt.textContent = m.title;
+          moduleSelect.appendChild(opt);
+        });
+        moduleSelect.disabled = false;
+      } else {
+        moduleSelect.innerHTML = '<option value="" disabled selected>-- No modules in this course --</option>';
+      }
+    } catch (e) {
+      console.error(e);
+      moduleSelect.innerHTML = '<option value="" disabled selected>-- Error loading modules --</option>';
+    }
+  }
+
+  async function onModuleChange() {
+    const moduleId = document.getElementById('moduleSelect').value;
+    const lessonSelect = document.getElementById('lessonSelect');
+    lessonSelect.innerHTML = '<option value="" disabled selected>-- Loading Lessons... --</option>';
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/modules/${moduleId}/lessons/`);
+      const data = await response.json();
+      const results = data.results || [];
+
+      lessonSelect.innerHTML = '<option value="" disabled selected>-- Select Quiz Lesson --</option>';
+      const quizLessons = results.filter(l => l.content_type === 'quiz');
+
+      if (quizLessons.length > 0) {
+        quizLessons.forEach(l => {
+          const opt = document.createElement('option');
+          opt.value = l.id;
+          opt.textContent = `${l.title} (Order: ${l.order})`;
+          lessonSelect.appendChild(opt);
+        });
+      } else {
+        lessonSelect.innerHTML = '<option value="" disabled selected>-- No quiz lessons without settings --</option>';
+      }
+    } catch (e) {
+      console.error(e);
+      lessonSelect.innerHTML = '<option value="" disabled selected>-- Error loading lessons --</option>';
+    }
+  }
+
+  function toggleLessonMode() {
+    const isNew = document.getElementById('modeNew').checked;
+    const newCont = document.getElementById('newLessonContainer');
+    const existCont = document.getElementById('existingLessonContainer');
+
+    if (isNew) {
+      newCont.classList.remove('d-none');
+      existCont.classList.add('d-none');
+      document.getElementById('lessonTitle').required = true;
+    } else {
+      newCont.classList.add('d-none');
+      existCont.classList.remove('d-none');
+      document.getElementById('lessonTitle').required = false;
+    }
+  }
+
+  async function handleFormSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ri-loader-4-line ri-spin align-middle me-2"></i> Creating...';
+
+    const courseSlug = document.getElementById('courseSelect').value;
+    const moduleId = document.getElementById('moduleSelect').value;
+    const isNewLesson = document.getElementById('modeNew').checked;
+
+    const quizSettings = {
+      passing_score_pct: parseInt(document.getElementById('passingScore').value),
+      time_limit_minutes: parseInt(document.getElementById('timeLimit').value),
+      attempts_allowed: parseInt(document.getElementById('attemptsAllowed').value),
+      shuffle_questions: document.getElementById('shuffleQuestions').checked,
+      show_correct_answers: document.getElementById('showCorrectAnswers').checked,
+      enable_anti_cheating: document.getElementById('enableAntiCheating').checked,
+      requires_authentication: document.getElementById('requiresAuthentication').checked,
+      randomize_options: document.getElementById('randomizeOptions').checked,
+      shuffle_per_student: document.getElementById('shufflePerStudent').checked,
+      is_active: true
+    };
+
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      let lessonId = null;
+
+      if (isNewLesson) {
+        // Step 1: Create a lesson of type 'quiz'
+        const lessonPayload = {
+          title: document.getElementById('lessonTitle').value,
+          description: document.getElementById('lessonDesc').value,
+          content_type: 'quiz',
+          duration_minutes: parseInt(document.getElementById('lessonDuration').value || 15),
+          order: parseInt(document.getElementById('lessonOrder').value || 1),
+          is_preview: false,
+          is_published: true
+        };
+
+        const lessonResponse = await fetch(`${API_BASE_URL}/courses/modules/${moduleId}/lessons/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+          },
+          body: JSON.stringify(lessonPayload),
+          credentials: 'include'
+        });
+
+        const lessonData = await lessonResponse.json();
+        if (!lessonResponse.ok || !lessonData.success) {
+          throw new Error(JSON.stringify(lessonData.errors || lessonData.error || 'Failed to create lesson'));
+        }
+        lessonId = lessonData.lesson.id;
+      } else {
+        lessonId = document.getElementById('lessonSelect').value;
+        if (!lessonId) {
+          alert('Please select an existing lesson.');
+          btn.disabled = false;
+          btn.textContent = 'Create Quiz';
+          return;
+        }
+      }
+
+      // Step 2: Create Quiz Settings for this lesson
+      const quizResponse = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/quiz/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(quizSettings),
+        credentials: 'include'
+      });
+
+      const quizData = await quizResponse.json();
+      if (!quizResponse.ok || !quizData.success) {
+        throw new Error(JSON.stringify(quizData.errors || quizData.error || 'Failed to initialize quiz settings'));
+      }
+
+      alert('Quiz created and configured successfully!');
+      window.location.href = '/admin-panel/quizzes/';
+    } catch (err) {
+      console.error(err);
+      alert('Error details: ' + err.message);
+      btn.disabled = false;
+      btn.textContent = 'Create Quiz';
+    }
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadCourses();
+    toggleLessonMode();
+  });
+</script>
+{% endblock %}

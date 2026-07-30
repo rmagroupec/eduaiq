@@ -1,0 +1,277 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Add Question - EduAIQ Admin{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Add Question</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/quizzes/">Quizzes</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/question-bank/">Question Bank</a>
+      <span class="text-secondary-light">/ Add Question</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header bg-white border-bottom py-16 px-24">
+    <h6 class="mb-0 text-lg fw-semibold text-primary-light">Add New Question</h6>
+  </div>
+  <div class="card-body p-24">
+    <form id="addQuestionForm" onsubmit="handleFormSubmit(event)">
+      <div class="row g-4">
+        
+        <!-- Step 1: Course & Quiz selectors -->
+        <div class="col-md-6">
+          <label for="courseSelect" class="form-label fw-semibold text-primary-light">Select Course <span class="text-danger">*</span></label>
+          <select id="courseSelect" class="form-select" onchange="onCourseChange()" required>
+            <option value="" disabled selected>-- Select Course --</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label for="quizSelect" class="form-label fw-semibold text-primary-light">Select Quiz <span class="text-danger">*</span></label>
+          <select id="quizSelect" class="form-select" onchange="onQuizChange()" required disabled>
+            <option value="" disabled selected>-- Select Quiz --</option>
+          </select>
+        </div>
+
+        <!-- Step 2: Question Data -->
+        <div class="col-12">
+          <hr class="text-neutral-300 my-12">
+          <h6 class="text-md fw-semibold text-primary-light mb-16">Question Information</h6>
+        </div>
+
+        <div class="col-12">
+          <label for="questionText" class="form-label fw-semibold">Question Text <span class="text-danger">*</span></label>
+          <textarea class="form-control" id="questionText" name="question_text" rows="3" placeholder="Enter the question here..." required></textarea>
+        </div>
+
+        <!-- Options -->
+        <div class="col-md-6">
+          <label for="optionA" class="form-label fw-semibold">Option A <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="optionA" name="option_a" placeholder="Answer choice A" required>
+        </div>
+        <div class="col-md-6">
+          <label for="optionB" class="form-label fw-semibold">Option B <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="optionB" name="option_b" placeholder="Answer choice B" required>
+        </div>
+        <div class="col-md-6">
+          <label for="optionC" class="form-label fw-semibold">Option C <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="optionC" name="option_c" placeholder="Answer choice C" required>
+        </div>
+        <div class="col-md-6">
+          <label for="optionD" class="form-label fw-semibold">Option D <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="optionD" name="option_d" placeholder="Answer choice D" required>
+        </div>
+
+        <!-- Meta info -->
+        <div class="col-md-4">
+          <label for="correctOption" class="form-label fw-semibold">Correct Option <span class="text-danger">*</span></label>
+          <select class="form-select" id="correctOption" name="correct_option" required>
+            <option value="" disabled selected>-- Select Correct Option --</option>
+            <option value="A">Option A</option>
+            <option value="B">Option B</option>
+            <option value="C">Option C</option>
+            <option value="D">Option D</option>
+          </select>
+        </div>
+
+        <div class="col-md-4">
+          <label for="marks" class="form-label fw-semibold">Marks <span class="text-danger">*</span></label>
+          <input type="number" class="form-control" id="marks" name="marks" value="1" min="1" required>
+        </div>
+
+        <div class="col-md-4">
+          <label for="difficulty" class="form-label fw-semibold">Difficulty <span class="text-danger">*</span></label>
+          <select class="form-select" id="difficulty" name="difficulty" required>
+            <option value="easy">Easy</option>
+            <option value="medium" selected>Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+
+        <div class="col-md-4">
+          <label for="order" class="form-label fw-semibold">Display Order</label>
+          <input type="number" class="form-control" id="order" name="order" value="1" min="1">
+          <div class="form-text text-muted">Leave as default or set a higher value to push it to the end.</div>
+        </div>
+
+        <div class="col-12">
+          <label for="explanation" class="form-label fw-semibold">Explanation / Solution Notes</label>
+          <textarea class="form-control" id="explanation" name="explanation" rows="2" placeholder="Explain the rationale behind the correct answer (optional)"></textarea>
+        </div>
+
+        <div class="col-12 mt-32 text-end">
+          <a id="cancelBtn" href="/admin-panel/question-bank/" class="btn btn-outline-secondary me-8">Cancel</a>
+          <button type="submit" id="submitBtn" class="btn btn-primary">Add Question</button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+  let preselectedQuizId = new URLSearchParams(window.location.search).get('quiz');
+
+  async function initPage() {
+    await loadCourses();
+    if (preselectedQuizId) {
+      loadSpecificQuizContext(preselectedQuizId);
+      document.getElementById('cancelBtn').href = `/admin-panel/question-bank/?quiz=${preselectedQuizId}`;
+    }
+  }
+
+  async function loadCourses() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/`);
+      const data = await response.json();
+      const select = document.getElementById('courseSelect');
+      const results = data.results || [];
+
+      results.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.slug;
+        opt.textContent = c.title;
+        select.appendChild(opt);
+      });
+    } catch (e) {
+      console.error(e);
+      alert('Error loading courses');
+    }
+  }
+
+  async function onCourseChange() {
+    const courseSlug = document.getElementById('courseSelect').value;
+    const quizSelect = document.getElementById('quizSelect');
+    quizSelect.innerHTML = '<option value="" disabled selected>-- Loading Quizzes... --</option>';
+    quizSelect.disabled = true;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/${courseSlug}/`);
+      const data = await response.json();
+      const c = data.course || {};
+      const quizzes = c.quizzes || [];
+
+      quizSelect.innerHTML = '<option value="" disabled selected>-- Select Quiz --</option>';
+      if (quizzes.length > 0) {
+        quizzes.forEach(q => {
+          const opt = document.createElement('option');
+          opt.value = q.id;
+          opt.textContent = q.title;
+          quizSelect.appendChild(opt);
+        });
+        quizSelect.disabled = false;
+      } else {
+        quizSelect.innerHTML = '<option value="" disabled selected>-- No quizzes in this course --</option>';
+      }
+    } catch (e) {
+      console.error(e);
+      quizSelect.innerHTML = '<option value="" disabled selected>-- Error loading quizzes --</option>';
+    }
+  }
+
+  async function onQuizChange() {
+    const quizId = document.getElementById('quizSelect').value;
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/quizzes/${quizId}/questions/`);
+      const data = await response.json();
+      const count = (data.results || []).length;
+      document.getElementById('order').value = count + 1;
+    } catch (e) {
+      console.error('Error fetching questions count for order', e);
+    }
+  }
+
+  async function loadSpecificQuizContext(quizId) {
+    try {
+      const flatListResponse = await fetch(`${API_BASE_URL}/courses/admin/quizzes/`);
+      const flatData = await flatListResponse.json();
+      const qInfo = (flatData.results || []).find(q => q.id == quizId);
+
+      if (qInfo) {
+        document.getElementById('courseSelect').value = qInfo.course_slug;
+        await onCourseChange();
+        document.getElementById('quizSelect').value = quizId;
+        await onQuizChange();
+      }
+    } catch (e) {
+      console.error('Failed to load contextual quiz details', e);
+    }
+  }
+
+  async function handleFormSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ri-loader-4-line ri-spin align-middle me-2"></i> Saving...';
+
+    const quizId = document.getElementById('quizSelect').value;
+    const payload = {
+      question_text: document.getElementById('questionText').value,
+      option_a: document.getElementById('optionA').value,
+      option_b: document.getElementById('optionB').value,
+      option_c: document.getElementById('optionC').value,
+      option_d: document.getElementById('optionD').value,
+      correct_option: document.getElementById('correctOption').value,
+      marks: parseInt(document.getElementById('marks').value),
+      difficulty: document.getElementById('difficulty').value,
+      order: parseInt(document.getElementById('order').value),
+      explanation: document.getElementById('explanation').value
+    };
+
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(`${API_BASE_URL}/courses/quizzes/${quizId}/questions/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(payload),
+        credentials: 'include'
+      });
+
+      const resData = await response.json();
+      if (response.ok || resData.success) {
+        alert('Question added successfully!');
+        window.location.href = `/admin-panel/question-bank/?quiz=${quizId}`;
+      } else {
+        alert('Failed to add question: ' + JSON.stringify(resData.errors || resData.error));
+        btn.disabled = false;
+        btn.textContent = 'Add Question';
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error creating question');
+      btn.disabled = false;
+      btn.textContent = 'Add Question';
+    }
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener('DOMContentLoaded', initPage);
+</script>
+{% endblock %}

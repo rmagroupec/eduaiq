@@ -970,3 +970,74 @@ def quiz_access_logs(request, pk):
         return JsonResponse({'error': 'Quiz not found'}, status=404)
     logs = quiz.access_logs.select_related('user').order_by('-timestamp')[:200]
     return JsonResponse({'results': [serialize_access_log(l) for l in logs]})
+
+
+# ============================================================================
+# ADMIN QUIZ MANAGEMENT VIEWS
+# ============================================================================
+
+@login_required
+@require_GET
+def quiz_list(request):
+    if not _is_staff(request.user):
+        return JsonResponse({'error': 'Forbidden'}, status=403)
+    qs = Quiz.objects.select_related('lesson__module__course').all()
+    results = []
+    for q in qs:
+        results.append({
+            'id': q.id,
+            'title': q.lesson.title,
+            'course_title': q.lesson.module.course.title,
+            'course_slug': q.lesson.module.course.slug,
+            'module_title': q.lesson.module.title,
+            'total_questions': q.questions.count(),
+            'time_limit_minutes': q.time_limit_minutes,
+            'passing_score_pct': q.passing_score_pct,
+            'attempts_allowed': q.attempts_allowed,
+            'enable_anti_cheating': q.enable_anti_cheating,
+            'is_active': q.is_active,
+        })
+    return JsonResponse({'results': results})
+
+
+@login_required
+@require_GET
+def admin_attempts(request):
+    if not _is_staff(request.user):
+        return JsonResponse({'error': 'Forbidden'}, status=403)
+    qs = QuizAttempt.objects.select_related('student', 'quiz__lesson').order_by('-started_at')
+    
+    quiz_id = request.GET.get('quiz')
+    if quiz_id:
+        qs = qs.filter(quiz_id=quiz_id)
+        
+    student_id = request.GET.get('student')
+    if student_id:
+        qs = qs.filter(student_id=student_id)
+        
+    status = request.GET.get('status')
+    if status:
+        qs = qs.filter(status=status)
+        
+    results = []
+    for a in qs:
+        results.append({
+            'id': a.id,
+            'quiz_id': a.quiz_id,
+            'quiz_title': a.quiz.lesson.title,
+            'student_id': a.student_id,
+            'student_username': a.student.username,
+            'student_name': f"{a.student.first_name} {a.student.last_name}".strip() or a.student.username,
+            'score_pct': float(a.score_pct) if a.score_pct is not None else 0.0,
+            'score_marks': a.score_marks,
+            'passed': a.passed,
+            'attempt_number': a.attempt_number,
+            'status': a.status,
+            'started_at': a.started_at.isoformat() if a.started_at else None,
+            'submitted_at': a.submitted_at.isoformat() if a.submitted_at else None,
+            'completed_at': a.completed_at.isoformat() if a.completed_at else None,
+            'time_taken_minutes': a.time_taken_minutes,
+            'cheating_detected': a.cheating_detected,
+            'cheating_details': a.cheating_details,
+        })
+    return JsonResponse({'results': results})
