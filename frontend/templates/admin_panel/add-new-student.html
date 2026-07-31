@@ -237,7 +237,7 @@ $(document).ready(function() {
   // Load Student Users list (role=student)
   function loadStudentUsers() {
     $.ajax({
-      url: '/accounts/users/?role=student&exclude_has_profile=true&page_size=200',
+      url: '/accounts/users/?role=student&page_size=200',
       type: 'GET',
       xhrFields: { withCredentials: true },
       success: function(response) {

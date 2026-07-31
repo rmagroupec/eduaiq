@@ -3,7 +3,8 @@
 
 {% block title %}All Courses - EduAiQ{% endblock %}
 
-{% block description %}Explore the comprehensive catalog of courses offered by EduAiQ. Search and filter by category or level.{% endblock %}
+{% block description %}Explore the comprehensive catalog of courses offered by EduAiQ. Search and filter by category or
+level.{% endblock %}
 
 {% block content %}
 
@@ -132,7 +133,6 @@
     position: absolute;
     top: 15px;
     left: 15px;
-    background: rgba(102, 126, 234, 0.9);
     color: white;
     padding: 8px 15px;
     border-radius: 20px;
@@ -276,18 +276,18 @@
   async function initPage() {
     await loadCategoriesFilter();
     await loadCourses();
-    
+
     // Attach change event listeners for automatic filtering
     document.getElementById('searchInput').addEventListener('input', debounce(() => {
       currentPage = 1;
       loadCourses();
     }, 300));
-    
+
     document.getElementById('categoryFilter').addEventListener('change', () => {
       currentPage = 1;
       loadCourses();
     });
-    
+
     document.getElementById('levelFilter').addEventListener('change', () => {
       currentPage = 1;
       loadCourses();
@@ -298,7 +298,7 @@
     try {
       const response = await fetch(`${API_BASE_URL}/courses/categories/`);
       const data = await response.json();
-      
+
       const filter = document.getElementById('categoryFilter');
       if (data.results && data.results.length > 0) {
         data.results.forEach(cat => {
@@ -329,7 +329,7 @@
 
       const response = await fetch(url);
       const data = await response.json();
-      
+
       const results = data.results || [];
       totalCount = data.count || results.length;
 

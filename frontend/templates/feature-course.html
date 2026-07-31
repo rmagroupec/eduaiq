@@ -3,7 +3,8 @@
 
 {% block title %}Featured Courses For Institutions - EduAiQ{% endblock %}
 
-{% block description %}EduAiQ courses licensed for colleges and institutions — AI & Machine Learning, Web Development, Data Science, Business Communication, AI Books, and Career Readiness.{% endblock %}
+{% block description %}EduAiQ courses licensed for colleges and institutions — AI & Machine Learning, Web Development,
+Data Science, Business Communication, AI Books, and Career Readiness.{% endblock %}
 
 {% block content %}
 
@@ -28,10 +29,10 @@
     <div class="row">
       <div class="col-md-8 offset-md-2">
         <p class="about-describe" style="text-align: center;">
-          These courses are licensed to schools, colleges, and institutes — not purchased by individual students. 
-          Your institution buys access for your student body as part of the EduAiQ ecosystem, 
+          These courses are licensed to schools, colleges, and institutes — not purchased by individual students.
+          Your institution buys access for your student body as part of the EduAiQ ecosystem,
           with usage and completion visible from one admin dashboard.
-          <a href="/page/growth-partner-kit/">Learn about Growth Partner Kit</a> or 
+          <a href="/page/growth-partner-kit/">Learn about Growth Partner Kit</a> or
           <a href="/contact/">contact us</a> for licensing and pricing.
         </p>
       </div>
@@ -58,8 +59,8 @@
           <div class="title-divider"></div>
           <h2 class="feature-course-title">Committed To The Best Results For Your Institution</h2>
           <p class="feature-course-desc">
-            Every course above pairs with hands-on practice — AI Lab projects, mentor review, 
-            and real datasets — so your students leave with a portfolio, not just a certificate. 
+            Every course above pairs with hands-on practice — AI Lab projects, mentor review,
+            and real datasets — so your students leave with a portfolio, not just a certificate.
             Licensing is per institution, with one dashboard to track usage across your student body.
           </p>
           <div class="skill-container">
@@ -108,7 +109,7 @@
       <div class="col-lg-6 right-content">
         <div class="feature-right-image">
           <figure class="feature-img">
-            <img alt="Featured" src="{% static 'assets/img/educator-img13.jpg' %}"/>
+            <img alt="Featured" src="{% static 'assets/img/educator-img13.jpg' %}" />
           </figure>
         </div>
       </div>
@@ -122,7 +123,7 @@
       <div class="col-lg-7">
         <div class="inner-goal-image">
           <figure class="video-play-image">
-            <img alt="" src="{% static 'assets/img/educator-img13.jpg' %}"/>
+            <img alt="" src="{% static 'assets/img/educator-img13.jpg' %}" />
             <div class="overlay02 overlay"></div>
             <div class="video-button">
               <a data-video-id="IUN664s7N-c" id="video-container">
@@ -138,7 +139,7 @@
           <div class="title-divider"></div>
           <h2 class="goal-title">Want To Offer More Courses?</h2>
           <p class="goal-info">
-            Browse our complete catalog of 72+ AI-powered courses, available through institutional licensing. 
+            Browse our complete catalog of 72+ AI-powered courses, available through institutional licensing.
             We handle the infrastructure — you get the curriculum.
           </p>
           <a class="button-round-secondary" href="/contact/">EXPLORE FULL CATALOG</a>
@@ -192,7 +193,6 @@
     position: absolute;
     top: 15px;
     left: 15px;
-    background: rgba(102, 126, 234, 0.9);
     color: white;
     padding: 8px 15px;
     border-radius: 20px;
@@ -203,7 +203,7 @@
   }
 
   .cat-meta:hover {
-    background: rgba(102, 126, 234, 1);
+    /* background: rgba(102, 126, 234, 1); */
     color: white;
   }
 
@@ -447,7 +447,8 @@
       margin-bottom: 20px;
     }
 
-    .pe-3, .ps-3 {
+    .pe-3,
+    .ps-3 {
       padding-left: 15px !important;
       padding-right: 15px !important;
     }
@@ -558,12 +559,12 @@
     `;
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     loadFeaturedCourses();
 
     const videoButton = document.getElementById('video-container');
     if (videoButton) {
-      videoButton.addEventListener('click', function(e) {
+      videoButton.addEventListener('click', function (e) {
         e.preventDefault();
         const videoId = this.dataset.videoId;
         console.log('Play video:', videoId);
