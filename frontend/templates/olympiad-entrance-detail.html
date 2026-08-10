@@ -1,0 +1,337 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ exam.name }} - Olympiad Entrance Exam{% endblock %}
+
+{% block content %}
+<style>
+    .detail-card {
+        border: none;
+        border-radius: 1.5rem;
+        background: #ffffff;
+        box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+    }
+
+    .detail-stat-box {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 1.25rem;
+        padding: 1.5rem 1rem;
+        text-align: center;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .detail-stat-box:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 36px -12px rgba(37, 99, 235, 0.16);
+        border-color: #3b82f6;
+    }
+
+    .stat-icon-circle {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        margin-bottom: 0.85rem;
+        transition: transform 0.3s ease;
+    }
+
+    .detail-stat-box:hover .stat-icon-circle {
+        transform: scale(1.1);
+    }
+
+    .icon-circle-blue { background: #eff6ff; color: #2563eb; }
+    .icon-circle-indigo { background: #e0e7ff; color: #4f46e5; }
+    .icon-circle-amber { background: #fffbeb; color: #d97706; }
+    .icon-circle-purple { background: #faf5ff; color: #9333ea; }
+
+    .section-item-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-left: 5px solid #2563eb;
+        border-radius: 1.15rem;
+        padding: 1.25rem 1.5rem;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
+
+    .section-item-card:hover {
+        transform: translateX(6px);
+        box-shadow: 0 10px 25px -8px rgba(37, 99, 235, 0.15);
+        border-color: #cbd5e1;
+        border-left-color: #1d4ed8;
+    }
+
+    .badge-qs-count {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        color: #ffffff;
+        font-weight: 800;
+        padding: 0.5rem 1.15rem;
+        border-radius: 50rem;
+        font-size: 0.875rem;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .enrolled-alert-box {
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        border: 1px solid #a7f3d0;
+        border-radius: 1.25rem;
+        padding: 1.25rem 1.5rem;
+    }
+
+    .btn-launch-exam {
+        background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        color: #ffffff !important;
+        border: none;
+        border-radius: 50rem;
+        padding: 1rem 1.75rem;
+        font-weight: 800;
+        font-size: 1.1rem;
+        box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.45);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-launch-exam:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 32px -5px rgba(16, 185, 129, 0.65);
+        color: #ffffff !important;
+    }
+
+    .btn-enroll-primary {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        color: #ffffff !important;
+        border: none;
+        border-radius: 50rem;
+        padding: 1rem 1.75rem;
+        font-weight: 800;
+        font-size: 1.1rem;
+        box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.45);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-enroll-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 32px -5px rgba(37, 99, 235, 0.65);
+        color: #ffffff !important;
+    }
+
+    .pdf-banner-box {
+        background: #ffffff;
+        border: 1px solid #fecaca;
+        border-left: 5px solid #ef4444;
+        border-radius: 1.15rem;
+        padding: 1.25rem 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .pdf-banner-box:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px -8px rgba(239, 68, 68, 0.2);
+    }
+</style>
+
+<section class="inner-banner-wrap">
+    <div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
+        <div class="container">
+            <div class="inner-banner-content">
+                <span class="badge bg-warning text-dark px-3 py-1 rounded-pill text-uppercase fw-bold mb-2">{{ exam.level }}</span>
+                <h1 class="inner-title">{{ exam.name }}</h1>
+                <p class="text-white opacity-75 mt-2 fs-5"><i class="fas fa-user-graduate me-1 text-warning"></i> Target Group: <strong>{{ exam.class_group }}</strong> | Academic Year: {{ exam.academic_year }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container">
+        {% if messages %}
+            <div class="row mb-3">
+                <div class="col-12">
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show rounded-3 shadow-xs" role="alert">
+                            <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %} me-2"></i> {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="row g-4">
+
+            <!-- Left Column: Details & Sections -->
+            <div class="col-lg-8">
+                <div class="card detail-card mb-4">
+                    <div class="card-body p-4 p-md-5">
+                        <h3 class="fw-bold mb-3 text-dark"><i class="fas fa-info-circle text-primary me-2"></i> Exam Overview</h3>
+                        <p class="text-secondary fs-6 lh-lg">
+                            This entrance exam assesses student performance across structured quiz sections. Upon completing the exam, candidate scores, percentiles, and ranks will be computed based on the exam's configured result publication policy.
+                        </p>
+
+                        <!-- Quick Stat Box Cards with Hover Effects -->
+                        <div class="row g-3 my-4">
+                            <div class="col-sm-6 col-md-3">
+                                <div class="detail-stat-box">
+                                    <div class="stat-icon-circle icon-circle-blue">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="small text-muted fw-bold text-uppercase">Duration</div>
+                                    <strong class="fs-6 text-dark mt-1 d-block">{{ exam.exam_duration_minutes }} Minutes</strong>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="detail-stat-box">
+                                    <div class="stat-icon-circle icon-circle-indigo">
+                                        <i class="fas fa-question-circle"></i>
+                                    </div>
+                                    <div class="small text-muted fw-bold text-uppercase">Total Questions</div>
+                                    <strong class="fs-6 text-dark mt-1 d-block">{{ total_questions }} Questions</strong>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="detail-stat-box">
+                                    <div class="stat-icon-circle icon-circle-amber">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                    <div class="small text-muted fw-bold text-uppercase">Scheduled Date</div>
+                                    <strong class="fs-6 text-dark mt-1 d-block">{{ exam.exam_date|date:"d M Y" }}</strong>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="detail-stat-box">
+                                    <div class="stat-icon-circle icon-circle-purple">
+                                        <i class="fas fa-trophy"></i>
+                                    </div>
+                                    <div class="small text-muted fw-bold text-uppercase">Result Mode</div>
+                                    <strong class="fs-6 text-dark mt-1 d-block text-capitalize">{{ exam.get_result_display_mode_display }}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Included Sections Header -->
+                        <h4 class="fw-bold mt-4 mb-3 text-dark"><i class="fas fa-list-ol text-primary me-2"></i> Included Exam Sections & Quizzes</h4>
+                        
+                        <div class="mt-3">
+                            {% if direct_questions_count > 0 %}
+                                <div class="section-item-card d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold text-dark"><i class="fas fa-layer-group text-primary me-2"></i> Section 1: General Entrance Questions</h6>
+                                        <small class="text-secondary">Direct questions covering core curriculum subjects</small>
+                                    </div>
+                                    <span class="badge-qs-count">{{ direct_questions_count }} Qs</span>
+                                </div>
+                            {% endif %}
+
+                            {% for oq in assigned_quizzes %}
+                                <div class="section-item-card d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold text-dark"><i class="fas fa-puzzle-piece text-primary me-2"></i> {{ oq.section_name|default:oq.quiz.lesson.title }}</h6>
+                                        <small class="text-secondary">Assigned Quiz from Lesson: {{ oq.quiz.lesson.title }}</small>
+                                    </div>
+                                    <span class="badge-qs-count">{{ oq.quiz.questions.count }} Qs</span>
+                                </div>
+                            {% empty %}
+                                {% if direct_questions_count == 0 %}
+                                    <div class="p-4 bg-white border rounded-3 text-center text-muted">
+                                        No quiz sections added yet for this entrance exam.
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        {% if exam.syllabus_pdf %}
+                            <div class="mt-4 pdf-banner-box d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1 fw-bold text-dark"><i class="fas fa-file-pdf text-danger me-2"></i> Official Exam Syllabus</h6>
+                                    <small class="text-secondary">Download complete PDF breakdown</small>
+                                </div>
+                                <a href="{{ exam.syllabus_pdf.url }}" target="_blank" class="btn btn-sm btn-outline-danger rounded-pill px-4 fw-bold">
+                                    <i class="fas fa-download me-1"></i> Download PDF
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Registration Status Card -->
+            <div class="col-lg-4">
+                <div class="card detail-card sticky-top" style="top: 100px;">
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold mb-3 text-dark">Registration Status</h4>
+
+                        <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-light rounded-3 border">
+                            <span class="text-secondary font-weight-medium">Entrance Exam Fee:</span>
+                            <span class="fs-4 fw-bold text-primary">
+                                {% if exam.fee > 0 %}
+                                    ₹{{ exam.fee }}
+                                {% else %}
+                                    <span class="badge bg-success-soft text-success px-3 py-2 border border-success rounded-pill fw-bold fs-6">FREE</span>
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        {% if registration %}
+                            <div class="enrolled-alert-box mb-4">
+                                <h6 class="fw-bold text-success mb-2"><i class="fas fa-check-circle me-1"></i> You are Enrolled!</h6>
+                                <div class="small text-secondary mb-1">Roll Number: <strong class="text-dark">{{ registration.roll_number }}</strong></div>
+                                <div class="small text-secondary">Status: <span class="badge bg-success text-capitalize px-3 py-1 rounded-pill">{{ registration.status }}</span></div>
+                            </div>
+
+                            {% if registration.attempt and registration.attempt.submitted_at %}
+                                <a href="{% url 'olympiad_entrance_result' exam.id %}" class="btn-launch-exam w-100">
+                                    <i class="fas fa-poll me-2"></i> View Result / Status
+                                </a>
+                            {% else %}
+                                <a href="{% url 'olympiad_entrance_attempt' exam.id %}" class="btn-launch-exam w-100">
+                                    <i class="fas fa-play me-2"></i> Launch Exam Player
+                                </a>
+                            {% endif %}
+
+                        {% else %}
+                            <div class="alert alert-info rounded-3 mb-4 small">
+                                <i class="fas fa-info-circle me-1"></i> Click below to register for this Entrance Exam. Registration locks roll number to your student profile.
+                            </div>
+                            
+                            {% if user.is_authenticated %}
+                                <form action="{% url 'olympiad_entrance_enroll' exam.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-enroll-primary w-100">
+                                        Enroll Now <i class="fas fa-arrow-right ms-2"></i>
+                                    </button>
+                                </form>
+                            {% else %}
+                                <a href="{% url 'public_login' %}?next={% url 'olympiad_entrance_detail' exam.id %}" class="btn-enroll-primary w-100">
+                                    Log In to Enroll <i class="fas fa-sign-in-alt ms-2"></i>
+                                </a>
+                            {% endif %}
+                        {% endif %}
+
+                        <hr class="my-4">
+
+                        <div class="small text-secondary d-flex flex-column gap-2">
+                            <div><i class="fas fa-shield-alt text-primary me-2"></i> Anti-cheating & timed browser security enabled.</div>
+                            <div><i class="fas fa-laptop text-primary me-2"></i> Desktop or mobile browser compatible.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

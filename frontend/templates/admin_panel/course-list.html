@@ -13,12 +13,14 @@
       <span class="text-secondary-light">/ Course List</span>
     </div>
   </div>
+  {% if user.is_superuser or user.role == 'admin' %}
   <a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/courses/add/">
     <span class="d-flex text-md">
       <i class="ri-add-large-line"></i>
     </span>
     Add Course
   </a>
+  {% endif %}
 </div>
 
 <div class="card h-100">
@@ -59,6 +61,7 @@
 
 <script>
   const API_BASE_URL = window.location.origin;
+  const IS_SUPERADMIN = {% if user.is_superuser or user.role == 'admin' %}true{% else %}false{% endif %};
 
   async function loadAdminCourses() {
     const searchVal = document.getElementById('adminCourseSearch').value.trim();
@@ -98,12 +101,14 @@
               <a class="btn btn-sm btn-outline-info" href="/admin-panel/courses/details/?slug=${c.slug}">
                 <i class="ri-eye-line"></i> View
               </a>
+              ${IS_SUPERADMIN ? `
               <a class="btn btn-sm btn-outline-primary" href="/admin-panel/courses/edit/?slug=${c.slug}">
                 <i class="ri-edit-line"></i> Edit
               </a>
               <button class="btn btn-sm btn-outline-danger" onclick="deleteCourse('${c.slug}', '${c.title}')">
                 <i class="ri-delete-bin-line"></i> Delete
               </button>
+              ` : ''}
             </div>
           </td>
         </tr>

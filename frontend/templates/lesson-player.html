@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}<span id="lessonTitleTab">Lesson</span> - EduAiQ{% endblock %}
+{% block title %}Lesson Player - EduAiQ{% endblock %}
 
 {% block content %}
 <div class="lesson-player-container py-5 bg-light">
@@ -115,29 +115,43 @@
 
     try {
       // 1. Fetch lesson detail
-      const response = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/`);
+      const response = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/`, { credentials: 'same-origin' });
       const data = await response.json();
+      
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
       currentLesson = data.lesson;
 
-      document.getElementById('lessonTitle').textContent = currentLesson.title;
-      document.getElementById('lessonTitleTab').textContent = currentLesson.title;
-      document.getElementById('lessonDescription').textContent = currentLesson.description || 'No description provided.';
-      document.getElementById('lessonDuration').textContent = currentLesson.duration_minutes;
-      document.getElementById('lessonTypeBadge').textContent = currentLesson.content_type;
+      if (document.getElementById('lessonTitle')) {
+        document.getElementById('lessonTitle').textContent = currentLesson.title;
+      }
+      document.title = `${currentLesson.title} - EduAiQ`;
+      if (document.getElementById('lessonDescription')) {
+        document.getElementById('lessonDescription').textContent = currentLesson.description || 'No description provided.';
+      }
+      if (document.getElementById('lessonDuration')) {
+        document.getElementById('lessonDuration').textContent = currentLesson.duration_minutes;
+      }
+      if (document.getElementById('lessonTypeBadge')) {
+        document.getElementById('lessonTypeBadge').textContent = currentLesson.content_type;
+      }
       
       // Update back button href
       const courseId = currentLesson.module.course_id;
       
       // 2. Fetch course detailed data to map lessons and check enrollment
-      const courseResponse = await fetch(`${API_BASE_URL}/courses/courses/`);
+      const courseResponse = await fetch(`${API_BASE_URL}/courses/courses/`, { credentials: 'same-origin' });
       const courseData = await courseResponse.json();
       // Find course slug
-      const matchedCourse = courseData.results.find(c => c.id === courseId);
+      const matchedCourse = (courseData.results || []).find(c => c.id === courseId);
       if (matchedCourse) {
         document.getElementById('backToCourseBtn').href = `/course/?slug=${matchedCourse.slug}`;
         
         // Fetch detailed course view with modules
-        const detailResponse = await fetch(`${API_BASE_URL}/courses/courses/${matchedCourse.slug}/`);
+        const detailResponse = await fetch(`${API_BASE_URL}/courses/courses/${matchedCourse.slug}/`, { credentials: 'same-origin' });
         const detailData = await detailResponse.json();
         const courseDetail = detailData.course;
         
@@ -174,55 +188,113 @@
     }
   }
 
+  function extractYouTubeId(url) {
+    if (!url) return '';
+    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+    return (match && match[1]) ? match[1] : '';
+  }
+
   function renderContentViewer() {
     const viewer = document.getElementById('contentViewer');
     
     if (currentLesson.content_type === 'video') {
-      const url = currentLesson.content_url;
-      if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        let ytId = '';
-        if (url.includes('v=')) {
-          ytId = url.split('v=')[1].split('&')[0];
-        } else {
-          ytId = url.split('/').pop();
-        }
+      const url = currentLesson.content_url || '';
+      const fileUrl = currentLesson.content_file || '';
+      const ytId = extractYouTubeId(url);
+
+      if (ytId) {
         viewer.innerHTML = `
-          <iframe src="https://www.youtube.com/embed/${ytId}" allowfullscreen></iframe>
+          <iframe 
+            src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=0&rel=0&modestbranding=1" 
+            title="Lesson Video"
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerpolicy="strict-origin-when-cross-origin" 
+            allowfullscreen 
+            style="width: 100%; height: 450px; border-radius: 8px;">
+          </iframe>
+        `;
+      } else if (fileUrl || url) {
+        const videoSrc = fileUrl || url;
+        viewer.innerHTML = `
+          <video controls style="width: 100%; height: 450px; border-radius: 8px;" src="${videoSrc}">
+            Your browser does not support video playback.
+          </video>
         `;
       } else {
         viewer.innerHTML = `
-          <video controls src="${url}"></video>
+          <div class="p-5 text-center bg-dark text-white rounded">
+            <i class="fas fa-video fa-3x text-primary mb-3"></i>
+            <h5>No Video Available</h5>
+            <p class="text-muted">No video URL or video file was provided for this lesson.</p>
+          </div>
         `;
       }
     } else if (currentLesson.content_type === 'pdf') {
       const fileUrl = currentLesson.content_file || currentLesson.content_url;
-      viewer.innerHTML = `
-        <iframe src="${fileUrl}" type="application/pdf"></iframe>
-      `;
+      if (fileUrl) {
+        const fullPdfUrl = fileUrl.startsWith('http') ? fileUrl : (window.location.origin + fileUrl);
+        viewer.innerHTML = `
+          <div class="w-100 bg-white p-3 rounded shadow-sm text-center">
+            <div class="d-flex justify-content-between align-items-center mb-3 px-2">
+              <span class="fw-bold text-dark"><i class="fas fa-file-pdf text-danger me-2"></i> PDF Document: ${currentLesson.title}</span>
+              <div class="gap-2 d-flex">
+                <a href="${fullPdfUrl}" target="_blank" class="btn btn-sm btn-outline-primary px-3 rounded-pill">
+                  <i class="fas fa-external-link-alt me-1"></i> Open Fullscreen
+                </a>
+                <a href="${fullPdfUrl}" target="_blank" download class="btn btn-sm btn-danger px-3 rounded-pill">
+                  <i class="fas fa-download me-1"></i> Download PDF
+                </a>
+              </div>
+            </div>
+            <object data="${fullPdfUrl}#toolbar=1" type="application/pdf" style="width: 100%; height: 500px; border: 1px solid #e2e8f0; border-radius: 8px;">
+              <embed src="${fullPdfUrl}" type="application/pdf" style="width: 100%; height: 500px;" />
+              <iframe src="${fullPdfUrl}" style="width: 100%; height: 500px; border: none;">
+                <p>Your browser does not support embedded PDF viewing. <a href="${fullPdfUrl}" target="_blank">Click here to download PDF</a>.</p>
+              </iframe>
+            </object>
+          </div>
+        `;
+      } else {
+        viewer.innerHTML = `
+          <div class="p-5 text-center bg-white text-dark rounded w-100">
+            <i class="fas fa-file-pdf fa-3x text-danger mb-3"></i>
+            <h5>No PDF File Uploaded</h5>
+            <p class="text-muted">This lesson is marked as PDF, but no PDF file or link has been uploaded yet.</p>
+          </div>
+        `;
+      }
     } else if (currentLesson.content_type === 'text') {
       viewer.innerHTML = `
-        <div class="p-5 text-dark bg-white w-100 h-100" style="overflow-y: auto; max-height: 450px;">
-          <h4>${currentLesson.title}</h4>
-          <p class="mt-4" style="line-height: 1.8;">${currentLesson.description}</p>
-          ${currentLesson.content_url ? `<div class="mt-4"><a href="${currentLesson.content_url}" target="_blank" class="btn btn-primary">Read full article <i class="fas fa-external-link-alt"></i></a></div>` : ''}
+        <div class="p-4 text-dark bg-white w-100 h-100 rounded shadow-sm" style="overflow-y: auto; max-height: 480px;">
+          <h4 class="fw-bold text-primary mb-3">${currentLesson.title}</h4>
+          <div class="lh-lg text-secondary" style="font-size: 15px;">
+            ${currentLesson.description || 'No reading material text provided for this lesson.'}
+          </div>
+          ${currentLesson.content_url ? `
+            <div class="mt-4 pt-3 border-top">
+              <a href="${currentLesson.content_url}" target="_blank" class="btn btn-outline-primary btn-sm">
+                Read External Reference <i class="fas fa-external-link-alt ms-1"></i>
+              </a>
+            </div>
+          ` : ''}
         </div>
       `;
     } else if (currentLesson.content_type === 'quiz') {
-      // Find quiz URL
       viewer.innerHTML = `
-        <div class="text-center p-5">
+        <div class="text-center p-5 bg-white text-dark w-100 rounded shadow-sm">
           <i class="fas fa-question-circle fa-4x mb-3 text-warning"></i>
-          <h4>Practice Quiz Ready</h4>
-          <p class="text-muted">Test your knowledge of the module contents</p>
-          <button class="btn btn-warning btn-lg mt-3" onclick="goToQuiz()">
-            Start Quiz Attempt
+          <h4 class="fw-bold">Practice Quiz Ready</h4>
+          <p class="text-muted">Test your understanding of this module's topics.</p>
+          <button class="btn btn-warning btn-lg mt-3 px-4 fw-bold rounded-pill text-dark" onclick="goToQuiz()">
+            Start Quiz Attempt <i class="fas fa-arrow-right ms-2"></i>
           </button>
         </div>
       `;
     } else {
       viewer.innerHTML = `
-        <div class="p-5 text-center">
-          <p>No viewer available for this content type (${currentLesson.content_type}).</p>
+        <div class="p-5 text-center bg-dark text-white rounded">
+          <p>No viewer available for content type (${currentLesson.content_type}).</p>
         </div>
       `;
     }

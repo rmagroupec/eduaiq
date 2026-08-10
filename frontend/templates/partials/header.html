@@ -1,42 +1,48 @@
 <header class="site-header site-header-transparent">
-    <!-- header html start -->
+    <!-- Top Contact & Social Bar -->
     <div class="top-header">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-8 d-none d-lg-block">
                     <div class="header-contact-info">
-                        <ul>
-                            <li>
-                                <a href="tel:+918052350041"><i class="fas fa-phone-alt"></i> 8052350041</a>
-                            </li>
-                            <li>
-                                <a href="tel:+917985267620"><i class="fas fa-phone-alt"></i> 7985267620</a>
-                            </li>
-                            <li>
-                                <a href="/page/apply-for-franchise/"><i class="fas fa-store"></i> Get
-                                    Franchise</a>
-                            </li>
+                        <ul class="d-flex align-items-center gap-3 mb-0">
+                             <li>
+                                 <a href="tel:+918052350041"><i class="fas fa-phone-alt me-1 text-pink"></i> +91 8052350041</a>
+                             </li>
+                             <li>
+                                 <a href="tel:+917985267620"><i class="fas fa-phone-alt me-1 text-pink"></i> +91 7985267620</a>
+                             </li>
+                             <li>
+                                 <a href="/institution/login/" class="institution-top-badge">
+                                     <i class="fas fa-university me-1"></i> Institution Login
+                                 </a>
+                             </li>
+                             <li>
+                                 <a href="/page/apply-for-franchise/" class="franchise-top-badge">
+                                     <i class="fas fa-store me-1"></i> Apply For Franchise
+                                 </a>
+                             </li>
                         </ul>
                     </div>
                 </div>
-                <div class="col-lg-4 d-flex justify-content-lg-end justify-content-between">
+                <div class="col-lg-4 col-12 d-flex justify-content-lg-end justify-content-between align-items-center">
                     <div class="header-social social-links">
                         <ul>
                             <li>
                                 <a href="https://www.instagram.com/eduaiq_2026?utm_source=qr&igsh=MTY2bXJuZXZyZTliag=="
-                                    target="_blank">
+                                    target="_blank" title="Instagram">
                                     <i class="fab fa-instagram" aria-hidden="true"></i>
                                 </a>
                             </li>
                             <li>
-                                <a href="https://whatsapp.com/channel/0029VbDa70SHltY9CSw9IP2B" target="_blank">
+                                <a href="https://whatsapp.com/channel/0029VbDa70SHltY9CSw9IP2B" target="_blank" title="WhatsApp">
                                     <i class="fab fa-whatsapp" aria-hidden="true"></i>
                                 </a>
                             </li>
                         </ul>
                     </div>
-                    <div class="header-search-icon">
-                        <button class="search-icon">
+                    <div class="header-search-icon ms-3">
+                        <button class="search-icon" title="Search">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
@@ -44,80 +50,86 @@
             </div>
         </div>
     </div>
+    
+    <!-- Main Navigation Header -->
     <div class="bottom-header" id="masthead">
         <div class="container">
             <div class="hb-group d-flex align-items-center justify-content-between">
-                <div class="site-identity col-lg-3">
+                <div class="site-identity">
                     <p class="site-title">
                         <a href="/">
-                            <!-- TODO: download the logo from eduaiq.co.in and save it to
-                                         frontend/static/assets/img/eduaiq-logo.png, then change the
-                                         src below to "/static/assets/img/eduaiq-logo.png" -->
                             <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop/RH5FCbrpj5oYZFFX/file_00000000cfc0720984e9245a8aa83486__2_-removebg-preview-I5iSFuXKpmUWVA3H.png"
                                 alt="EduAiQ logo">
                         </a>
                     </p>
                 </div>
-                <div class="main-navigation col-lg-9 justify-content-between d-flex align-items-center">
+
+                <div class="main-navigation d-flex align-items-center">
                     <nav id="navigation" class="navigation d-none d-lg-inline-block">
                         <ul>
                             <li class="current-menu-item">
                                 <a href="/">Home</a>
                             </li>
                             <li class="menu-item-has-children">
-                                <a href="/ai-lab/">AI Lab</a>
-                                <ul>
+                                <a href="/ai-lab/">AI Lab <i class="fas fa-angle-down nav-arrow"></i></a>
+                                <ul class="sub-menu">
                                     <li>
-                                        <a href="/ai-books/">AI Books</a>
+                                        <a href="/ai-books/"><i class="fas fa-book me-2 opacity-75"></i>AI Books</a>
                                     </li>
                                     <li>
-                                        <a href="/skill-development/">Skill Development</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children">
-                                <a href="/about/">About Us</a>
-                                <ul>
-                                    <li>
-                                        <a href="/eduaiq-ecosystem/">EduAiQ Ecosystem</a>
+                                        <a href="/skill-development/"><i class="fas fa-laptop-code me-2 opacity-75"></i>Skill Development</a>
                                     </li>
                                 </ul>
                             </li>
                             <li class="menu-item-has-children">
-                                <a href="/page/olympiads/">Olympiads</a>
-                                <ul>
+                                <a href="/about/">About Us <i class="fas fa-angle-down nav-arrow"></i></a>
+                                <ul class="sub-menu">
                                     <li>
-                                        <a href="/olympiad-curriculum/">Olympiad Curriculum</a>
+                                        <a href="/eduaiq-ecosystem/"><i class="fas fa-globe me-2 opacity-75"></i>EduAiQ Ecosystem</a>
                                     </li>
                                 </ul>
                             </li>
                             <li class="menu-item-has-children">
-                                <a href="/checkout/">Pay Fee</a>
-                                <ul>
+                                <a href="/page/olympiads/">Olympiads <i class="fas fa-angle-down nav-arrow"></i></a>
+                                <ul class="sub-menu">
                                     <li>
-                                        <a href="/olympiad-form/">Olympiad Form</a>
-                                    </li>
-                                    <li>
-                                        <a href="/growth-partner-kit/">Growth Partner Kit</a>
+                                        <a href="/olympiad-curriculum/"><i class="fas fa-award me-2 opacity-75"></i>Olympiad Curriculum</a>
                                     </li>
                                 </ul>
                             </li>
                             <li class="menu-item-has-children">
-                                <a href="/contact/">Contact Us</a>
-                                <ul>
+                                <a href="/checkout/">Pay Fee <i class="fas fa-angle-down nav-arrow"></i></a>
+                                <ul class="sub-menu">
                                     <li>
-                                        <a href="/page/support/">Support</a>
+                                        <a href="/olympiad-form/"><i class="fas fa-file-alt me-2 opacity-75"></i>Olympiad Form</a>
                                     </li>
                                     <li>
-                                        <a href="/apply-for-franchise/">Apply For Franchise</a>
+                                        <a href="/growth-partner-kit/"><i class="fas fa-box-open me-2 opacity-75"></i>Growth Partner Kit</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="menu-item-has-children">
+                                <a href="/contact/">Contact Us <i class="fas fa-angle-down nav-arrow"></i></a>
+                                <ul class="sub-menu">
+                                    <li>
+                                        <a href="/page/support/"><i class="fas fa-headset me-2 opacity-75"></i>Support</a>
+                                    </li>
+                                    <li>
+                                        <a href="/apply-for-franchise/"><i class="fas fa-store me-2 opacity-75"></i>Apply For Franchise</a>
                                     </li>
                                 </ul>
                             </li>
                         </ul>
                     </nav>
-                    <div class="header-btn d-inline-block">
-                        <a href="/register" class="button-round-secondary">REGISTER TO JOIN
-                            US</a>
+
+                    <div class="header-btn d-inline-flex align-items-center ms-lg-3">
+                        {% if user.is_authenticated %}
+                            <a href="/my-learning/" class="btn-theme-login">MY LEARNING</a>
+                            <a href="/admin-panel/logout/" class="button-round-secondary">LOGOUT <i class="fas fa-sign-out-alt ms-1"></i></a>
+                        {% else %}
+                            <a href="/login/" class="btn-theme-login">LOGIN</a>
+                            <a href="/register/" class="button-round-secondary">REGISTER TO JOIN US <i class="fas fa-arrow-right ms-1"></i></a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -125,3 +137,329 @@
     </div>
     <div class="mobile-menu-container"></div>
 </header>
+
+<style>
+  /* ==========================================================================
+     Ultra-Premium & Systematic Header UI Design
+     ========================================================================== */
+  .site-header {
+    background: #ffffff !important;
+    box-shadow: 0 4px 25px rgba(15, 23, 42, 0.08) !important;
+    position: relative;
+    z-index: 999;
+  }
+
+  /* 2-Tone Top Contact Bar */
+  .top-header {
+    background: linear-gradient(90deg, #1e1b4b 0%, #311042 100%) !important;
+    padding: 7px 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .text-pink {
+    color: #f73859 !important;
+  }
+
+  .header-contact-info ul {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .header-contact-info a {
+    font-size: 12px !important;
+    color: #e2e8f0 !important;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: color 0.25s ease;
+  }
+
+  .header-contact-info a:hover {
+    color: #f73859 !important;
+  }
+
+  .franchise-top-badge,
+  .institution-top-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    padding: 4px 14px !important;
+    border-radius: 20px !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .institution-top-badge {
+    background: linear-gradient(135deg, #f73859 0%, #ec4899 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(247, 56, 89, 0.35) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .institution-top-badge:hover {
+    background: linear-gradient(135deg, #e02447 0%, #d62846 100%) !important;
+    box-shadow: 0 8px 22px rgba(247, 56, 89, 0.6) !important;
+    transform: translateY(-2px) scale(1.03) !important;
+    filter: brightness(1.05) !important;
+  }
+
+  .franchise-top-badge {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+  }
+
+  .franchise-top-badge:hover {
+    background: #f73859 !important;
+    border-color: #f73859 !important;
+    color: #ffffff !important;
+  }
+
+  .header-social ul {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .header-social a {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .header-social a:hover {
+    background: #f73859;
+    transform: translateY(-2px);
+  }
+
+  .search-icon {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+  }
+
+  .search-icon:hover {
+    background: #f73859;
+    border-color: #f73859;
+  }
+
+  /* Main Navbar */
+  .bottom-header {
+    padding: 10px 0 !important;
+    background: #ffffff !important;
+  }
+
+  .site-identity {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .site-title {
+    margin: 0 !important;
+    line-height: 1 !important;
+  }
+
+  .site-title img {
+    max-height: 50px !important;
+    width: auto !important;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+
+  .site-title img:hover {
+    transform: scale(1.02);
+  }
+
+  /* Navigation Items & Hover Line */
+  .main-navigation {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 16px !important;
+  }
+
+  .navigation > ul {
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+  }
+
+  .navigation > ul > li {
+    position: relative;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .navigation > ul > li > a {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    padding: 12px 0 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap !important;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.25s ease;
+  }
+
+  .nav-arrow {
+    font-size: 11px;
+    opacity: 0.6;
+    transition: transform 0.3s ease;
+  }
+
+  .navigation > ul > li:hover .nav-arrow {
+    transform: rotate(180deg);
+    opacity: 1;
+    color: #f73859;
+  }
+
+  /* Animated Bottom Line on Hover */
+  .navigation > ul > li > a::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0%;
+    height: 2.5px;
+    background: linear-gradient(90deg, #f73859 0%, #ec4899 100%);
+    border-radius: 2px;
+    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .navigation > ul > li:hover > a,
+  .navigation > ul > li.current-menu-item > a {
+    color: #f73859 !important;
+  }
+
+  .navigation > ul > li:hover > a::after,
+  .navigation > ul > li.current-menu-item > a::after {
+    width: 100%;
+  }
+
+  /* Submenu Dropdowns */
+  .navigation ul li ul.sub-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 220px;
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 14px;
+    padding: 10px;
+    box-shadow: 0 15px 35px rgba(15, 23, 42, 0.12);
+    list-style: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 100;
+  }
+
+  .navigation ul li:hover ul.sub-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .navigation ul li ul.sub-menu li a {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.25s ease;
+  }
+
+  .navigation ul li ul.sub-menu li a:hover {
+    background: #fff1f2;
+    color: #f73859;
+    transform: translateX(4px);
+  }
+
+  /* Action Buttons Styling */
+  .header-btn {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .btn-theme-login {
+    background: transparent !important;
+    color: #41246D !important;
+    border: 1.5px solid #f73859 !important;
+    border-radius: 30px !important;
+    padding: 7px 18px !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    white-space: nowrap !important;
+    text-decoration: none !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .btn-theme-login:hover {
+    background: linear-gradient(135deg, #f73859 0%, #ec4899 100%) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+    box-shadow: 0 8px 22px rgba(247, 56, 89, 0.45) !important;
+    transform: translateY(-2px) scale(1.03) !important;
+  }
+
+  .header-btn .button-round-secondary {
+    background: linear-gradient(135deg, #f73859 0%, #ec4899 100%) !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    padding: 8px 20px !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    white-space: nowrap !important;
+    text-decoration: none !important;
+    box-shadow: 0 4px 14px rgba(247, 56, 89, 0.4) !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .header-btn .button-round-secondary:hover {
+    background: linear-gradient(135deg, #e02447 0%, #d62846 100%) !important;
+    box-shadow: 0 6px 18px rgba(247, 56, 89, 0.6) !important;
+    transform: translateY(-1px);
+  }
+</style>

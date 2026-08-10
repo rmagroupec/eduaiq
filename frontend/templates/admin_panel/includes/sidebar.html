@@ -26,8 +26,8 @@
           <img src="{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}" alt="Thumbnail"
             class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0">
           <span class="profile-dropdown__contents">
-            <span class="h6 mb-0 text-md d-block text-primary-light">Jone Copper</span>
-            <span class="text-secondary-light text-sm mb-0 d-block">Admin</span>
+            <span class="h6 mb-0 text-md d-block text-primary-light">{% if request.user.is_authenticated %}{{ request.user.first_name|default:request.user.username|title }}{% else %}Admin User{% endif %}</span>
+            <span class="text-secondary-light text-sm mb-0 d-block">{% if request.user.role == 'institution' %}Institution Admin{% else %}Super Admin{% endif %}</span>
           </span>
         </span>
         <span class="profile-dropdown__icon pe-8 text-xl d-flex line-height-1">
@@ -36,21 +36,14 @@
       </button>
       <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
         <li>
-          <a href="student-details"
+          <a href="/admin-panel/view-profile/"
             class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6">
             <i class="ri-user-3-line"></i>
             My Profile
           </a>
         </li>
         <li>
-          <a href="general"
-            class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6">
-            <i class="ri-settings-3-line"></i>
-            Setting
-          </a>
-        </li>
-        <li>
-          <a href="login"
+          <a href="/admin-panel/logout/"
             class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6">
             <i class="ri-shut-down-line"></i>
             Log Out
@@ -62,6 +55,67 @@
   <!-- User Info end -->
   <div class="sidebar-menu-area">
     <ul class="sidebar-menu" id="sidebar-menu">
+
+      {% if request.user.role == 'institution' %}
+      <!-- INSTITUTION ADMIN RESTRICTED MENU -->
+      <li class="sidebar-menu-header" style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #f73859; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
+        Institution Portal
+      </li>
+      <li>
+        <a href="/admin-panel/dashboard/">
+          <i class="ri-home-4-line"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-book-open-line"></i>
+          <span>My Allowed Courses</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/courses/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Allowed Courses List
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/courses/add/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Course
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-graduation-cap-line"></i>
+          <span>Institution Students</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/student-list/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Enrolled Students
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-new-student/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add New Student
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="/admin-panel/view-profile/">
+          <i class="ri-user-3-line"></i>
+          <span>My Profile</span>
+        </a>
+      </li>
+
+      {% else %}
+      <!-- SUPERADMIN FULL MENU -->
       <li class="dropdown">
         <a href="javascript:void(0)">
           <i class="ri-home-4-line"></i>
@@ -74,7 +128,6 @@
               School
             </a>
           </li>
-       
         </ul>
       </li>
       <li class="dropdown">
@@ -93,6 +146,33 @@
             <a href="/admin-panel/institution-list/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Institution List
+            </a>
+          </li>
+          <li class="sidebar-submenu-header" style="padding: 10px 0 6px 28px; font-size: 11px; font-weight: 700; color: #8592a3; text-transform: uppercase; letter-spacing: 0.5px; list-style-none;">
+            Course Manage
+          </li>
+          <li>
+            <a href="/admin-panel/categories/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Categories
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/courses/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Courses
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/modules/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Modules
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/lessons/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Lessons
             </a>
           </li>
         </ul>
@@ -141,38 +221,7 @@
           </li>
         </ul>
       </li>
-      <li class="dropdown">
-        <a href="javascript:void(0)">
-          <i class="ri-book-open-line"></i>
-          <span>Course Management</span>
-        </a>
-        <ul class="sidebar-submenu">
-          <li>
-            <a href="/admin-panel/categories/">
-              <i class="ri-circle-fill circle-icon w-auto"></i>
-              Categories
-            </a>
-          </li>
-          <li>
-            <a href="/admin-panel/courses/">
-              <i class="ri-circle-fill circle-icon w-auto"></i>
-              Courses
-            </a>
-          </li>
-          <li>
-            <a href="/admin-panel/modules/">
-              <i class="ri-circle-fill circle-icon w-auto"></i>
-              Modules
-            </a>
-          </li>
-          <li>
-            <a href="/admin-panel/lessons/">
-              <i class="ri-circle-fill circle-icon w-auto"></i>
-              Lessons
-            </a>
-          </li>
-        </ul>
-      </li>
+
       <li class="dropdown">
         <a href="javascript:void(0)">
           <i class="ri-question-line"></i>
@@ -223,7 +272,42 @@
           </li>
         </ul>
       </li>
+      <!-- OLYMPIAD ENTRANCE MODULE -->
       <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-trophy-line"></i>
+          <span>Olympiad Entrance</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/olympiad-entrance/" target="_blank">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Entrance Catalog
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/olympiad-entrance/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Manage Entrance Exams
+            </a>
+          </li>
+
+          <li>
+            <a href="/admin/olympiad/olympiadregistration/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Enrolled Students
+            </a>
+          </li>
+          <li>
+            <a href="/admin/olympiad/olympiadattempt/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Exam Attempts & Scores
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="dropdown">
+
         <a href="javascript:void(0)">
           <i class="ri-graduation-cap-line"></i>
           <span>Learning</span>
@@ -644,6 +728,7 @@
           </li>
         </ul>
       </li>
+      {% endif %}
     </ul>
   </div>
 </aside>

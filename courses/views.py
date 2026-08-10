@@ -17,12 +17,18 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models as dj_models
 from django.http import JsonResponse
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods
 
 from .forms import CourseCategoryForm, CourseForm, CourseModuleForm, LessonForm, QuizForm
 from .models import (
     Course, CourseCategory, CourseModule, Enrollment, Lesson,
     Quiz, QuizAccessLog, QuizAttempt, QuizQuestion,
+)
+from .utils import (
+    get_allowed_courses_for_user,
+    get_allowed_categories_for_user,
+    is_course_accessible_by_user,
 )
 
 
@@ -91,8 +97,8 @@ def serialize_course(c, detailed=False, request=None):
         'instructor': {
             'id': c.created_by.id,
             'username': c.created_by.username,
-            'email': c.created_by.email,
-            'phone': c.created_by.phone,
+            'email': c.created_by.email or 'info@eduaiq.co.in',
+            'phone': '+91 8052350041',
         } if c.created_by else None,
         'price': str(c.price),
         'status': c.status,
@@ -109,6 +115,9 @@ def serialize_course(c, detailed=False, request=None):
         'created_at': c.created_at,
         'updated_at': c.updated_at,
     }
+
+    user = request.user if (request and hasattr(request, 'user')) else None
+    data['is_accessible'] = is_accessible_by_user(user, c) if 'is_accessible_by_user' in globals() else is_course_accessible_by_user(user, c)
 
     if detailed:
         modules_list = []
@@ -289,9 +298,7 @@ def serialize_access_log(log):
 @require_http_methods(['GET', 'POST'])
 def category_list(request):
     if request.method == 'GET':
-        qs = CourseCategory.objects.all().order_by('order', 'name')
-        if not _is_staff(request.user):
-            qs = qs.filter(is_active=True)
+        qs = get_allowed_categories_for_user(request.user)
         return JsonResponse({
             'count': qs.count(),
             'results': [serialize_category(c) for c in qs]
@@ -314,14 +321,23 @@ def category_detail(request, pk):
         return JsonResponse({'error': 'Category not found'}, status=404)
 
     if request.method == 'GET':
+        if not request.user.is_authenticated:
+            return JsonResponse({'category': serialize_category(category)})
+        if not request.user.is_superuser:
+            allowed_cats = get_allowed_categories_for_user(request.user)
+            if not allowed_cats.filter(pk=category.pk).exists():
+                return JsonResponse({'error': 'This category is not allotted to your institution'}, status=403)
         return JsonResponse({'category': serialize_category(category)})
 
     if not _is_staff(request.user):
         return JsonResponse({'error': 'Forbidden'}, status=403)
 
     if request.method == 'DELETE':
-        category.delete()
-        return JsonResponse({'success': True})
+        try:
+            category.delete()
+            return JsonResponse({'success': True})
+        except dj_models.ProtectedError:
+            return JsonResponse({'error': 'Cannot delete category because it has active courses associated with it.'}, status=400)
 
     form = CourseCategoryForm(_body(request), instance=category)
     if form.is_valid():
@@ -337,12 +353,14 @@ def category_detail(request, pk):
 @require_http_methods(['GET', 'POST'])
 def course_list(request):
     if request.method == 'GET':
-        qs = Course.objects.select_related('category').all()
-        if not _is_staff(request.user):
-            qs = qs.filter(status='published')
+        qs = get_allowed_courses_for_user(request.user)
+
         category = request.GET.get('category')
         if category:
-            qs = qs.filter(category_id=category)
+            if str(category).isdigit():
+                qs = qs.filter(category_id=int(category))
+            else:
+                qs = qs.filter(dj_models.Q(category__slug__iexact=category) | dj_models.Q(category__name__iexact=category))
         status = request.GET.get('status')
         if status and _is_staff(request.user):
             qs = qs.filter(status=status)
@@ -379,6 +397,11 @@ def course_list(request):
         course.created_by = request.user
         try:
             course.save()
+            from institutions.models import Institution
+            inst = Institution.objects.filter(admin_user=request.user).first()
+            if inst:
+                course.institutions.add(inst)
+                inst.allowed_courses.add(course)
         except DjangoValidationError as e:
             return JsonResponse({'success': False, 'errors': e.message_dict}, status=400)
         return JsonResponse({'success': True, 'course': serialize_course(course, detailed=True, request=request)}, status=201)
@@ -405,6 +428,7 @@ def course_detail(request, slug):
     if request.method == 'GET':
         if course.status != 'published' and not _can_manage_course(request.user, course):
             return JsonResponse({'error': 'Forbidden'}, status=403)
+
         return JsonResponse({'course': serialize_course(course, detailed=True, request=request)})
 
     if not _can_manage_course(request.user, course):
@@ -536,6 +560,10 @@ def lesson_detail(request, pk):
     course = lesson.module.course
 
     if request.method == 'GET':
+        if not request.user.is_authenticated:
+            return JsonResponse({'error': 'Authentication required to access lesson content.'}, status=401)
+        if not is_course_accessible_by_user(request.user, course):
+            return JsonResponse({'error': 'This course content is not allotted to your institution.'}, status=403)
         if not lesson.is_published and not _can_manage_course(request.user, course):
             return JsonResponse({'error': 'Forbidden'}, status=403)
         return JsonResponse({'lesson': serialize_lesson(lesson)})
@@ -722,6 +750,7 @@ def question_detail(request, pk):
 # QUIZ-TAKING FLOW
 # ============================================================================
 
+@csrf_exempt
 @login_required
 @require_http_methods(['POST'])
 def start_attempt(request, pk):
@@ -765,6 +794,7 @@ def _get_own_attempt_or_error(request, pk):
     return attempt, None
 
 
+@csrf_exempt
 @login_required
 @require_http_methods(['POST'])
 def submit_answer(request, pk):
@@ -785,6 +815,7 @@ def submit_answer(request, pk):
     return JsonResponse({'success': True})
 
 
+@csrf_exempt
 @login_required
 @require_http_methods(['POST'])
 def submit_attempt(request, pk):
@@ -821,7 +852,7 @@ def submit_attempt(request, pk):
             expl = q.explanation or ""
             feedback_dict[str(q.id)] = f"{'Correct!' if is_correct else 'Incorrect!'} {expl}".strip()
         result['feedback'] = feedback_dict
-    return JsonResponse({'success': True, 'result': result})
+    return JsonResponse({'success': True, 'result': result, 'attempt': result})
 
 
 @login_required
@@ -856,15 +887,40 @@ def enroll_course(request, slug):
         return JsonResponse({'error': 'Course not found'}, status=404)
     if course.status != 'published':
         return JsonResponse({'error': 'This course is not open for enrollment.'}, status=400)
-    if Enrollment.objects.filter(student=request.user, course=course).exists():
-        return JsonResponse({'error': 'You are already enrolled in this course.'}, status=400)
 
     data = _body(request)
+    student_id = data.get('student_id')
+
+    if not student_id:
+        return JsonResponse({'error': 'student_id is required. Only Institution Admins can allot courses to students.'}, status=400)
+
+    try:
+        student = User.objects.get(pk=student_id, role='student')
+    except ObjectDoesNotExist:
+        return JsonResponse({'error': 'Student not found.'}, status=404)
+
+    # Get student's institution
+    if not hasattr(student, 'student_profile') or not student.student_profile.institution:
+        return JsonResponse({'error': 'Student does not belong to any institution.'}, status=400)
+    
+    institution = student.student_profile.institution
+
+    # Check if request.user is the Admin of this institution or a Super Admin
+    if institution.admin_user_id != request.user.id and not request.user.is_superuser:
+        return JsonResponse({'error': 'Forbidden. Only the Institution Admin or Super Admin can allot courses to this student.'}, status=403)
+
+    # Check if the course is allotted to the institution by the Main Admin
+    if not institution.allowed_courses.filter(pk=course.pk).exists():
+        return JsonResponse({'error': 'This course is not allotted to your institution by the Main Admin.'}, status=403)
+
+    if Enrollment.objects.filter(student=student, course=course).exists():
+        return JsonResponse({'error': 'Student is already enrolled in this course.'}, status=400)
+
     covered_by_plan = bool(data.get('covered_by_plan', False))
     amount_paid = data.get('amount_paid', 0 if covered_by_plan else course.price)
 
     enrollment = Enrollment(
-        student=request.user, course=course,
+        student=student, course=course,
         covered_by_plan=covered_by_plan, amount_paid=amount_paid,
     )
     try:
@@ -877,9 +933,9 @@ def enroll_course(request, slug):
         'enrollment': {
             'id': enrollment.id,
             'student': {
-                'id': request.user.id,
-                'username': request.user.username,
-                'email': request.user.email,
+                'id': student.id,
+                'username': student.username,
+                'email': student.email or 'info@eduaiq.co.in',
             },
             'course': {
                 'id': course.id,

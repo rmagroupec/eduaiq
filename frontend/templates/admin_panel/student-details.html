@@ -3,6 +3,80 @@
 
 {% block title %}EduAIQ - Student Details{% endblock %}
 
+{% block css %}
+<style>
+  .detail-item {
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+  }
+  .detail-item:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+  }
+  [data-theme="dark"] .detail-item {
+    background: #1e293b;
+    border-color: #334155;
+  }
+  [data-theme="dark"] .detail-item:hover {
+    background: #334155;
+    border-color: #475569;
+  }
+  .icon-box {
+    width: 38px;
+    height: 38px;
+    background-color: #e2e8f0;
+    color: #475569;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  [data-theme="dark"] .icon-box {
+    background-color: #475569;
+    color: #cbd5e1;
+  }
+  .detail-label {
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 2px;
+    display: block;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .detail-value {
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 14px;
+  }
+  [data-theme="dark"] .detail-value {
+    color: #f8fafc;
+  }
+  .toggle-mask-btn {
+    border: none;
+    background: transparent;
+    color: #64748b;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+  .toggle-mask-btn:hover {
+    background-color: #cbd5e1;
+    color: #0f172a;
+  }
+  [data-theme="dark"] .toggle-mask-btn:hover {
+    background-color: #475569;
+    color: #f8fafc;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
   <div>
@@ -56,71 +130,126 @@
         <div class="tab-content" id="profileTabContent">
           <!-- Personal & Academic Info Tab -->
           <div class="tab-pane fade show active" id="personal-pane" role="tabpanel" aria-labelledby="personal-tab">
-            <div class="row gy-3">
+            <div class="row g-3">
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Class / Grade</span>
-                  <span class="text-secondary-light" id="detailClassGrade">-</span>
+                <div class="detail-item d-flex align-items-center gap-12">
+                  <div class="icon-box">
+                    <i class="ri-book-open-line"></i>
+                  </div>
+                  <div>
+                    <span class="detail-label">Class / Grade</span>
+                    <span class="detail-value" id="detailClassGrade">-</span>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Section</span>
-                  <span class="text-secondary-light" id="detailSection">-</span>
+                <div class="detail-item d-flex align-items-center gap-12">
+                  <div class="icon-box">
+                    <i class="ri-layout-grid-line"></i>
+                  </div>
+                  <div>
+                    <span class="detail-label">Section</span>
+                    <span class="detail-value" id="detailSection">-</span>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Academic Year</span>
-                  <span class="text-secondary-light" id="detailAcademicYear">-</span>
+                <div class="detail-item d-flex align-items-center gap-12">
+                  <div class="icon-box">
+                    <i class="ri-calendar-line"></i>
+                  </div>
+                  <div>
+                    <span class="detail-label">Academic Year</span>
+                    <span class="detail-value" id="detailAcademicYear">-</span>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Institution</span>
-                  <span class="text-secondary-light" id="detailInstitution">-</span>
+                <div class="detail-item d-flex align-items-center gap-12">
+                  <div class="icon-box">
+                    <i class="ri-bank-line"></i>
+                  </div>
+                  <div>
+                    <span class="detail-label">Institution</span>
+                    <span class="detail-value" id="detailInstitution">-</span>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Admission Date</span>
-                  <span class="text-secondary-light" id="detailAdmissionDate">-</span>
+                <div class="detail-item d-flex align-items-center gap-12">
+                  <div class="icon-box">
+                    <i class="ri-calendar-todo-line"></i>
+                  </div>
+                  <div>
+                    <span class="detail-label">Admission Date</span>
+                    <span class="detail-value" id="detailAdmissionDate">-</span>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Date Of Birth</span>
-                  <span class="text-secondary-light" id="detailDob">-</span>
+                <div class="detail-item d-flex align-items-center gap-12">
+                  <div class="icon-box">
+                    <i class="ri-cake-line"></i>
+                  </div>
+                  <div>
+                    <span class="detail-label">Date Of Birth</span>
+                    <span class="detail-value" id="detailDob">-</span>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Age</span>
-                  <span class="text-secondary-light" id="detailAge">-</span>
+                <div class="detail-item d-flex align-items-center gap-12">
+                  <div class="icon-box">
+                    <i class="ri-time-line"></i>
+                  </div>
+                  <div>
+                    <span class="detail-label">Age</span>
+                    <span class="detail-value" id="detailAge">-</span>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Gender</span>
-                  <span class="text-secondary-light" id="detailGender">-</span>
+                <div class="detail-item d-flex align-items-center gap-12">
+                  <div class="icon-box">
+                    <i class="ri-genderless-line"></i>
+                  </div>
+                  <div>
+                    <span class="detail-label">Gender</span>
+                    <span class="detail-value" id="detailGender">-</span>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Blood Group</span>
-                  <span class="text-secondary-light text-uppercase" id="detailBloodGroup">-</span>
+                <div class="detail-item d-flex align-items-center gap-12">
+                  <div class="icon-box">
+                    <i class="ri-drop-line"></i>
+                  </div>
+                  <div>
+                    <span class="detail-label">Blood Group</span>
+                    <span class="detail-value text-uppercase" id="detailBloodGroup">-</span>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Category</span>
-                  <span class="text-secondary-light text-capitalize" id="detailCategory">-</span>
+                <div class="detail-item d-flex align-items-center gap-12">
+                  <div class="icon-box">
+                    <i class="ri-price-tag-3-line"></i>
+                  </div>
+                  <div>
+                    <span class="detail-label">Category</span>
+                    <span class="detail-value text-capitalize" id="detailCategory">-</span>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Emergency Contact</span>
-                  <span class="text-secondary-light" id="detailEmergencyPhone">-</span>
+                <div class="detail-item d-flex align-items-center gap-12">
+                  <div class="icon-box">
+                    <i class="ri-phone-fill"></i>
+                  </div>
+                  <div>
+                    <span class="detail-label">Emergency Contact</span>
+                    <span class="detail-value" id="detailEmergencyPhone">-</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -128,41 +257,81 @@
 
           <!-- Parent / Guardian Tab -->
           <div class="tab-pane fade" id="guardian-pane" role="tabpanel" aria-labelledby="guardian-tab">
-            <div class="row gy-3">
+            <div class="row g-3">
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Father's Name</span>
-                  <span class="text-secondary-light" id="detailFatherName">-</span>
+                <div class="detail-item d-flex align-items-center gap-12">
+                  <div class="icon-box">
+                    <i class="ri-user-line"></i>
+                  </div>
+                  <div>
+                    <span class="detail-label">Father's Name</span>
+                    <span class="detail-value" id="detailFatherName">-</span>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Mother's Name</span>
-                  <span class="text-secondary-light" id="detailMotherName">-</span>
+                <div class="detail-item d-flex align-items-center gap-12">
+                  <div class="icon-box">
+                    <i class="ri-user-line"></i>
+                  </div>
+                  <div>
+                    <span class="detail-label">Mother's Name</span>
+                    <span class="detail-value" id="detailMotherName">-</span>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Guardian's Name</span>
-                  <span class="text-secondary-light" id="detailGuardianName">-</span>
+                <div class="detail-item d-flex align-items-center gap-12">
+                  <div class="icon-box">
+                    <i class="ri-parent-line"></i>
+                  </div>
+                  <div>
+                    <span class="detail-label">Guardian's Name</span>
+                    <span class="detail-value" id="detailGuardianName">-</span>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Guardian Relation</span>
-                  <span class="text-secondary-light" id="detailGuardianRelation">-</span>
+                <div class="detail-item d-flex align-items-center gap-12">
+                  <div class="icon-box">
+                    <i class="ri-bubble-chart-line"></i>
+                  </div>
+                  <div>
+                    <span class="detail-label">Guardian Relation</span>
+                    <span class="detail-value" id="detailGuardianRelation">-</span>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Guardian Phone</span>
-                  <span class="text-secondary-light" id="detailGuardianPhone">-</span>
+                <div class="detail-item d-flex align-items-center justify-content-between gap-12">
+                  <div class="d-flex align-items-center gap-12">
+                    <div class="icon-box">
+                      <i class="ri-phone-line"></i>
+                    </div>
+                    <div>
+                      <span class="detail-label">Guardian Phone</span>
+                      <span class="detail-value" id="detailGuardianPhone">-</span>
+                    </div>
+                  </div>
+                  <button type="button" id="togglePhoneBtn" class="toggle-mask-btn" title="Toggle Visibility">
+                    <i id="togglePhoneIcon" class="ri-eye-off-line"></i>
+                  </button>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Guardian Email</span>
-                  <span class="text-secondary-light" id="detailGuardianEmail">-</span>
+                <div class="detail-item d-flex align-items-center justify-content-between gap-12">
+                  <div class="d-flex align-items-center gap-12">
+                    <div class="icon-box">
+                      <i class="ri-mail-line"></i>
+                    </div>
+                    <div>
+                      <span class="detail-label">Guardian Email</span>
+                      <span class="detail-value" id="detailGuardianEmail">-</span>
+                    </div>
+                  </div>
+                  <button type="button" id="toggleEmailBtn" class="toggle-mask-btn" title="Toggle Visibility">
+                    <i id="toggleEmailIcon" class="ri-eye-off-line"></i>
+                  </button>
                 </div>
               </div>
             </div>
@@ -204,6 +373,29 @@ $(document).ready(function() {
       window.location.href = "/admin-panel/student-list/";
     }, 1500);
     return;
+  }
+
+  let rawPhone = '-';
+  let rawEmail = '-';
+  let phoneMasked = true;
+  let emailMasked = true;
+
+  function maskPhone(phone) {
+    if (!phone || phone === '-') return '-';
+    if (phone.length <= 4) return 'XXXXXX';
+    return 'XXXXXX' + phone.slice(-4);
+  }
+
+  function maskEmail(email) {
+    if (!email || email === '-') return '-';
+    const parts = email.split('@');
+    if (parts.length !== 2) return 'XXXXXX';
+    const local = parts[0];
+    const domain = parts[1];
+    if (local.length <= 3) {
+      return 'XXX@' + domain;
+    }
+    return local.substring(0, 3) + 'XXXXXX@' + domain;
   }
 
   // Load student profile detail
@@ -266,8 +458,18 @@ $(document).ready(function() {
         $('#detailMotherName').text(student.mother_name || '-');
         $('#detailGuardianName').text(student.guardian_name || '-');
         $('#detailGuardianRelation').text(student.guardian_relation || '-');
-        $('#detailGuardianPhone').text(student.guardian_phone || '-');
-        $('#detailGuardianEmail').text(student.guardian_email || '-');
+        
+        rawPhone = student.guardian_phone || '-';
+        rawEmail = student.guardian_email || '-';
+        
+        phoneMasked = true;
+        emailMasked = true;
+        
+        $('#detailGuardianPhone').text(maskPhone(rawPhone));
+        $('#togglePhoneIcon').removeClass('ri-eye-line').addClass('ri-eye-off-line');
+        
+        $('#detailGuardianEmail').text(maskEmail(rawEmail));
+        $('#toggleEmailIcon').removeClass('ri-eye-line').addClass('ri-eye-off-line');
 
         // Docs tab
         if (student.aadhar_or_id_proof) {
@@ -286,6 +488,29 @@ $(document).ready(function() {
       }
     });
   }
+
+  // Handle masking toggle clicks
+  $('#togglePhoneBtn').on('click', function() {
+    phoneMasked = !phoneMasked;
+    if (phoneMasked) {
+      $('#detailGuardianPhone').text(maskPhone(rawPhone));
+      $('#togglePhoneIcon').removeClass('ri-eye-line').addClass('ri-eye-off-line');
+    } else {
+      $('#detailGuardianPhone').text(rawPhone);
+      $('#togglePhoneIcon').removeClass('ri-eye-off-line').addClass('ri-eye-line');
+    }
+  });
+
+  $('#toggleEmailBtn').on('click', function() {
+    emailMasked = !emailMasked;
+    if (emailMasked) {
+      $('#detailGuardianEmail').text(maskEmail(rawEmail));
+      $('#toggleEmailIcon').removeClass('ri-eye-line').addClass('ri-eye-off-line');
+    } else {
+      $('#detailGuardianEmail').text(rawEmail);
+      $('#toggleEmailIcon').removeClass('ri-eye-off-line').addClass('ri-eye-line');
+    }
+  });
 
   // Handle Suspend/Unsuspend Toggle click
   $('#suspendBtn').on('click', function() {

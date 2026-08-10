@@ -132,19 +132,25 @@
             text-decoration: underline;
         }
         .btn-register {
-            width: 100%;
-            padding: 12px;
-            background-color: #0066cc;
+            width: auto;
+            min-width: 200px;
+            margin: 0 auto;
+            display: block;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #f73859 0%, #ec4899 100%);
             color: white;
             border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: 500;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
-            transition: background-color 0.3s;
+            box-shadow: 0 4px 15px rgba(247, 56, 89, 0.4);
+            transition: all 0.35s ease;
         }
         .btn-register:hover {
-            background-color: #0052a3;
+            background: linear-gradient(135deg, #e02447 0%, #d62846 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(247, 56, 89, 0.6);
         }
         .btn-register:disabled {
             background-color: #ccc;

@@ -11431,3 +11431,195 @@ product slider range for price css
     color: #F24080;
   }
 }
+
+/* ==========================================================================
+   Master Global Mobile Responsiveness Suite — EduAiQ
+   ========================================================================== */
+html, body {
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+  width: 100% !important;
+}
+
+img, svg, video, canvas, iframe, figure {
+  max-width: 100% !important;
+  height: auto;
+}
+
+table {
+  display: block;
+  width: 100% !important;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Responsive Header & Navigation */
+@media screen and (max-width: 991px) {
+  .top-header {
+    padding: 8px 0 !important;
+  }
+
+  .header-contact-info ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 0;
+  }
+
+  .site-identity img {
+    max-height: 42px !important;
+    width: auto !important;
+  }
+
+  .bottom-header .hb-group {
+    padding: 10px 0 !important;
+  }
+
+  .header-btn .button-round-secondary {
+    padding: 8px 16px !important;
+    font-size: 12px !important;
+  }
+}
+
+/* Responsive Banners & Hero Sections */
+@media screen and (max-width: 768px) {
+  .home-banner {
+    padding: 40px 0 30px 0 !important;
+  }
+
+  .banner-title h1 {
+    font-size: 26px !important;
+    line-height: 1.3 !important;
+  }
+
+  .banner-text p {
+    font-size: 14px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .inner-baner-container {
+    padding: 50px 0 !important;
+  }
+
+  .inner-baner-container .inner-title {
+    font-size: 26px !important;
+  }
+
+  .section-head h2, .category-main-heading, .goal-title {
+    font-size: 24px !important;
+  }
+
+  .category-section-pro, .home-service {
+    padding: 25px 0 !important;
+    margin: 15px 0 !important;
+  }
+
+  .home-course-section {
+    padding: 20px 0 35px 0 !important;
+  }
+
+  /* Grid Stack on Mobile */
+  .category-grid-container, .categories-grid-pro {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .course-meta-pills-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .course-thumb-hero-wrap {
+    height: 220px !important;
+  }
+}
+
+/* Extra Small Screens (Phones < 576px) */
+@media screen and (max-width: 575px) {
+  .container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .banner-pretitle {
+    font-size: 11px !important;
+    letter-spacing: 1px !important;
+  }
+
+  .course-meta-pills-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .meta-pill-card {
+    padding: 12px !important;
+  }
+
+  .sidebar-card-pro, .includes-card-pro, .tab-card-pro {
+    padding: 18px 16px !important;
+  }
+
+  .nav-pills-pro {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    border-radius: 20px !important;
+  }
+
+  .nav-pills-pro .nav-link {
+    width: 100% !important;
+    text-align: center !alignment;
+    padding: 8px 14px !important;
+    font-size: 13px !important;
+  }
+
+  .price-main {
+    font-size: 28px !important;
+  }
+
+  .btn-enroll-pro-cta, .button-round-secondary, .button-round-primary {
+    font-size: 13px !important;
+    padding: 12px 20px !important;
+  }
+}
+
+/* ==========================================================================
+   EduAiQ Theme Login & Register Buttons Styling
+   ========================================================================== */
+.btn-theme-login {
+  background: transparent !important;
+  color: #41246D !important;
+  border: 2px solid #f73859 !important;
+  border-radius: 30px !important;
+  padding: 7px 18px !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  text-decoration: none !important;
+  transition: all 0.35s ease !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-theme-login:hover {
+  background: linear-gradient(135deg, #f73859 0%, #ec4899 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 15px rgba(247, 56, 89, 0.4) !important;
+  transform: translateY(-2px) !important;
+}
+
+.loginBtn, .btn-register, button[type="submit"].btn-primary-600 {
+  background: linear-gradient(135deg, #f73859 0%, #ec4899 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 30px !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 15px rgba(247, 56, 89, 0.35) !important;
+  transition: all 0.35s ease !important;
+}
+
+.loginBtn:hover, .btn-register:hover, button[type="submit"].btn-primary-600:hover {
+  background: linear-gradient(135deg, #e02447 0%, #d62846 100%) !important;
+  box-shadow: 0 8px 22px rgba(247, 56, 89, 0.6) !important;
+  transform: translateY(-2px) !important;
+}

@@ -1,0 +1,86 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Admin Profile - EduAiQ{% endblock %}
+
+{% block description %}Admin profile and account details.{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Admin Profile</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/ My Profile</span>
+    </div>
+  </div>
+</div>
+
+<div class="mt-24">
+  <div class="card h-100 radius-12 border border-neutral-200">
+    <div class="card-body p-24">
+      <div class="d-flex gap-32 flex-md-row flex-column align-items-start">
+        
+        <!-- Profile Image & Quick Details -->
+        <div class="max-w-300-px w-100 text-center p-24 bg-neutral-50 radius-12 border border-neutral-200">
+          <figure class="mb-20 w-120-px h-120-px mx-auto rounded-circle overflow-hidden border border-3 border-primary-600 shadow-sm">
+            <img src="{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}" alt="Admin Avatar"
+              class="w-100 h-100 object-fit-cover">
+          </figure>
+          <h2 class="h5 text-primary-light mb-8 fw-bold">{% if request.user.is_authenticated %}{{ request.user.first_name|default:request.user.username|title }}{% else %}Admin User{% endif %}</h2>
+          <span class="badge bg-primary-600 text-white px-16 py-6 radius-20 text-sm fw-semibold mb-12">Administrator</span>
+          <p class="mb-0 text-sm text-secondary-light">Role: <span class="text-primary-600 fw-semibold">Super Admin</span></p>
+          <p class="mb-0 text-sm text-secondary-light">Platform: <span class="text-primary-light fw-semibold">EduAiQ Portal</span></p>
+
+
+        </div>
+
+        <span class="h-100 w-1-px bg-neutral-200 d-none d-md-block"></span>
+
+        <!-- Detailed Info -->
+        <div class="flex-grow-1 w-100">
+          <div class="pb-16 border-bottom d-flex align-items-center justify-content-between gap-20">
+            <h3 class="h6 text-primary-light text-lg mb-0 fw-semibold"><i class="ri-user-settings-line me-2 text-primary-600"></i> Account Information</h3>
+            <span class="bg-success-100 text-success-600 px-16 py-4 radius-4 fw-medium text-sm d-inline-flex align-items-center gap-1">
+              <i class="ri-checkbox-circle-fill"></i> Active
+            </span>
+          </div>
+
+          <div class="mt-20 d-flex flex-column gap-16">
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Username</span>
+              <span class="fw-medium text-sm text-secondary-light">: {% if request.user.is_authenticated %}{{ request.user.username }}{% else %}admin{% endif %}</span>
+            </div>
+            
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Official Email</span>
+              <span class="fw-medium text-sm text-primary-600">: <a href="mailto:info@eduaiq.co.in">info@eduaiq.co.in</a></span>
+            </div>
+
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Contact Number</span>
+              <span class="fw-medium text-sm text-primary-600">: <a href="tel:+918052350041">+91 8052350041</a> / <a href="tel:+917985267620">+91 7985267620</a></span>
+            </div>
+
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Designation</span>
+              <span class="fw-medium text-sm text-secondary-light">: System Administrator & Founder</span>
+            </div>
+
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Access Level</span>
+              <span class="fw-medium text-sm text-secondary-light">: Full Admin Permissions (All Modules)</span>
+            </div>
+
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Status</span>
+              <span class="fw-medium text-sm text-success-600">: Verified System Administrator</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

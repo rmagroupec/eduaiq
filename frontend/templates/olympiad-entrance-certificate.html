@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Official Certificate - {{ exam.name }}{% endblock %}
+
+{% block content %}
+<style>
+  @media print {
+    .no-print, header, footer, nav, .inner-banner-wrap {
+      display: none !important;
+    }
+    body {
+      background: #ffffff !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    .certificate-container {
+      box-shadow: none !important;
+      border: 10px solid #1e293b !important;
+      margin: 0 auto !important;
+      width: 100% !important;
+    }
+  }
+
+  .certificate-wrap {
+    background: #f8fafc;
+    padding: 3rem 1rem;
+  }
+
+  .certificate-container {
+    background: #ffffff;
+    max-width: 900px;
+    margin: 0 auto;
+    border: 12px solid #0f172a;
+    border-radius: 1.5rem;
+    padding: 3.5rem 3rem;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+    background-image: radial-gradient(circle at 50% 50%, rgba(241, 245, 249, 0.5) 0%, rgba(255, 255, 255, 1) 100%);
+  }
+
+  .certificate-corner {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 3px solid #d97706;
+  }
+
+  .corner-tl { top: 15px; left: 15px; border-right: none; border-bottom: none; }
+  .corner-tr { top: 15px; right: 15px; border-left: none; border-bottom: none; }
+  .corner-bl { bottom: 15px; left: 15px; border-right: none; border-top: none; }
+  .corner-br { bottom: 15px; right: 15px; border-left: none; border-top: none; }
+
+  .cert-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .cert-logo {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #2563eb;
+    letter-spacing: -0.03em;
+  }
+
+  .cert-subtitle {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #64748b;
+  }
+
+  .cert-title {
+    font-family: 'Georgia', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 1.5rem 0 0.5rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .cert-recipient {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #1d4ed8;
+    border-bottom: 2px dashed #cbd5e1;
+    display: inline-block;
+    padding: 0 2rem 0.25rem 2rem;
+    margin: 1rem 0;
+  }
+
+  .cert-body-text {
+    font-size: 1.1rem;
+    color: #334155;
+    line-height: 1.7;
+    max-width: 720px;
+    margin: 0 auto 2rem auto;
+  }
+
+  .cert-seal {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 25px rgba(217, 119, 6, 0.4);
+    border: 3px solid #ffffff;
+    font-size: 2.2rem;
+  }
+
+  .cert-meta-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1rem 1.5rem;
+    display: inline-flex;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+  }
+</style>
+
+<div class="no-print bg-light py-3 border-bottom">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a href="{% url 'olympiad_entrance_result' exam.id %}" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">
+      <i class="fas fa-arrow-left me-2"></i> Back to Result
+    </a>
+    <button onclick="window.print()" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
+      <i class="fas fa-print me-2"></i> Print / Save as PDF
+    </button>
+  </div>
+</div>
+
+<div class="certificate-wrap">
+  <div class="certificate-container text-center">
+    <div class="certificate-corner corner-tl"></div>
+    <div class="certificate-corner corner-tr"></div>
+    <div class="certificate-corner corner-bl"></div>
+    <div class="certificate-corner corner-br"></div>
+
+    <div class="cert-header">
+      <div class="cert-logo"><i class="fas fa-graduation-cap me-2"></i>EduAiQ</div>
+      <div class="cert-subtitle">National Olympiad & Entrance Examination Controller</div>
+      
+      <h1 class="cert-title">{{ cert_type }}</h1>
+      <p class="text-muted small">Academic Session {{ exam.academic_year|default:"2026-27" }}</p>
+    </div>
+
+    <p class="text-uppercase text-muted fw-bold small mb-1">This official certificate is proudly presented to</p>
+    
+    <div class="cert-recipient">
+      {{ registration.student.get_full_name|default:registration.student.username }}
+    </div>
+
+    <div class="cert-body-text">
+      for outstanding performance and successfully qualifying in the <strong>{{ exam.name }}</strong> 
+      under Candidate Roll Number <strong>{{ registration.roll_number }}</strong>. 
+      <br>
+      Awarded: <strong class="text-primary">{{ award_title }}</strong> with an accuracy percentage of <strong>{{ attempt.score_pct|floatformat:1 }}%</strong>.
+    </div>
+
+    <div class="cert-meta-box">
+      <div>
+        <span class="small text-muted d-block fw-bold text-uppercase">Certificate Serial</span>
+        <strong class="text-dark font-monospace">{{ cert_serial }}</strong>
+      </div>
+      <div>
+        <span class="small text-muted d-block fw-bold text-uppercase">Issue Date</span>
+        <strong class="text-dark">{{ attempt.submitted_at|date:"d F Y" }}</strong>
+      </div>
+      <div>
+        <span class="small text-muted d-block fw-bold text-uppercase">Status</span>
+        <strong class="text-success">VERIFIED & RECORDED</strong>
+      </div>
+    </div>
+
+    <div class="row align-items-center mt-3 pt-3 border-top">
+      <div class="col-4 text-start">
+        <div class="cert-seal">
+          <i class="fas fa-award"></i>
+        </div>
+      </div>
+      
+      <div class="col-4 text-center">
+        <img src="{% static 'assets/img/qr-code-placeholder.png' %}" alt="QR Verification" style="width: 70px; opacity: 0.85;" onerror="this.style.display='none'">
+        <div class="small text-muted mt-1" style="font-size: 0.75rem;">Scan to Verify</div>
+      </div>
+
+      <div class="col-4 text-end">
+        <div class="fw-bold text-dark mb-0">Examination Controller</div>
+        <small class="text-muted">EduAiQ Academic Board</small>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

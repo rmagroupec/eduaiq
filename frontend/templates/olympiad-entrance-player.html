@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ exam.name }} — Olympiad Entrance Player</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #f4f6f9; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        .exam-header { background: #0f172a; color: #fff; position: sticky; top: 0; z-index: 1000; }
+        .timer-badge { background: #1e293b; color: #38bdf8; font-size: 1.25rem; font-weight: 700; padding: 0.5rem 1.25rem; border-radius: 50rem; border: 1px solid #334155; }
+        .q-card { border-radius: 1rem; border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .option-btn { border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 0.85rem 1.25rem; text-align: left; background: #fff; transition: all 0.2s; cursor: pointer; display: flex; align-items: center; }
+        .option-btn:hover { border-color: #3b82f6; background-color: #eff6ff; }
+        .option-btn.selected { border-color: #2563eb; background-color: #dbeafe; font-weight: 600; }
+        .q-palette-btn { width: 40px; height: 40px; border-radius: 0.5rem; border: 1px solid #cbd5e1; background: #fff; font-weight: 600; font-size: 0.9rem; margin: 4px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+        .q-palette-btn.answered { background: #22c55e; color: #fff; border-color: #16a34a; }
+        .q-palette-btn.active { border: 3px solid #2563eb; }
+        .nav-tabs .nav-link { font-weight: 600; color: #475569; border: none; border-bottom: 3px solid transparent; border-radius: 0; padding: 0.75rem 1.25rem; }
+        .nav-tabs .nav-link.active { color: #2563eb; border-bottom-color: #2563eb; background: transparent; }
+    </style>
+</head>
+<body>
+
+    <!-- Top Header -->
+    <header class="exam-header py-3 px-4 shadow-sm">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-0 text-white fw-bold"><i class="fas fa-file-signature text-primary me-2"></i> {{ exam.name }}</h5>
+                <small class="text-slate-400">Roll No: <strong>{{ registration.roll_number }}</strong> | Student: {{ registration.student.get_full_name|default:registration.student.username }}</small>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <div class="timer-badge d-flex align-items-center">
+                    <i class="fas fa-stopwatch me-2 text-warning"></i> <span id="timerDisplay">--:--</span>
+                </div>
+
+                <button type="button" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm" onclick="confirmSubmit()">
+                    <i class="fas fa-paper-plane me-1"></i> Submit Exam
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container-fluid py-4 px-lg-5">
+        <div class="row g-4">
+            
+            <!-- Questions Column -->
+            <div class="col-lg-8">
+                <!-- Section Nav Tabs -->
+                <div class="bg-white rounded-3 shadow-sm mb-4 px-3 pt-2">
+                    <ul class="nav nav-tabs" id="sectionTabs"></ul>
+                </div>
+
+                <!-- Active Question Container -->
+                <div class="card q-card p-4 bg-white" id="questionCard">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-primary fs-6 rounded-pill" id="questionBadge">Question 1</span>
+                        <span class="badge bg-light text-dark border fs-6" id="marksBadge">1 Mark</span>
+                    </div>
+
+                    <h4 class="fw-bold mb-4 text-dark" id="questionText">Loading question...</h4>
+
+                    <!-- Dynamic Options Box -->
+                    <div id="optionsContainer" class="d-flex flex-column gap-3 mb-4"></div>
+
+                    <!-- Previous & Next Controls -->
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <button class="btn btn-outline-secondary rounded-pill px-4" id="prevBtn" onclick="navigatePrev()">
+                            <i class="fas fa-chevron-left me-1"></i> Previous
+                        </button>
+                        <button class="btn btn-primary rounded-pill px-4 fw-bold" id="nextBtn" onclick="navigateNext()">
+                            Next <i class="fas fa-chevron-right ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Column: Palette -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 90px;">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-th me-2 text-primary"></i> Question Palette</h5>
+                    
+                    <div class="d-flex align-items-center gap-3 mb-3 small">
+                        <span class="d-flex align-items-center"><span class="q-palette-btn answered me-1" style="width:20px;height:20px;margin:0;"></span> Answered</span>
+                        <span class="d-flex align-items-center"><span class="q-palette-btn me-1" style="width:20px;height:20px;margin:0;"></span> Unanswered</span>
+                    </div>
+
+                    <div id="paletteContainer" class="d-flex flex-wrap mb-4"></div>
+
+                    <hr>
+
+                    <button class="btn btn-outline-danger w-100 rounded-pill fw-bold py-2" onclick="confirmSubmit()">
+                        Finish & Submit Exam
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Hidden Form for Submission -->
+    <form id="examSubmitForm" method="post" action="{% url 'olympiad_entrance_submit' exam.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="responses" id="responsesPayload">
+    </form>
+
+    <script>
+        const sectionsData = {{ sections_json|safe }};
+        const existingResponses = {{ existing_responses_json|safe }};
+        const durationMinutes = {{ duration_minutes }};
+        
+        let allQuestions = [];
+        let currentQIndex = 0;
+        let responses = { ...existingResponses };
+        let timerSeconds = durationMinutes * 60;
+
+        // Flatten questions across sections
+        sectionsData.forEach((sec, sIdx) => {
+            sec.questions.forEach(q => {
+                q.sectionName = sec.name;
+                q.sectionIndex = sIdx;
+                allQuestions.push(q);
+            });
+        });
+
+        // Initialize Page
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSectionTabs();
+            renderPalette();
+            renderQuestion(currentQIndex);
+            startTimer();
+        });
+
+        function renderSectionTabs() {
+            const tabsNav = document.getElementById('sectionTabs');
+            tabsNav.innerHTML = '';
+            sectionsData.forEach((sec, idx) => {
+                const li = document.createElement('li');
+                li.className = 'nav-item';
+                li.innerHTML = `
+                    <button class="nav-link ${idx === 0 ? 'active' : ''}" onclick="switchSection(${idx})">
+                        ${sec.name}
+                    </button>
+                `;
+                tabsNav.appendChild(li);
+            });
+        }
+
+        function switchSection(secIdx) {
+            const firstQInSec = allQuestions.findIndex(q => q.sectionIndex === secIdx);
+            if (firstQInSec !== -1) {
+                renderQuestion(firstQInSec);
+            }
+        }
+
+        function renderPalette() {
+            const palette = document.getElementById('paletteContainer');
+            palette.innerHTML = '';
+            allQuestions.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                const isAnswered = responses[q.id] && responses[q.id].toString().trim() !== '';
+                btn.className = `q-palette-btn ${isAnswered ? 'answered' : ''} ${idx === currentQIndex ? 'active' : ''}`;
+                btn.innerText = idx + 1;
+                btn.onclick = () => renderQuestion(idx);
+                palette.appendChild(btn);
+            });
+        }
+
+        function renderQuestion(idx) {
+            if (idx < 0 || idx >= allQuestions.length) return;
+            currentQIndex = idx;
+
+            const q = allQuestions[idx];
+            document.getElementById('questionBadge').innerText = `Question ${idx + 1} of ${allQuestions.length}`;
+            document.getElementById('marksBadge').innerText = `${q.marks} Mark${q.marks > 1 ? 's' : ''}`;
+            document.getElementById('questionText').innerText = q.question_text;
+
+            // Highlight Active Section Tab
+            const tabs = document.querySelectorAll('#sectionTabs .nav-link');
+            tabs.forEach((tab, tIdx) => {
+                tab.classList.toggle('active', tIdx === q.sectionIndex);
+            });
+
+            const optContainer = document.getElementById('optionsContainer');
+            optContainer.innerHTML = '';
+
+            const currentAns = responses[q.id] || '';
+
+            if (q.question_type === 'mcq') {
+                const opts = [
+                    { key: 'a', val: q.option_a },
+                    { key: 'b', val: q.option_b },
+                    { key: 'c', val: q.option_c },
+                    { key: 'd', val: q.option_d },
+                ];
+                opts.forEach(opt => {
+                    if (opt.val) {
+                        const isSelected = currentAns === opt.key;
+                        const btn = document.createElement('div');
+                        btn.className = `option-btn ${isSelected ? 'selected' : ''}`;
+                        btn.innerHTML = `<span class="fw-bold me-3 text-uppercase">${opt.key}.</span> ${opt.val}`;
+                        btn.onclick = () => selectMcqOption(q.id, opt.key);
+                        optContainer.appendChild(btn);
+                    }
+                });
+            } else if (q.question_type === 'true_false') {
+                const opts = [
+                    { key: 'true', val: 'True' },
+                    { key: 'false', val: 'False' },
+                ];
+                opts.forEach(opt => {
+                    const isSelected = currentAns === opt.key;
+                    const btn = document.createElement('div');
+                    btn.className = `option-btn ${isSelected ? 'selected' : ''}`;
+                    btn.innerHTML = `<span class="fw-bold me-3 text-capitalize">${opt.val}</span>`;
+                    btn.onclick = () => selectMcqOption(q.id, opt.key);
+                    optContainer.appendChild(btn);
+                });
+            } else if (q.question_type === 'multi_select') {
+                const opts = [
+                    { key: 'a', val: q.option_a },
+                    { key: 'b', val: q.option_b },
+                    { key: 'c', val: q.option_c },
+                    { key: 'd', val: q.option_d },
+                ];
+                const selectedArr = currentAns ? currentAns.split(',') : [];
+                opts.forEach(opt => {
+                    if (opt.val) {
+                        const isChecked = selectedArr.includes(opt.key);
+                        const btn = document.createElement('div');
+                        btn.className = `option-btn ${isChecked ? 'selected' : ''}`;
+                        btn.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''} class="form-check-input me-3"> <span class="fw-bold me-2">${opt.key.toUpperCase()}.</span> ${opt.val}`;
+                        btn.onclick = () => toggleMultiOption(q.id, opt.key);
+                        optContainer.appendChild(btn);
+                    }
+                });
+            } else if (q.question_type === 'numerical') {
+                const inputGroup = document.createElement('div');
+                inputGroup.className = 'input-group input-group-lg mt-2';
+                inputGroup.innerHTML = `
+                    <span class="input-group-text bg-white"><i class="fas fa-calculator text-primary"></i></span>
+                    <input type="text" class="form-control" placeholder="Enter numerical answer" value="${currentAns}" oninput="setNumericalAns('${q.id}', this.value)">
+                `;
+                optContainer.appendChild(inputGroup);
+            }
+
+            document.getElementById('prevBtn').disabled = (idx === 0);
+            document.getElementById('nextBtn').disabled = (idx === allQuestions.length - 1);
+            
+            renderPalette();
+        }
+
+        function selectMcqOption(qId, key) {
+            if (responses[qId] === key) {
+                delete responses[qId];
+            } else {
+                responses[qId] = key;
+            }
+            renderQuestion(currentQIndex);
+        }
+
+        function toggleMultiOption(qId, key) {
+            let current = responses[qId] ? responses[qId].split(',') : [];
+            if (current.includes(key)) {
+                current = current.filter(k => k !== key);
+            } else {
+                current.push(key);
+            }
+            responses[qId] = current.join(',');
+            renderQuestion(currentQIndex);
+        }
+
+        function setNumericalAns(qId, val) {
+            responses[qId] = val.trim();
+            renderPalette();
+        }
+
+        function navigatePrev() {
+            if (currentQIndex > 0) renderQuestion(currentQIndex - 1);
+        }
+
+        function navigateNext() {
+            if (currentQIndex < allQuestions.length - 1) renderQuestion(currentQIndex + 1);
+        }
+
+        function startTimer() {
+            const timerEl = document.getElementById('timerDisplay');
+            const interval = setInterval(() => {
+                if (timerSeconds <= 0) {
+                    clearInterval(interval);
+                    alert('Time is up! Your exam will be submitted automatically.');
+                    autoSubmit();
+                    return;
+                }
+                timerSeconds--;
+                const mins = Math.floor(timerSeconds / 60);
+                const secs = timerSeconds % 60;
+                timerEl.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function confirmSubmit() {
+            if (confirm('Are you sure you want to submit your exam?')) {
+                autoSubmit();
+            }
+        }
+
+        function autoSubmit() {
+            document.getElementById('responsesPayload').value = JSON.stringify(responses);
+            document.getElementById('examSubmitForm').submit();
+        }
+    </script>
+</body>
+</html>

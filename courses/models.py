@@ -96,6 +96,36 @@ class CourseCategory(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def icon_class(self):
+        name_lower = self.name.lower()
+        if 'book' in name_lower or 'guide' in name_lower or 'library' in name_lower:
+            return 'fas fa-book'
+        elif 'ai' in name_lower or 'machine' in name_lower or 'robot' in name_lower:
+            return 'fas fa-robot'
+        elif 'web' in name_lower or 'software' in name_lower or 'code' in name_lower or 'dev' in name_lower:
+            return 'fas fa-laptop-code'
+        elif 'data' in name_lower or 'analytic' in name_lower or 'chart' in name_lower or 'science' in name_lower:
+            return 'fas fa-chart-line'
+        elif 'business' in name_lower or 'management' in name_lower or 'communication' in name_lower:
+            return 'fas fa-briefcase'
+        elif 'mobile' in name_lower or 'app' in name_lower or 'android' in name_lower or 'ios' in name_lower:
+            return 'fas fa-mobile-alt'
+        elif 'program' in name_lower or 'basic' in name_lower:
+            return 'fas fa-code'
+        return 'fas fa-graduation-cap'
+
+
+    @property
+    def course_badge(self):
+        if self.description and len(self.description) <= 30:
+            return self.description
+        count = self.courses.filter(status='published').count()
+        if count > 0:
+            return f"{count} module{'s' if count > 1 else ''}"
+        return "Self-paced"
+
+
 
 # ============================================================================
 # COURSE
@@ -215,7 +245,7 @@ class Quiz(models.Model):
     time_limit_minutes = models.PositiveIntegerField(default=15, validators=[MinValueValidator(1)])
     shuffle_questions = models.BooleanField(default=True, help_text="Randomize question order")
     show_correct_answers = models.BooleanField(default=True, help_text="Show after completion")
-    attempts_allowed = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+    attempts_allowed = models.PositiveIntegerField(default=100, validators=[MinValueValidator(1)])
     
     quiz_key = models.CharField(max_length=255, unique=True, help_text="Unique encrypted key for quiz")
     requires_authentication = models.BooleanField(default=True, help_text="Require user authentication")
@@ -245,12 +275,18 @@ class Quiz(models.Model):
         return self.questions.filter(is_active=True).aggregate(total=models.Sum('marks'))['total'] or 0
 
     def is_user_allowed(self, user) -> bool:
-        if not self.is_active or not self.lesson.is_published:
+        if not self.is_active:
             return False
-        if self.requires_authentication and not user.is_authenticated:
+        if self.lesson and not self.lesson.is_published:
+            if not (user and (user.is_superuser or getattr(user, 'is_staff', False))):
+                return False
+        if self.requires_authentication and (not user or not user.is_authenticated):
             return False
+        if user.is_superuser or getattr(user, 'role', '') in ['admin', 'institution', 'teacher'] or getattr(user, 'is_staff', False):
+            return True
         attempt_count = QuizAttempt.objects.filter(quiz=self, student=user).count()
-        return attempt_count < self.attempts_allowed
+        max_attempts = max(self.attempts_allowed, 100)
+        return attempt_count < max_attempts
 
 
 # ============================================================================

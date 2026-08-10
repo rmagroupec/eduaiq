@@ -69,23 +69,42 @@ urlpatterns = [
     path('legal-notice/', views.legal_notice, name='legal_notice'),
 
     # ==========================
-    # Olympiad Pages
+    # Olympiad Pages & Entrance Exam
     # ==========================
     path('olympiad-curriculum/', views.olympiad_curriculum, name='olympiad_curriculum'),
     path('olympiad-form/', views.olympiad_form, name='olympiad_form'),
+    path('olympiad-entrance/', views.olympiad_entrance_list, name='olympiad_entrance_list'),
+    path('olympiad-entrance/<int:pk>/', views.olympiad_entrance_detail, name='olympiad_entrance_detail'),
+    path('olympiad-entrance/<int:pk>/enroll/', views.olympiad_entrance_enroll, name='olympiad_entrance_enroll'),
+    path('olympiad-entrance/<int:pk>/attempt/', views.olympiad_entrance_attempt, name='olympiad_entrance_attempt'),
+    path('olympiad-entrance/<int:pk>/submit/', views.olympiad_entrance_submit, name='olympiad_entrance_submit'),
+    path('olympiad-entrance/<int:pk>/result/', views.olympiad_entrance_result, name='olympiad_entrance_result'),
+    path('olympiad-entrance/<int:pk>/certificate/', views.olympiad_entrance_certificate, name='olympiad_entrance_certificate'),
+
 
     # ==========================
     # Admin Panel Routes
     # ==========================
     path('admin-panel/dashboard/', views.dashboard, name='admin_panel'),
+    path('admin-panel/olympiad-entrance/', views.admin_olympiad_entrance_list, name='admin_olympiad_entrance_list'),
+    path('admin-panel/olympiad-entrance/add/', views.admin_olympiad_entrance_add, name='admin_olympiad_entrance_add'),
+    path('admin-panel/olympiad-entrance/<int:pk>/edit/', views.admin_olympiad_entrance_edit, name='admin_olympiad_entrance_edit'),
+    path('admin-panel/olympiad-entrance/<int:pk>/toggle/', views.admin_olympiad_entrance_toggle, name='admin_olympiad_entrance_toggle'),
+    path('admin-panel/olympiad-entrance/<int:pk>/questions/', views.admin_olympiad_entrance_questions, name='admin_olympiad_entrance_questions'),
     path('admin-panel/users/', views.users, name='admin_users'),
     path('admin-panel/courses/', views.admin_courses, name='admin_courses'),
     path('admin-panel/courses/add/', views.admin_add_course, name='admin_add_course'),
     path('admin-panel/courses/edit/', views.admin_edit_course, name='admin_edit_course'),
     path('admin-panel/courses/details/', views.admin_course_details, name='admin_course_details'),
+
     path('register/', views.register_view, name='register'),
     path('register/submit/', views.register_submit, name='register_submit'),
+    path('login/', views.login_view, name='public_login'),
+    path('institution/login/', views.institution_login_view, name='institution_login'),
+    path('institution-login/', views.institution_login_view, name='institution_login_alias'),
     path('admin-panel/login/', views.login_view, name='login'),
-    path('admin-panel/<slug:page_name>/', views.admin_page_router, name='admin_page_router'),
     path('admin-panel/logout/', views.logout_view, name='logout'),
+    path('admin-panel/view-profile/', views.admin_profile, name='admin_profile'),
+    path('admin-panel/profile/', views.admin_profile, name='admin_profile_alt'),
+    path('admin-panel/<slug:page_name>/', views.admin_page_router, name='admin_page_router'),
 ]

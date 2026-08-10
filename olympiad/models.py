@@ -2,10 +2,20 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 class OlympiadCategory(models.Model):
-    name = models.CharField(max_length=100)   # Science, Maths, AI, Coding, Robotics, GK
+    name = models.CharField(max_length=100)   # Science, Maths, AI, Coding, Robotics, GK, Olympiad Entrance
+
+    def __str__(self):
+        return self.name
 
 class Olympiad(models.Model):
     LEVELS = [('school', 'School Level'), ('zonal', 'Zonal'), ('national', 'National')]
+    RESULT_MODES = [
+        ('immediate', 'Instant Result'),
+        ('after_2_hours', 'After 2 Hours of Submission'),
+        ('next_day', 'Next Day (Following Day)'),
+        ('scheduled', 'Scheduled Specific Date/Time'),
+        ('manual', 'Manual Release'),
+    ]
 
     category = models.ForeignKey(OlympiadCategory, on_delete=models.PROTECT)
     name = models.CharField(max_length=200)
@@ -18,20 +28,55 @@ class Olympiad(models.Model):
     registration_end = models.DateField()
     exam_date = models.DateTimeField()
     exam_duration_minutes = models.PositiveIntegerField(default=60)
+    result_display_mode = models.CharField(max_length=20, choices=RESULT_MODES, default='immediate')
+    result_declaration_date = models.DateTimeField(null=True, blank=True)
+    next_day_release_time = models.TimeField(default='09:00:00', help_text="Release time for 'Next Day' result mode")
+    quizzes = models.ManyToManyField('courses.Quiz', through='OlympiadQuiz', blank=True, related_name='olympiad_exams')
     is_active = models.BooleanField(default=True)
+
+
+    def __str__(self):
+        return self.name
+
+class OlympiadQuiz(models.Model):
+    """Bridge model to assign one or more quizzes to an Olympiad Entrance Exam."""
+    olympiad = models.ForeignKey(Olympiad, on_delete=models.CASCADE, related_name='olympiad_quizzes')
+    quiz = models.ForeignKey('courses.Quiz', on_delete=models.CASCADE, related_name='olympiad_assignments')
+    section_name = models.CharField(max_length=100, blank=True, default='', help_text="e.g. Section A - Logical Reasoning")
+    order = models.PositiveIntegerField(default=1)
+    weightage_marks = models.PositiveIntegerField(default=0, help_text="Custom section weightage marks if any")
+
+    class Meta:
+        ordering = ['order', 'id']
+        verbose_name = 'Olympiad Assigned Quiz'
+        verbose_name_plural = 'Olympiad Assigned Quizzes'
+
+    def __str__(self):
+        return f"{self.olympiad.name} - {self.quiz.lesson.title} ({self.section_name or 'Default Section'})"
 
 class OlympiadQuestion(models.Model):
     DIFFICULTY = [('easy', 'Easy'), ('medium', 'Medium'), ('hard', 'Hard')]
+    QUESTION_TYPES = [
+        ('mcq', 'Single Choice MCQ'),
+        ('true_false', 'True / False'),
+        ('multi_select', 'Multiple Correct Options'),
+        ('numerical', 'Numerical Answer'),
+    ]
 
     olympiad = models.ForeignKey(Olympiad, on_delete=models.CASCADE, related_name='questions')
+    question_type = models.CharField(max_length=20, choices=QUESTION_TYPES, default='mcq')
     question_text = models.TextField()
-    option_a = models.CharField(max_length=255)
-    option_b = models.CharField(max_length=255)
-    option_c = models.CharField(max_length=255)
-    option_d = models.CharField(max_length=255)
-    correct_option = models.CharField(max_length=1, choices=[('a','A'),('b','B'),('c','C'),('d','D')])
+    option_a = models.CharField(max_length=255, blank=True, default='')
+    option_b = models.CharField(max_length=255, blank=True, default='')
+    option_c = models.CharField(max_length=255, blank=True, default='')
+    option_d = models.CharField(max_length=255, blank=True, default='')
+    correct_option = models.CharField(max_length=255, help_text="Answer option key: 'a', 'true', 'a,c', or numerical value")
+    explanation = models.TextField(blank=True, default='')
     difficulty = models.CharField(max_length=10, choices=DIFFICULTY, default='medium')
     marks = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"[{self.get_question_type_display()}] {self.question_text[:50]}"
 
 class OlympiadRegistration(models.Model):
     STATUS = [('registered', 'Registered'), ('admit_card_issued', 'Admit Card Issued'),
@@ -53,6 +98,9 @@ class OlympiadRegistration(models.Model):
     class Meta:
         unique_together = ('olympiad', 'student')
 
+    def __str__(self):
+        return f"{self.student.get_full_name() or self.student.username} - {self.olympiad.name} ({self.roll_number})"
+
     def clean(self):
         # Olympiad is School-only — reject College students outright
         inst = self.institution or getattr(self.student, 'managed_institution', None)
@@ -68,6 +116,13 @@ class OlympiadAttempt(models.Model):
     started_at = models.DateTimeField(null=True, blank=True)
     submitted_at = models.DateTimeField(null=True, blank=True)
     raw_score = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    total_marks = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    score_pct = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    passed = models.BooleanField(default=False)
+    responses_json = models.TextField(blank=True, default='{}')
+
+    def __str__(self):
+        return f"Attempt by {self.registration.student.username} for {self.registration.olympiad.name}"
 
 class OlympiadResult(models.Model):
     GRADES = [('gold', 'Gold'), ('silver', 'Silver'), ('bronze', 'Bronze'),
@@ -82,6 +137,9 @@ class OlympiadResult(models.Model):
     grade = models.CharField(max_length=15, choices=GRADES)
     certificate_url = models.URLField(blank=True)
     published_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Result: {self.registration.student.username} - Grade: {self.grade}"
 
 class OlympiadScholarship(models.Model):
     TYPES = [('fee_waiver', 'Fee Waiver on Next Registration'),
@@ -105,4 +163,4 @@ class OlympiadAward(models.Model):
                                      on_delete=models.SET_NULL)
     title = models.CharField(max_length=150)
     certificate_url = models.URLField(blank=True)
-    issued_at = models.DateTimeField(auto_now_add=True)
+    issued_at = models.DateTimeField(auto_now_add=True)

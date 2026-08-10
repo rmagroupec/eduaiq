@@ -1,0 +1,429 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Olympiad Entrance Exams - EduAiQ{% endblock %}
+
+{% block description %}Browse and enroll in official EduAiQ Olympiad Entrance Exams. Measure your readiness and qualify for national competitions.{% endblock %}
+
+{% block content %}
+<style>
+    .entrance-card {
+        border: none;
+        border-radius: 1.5rem;
+        background: #ffffff;
+        box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08);
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+    }
+
+    .entrance-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 25px 50px -12px rgba(37, 99, 235, 0.18);
+    }
+
+    .entrance-card-header {
+        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #1d4ed8 100%);
+        padding: 1.75rem 1.5rem 1.5rem 1.5rem;
+        color: #ffffff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .entrance-card-header::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -30%;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        pointer-events: none;
+    }
+
+    .badge-glass-level {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(8px);
+        color: #ffffff;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        padding: 0.4rem 1rem;
+        border-radius: 50rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .badge-glass-time {
+        background: #f59e0b;
+        color: #0f172a;
+        font-weight: 800;
+        padding: 0.4rem 1rem;
+        border-radius: 50rem;
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+    .icon-shape-box {
+        width: 42px;
+        height: 42px;
+        border-radius: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+        transition: transform 0.3s ease;
+    }
+
+    .entrance-card:hover .icon-shape-box {
+        transform: scale(1.1);
+    }
+
+    .icon-box-blue { background: #eff6ff; color: #2563eb; }
+    .icon-box-amber { background: #fffbeb; color: #d97706; }
+    .icon-box-green { background: #ecfdf5; color: #059669; }
+    .icon-box-purple { background: #faf5ff; color: #9333ea; }
+
+    .btn-action-enroll {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        color: #ffffff !important;
+        border: none;
+        border-radius: 50rem;
+        padding: 0.85rem 1.5rem;
+        font-weight: 700;
+        box-shadow: 0 8px 20px -5px rgba(37, 99, 235, 0.4);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-action-enroll:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px -5px rgba(37, 99, 235, 0.6);
+        color: #ffffff !important;
+    }
+
+    .btn-action-registered {
+        background: #ecfdf5;
+        color: #047857 !important;
+        border: 2px solid #10b981;
+        border-radius: 50rem;
+        padding: 0.85rem 1.5rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-action-registered:hover {
+        background: #d1fae5;
+        color: #047857 !important;
+        transform: translateY(-2px);
+    }
+
+    .pulse-dot-green {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #10b981;
+        display: inline-block;
+        margin-right: 6px;
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        animation: pulseGreen 1.8s infinite;
+    }
+
+    @keyframes pulseGreen {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* Sidebar Feature Box Hover */
+    .feature-guidelines-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 1.5rem;
+        padding: 1.75rem;
+        box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08);
+        transition: all 0.35s ease;
+    }
+
+    .feature-guidelines-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px -10px rgba(37, 99, 235, 0.12);
+        border-color: #cbd5e1;
+    }
+
+    .guideline-item {
+        padding: 1rem;
+        border-radius: 1rem;
+        background: #f8fafc;
+        border: 1px solid #f1f5f9;
+        transition: all 0.3s ease;
+    }
+
+    .guideline-item:hover {
+        background: #ffffff;
+        border-color: #bfdbfe;
+        transform: translateX(4px);
+    }
+</style>
+
+<section class="inner-banner-wrap">
+    <div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
+        <div class="container">
+            <div class="inner-banner-content">
+                <h1 class="inner-title">Olympiad Entrance Exams</h1>
+                <p class="text-white opacity-75 mt-2 fs-5">Enroll in national-level entrance examinations and benchmark your academic potential.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="course-section py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center mb-4 g-3">
+            <div class="col-md-8">
+                <h2 class="section-title text-start mb-1 display-6 fw-bold text-dark">Available Entrance Exams</h2>
+                <p class="text-secondary fs-6 mb-0">Select an entrance exam below to view syllabus details, quiz sections, and enrollment information.</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <span class="badge bg-white text-primary border shadow-xs fs-6 px-4 py-2 rounded-pill fw-bold">
+                    <span class="pulse-dot-green"></span> Category: Olympiad Entrance
+                </span>
+            </div>
+        </div>
+
+        {% if exams %}
+            {% if exams|length < 3 %}
+                <!-- BALANCED 2-COLUMN LAYOUT WHEN 1 OR 2 EXAMS EXIST -->
+                <div class="row g-4">
+                    <!-- Left Column: Entrance Exam Cards -->
+                    <div class="col-lg-7 col-xl-7">
+                        <div class="row g-4">
+                            {% for exam in exams %}
+                                <div class="col-12">
+                                    <div class="card entrance-card h-100 position-relative">
+                                        <div class="entrance-card-header">
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <span class="badge-glass-level text-uppercase">{{ exam.level }}</span>
+                                                <span class="badge-glass-time"><i class="fas fa-stopwatch me-1"></i> {{ exam.exam_duration_minutes }} Mins</span>
+                                            </div>
+                                            <h4 class="card-title text-white font-weight-bold mb-2 lh-base">{{ exam.name }}</h4>
+                                            <div class="text-white-50 small font-weight-medium">
+                                                <i class="fas fa-user-graduate me-1 text-warning"></i> Target: <strong>{{ exam.class_group }}</strong>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-body p-4 d-flex flex-column justify-content-between">
+                                            <ul class="list-unstyled mb-4 d-flex flex-column gap-3">
+                                                <li class="d-flex align-items-center">
+                                                    <div class="icon-shape-box icon-box-blue me-3">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-muted small">Exam Date & Time</div>
+                                                        <strong class="text-dark">{{ exam.exam_date|date:"d M Y, h:i A" }}</strong>
+                                                    </div>
+                                                </li>
+                                                <li class="d-flex align-items-center">
+                                                    <div class="icon-shape-box icon-box-amber me-3">
+                                                        <i class="fas fa-hourglass-end"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-muted small">Registration Deadline</div>
+                                                        <strong class="text-dark">{{ exam.registration_end|date:"d M Y" }}</strong>
+                                                    </div>
+                                                </li>
+                                                <li class="d-flex align-items-center">
+                                                    <div class="icon-shape-box icon-box-green me-3">
+                                                        <i class="fas fa-ticket-alt"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-muted small">Entrance Exam Fee</div>
+                                                        {% if exam.fee > 0 %}
+                                                            <strong class="text-dark">₹{{ exam.fee }}</strong>
+                                                        {% else %}
+                                                            <span class="badge bg-success-soft text-success fw-bold px-2 py-1 border border-success rounded-pill">FREE ENROLLMENT</span>
+                                                        {% endif %}
+                                                    </div>
+                                                </li>
+                                                <li class="d-flex align-items-center">
+                                                    <div class="icon-shape-box icon-box-purple me-3">
+                                                        <i class="fas fa-trophy"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-muted small">Result Release Mode</div>
+                                                        <span class="badge bg-light text-dark border px-2 py-1 rounded-pill mt-1">{{ exam.get_result_display_mode_display }}</span>
+                                                    </div>
+                                                </li>
+                                            </ul>
+
+                                            <div class="mt-2">
+                                                {% if exam.id in registered_exam_ids %}
+                                                    <a href="{% url 'olympiad_entrance_detail' exam.id %}" class="btn-action-registered">
+                                                        <i class="fas fa-check-circle me-2"></i> Registered — View Exam
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{% url 'olympiad_entrance_detail' exam.id %}" class="btn-action-enroll">
+                                                        View Details & Enroll <i class="fas fa-arrow-right ms-2"></i>
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Exam Guidelines & Preparation Highlights (Fills Empty Space Perfectly!) -->
+                    <div class="col-lg-5 col-xl-5">
+                        <div class="feature-guidelines-card h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <h4 class="fw-bold text-dark mb-3"><i class="fas fa-shield-alt text-primary me-2"></i> Olympiad Entrance Highlights</h4>
+                                <p class="text-secondary small mb-4">Official national-level assessment guidelines to ensure maximum performance and fair evaluation.</p>
+
+                                <div class="d-flex flex-column gap-3">
+                                    <div class="guideline-item">
+                                        <div class="d-flex align-items-start">
+                                            <div class="icon-shape-box icon-box-blue me-3">
+                                                <i class="fas fa-tasks"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="fw-bold text-dark mb-1">Multi-Section Evaluation</h6>
+                                                <p class="text-secondary small mb-0">Combines general subject questions and specific lesson quizzes into a single timed assessment.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="guideline-item">
+                                        <div class="d-flex align-items-start">
+                                            <div class="icon-shape-box icon-box-green me-3">
+                                                <i class="fas fa-award"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="fw-bold text-dark mb-1">Instant & Scheduled Results</h6>
+                                                <p class="text-secondary small mb-0">Results are transparently evaluated according to configured publication schedules (Instant / 2 Hours / Next Day).</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="guideline-item">
+                                        <div class="d-flex align-items-start">
+                                            <div class="icon-shape-box icon-box-amber me-3">
+                                                <i class="fas fa-laptop-code"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="fw-bold text-dark mb-1">Distraction-Free Player</h6>
+                                                <p class="text-secondary small mb-0">Timed full-screen interface with live question palette and real-time auto-saving.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-top mt-4">
+                                <a href="{% url 'olympiad_curriculum' %}" class="btn btn-outline-primary rounded-pill w-100 fw-bold py-2">
+                                    <i class="fas fa-book-open me-2"></i> Explore Olympiad Syllabus
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {% else %}
+                <!-- 3-COLUMN GRID WHEN 3+ EXAMS EXIST -->
+                <div class="row g-4">
+                    {% for exam in exams %}
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card entrance-card h-100 position-relative">
+                                <div class="entrance-card-header">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="badge-glass-level text-uppercase">{{ exam.level }}</span>
+                                        <span class="badge-glass-time"><i class="fas fa-stopwatch me-1"></i> {{ exam.exam_duration_minutes }} Mins</span>
+                                    </div>
+                                    <h4 class="card-title text-white font-weight-bold mb-2 lh-base">{{ exam.name }}</h4>
+                                    <div class="text-white-50 small font-weight-medium">
+                                        <i class="fas fa-user-graduate me-1 text-warning"></i> Target: <strong>{{ exam.class_group }}</strong>
+                                    </div>
+                                </div>
+
+                                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                                    <ul class="list-unstyled mb-4 d-flex flex-column gap-3">
+                                        <li class="d-flex align-items-center">
+                                            <div class="icon-shape-box icon-box-blue me-3">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-muted small">Exam Date & Time</div>
+                                                <strong class="text-dark">{{ exam.exam_date|date:"d M Y, h:i A" }}</strong>
+                                            </div>
+                                        </li>
+                                        <li class="d-flex align-items-center">
+                                            <div class="icon-shape-box icon-box-amber me-3">
+                                                <i class="fas fa-hourglass-end"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-muted small">Registration Deadline</div>
+                                                <strong class="text-dark">{{ exam.registration_end|date:"d M Y" }}</strong>
+                                            </div>
+                                        </li>
+                                        <li class="d-flex align-items-center">
+                                            <div class="icon-shape-box icon-box-green me-3">
+                                                <i class="fas fa-ticket-alt"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-muted small">Entrance Exam Fee</div>
+                                                {% if exam.fee > 0 %}
+                                                    <strong class="text-dark">₹{{ exam.fee }}</strong>
+                                                {% else %}
+                                                    <span class="badge bg-success-soft text-success fw-bold px-2 py-1 border border-success rounded-pill">FREE ENROLLMENT</span>
+                                                {% endif %}
+                                            </div>
+                                        </li>
+                                        <li class="d-flex align-items-center">
+                                            <div class="icon-shape-box icon-box-purple me-3">
+                                                <i class="fas fa-trophy"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-muted small">Result Release Mode</div>
+                                                <span class="badge bg-light text-dark border px-2 py-1 rounded-pill mt-1">{{ exam.get_result_display_mode_display }}</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+                                    <div class="mt-2">
+                                        {% if exam.id in registered_exam_ids %}
+                                            <a href="{% url 'olympiad_entrance_detail' exam.id %}" class="btn-action-registered">
+                                                <i class="fas fa-check-circle me-2"></i> Registered — View Exam
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'olympiad_entrance_detail' exam.id %}" class="btn-action-enroll">
+                                                View Details & Enroll <i class="fas fa-arrow-right ms-2"></i>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+        {% else %}
+            <div class="text-center py-5 bg-white rounded-4 border p-5 shadow-xs">
+                <div class="mb-3 text-muted">
+                    <i class="fas fa-clipboard-list fa-4x text-primary opacity-50"></i>
+                </div>
+                <h3 class="fw-bold text-dark mb-2">No Entrance Exams Available Right Now</h3>
+                <p class="text-secondary mb-0">Please check back soon for upcoming Olympiad Entrance Exam schedules.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+

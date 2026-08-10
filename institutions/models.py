@@ -18,6 +18,8 @@ class Institution(models.Model):
     onboarded_by_partner = models.ForeignKey('partners.Partner', null=True, blank=True,
                                               on_delete=models.SET_NULL)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    allowed_categories = models.ManyToManyField('courses.CourseCategory', blank=True, related_name='institutions')
+    allowed_courses = models.ManyToManyField('courses.Course', blank=True, related_name='institutions')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

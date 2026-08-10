@@ -198,8 +198,20 @@
         showToast('Category deleted successfully!', 'success');
         loadAdminCategories();
       } else {
-        const data = await response.json();
-        showToast('Failed to delete category: ' + (data.error || 'Server error'), 'error');
+        let errorMsg = 'Server error';
+        try {
+          const data = await response.json();
+          errorMsg = data.error || errorMsg;
+        } catch (jsonErr) {
+          if (response.status === 400) {
+            errorMsg = 'This category has active courses associated with it and cannot be deleted.';
+          } else if (response.status === 403) {
+            errorMsg = 'Permission denied (Forbidden / CSRF Verification Failed).';
+          } else {
+            errorMsg = `Server error occurred (Status: ${response.status}).`;
+          }
+        }
+        showToast(errorMsg, 'error');
       }
     } catch (e) {
       console.error(e);

@@ -27,22 +27,34 @@
   <div class="pattern-overlay"></div>
   <div class="container">
     
-    <div class="row" style="margin-bottom: 40px;">
-      <div class="col-lg-8 offset-lg-2">
+    <div class="row mb-5">
+      <div class="col-lg-8 offset-lg-2 text-center">
         <div class="title-divider-center"></div>
-        <h2 class="text-center" style="margin-bottom: 10px;">Browse By Category</h2>
-        <p class="text-center">
+        <h2 class="category-main-heading">Browse By Category</h2>
+        <p class="category-subheading">
           Explore our comprehensive course categories designed for institutions. 
           Pick a category to see what's included, then 
-          <a href="/contact/">talk to us</a> about your institution's needs.
+          <a href="/contact/" class="text-primary font-weight-bold">talk to us</a> about your institution's needs.
         </p>
       </div>
     </div>
 
-    <div id="categoriesGrid" class="service-wrapper">
-      <div class="pattern-circle overlay"></div>
-      <div class="service-content" id="categoriesContent">
-        <p class="text-center text-muted">Loading categories...</p>
+    <div id="categoriesGrid">
+      <div id="categoriesContent" class="categories-grid-pro">
+        {% for category in categories %}
+        <div class="category-card-item" onclick="window.location.href='{% url 'courses' %}?category={{ category.slug }}'">
+          <div class="cat-icon-box" style="--cat-color: {{ category.color_code|default:'#4f46e5' }}">
+            <i class="{{ category.icon_class }}"></i>
+          </div>
+          <h4 class="cat-card-title">{{ category.name }}</h4>
+          <p class="cat-card-desc">{{ category.description|default:'Professional course track for skill development.' }}</p>
+          <a href="{% url 'courses' %}?category={{ category.slug }}" class="btn-browse-cat" onclick="event.stopPropagation();">
+            Browse Courses <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+        {% empty %}
+        <p class="text-center text-muted">No categories available at the moment.</p>
+        {% endfor %}
       </div>
     </div>
 
@@ -50,7 +62,7 @@
       <div class="col-12">
         <h3 class="text-center mb-4">Featured Courses</h3>
       </div>
-      <div id="coursesContent" class="row">
+      <div id="coursesContent" class="row g-4">
         <p class="text-center text-muted">Loading courses...</p>
       </div>
     </div>
@@ -125,225 +137,170 @@
 </div>
 
 <style>
-  .course-type {
+  /* ==========================================================================
+     Ultra-Professional Categories Page & Cards Styling
+     ========================================================================== */
+  .categories-section {
+    padding: 60px 0 80px 0;
+    background: linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%);
+    position: relative;
+  }
+
+  .category-main-heading {
+    font-size: 34px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  .category-subheading {
+    font-size: 15px;
+    color: #64748b;
+    line-height: 1.6;
+  }
+
+  .categories-grid-pro {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+  }
+
+  .category-card-item {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
+    padding: 28px 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 30px 20px;
-    background: white;
-    border-radius: 10px;
-    margin: 15px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    height: 100%;
     cursor: pointer;
-    flex: 1;
-    min-width: 200px;
   }
 
-  .course-type:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  /* Top Gradient Bar on Hover */
+  .category-card-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0%;
+    height: 4px;
+    background: linear-gradient(90deg, #f73859 0%, #ec4899 50%, #41246d 100%);
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 20px 20px 0 0;
   }
 
-  .course-icon {
-    width: 80px;
-    height: 80px;
+  .cat-icon-box {
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--cat-color, #f73859) 0%, #d62846 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 15px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    font-size: 32px;
+    color: #ffffff;
+    font-size: 26px;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 20px rgba(247, 56, 89, 0.28);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
   }
 
-  .course-type:nth-child(2) .course-icon {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  }
-
-  .course-type:nth-child(3) .course-icon {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  }
-
-  .course-type:nth-child(4) .course-icon {
-    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-  }
-
-  .course-type:nth-child(5) .course-icon {
-    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-  }
-
-  .course-type:nth-child(6) .course-icon {
-    background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
-  }
-
-  .course-type:nth-child(7) .course-icon {
-    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-  }
-
-  .course-type:nth-child(8) .course-icon {
-    background: linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%);
-  }
-
-  .course-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 10px 0;
-    color: #333;
-  }
-
-  .course-title a {
-    color: #333;
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-
-  .course-title a:hover {
-    color: #667eea;
-  }
-
-  .course-durations {
-    color: #999;
-    font-size: 14px;
-    margin: 0;
-  }
-
-  .service-content {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .service-wrapper {
-    margin-bottom: 40px;
-  }
-
-  .spinner {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #667eea;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-  }
-
-  .empty-state-icon {
-    font-size: 64px;
-    color: #ddd;
-    margin-bottom: 20px;
-  }
-
-  .empty-state-title {
-    font-size: 24px;
-    color: #333;
+  .cat-card-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: #1e293b;
     margin-bottom: 10px;
+    line-height: 1.35;
+    letter-spacing: -0.3px;
   }
 
-  .empty-state-text {
-    color: #999;
-    margin-bottom: 30px;
-  }
-
-  .course-card-featured {
-    background: white;
-    border-radius: 10px;
+  .cat-card-desc {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 22px;
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s;
   }
 
-  .course-card-featured:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
-  }
-
-  .course-card-featured img {
+  .btn-browse-cat {
     width: 100%;
-    height: 200px;
-    object-fit: cover;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #f73859 0%, #ec4899 100%);
+    padding: 11px 22px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(247, 56, 89, 0.35);
+    text-decoration: none !important;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: auto;
   }
 
-  .course-card-featured .card-body {
-    padding: 20px;
+  .btn-browse-cat i {
+    transition: transform 0.3s ease;
   }
 
-  .course-card-featured .card-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: #333;
+  /* Hover Animations */
+  .category-card-item:hover {
+    transform: translateY(-8px) scale(1.015);
+    border-color: rgba(247, 56, 89, 0.45);
+    box-shadow: 0 25px 50px -12px rgba(247, 56, 89, 0.22);
   }
 
-  .course-card-featured .card-text {
-    color: #999;
-    font-size: 14px;
-    margin-bottom: 15px;
-  }
-
-  .course-card-featured .btn {
+  .category-card-item:hover::before {
     width: 100%;
   }
 
-  @media (max-width: 768px) {
-    .course-type {
-      margin: 10px 0;
-      min-width: calc(50% - 10px);
-      flex: none;
-    }
-
-    .service-content {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-
-    .course-type {
-      margin: 0;
-    }
+  .category-card-item:hover .cat-icon-box {
+    transform: scale(1.12) rotate(4deg);
+    box-shadow: 0 12px 25px rgba(247, 56, 89, 0.45);
   }
 
-  @media (max-width: 480px) {
-    .service-content {
-      grid-template-columns: 1fr;
-    }
+  .category-card-item:hover .btn-browse-cat {
+    background: linear-gradient(135deg, #e02447 0%, #d62846 100%);
+    box-shadow: 0 8px 22px rgba(247, 56, 89, 0.55);
+  }
 
-    .course-type {
-      min-width: 100%;
-    }
-
-    .course-icon {
-      width: 60px;
-      height: 60px;
-      font-size: 24px;
-    }
-
-    .course-title {
-      font-size: 16px;
-    }
+  .category-card-item:hover .btn-browse-cat i {
+    transform: translateX(5px);
   }
 </style>
 
 <script>
   const API_BASE_URL = window.location.origin;
 
+  function getCategoryIconClass(name) {
+    if (!name) return 'fas fa-graduation-cap';
+    const n = String(name).toLowerCase();
+    if (n.includes('book') || n.includes('guide') || n.includes('library')) return 'fas fa-book';
+    if (n.includes('ai') || n.includes('machine') || n.includes('robot')) return 'fas fa-robot';
+    if (n.includes('web') || n.includes('software') || n.includes('code') || n.includes('dev')) return 'fas fa-laptop-code';
+    if (n.includes('data') || n.includes('analytic') || n.includes('chart') || n.includes('science')) return 'fas fa-chart-line';
+    if (n.includes('business') || n.includes('management') || n.includes('communication')) return 'fas fa-briefcase';
+    if (n.includes('mobile') || n.includes('app') || n.includes('android') || n.includes('ios')) return 'fas fa-mobile-alt';
+    if (n.includes('program') || n.includes('basic')) return 'fas fa-code';
+    return 'fas fa-graduation-cap';
+  }
+
   async function loadCategories() {
     try {
-      const response = await fetch(`${API_BASE_URL}/courses/categories/`);
+      const response = await fetch(`${API_BASE_URL}/courses/categories/`, { credentials: 'same-origin' });
       const data = await response.json();
 
       if (!data.results || data.results.length === 0) {
@@ -354,34 +311,34 @@
       document.getElementById('totalCategories').textContent = data.results.length;
 
       const container = document.getElementById('categoriesContent');
-      container.innerHTML = data.results.map((category, index) => `
-        <div class="course-type" style="border-left: 5px solid ${category.color_code || '#667eea'}">
-          <div class="course-icon" style="background: ${category.color_code || '#667eea'}">
-            ${getIconForCategory(index)}
-          </div>
-          <h4 class="course-title">
-            <a href="/course/?category=${category.id}">
-              ${category.name}
+      container.innerHTML = data.results.map((category) => {
+        const iconClass = getCategoryIconClass(category.name);
+        const color = category.color_code && category.color_code !== '#0066cc' ? category.color_code : '#f73859';
+        const desc = category.description || 'Professional course track for skill development.';
+
+        return `
+          <div class="category-card-item" onclick="window.location.href='/courses/?category=${category.slug}'">
+            <div class="cat-icon-box" style="--cat-color: ${color}">
+              <i class="${iconClass}"></i>
+            </div>
+            <h4 class="cat-card-title">${category.name}</h4>
+            <p class="cat-card-desc">${desc}</p>
+            <a href="/courses/?category=${category.slug}" class="btn-browse-cat" onclick="event.stopPropagation();">
+              Browse Courses <i class="fas fa-arrow-right"></i>
             </a>
-          </h4>
-          <p class="course-durations">
-            ${category.description || 'Professional Courses'}
-          </p>
-          <a href="/course/?category=${category.id}" class="btn btn-sm btn-primary mt-2">
-            Browse Courses
-          </a>
-        </div>
-      `).join('');
+          </div>
+        `;
+      }).join('');
 
       document.getElementById('coursesGrid').style.display = 'none';
 
     } catch (error) {
       console.error('Error loading categories:', error);
       document.getElementById('categoriesContent').innerHTML = `
-        <div class="empty-state">
-          <div class="empty-state-icon">⚠️</div>
-          <div class="empty-state-title">Unable to Load Categories</div>
-          <div class="empty-state-text">Please try again later</div>
+        <div class="empty-state text-center p-5">
+          <div class="empty-state-icon text-warning mb-3" style="font-size: 48px;"><i class="fas fa-exclamation-circle"></i></div>
+          <div class="empty-state-title h4 font-weight-bold">Unable to Load Categories</div>
+          <div class="empty-state-text text-muted">Please try refreshing the page.</div>
         </div>
       `;
     }
@@ -389,7 +346,7 @@
 
   async function loadFeaturedCourses() {
     try {
-      const response = await fetch(`${API_BASE_URL}/courses/courses/?page=1&page_size=8`);
+      const response = await fetch(`${API_BASE_URL}/courses/courses/?page=1&page_size=8`, { credentials: 'same-origin' });
       const data = await response.json();
 
       if (!data.results || data.results.length === 0) {

@@ -6,63 +6,67 @@
 {% block content %}
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
   <div>
-    <h1 class="fw-semibold mb-4 h6 text-primary-light">Institution Details</h1>
+    <h1 class="fw-bold mb-4 h5 text-primary-light">🏫 Institution Profile</h1>
     <div class="d-flex align-items-center gap-2">
-      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
-      <span class="text-secondary-light">/</span>
-      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/institution-list/">Institution List</a>
-      <span class="text-secondary-light">/</span>
-      <span class="text-secondary-light">Institution Details</span>
+      <a class="text-secondary-light hover-text-primary hover-underline text-sm" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light text-sm">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline text-sm" href="/admin-panel/institution-list/">Institution Directory</a>
+      <span class="text-secondary-light text-sm">/</span>
+      <span class="text-primary-light text-sm fw-semibold">Details</span>
     </div>
   </div>
-  <div class="d-flex gap-8">
-    <a id="editInstBtn" href="#" class="btn btn-outline-primary-600 radius-8"><i class="ri-edit-2-line"></i> Edit Institution</a>
-    <a id="addStudentInstBtn" href="#" class="btn btn-primary-600 radius-8"><i class="ri-add-line"></i> Add Student here</a>
+  <div class="d-flex gap-2">
+    <a id="editInstBtn" href="#" class="btn btn-outline-primary radius-8 px-16 py-8 text-sm fw-semibold">
+      <i class="ri-edit-2-line me-1"></i> Edit Institution
+    </a>
+    <a id="addStudentInstBtn" href="#" class="btn btn-primary radius-8 px-16 py-8 text-sm fw-semibold">
+      <i class="ri-add-line me-1"></i> Add Student
+    </a>
   </div>
 </div>
 
-<div class="row gy-4 mt-8">
+<div class="row gy-4">
   <!-- Left Side: Profile Info Card -->
   <div class="col-xl-4 col-lg-5">
-    <div class="card h-100 radius-12 p-24">
+    <div class="card h-100 radius-16 p-24 border border-neutral-200 shadow-xs">
       <div class="text-center pb-24 border-bottom border-neutral-200">
-        <div class="w-80-px h-80-px bg-primary-100 text-primary-600 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-16">
-          <i class="ri-building-line text-xxl"></i>
+        <div class="w-70-px h-70-px bg-primary-100 text-primary-600 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-16 shadow-xs" style="font-size: 32px;">
+          <i class="ri-building-4-line"></i>
         </div>
         <h5 class="h6 mb-8 text-primary-light fw-bold" id="instName">Loading...</h5>
-        <span class="px-16 py-4 radius-4 fw-semibold text-sm text-uppercase" id="instStatusBadge">-</span>
+        <span class="px-12 py-4 radius-20 fw-bold text-xs text-uppercase" id="instStatusBadge">-</span>
       </div>
 
-      <div class="pt-24">
-        <h6 class="text-md fw-semibold text-primary-light mb-16">Information Summary</h6>
+      <div class="pt-20">
+        <h6 class="text-sm fw-bold text-uppercase text-secondary-light mb-16 tracking-wider">Information Summary</h6>
         
         <div class="d-flex flex-column gap-12">
-          <div class="d-flex justify-content-between">
-            <span class="text-secondary-light text-sm fw-medium">Type</span>
+          <div class="d-flex justify-content-between align-items-center pb-8 border-bottom border-neutral-100">
+            <span class="text-secondary-light text-sm fw-medium">Institution Type</span>
             <span class="text-primary-light text-sm fw-bold text-uppercase" id="instType">-</span>
           </div>
-          <div class="d-flex justify-content-between">
+          <div class="d-flex justify-content-between align-items-center pb-8 border-bottom border-neutral-100">
             <span class="text-secondary-light text-sm fw-medium">Board Affiliation</span>
             <span class="text-primary-light text-sm fw-semibold" id="instBoard">-</span>
           </div>
-          <div class="d-flex justify-content-between">
+          <div class="d-flex justify-content-between align-items-center pb-8 border-bottom border-neutral-100">
             <span class="text-secondary-light text-sm fw-medium">City</span>
             <span class="text-primary-light text-sm fw-semibold" id="instCity">-</span>
           </div>
-          <div class="d-flex justify-content-between">
+          <div class="d-flex justify-content-between align-items-center pb-8 border-bottom border-neutral-100">
             <span class="text-secondary-light text-sm fw-medium">State</span>
             <span class="text-primary-light text-sm fw-semibold" id="instState">-</span>
           </div>
-          <div class="d-flex justify-content-between">
-            <span class="text-secondary-light text-sm fw-medium">Total Students Onboarded</span>
-            <span class="text-primary-light text-sm fw-bold" id="instStudentsCount">0</span>
+          <div class="d-flex justify-content-between align-items-center pb-8 border-bottom border-neutral-100">
+            <span class="text-secondary-light text-sm fw-medium">Total Students</span>
+            <span class="badge bg-primary-50 text-primary-600 text-sm fw-bold px-10 py-2 radius-12" id="instStudentsCount">0</span>
           </div>
-          <div class="d-flex justify-content-between">
-            <span class="text-secondary-light text-sm fw-medium">Partner Onboarded ID</span>
+          <div class="d-flex justify-content-between align-items-center pb-8 border-bottom border-neutral-100">
+            <span class="text-secondary-light text-sm fw-medium">Partner ID</span>
             <span class="text-primary-light text-sm fw-semibold" id="instPartner">-</span>
           </div>
-          <div class="d-flex justify-content-between">
-            <span class="text-secondary-light text-sm fw-medium">Created Date</span>
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="text-secondary-light text-sm fw-medium">Onboarded Date</span>
             <span class="text-primary-light text-sm fw-semibold" id="instCreated">-</span>
           </div>
         </div>
@@ -72,13 +76,22 @@
 
   <!-- Right Side: Details & Tabs -->
   <div class="col-xl-8 col-lg-7">
-    <div class="card h-100 radius-12 p-24">
-      <ul class="nav nav-tabs border-bottom mb-24" id="detailsTabs" role="tablist">
+    <div class="card h-100 radius-16 p-24 border border-neutral-200 shadow-xs">
+      <ul class="nav nav-tabs border-bottom mb-24 gap-12" id="detailsTabs" role="tablist">
         <li class="nav-item" role="presentation">
-          <button class="nav-link active fw-semibold" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-pane" type="button" role="tab" aria-controls="overview-pane" aria-selected="true">Address & Administrator</button>
+          <button class="nav-link active fw-bold text-sm px-16 py-10 radius-8" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-pane" type="button" role="tab" aria-controls="overview-pane" aria-selected="true">
+            <i class="ri-map-pin-user-line me-1"></i> Address & Administrator
+          </button>
         </li>
         <li class="nav-item" role="presentation">
-          <button class="nav-link fw-semibold" id="roster-tab" data-bs-toggle="tab" data-bs-target="#roster-pane" type="button" role="tab" aria-controls="roster-pane" aria-selected="false">Student Roster</button>
+          <button class="nav-link fw-bold text-sm px-16 py-10 radius-8" id="roster-tab" data-bs-toggle="tab" data-bs-target="#roster-pane" type="button" role="tab" aria-controls="roster-pane" aria-selected="false">
+            <i class="ri-user-2-line me-1"></i> Student Roster
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link fw-bold text-sm px-16 py-10 radius-8" id="allotment-tab" data-bs-toggle="tab" data-bs-target="#allotment-pane" type="button" role="tab" aria-controls="allotment-pane" aria-selected="false">
+            <i class="ri-book-open-line me-1"></i> Allotted Courses
+          </button>
         </li>
       </ul>
 
@@ -86,31 +99,47 @@
         <!-- Overview Tab -->
         <div class="tab-pane fade show active" id="overview-pane" role="tabpanel" aria-labelledby="overview-tab">
           <div class="mb-24">
-            <h6 class="text-md fw-semibold text-primary-light mb-8">Physical Address</h6>
-            <div class="bg-neutral-50 radius-8 p-16 border text-secondary-light" id="instAddress">
-              -
+            <h6 class="text-sm fw-bold text-uppercase text-secondary-light mb-12 tracking-wider">Physical Address</h6>
+            <div class="bg-primary-50 radius-12 p-16 border border-primary-100 text-primary-900 d-flex align-items-center gap-12" id="instAddressBox">
+              <i class="ri-map-pin-2-fill text-primary-600 text-xl"></i>
+              <span class="fw-semibold text-sm" id="instAddress">-</span>
             </div>
           </div>
 
           <div>
-            <h6 class="text-md fw-semibold text-primary-light mb-16">Administrator Profile Details</h6>
-            <div class="row gy-3">
+            <h6 class="text-sm fw-bold text-uppercase text-secondary-light mb-16 tracking-wider">Administrator Profile Details</h6>
+            <div class="row g-3">
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Username</span>
-                  <span class="text-secondary-light" id="adminUsername">-</span>
+                <div class="p-16 radius-12 bg-neutral-50 border border-neutral-200 d-flex align-items-center gap-12">
+                  <div class="w-40-px h-40-px bg-info-100 text-info-600 rounded-circle d-flex align-items-center justify-content-center font-size-18">
+                    <i class="ri-user-3-line"></i>
+                  </div>
+                  <div>
+                    <span class="text-xs text-secondary-light fw-medium d-block">Admin Username</span>
+                    <span class="text-sm fw-bold text-primary-light" id="adminUsername">-</span>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Email ID</span>
-                  <span class="text-secondary-light" id="adminEmail">-</span>
+                <div class="p-16 radius-12 bg-neutral-50 border border-neutral-200 d-flex align-items-center gap-12">
+                  <div class="w-40-px h-40-px bg-success-100 text-success-600 rounded-circle d-flex align-items-center justify-content-center font-size-18">
+                    <i class="ri-mail-line"></i>
+                  </div>
+                  <div>
+                    <span class="text-xs text-secondary-light fw-medium d-block">Admin Email</span>
+                    <span class="text-sm fw-bold text-primary-light" id="adminEmail">-</span>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="d-flex border-bottom pb-8 mb-8">
-                  <span class="fw-semibold text-primary-light w-150-px">Account User ID</span>
-                  <span class="text-secondary-light" id="adminId">-</span>
+                <div class="p-16 radius-12 bg-neutral-50 border border-neutral-200 d-flex align-items-center gap-12">
+                  <div class="w-40-px h-40-px bg-warning-100 text-warning-600 rounded-circle d-flex align-items-center justify-content-center font-size-18">
+                    <i class="ri-id-card-line"></i>
+                  </div>
+                  <div>
+                    <span class="text-xs text-secondary-light fw-medium d-block">Account User ID</span>
+                    <span class="text-sm fw-bold text-primary-light" id="adminId">-</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -120,29 +149,47 @@
         <!-- Student Roster Tab -->
         <div class="tab-pane fade" id="roster-pane" role="tabpanel" aria-labelledby="roster-tab">
           <div class="d-flex align-items-center justify-content-between mb-16">
-            <h6 class="text-md fw-semibold text-primary-light mb-0">Registered Roster</h6>
-            <a id="viewAllStudentsLink" href="#" class="btn btn-sm btn-outline-primary-600 radius-8">View full list directory</a>
+            <h6 class="text-sm fw-bold text-uppercase text-secondary-light mb-0">Registered Roster</h6>
+            <a id="viewAllStudentsLink" href="#" class="btn btn-sm btn-outline-primary radius-8 px-12 py-6 text-xs fw-bold">View Directory <i class="ri-arrow-right-line ms-1"></i></a>
           </div>
 
           <div class="table-responsive">
-            <table class="table border-neutral-200 table-hover align-middle">
-              <thead>
-                <tr class="bg-neutral-50">
-                  <th>Adm No</th>
-                  <th>Student Name</th>
-                  <th>Grade</th>
-                  <th>Section</th>
-                  <th>Status</th>
+            <table class="table border-neutral-200 table-hover align-middle radius-8 overflow-hidden">
+              <thead class="bg-neutral-100">
+                <tr>
+                  <th class="text-xs text-uppercase fw-bold text-secondary-light py-12 px-16">Adm No</th>
+                  <th class="text-xs text-uppercase fw-bold text-secondary-light py-12 px-16">Student Name</th>
+                  <th class="text-xs text-uppercase fw-bold text-secondary-light py-12 px-16">Grade</th>
+                  <th class="text-xs text-uppercase fw-bold text-secondary-light py-12 px-16">Section</th>
+                  <th class="text-xs text-uppercase fw-bold text-secondary-light py-12 px-16">Status</th>
                 </tr>
               </thead>
               <tbody id="rosterTableBody">
                 <tr>
-                  <td colspan="5" class="text-center py-20 text-secondary-light">No students registered yet.</td>
+                  <td colspan="5" class="text-center py-24 text-secondary-light">No students registered yet.</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
+
+        <!-- Allotted Courses Tab -->
+        <div class="tab-pane fade" id="allotment-pane" role="tabpanel" aria-labelledby="allotment-tab">
+          <div class="d-flex align-items-center justify-content-between mb-16">
+            <div>
+              <h6 class="text-sm fw-bold text-uppercase text-secondary-light mb-1">Course Permissions & Allotment</h6>
+              <p class="text-xs text-muted mb-0">Select courses allowed for students registered under this Institution.</p>
+            </div>
+            <button id="saveAllotmentBtn" onclick="saveCourseAllotments()" class="btn btn-primary radius-8 px-16 py-8 text-xs fw-bold">
+              <i class="ri-save-line me-1"></i> Save Allotted Courses
+            </button>
+          </div>
+
+          <div id="allotmentCoursesContainer" class="row g-3">
+            <div class="col-12 text-center py-20 text-muted">Loading courses...</div>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -197,10 +244,10 @@ $(document).ready(function() {
         }
 
         // Status badge color
-        let badgeClass = 'bg-success-100 text-success-600';
-        if (inst.status === 'pending') badgeClass = 'bg-warning-100 text-warning-600';
-        else if (inst.status === 'suspended') badgeClass = 'bg-danger-100 text-danger-600';
-        $('#instStatusBadge').text(inst.status).addClass(badgeClass);
+        let badgeClass = 'bg-success-100 text-success-600 border border-success-200';
+        if (inst.status === 'pending') badgeClass = 'bg-warning-100 text-warning-600 border border-warning-200';
+        else if (inst.status === 'suspended') badgeClass = 'bg-danger-100 text-danger-600 border border-danger-200';
+        $('#instStatusBadge').text(inst.status).attr('class', `px-12 py-4 radius-20 fw-bold text-xs text-uppercase ${badgeClass}`);
 
         // Overview tab
         $('#instAddress').text(inst.address);
@@ -214,8 +261,12 @@ $(document).ready(function() {
           $('#adminId').text('-');
         }
 
-        // Load nested students
+        // Allotment IDs
+        currentAllottedIds = inst.allotted_course_ids || [];
+
+        // Load nested students & allotment courses
         loadStudentsRoster();
+        loadAllotmentCourses();
       },
       error: function(err) {
         showToast("Failed to load details.", "error");
@@ -258,5 +309,93 @@ $(document).ready(function() {
 
   loadInstitutionDetails();
 });
+
+let allCatalogCourses = [];
+let currentAllottedIds = [];
+
+function loadAllotmentCourses() {
+  $.ajax({
+    url: '/courses/courses/',
+    type: 'GET',
+    xhrFields: { withCredentials: true },
+    success: function(res) {
+      allCatalogCourses = res.results || res.courses || [];
+      renderAllotmentGrid();
+    }
+  });
+}
+
+function renderAllotmentGrid() {
+  if (!allCatalogCourses || allCatalogCourses.length === 0) {
+    $('#allotmentCoursesContainer').html('<div class="col-12 text-center py-20 text-muted">No published courses found in system catalog.</div>');
+    return;
+  }
+
+  const html = allCatalogCourses.map(course => {
+    const isChecked = currentAllottedIds.includes(course.id);
+    return `
+      <div class="col-md-6">
+        <div class="p-16 radius-12 border ${isChecked ? 'border-primary-500 bg-primary-50' : 'border-neutral-200 bg-neutral-50'} d-flex align-items-center justify-content-between gap-12">
+          <div class="d-flex align-items-center gap-12">
+            <div class="w-40-px h-40-px bg-primary-100 text-primary-600 radius-8 d-flex align-items-center justify-content-center fw-bold fs-5">
+              📚
+            </div>
+            <div>
+              <span class="text-sm fw-bold text-primary-light d-block">${course.title}</span>
+              <span class="text-xs text-secondary-light">${course.category_name || 'Course'} • ₹${course.price}</span>
+            </div>
+          </div>
+          <div class="form-check form-switch m-0">
+            <input class="form-check-input course-allot-switch" type="checkbox" value="${course.id}" ${isChecked ? 'checked' : ''} style="cursor: pointer; width: 40px; height: 20px;">
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  $('#allotmentCoursesContainer').html(html);
+}
+
+function saveCourseAllotments() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const instId = urlParams.get('id');
+
+  const selectedIds = [];
+  $('.course-allot-switch:checked').each(function() {
+    selectedIds.push(parseInt($(this).val()));
+  });
+
+  const btn = $('#saveAllotmentBtn');
+  btn.prop('disabled', true).html('<i class="ri-loader-4-line ri-spin me-1"></i> Saving...');
+
+  $.ajax({
+    url: `/api/institutions/${instId}/allot-courses/`,
+    type: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({ course_ids: selectedIds }),
+    xhrFields: { withCredentials: true },
+    success: function(res) {
+      btn.prop('disabled', false).html('<i class="ri-check-line me-1"></i> Saved!');
+      currentAllottedIds = res.allotted_course_ids || selectedIds;
+      renderAllotmentGrid();
+      if (typeof showToast === 'function') {
+        showToast(res.message || "Course allotments updated successfully!", "success");
+      } else {
+        alert(res.message || "Course allotments updated successfully!");
+      }
+      setTimeout(() => {
+        btn.html('<i class="ri-save-line me-1"></i> Save Allotted Courses');
+      }, 2000);
+    },
+    error: function(err) {
+      btn.prop('disabled', false).html('<i class="ri-save-line me-1"></i> Save Allotted Courses');
+      if (typeof showToast === 'function') {
+        showToast("Failed to save course allotments.", "error");
+      } else {
+        alert("Failed to save course allotments.");
+      }
+    }
+  });
+}
 </script>
 {% endblock %}

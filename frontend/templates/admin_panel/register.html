@@ -28,6 +28,44 @@
 <link href="{% static 'admin_assets/css/lib/calendar.css' %}" rel="stylesheet"/>
 <!-- main css -->
 <link href="{% static 'admin_assets/css/style.css' %}" rel="stylesheet"/>
+<style>
+  .form-control, .form-select {
+    border-radius: 10px !important;
+    transition: all 0.2s ease-in-out;
+  }
+  .form-control:hover, .form-select:hover {
+    border-color: #25a194 !important;
+    background-color: #f8fafc;
+  }
+  .form-control:focus, .form-select:focus {
+    border-color: #25a194 !important;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 161, 148, 0.15) !important;
+  }
+  .register-right-pane {
+    overflow-x: hidden;
+  }
+  .pane-glow-1 {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(37, 161, 148, 0.06) 0%, rgba(255, 255, 255, 0) 70%);
+    top: -5%;
+    left: -5%;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .pane-glow-2 {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(29, 133, 122, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
+    bottom: -5%;
+    right: -5%;
+    z-index: 1;
+    pointer-events: none;
+  }
+</style>
 </head>
 <body>
 <!-- Theme Customization Structure Start -->
@@ -107,25 +145,29 @@
 <!-- Theme Customization Structure End -->
 <div class="overlay bg-black bg-opacity-50 w-100 h-100 position-fixed z-9 visibility-hidden opacity-0 duration-300">
 </div>
-<div class="d-lg-flex bg-white">
+<div class="d-lg-flex bg-white min-h-100vh vh-100 overflow-hidden">
 <!-- Left Image -->
-<div class="w-50 d-lg-block d-none overflow-hidden d-flex">
+<div class="w-50 d-lg-block d-none overflow-hidden h-100">
 <img alt="Register Image" class="w-100 h-100 object-fit-cover" src="{% static 'admin_assets/images/thumbs/login-img.png' %}"/>
 </div>
 <!-- Right Form -->
-<div class="lg-w-50 px-24 py-40 d-flex justify-content-center align-items-center">
-<div class="max-w-540-px mx-auto w-100">
-<a href="index">
+<div class="w-100 w-lg-50 px-24 py-24 d-flex justify-content-center align-items-center h-100 overflow-y-auto register-right-pane" style="flex: 1; background-color: #f6f5fb; position: relative;">
+<!-- Glows -->
+<div class="pane-glow-1"></div>
+<div class="pane-glow-2"></div>
+
+<div class="register-card p-32 p-lg-40 w-100" style="max-width: 640px; background: #ffffff; border-radius: 24px; border: 1px solid #e2e0ed; box-shadow: 0 16px 48px rgba(37, 161, 148, 0.06); position: relative; z-index: 2;">
+<a href="index" class="d-block text-center mb-16">
 <img alt="Logo" src="{% static 'admin_assets/images/logo.png' %}"/>
 </a>
-<div class="mt-48 mb-32">
-<h1 class="h6 fw-bold text-primary-light">Create Your Account 🚀</h1>
+<div class="text-center mb-24">
+<h1 class="h6 fw-bold text-primary-light mb-4">Create Your Account 🚀</h1>
 <p class="text-sm text-secondary-light">
                     Fill in the details to get started
                 </p>
 </div>
 {% if form_errors %}
-<div class="alert alert-danger">
+<div class="alert alert-danger py-8 px-16 mb-16 text-sm">
 <ul class="mb-0 ps-16">
 {% for error in form_errors %}
 <li>{{ error }}</li>
@@ -133,123 +175,78 @@
 </ul>
 </div>
 {% endif %}
-{% if form_errors %}
-<div class="alert alert-danger">
-<ul class="mb-0 ps-16">
-{% for error in form_errors %}
-<li>{{ error }}</li>
-{% endfor %}
-</ul>
-</div>
-{% endif %}
-{% if form_errors %}
-<div class="alert alert-danger">
-<ul class="mb-0 ps-16">
-{% for error in form_errors %}
-<li>{{ error }}</li>
-{% endfor %}
-</ul>
-</div>
-{% endif %}
-{% if form_errors %}
-<div class="alert alert-danger">
-<ul class="mb-0 ps-16">
-{% for error in form_errors %}
-<li>{{ error }}</li>
-{% endfor %}
-</ul>
-</div>
-{% endif %}
-{% if form_errors %}
-<div class="alert alert-danger">
-<ul class="mb-0 ps-16">
-{% for error in form_errors %}
-<li>{{ error }}</li>
-{% endfor %}
-</ul>
-</div>
-{% endif %}
-{% if form_errors %}
-<div class="alert alert-danger">
-<ul class="mb-0 ps-16">
-{% for error in form_errors %}
-<li>{{ error }}</li>
-{% endfor %}
-</ul>
-</div>
-{% endif %}
-<form action="{% url 'register_submit' %}" method="post" class="d-flex flex-column gap-24">
+<form action="{% url 'register_submit' %}" method="post" class="d-flex flex-column gap-16">
     {% csrf_token %}
-<!-- Username -->
-<div>
-<label class="text-sm fw-semibold text-primary-light mb-8">
-                        Username <span class="text-danger-600">*</span>
-</label>
-<input class="form-control" name="username" value="{{ old_username|default:'' }}" placeholder="Enter your username" type="text"/>
-</div>
-<!-- Email -->
-<div>
-<label class="text-sm fw-semibold text-primary-light mb-8">
-                        Email Address <span class="text-danger-600">*</span>
-</label>
-<input class="form-control" name="email" value="{{ old_email|default:'' }}" placeholder="Enter your email" type="email"/>
-</div>
-<!-- Phone -->
-<div>
-<label class="text-sm fw-semibold text-primary-light mb-8">
-                        Phone Number <span class="text-danger-600">*</span>
-</label>
-<input class="form-control" name="phone" value="{{ old_phone|default:'' }}" placeholder="Enter your phone number" type="text"/>
-</div>
-<!-- Password -->
-<div>
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="password">
-                        Password
-                        <span class="text-danger-600">*</span>
-</label>
-<div class="position-relative">
-<input class="form-control" id="password" name="password1" placeholder="Enter your password" required="" type="password"/>
-<button aria-label="Toggle password visibility" class="toggle-password btn p-0 border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light cursor-pointer ri-eye-line" data-toggle="#password" type="button">
-</button>
-</div>
-</div>
-<!-- Confirm Password -->
-<div>
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="password">
-                            Password
-                            <span class="text-danger-600">*</span>
-</label>
-<div class="position-relative">
-<input class="form-control" id="confirmPassword" name="password2" placeholder="Enter your password" required="" type="password"/>
-<button aria-label="Toggle password visibility" class="toggle-password btn p-0 border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light cursor-pointer ri-eye-line" data-toggle="#confirmPassword" type="button">
-</button>
-</div>
-</div>
-<!-- Role Select -->
-<div>
-<label class="text-sm fw-semibold text-primary-light mb-8">
-                        Select Role
-                    </label>
-<select class="form-select" name="role">
-<option value="">Choose your role</option>
-<option value="student" {% if old_role == 'student' %}selected{% endif %}>Student</option>
-<option value="teacher" {% if old_role == 'teacher' %}selected{% endif %}>Teacher</option>
-<option value="guardian" {% if old_role == 'guardian' %}selected{% endif %}>Guardian</option>
-<option value="admin" {% if old_role == 'admin' %}selected{% endif %}>Admin</option>
-</select>
-</div>
-<!-- Terms -->
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input border border-neutral-400" id="remeber" type="checkbox" value=""/>
-<label class="form-check-label" for="remeber"> I agree to the <a class="text-primary-600 text-decoration-underline" href="#">Terms &amp; Conditions</a> </label>
-</div>
-<!-- Submit -->
-<button class="btn btn-primary-600 w-100 py-16 radius-8 text-sm fw-semibold">
-                    Create Account
+    <div class="row g-3">
+        <!-- Username -->
+        <div class="col-md-6">
+            <label class="text-sm fw-semibold text-primary-light mb-8">
+                Username <span class="text-danger-600">*</span>
+            </label>
+            <input class="form-control" name="username" value="{{ old_username|default:'' }}" placeholder="Enter your username" type="text" required/>
+        </div>
+        <!-- Email -->
+        <div class="col-md-6">
+            <label class="text-sm fw-semibold text-primary-light mb-8">
+                Email Address <span class="text-danger-600">*</span>
+            </label>
+            <input class="form-control" name="email" value="{{ old_email|default:'' }}" placeholder="Enter your email" type="email" required/>
+        </div>
+        <!-- Phone -->
+        <div class="col-md-6">
+            <label class="text-sm fw-semibold text-primary-light mb-8">
+                Phone Number <span class="text-danger-600">*</span>
+            </label>
+            <input class="form-control" name="phone" value="{{ old_phone|default:'' }}" placeholder="Enter your phone number" type="text" required/>
+        </div>
+        <!-- Role Select -->
+        <div class="col-md-6">
+            <label class="text-sm fw-semibold text-primary-light mb-8">
+                Select Role <span class="text-danger-600">*</span>
+            </label>
+            <select class="form-select" name="role" required>
+                <option value="">Choose your role</option>
+                <option value="student" {% if old_role == 'student' %}selected{% endif %}>Student</option>
+                <option value="teacher" {% if old_role == 'teacher' %}selected{% endif %}>Teacher</option>
+                <option value="guardian" {% if old_role == 'guardian' %}selected{% endif %}>Guardian</option>
+                <option value="admin" {% if old_role == 'admin' %}selected{% endif %}>Admin</option>
+            </select>
+        </div>
+        <!-- Password -->
+        <div class="col-md-6">
+            <label class="text-sm fw-semibold text-primary-light mb-8" for="password">
+                Password <span class="text-danger-600">*</span>
+            </label>
+            <div class="position-relative">
+                <input class="form-control" id="password" name="password1" placeholder="Enter your password" required="" type="password"/>
+                <button aria-label="Toggle password visibility" class="toggle-password btn p-0 border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light cursor-pointer ri-eye-line" data-toggle="#password" type="button">
                 </button>
+            </div>
+        </div>
+        <!-- Confirm Password -->
+        <div class="col-md-6">
+            <label class="text-sm fw-semibold text-primary-light mb-8" for="confirmPassword">
+                Confirm Password <span class="text-danger-600">*</span>
+            </label>
+            <div class="position-relative">
+                <input class="form-control" id="confirmPassword" name="password2" placeholder="Confirm your password" required="" type="password"/>
+                <button aria-label="Toggle password visibility" class="toggle-password btn p-0 border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light cursor-pointer ri-eye-line" data-toggle="#confirmPassword" type="button">
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Terms -->
+    <div class="form-check style-check d-flex align-items-center my-4">
+        <input class="form-check-input border border-neutral-400" id="remeber" type="checkbox" value="" required/>
+        <label class="form-check-label text-sm ms-8" for="remeber"> I agree to the <a class="text-primary-600 text-decoration-underline fw-semibold" href="#">Terms &amp; Conditions</a> </label>
+    </div>
+    <!-- Submit -->
+    <button class="btn btn-primary-600 w-auto px-32 py-8 rounded-pill text-sm fw-semibold mt-4 d-block mx-auto">
+        Create Account
+    </button>
 </form>
 <!-- Login Link -->
-<div class="mt-24 text-center text-sm">
+<div class="mt-16 text-center text-sm">
                 Already have an account?
                 <a class="text-primary-600 fw-semibold text-decoration-underline" href="/admin-panel/login/">
                     Log In

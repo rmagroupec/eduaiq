@@ -1,0 +1,631 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Result - {{ exam.name }}{% endblock %}
+
+{% block content %}
+<style>
+    /* Main Hero Card */
+    .result-hero-card {
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-radius: 1.75rem;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.12), 0 10px 15px -3px rgba(0, 0, 0, 0.04);
+        background: #ffffff;
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+    }
+
+    .result-hero-card:hover {
+        box-shadow: 0 35px 65px -15px rgba(15, 23, 42, 0.16);
+    }
+    
+    /* Dynamic Headers */
+    .result-header-passed {
+        background: linear-gradient(135deg, #059669 0%, #10b981 50%, #047857 100%);
+        color: #ffffff;
+        position: relative;
+        padding: 2.25rem 1.5rem 1.75rem 1.5rem;
+        overflow: hidden;
+    }
+    
+    .result-header-completed {
+        background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 50%, #1e40af 100%);
+        color: #ffffff;
+        position: relative;
+        padding: 2.25rem 1.5rem 1.75rem 1.5rem;
+        overflow: hidden;
+    }
+
+    .result-header-locked {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        color: #ffffff;
+        position: relative;
+        padding: 2.25rem 1.5rem 1.75rem 1.5rem;
+        overflow: hidden;
+    }
+
+    .result-header-passed::before,
+    .result-header-completed::before,
+    .result-header-locked::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -20%;
+        width: 140%;
+        height: 200%;
+        background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0) 65%);
+        pointer-events: none;
+    }
+
+    /* Animated Glassmorphic Trophy/Badge Glow */
+    .trophy-glow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.22);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18), inset 0 0 12px rgba(255, 255, 255, 0.35);
+        margin-bottom: 0.75rem;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        animation: pulseGlow 3s infinite ease-in-out;
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+        cursor: pointer;
+    }
+
+    .trophy-glow:hover {
+        transform: scale(1.12) rotate(6deg);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25), inset 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .trophy-glow i {
+        transition: transform 0.4s ease;
+    }
+
+    .trophy-glow:hover i {
+        transform: scale(1.12);
+    }
+
+    @keyframes pulseGlow {
+        0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+        50% { transform: scale(1.05); box-shadow: 0 0 0 14px rgba(255, 255, 255, 0); }
+    }
+
+    .submission-time-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 0.35rem 1.15rem;
+        border-radius: 50rem;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.95);
+        transition: all 0.3s ease;
+    }
+
+    .submission-time-badge:hover {
+        background: rgba(255, 255, 255, 0.28);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Stat Cards with Custom Gradients & Dynamic Hover */
+    .stat-box {
+        border-radius: 1.25rem;
+        padding: 1.75rem 1.25rem;
+        transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-box-score {
+        background: linear-gradient(145deg, #ffffff 0%, #f0f7ff 100%);
+        border: 1.5px solid #dbeafe;
+    }
+
+    .stat-box-pct {
+        background: linear-gradient(145deg, #ffffff 0%, #ecfdf5 100%);
+        border: 1.5px solid #a7f3d0;
+    }
+
+    .stat-box-status {
+        background: linear-gradient(145deg, #ffffff 0%, #f5f3ff 100%);
+        border: 1.5px solid #ddd6fe;
+    }
+
+    .stat-box:hover {
+        transform: translateY(-8px) scale(1.02);
+    }
+
+    .stat-box-score:hover {
+        box-shadow: 0 20px 35px -10px rgba(37, 99, 235, 0.2);
+        border-color: #93c5fd;
+    }
+
+    .stat-box-pct:hover {
+        box-shadow: 0 20px 35px -10px rgba(16, 185, 129, 0.2);
+        border-color: #6ee7b7;
+    }
+
+    .stat-box-status:hover {
+        box-shadow: 0 20px 35px -10px rgba(124, 58, 237, 0.18);
+        border-color: #c4b5fd;
+    }
+
+    .stat-icon-wrap {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0.5rem;
+        font-size: 0.875rem;
+        transition: transform 0.3s ease;
+    }
+
+    .stat-box:hover .stat-icon-wrap {
+        transform: scale(1.2) rotate(-8deg);
+    }
+
+    .stat-icon-score { background: #dbeafe; color: #2563eb; }
+    .stat-icon-pct { background: #d1fae5; color: #059669; }
+    .stat-icon-status { background: #ede9fe; color: #7c3aed; }
+
+    .stat-label {
+        font-size: 0.825rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #64748b;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stat-val-score {
+        font-size: 2.6rem;
+        font-weight: 800;
+        color: #1d4ed8;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+    }
+
+    .stat-val-pct {
+        font-size: 2.6rem;
+        font-weight: 800;
+        color: #059669;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+    }
+
+    /* Dynamic Status Badge */
+    .status-badge-passed {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #047857;
+        font-size: 1.1rem;
+        font-weight: 800;
+        padding: 0.6rem 1.6rem;
+        border-radius: 50rem;
+        display: inline-flex;
+        align-items: center;
+        border: 1.5px solid #34d399;
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+        transition: all 0.3s ease;
+        letter-spacing: 0.04em;
+    }
+
+    .status-badge-passed:hover {
+        transform: scale(1.06);
+        box-shadow: 0 8px 22px rgba(16, 185, 129, 0.35);
+        background: linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 100%);
+    }
+
+    .pulse-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #059669;
+        display: inline-block;
+        margin-right: 8px;
+        box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.7);
+        animation: blinkDot 1.6s infinite;
+    }
+
+    @keyframes blinkDot {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(5, 150, 105, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(5, 150, 105, 0); }
+    }
+
+    /* Overall Accuracy Box & Progress Bar */
+    .accuracy-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-left: 5px solid #10b981;
+        border-radius: 1.25rem;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .accuracy-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 24px -6px rgba(16, 185, 129, 0.15);
+        border-color: #cbd5e1;
+        border-left-color: #059669;
+    }
+
+    .custom-progress-bar {
+        height: 12px;
+        border-radius: 50rem;
+        background-color: #f1f5f9;
+        overflow: hidden;
+        position: relative;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+    }
+
+    .custom-progress-fill {
+        height: 100%;
+        border-radius: 50rem;
+        background: linear-gradient(90deg, #10b981 0%, #059669 50%, #047857 100%);
+        position: relative;
+        transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .custom-progress-fill::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+        animation: shimmerFill 2.5s infinite;
+    }
+
+    @keyframes shimmerFill {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    /* Enhanced Note Card */
+    .note-card {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        border: 1px solid #bae6fd;
+        border-left: 5px solid #0284c7;
+        border-radius: 1.25rem;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .note-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 24px -6px rgba(2, 132, 199, 0.15);
+        border-left-color: #0369a1;
+    }
+
+    .note-card .info-icon {
+        transition: transform 0.3s ease;
+    }
+
+    .note-card:hover .info-icon {
+        transform: scale(1.15) rotate(10deg);
+    }
+
+    /* Action Buttons with Spring & Hover Slide Effects */
+    .btn-action-primary {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        color: #ffffff !important;
+        border: none;
+        border-radius: 50rem;
+        padding: 0.95rem 2.25rem;
+        font-weight: 700;
+        box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-action-primary i {
+        transition: transform 0.3s ease;
+    }
+
+    .btn-action-primary:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 16px 32px -5px rgba(37, 99, 235, 0.55);
+        color: #ffffff !important;
+    }
+
+    .btn-action-primary:hover i.fa-arrow-right {
+        transform: translateX(6px);
+    }
+
+    .btn-action-outline {
+        background: #ffffff;
+        color: #2563eb !important;
+        border: 2px solid #2563eb;
+        border-radius: 50rem;
+        padding: 0.95rem 2.25rem;
+        font-weight: 700;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-action-outline i {
+        transition: transform 0.3s ease;
+    }
+
+    .btn-action-outline:hover {
+        background: #eff6ff;
+        border-color: #1d4ed8;
+        color: #1d4ed8 !important;
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-action-outline:hover i.fa-list,
+    .btn-action-outline:hover i.fa-arrow-left {
+        transform: translateX(-5px);
+    }
+</style>
+
+<section class="inner-banner-wrap">
+    <div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
+        <div class="container">
+            <div class="inner-banner-content">
+                <span class="badge bg-warning text-dark px-3 py-1 rounded-pill text-uppercase fw-bold mb-2">{{ exam.level }}</span>
+                <h1 class="inner-title">Entrance Exam Scorecard</h1>
+                <p class="text-white opacity-75 mt-2 fs-5">{{ exam.name }} | Roll No: {{ registration.roll_number }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5" style="background: radial-gradient(circle at 50% 0%, #f1f5f9 0%, #f8fafc 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-9 col-xl-8">
+                
+                {% if is_published %}
+                    <!-- PUBLISHED RESULT CARD -->
+                    <div class="card result-hero-card">
+                        <div class="text-center {% if attempt.passed %}result-header-passed{% else %}result-header-completed{% endif %}">
+                            <div class="trophy-glow" title="Score Achievement">
+                                <i class="fas {% if attempt.passed %}fa-trophy{% else %}fa-award{% endif %} fa-2x text-white"></i>
+                            </div>
+                            <h1 class="text-white fw-bold mb-1 fs-3">
+                                {% if attempt.passed %}Qualifying Score Achieved!{% else %}Exam Attempt Submitted{% endif %}
+                            </h1>
+                            <div class="submission-time-badge mt-1">
+                                <i class="far fa-clock me-2"></i> Submitted on {{ attempt.submitted_at|date:"d M Y, h:i A" }}
+                            </div>
+                        </div>
+
+                        <div class="card-body p-4 p-md-5">
+                            
+                            <!-- Stats Grid -->
+                            <div class="row g-4 text-center mb-4">
+                                <div class="col-md-4">
+                                    <div class="stat-box stat-box-score">
+                                        <div class="stat-label">
+                                            <span class="stat-icon-wrap stat-icon-score"><i class="fas fa-bullseye"></i></span> Obtained Score
+                                        </div>
+                                        <div class="stat-val-score">
+                                            {{ attempt.raw_score|floatformat:0 }} <span class="fs-4 text-muted fw-normal">/ {{ attempt.total_marks|floatformat:0 }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-box stat-box-pct">
+                                        <div class="stat-label">
+                                            <span class="stat-icon-wrap stat-icon-pct"><i class="fas fa-chart-line"></i></span> Percentage
+                                        </div>
+                                        <div class="stat-val-pct">{{ attempt.score_pct|floatformat:1 }}%</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-box stat-box-status d-flex flex-column justify-content-center align-items-center">
+                                        <div class="stat-label">
+                                            <span class="stat-icon-wrap stat-icon-status"><i class="fas fa-check-double"></i></span> Status
+                                        </div>
+                                        <div class="mt-1">
+                                            {% if attempt.passed %}
+                                                <div class="status-badge-passed">
+                                                    <span class="pulse-dot"></span> PASSED
+                                                </div>
+                                            {% else %}
+                                                <span class="badge bg-secondary fs-6 rounded-pill px-4 py-2">COMPLETED</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Medal Award Banner -->
+                            <div class="p-3 bg-light rounded-4 border mb-4 text-center shadow-xs">
+                                <span class="{{ medal_class }} me-2 mb-1">{{ medal_badge }}</span>
+                                <h5 class="fw-bold text-dark mt-2 mb-1"><i class="fas fa-award text-warning me-2"></i> {{ award_title }}</h5>
+                                <p class="text-muted small mb-0">Official Merit & Scholarship Band Recognition</p>
+                            </div>
+
+                            <!-- Performance Progress Bar -->
+                            <div class="accuracy-card mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-bold text-dark"><i class="fas fa-tasks text-primary me-2"></i> Overall Accuracy Score</span>
+                                    <span class="fw-bold text-success fs-5">{{ attempt.score_pct|floatformat:1 }}%</span>
+                                </div>
+                                <div class="custom-progress-bar">
+                                    <div class="custom-progress-fill" style="width: {{ attempt.score_pct|floatformat:0 }}%;"></div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2 text-muted small">
+                                    <span><i class="fas fa-flag-checkered me-1"></i> Passing Threshold: 40%</span>
+                                    <span><i class="fas fa-star me-1 text-warning"></i> Achieved: {{ attempt.raw_score|floatformat:0 }} Marks</span>
+                                </div>
+                            </div>
+
+                            <!-- Note Callout -->
+                            <div class="note-card mb-4">
+                                <div class="d-flex align-items-start">
+                                    <div class="info-icon text-info me-3 mt-1">
+                                        <i class="fas fa-info-circle fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-bold text-dark mb-1">Entrance Evaluation & Certificate Note</h6>
+                                        <div class="text-secondary small">
+                                            Your attempt has been officially verified and recorded under Candidate Roll No: <strong>{{ registration.roll_number }}</strong>. Official rank certificates and scholarship bands are auto-verified.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 pt-2">
+                                <a href="{% url 'olympiad_entrance_list' %}" class="btn-action-outline">
+                                    <i class="fas fa-list me-2"></i> Back to Catalog
+                                </a>
+                                <a href="{% url 'olympiad_entrance_certificate' exam.id %}" class="btn btn-warning rounded-pill px-4 py-2 fw-bold text-dark shadow-sm d-inline-flex align-items-center justify-content-center">
+                                    <i class="fas fa-award me-2"></i> View & Print Certificate
+                                </a>
+                                <a href="{% url 'olympiad_curriculum' %}" class="btn-action-primary">
+                                    Syllabus <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+
+                            <!-- Detailed Question & Solution Analysis Accordion -->
+                            {% if review_questions %}
+                                <div class="mt-5 pt-4 border-top text-start">
+                                    <h5 class="fw-bold text-dark mb-3"><i class="fas fa-list-check text-primary me-2"></i> Question & Solution Analysis</h5>
+                                    <div class="accordion" id="questionReviewAccordion">
+                                        {% for q in review_questions %}
+                                            <div class="accordion-item border rounded-3 mb-2 overflow-hidden shadow-xs">
+                                                <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                                                    <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}">
+                                                        {% if q.is_correct %}
+                                                            <span class="badge bg-success me-2">✓ Correct</span>
+                                                        {% else %}
+                                                            <span class="badge bg-danger me-2">✗ Incorrect</span>
+                                                        {% endif %}
+                                                        Q{{ forloop.counter }}: {{ q.text|truncatechars:60 }}
+                                                    </button>
+                                                </h2>
+                                                <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#questionReviewAccordion">
+                                                    <div class="accordion-body bg-light">
+                                                        <p class="fw-bold text-dark mb-2">{{ q.text }}</p>
+                                                        <div class="d-flex flex-wrap gap-3 small mb-2">
+                                                            <span>Your Answer: <strong class="{% if q.is_correct %}text-success{% else %}text-danger{% endif %}">{{ q.user_ans }}</strong></span>
+                                                            <span>Correct Answer: <strong class="text-success">{{ q.correct_ans }}</strong></span>
+                                                            <span>Marks: <strong>{{ q.marks }}</strong></span>
+                                                        </div>
+                                                        <div class="p-3 bg-white border rounded-3 text-secondary small">
+                                                            <strong><i class="fas fa-lightbulb text-warning me-1"></i> Detailed Solution:</strong><br>
+                                                            {{ q.explanation }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                {% else %}
+                    <!-- LOCKED / SCHEDULED RESULT ANNOUNCEMENT CARD -->
+                    <div class="card result-hero-card">
+                        <div class="result-header-locked text-center">
+                            <div class="trophy-glow" title="Locked Result">
+                                <i class="fas fa-lock fa-2x text-warning"></i>
+                            </div>
+                            <h1 class="text-white fw-bold mb-1 fs-3">Result Scheduled for Publication</h1>
+                            <div class="submission-time-badge mt-1">
+                                <i class="fas fa-check-circle me-2"></i> Exam Submitted Successfully
+                            </div>
+                        </div>
+
+                        <div class="card-body p-4 p-md-5 text-center">
+                            <div class="mb-4">
+                                <div class="badge bg-warning text-dark fs-6 px-4 py-2 rounded-pill mb-3 shadow-xs">
+                                    <i class="fas fa-cog me-2"></i> Result Policy: {{ exam.get_result_display_mode_display }}
+                                </div>
+
+                                <p class="text-secondary fs-5">
+                                    Thank you for attempting <strong>{{ exam.name }}</strong>! Your responses have been safely saved.
+                                </p>
+                            </div>
+
+                            <div class="accuracy-card text-center mb-4">
+                                <h5 class="fw-bold text-dark mb-2"><i class="fas fa-clock text-primary me-2"></i> Result Unlocks At</h5>
+                                {% if unlock_time %}
+                                    <div class="fs-3 fw-bold text-primary my-2">{{ unlock_time|date:"d F Y, h:i A" }}</div>
+                                    <div class="mt-3">
+                                        <div class="small text-muted mb-2 fw-bold text-uppercase">Time Remaining</div>
+                                        <div class="badge bg-primary fs-4 px-4 py-2 rounded-pill shadow-sm" id="unlockCountdown">
+                                            Calculating...
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="fs-4 fw-bold text-primary my-2">Admin Publication Pending</div>
+                                    <small class="text-muted">Your results will be visible as soon as the administrator releases them.</small>
+                                {% endif %}
+                            </div>
+
+                            <div class="note-card text-start mb-4">
+                                <div class="small text-secondary">
+                                    <i class="fas fa-id-card me-2 text-primary"></i> Candidate Roll No: <strong>{{ registration.roll_number }}</strong><br>
+                                    <i class="fas fa-clock me-2 text-primary"></i> Submission Time: <strong>{{ attempt.submitted_at|date:"d M Y, h:i A" }}</strong><br>
+                                    <i class="fas fa-shield-alt me-2 text-primary"></i> Status: Result automatically unlocks when countdown expires.
+                                </div>
+                            </div>
+
+                            <a href="{% url 'olympiad_entrance_list' %}" class="btn-action-primary">
+                                Return to Entrance Catalog <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    {% if unlock_time %}
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const unlockTs = new Date("{{ unlock_time|date:'c' }}").getTime();
+                                const countdownEl = document.getElementById('unlockCountdown');
+
+                                const timer = setInterval(() => {
+                                    const nowTs = new Date().getTime();
+                                    const diff = unlockTs - nowTs;
+
+                                    if (diff <= 0) {
+                                        clearInterval(timer);
+                                        countdownEl.innerText = "Unlocking now... Refreshing page!";
+                                        setTimeout(() => { location.reload(); }, 1500);
+                                        return;
+                                    }
+
+                                    const hours = Math.floor(diff / (1000 * 60 * 60));
+                                    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                                    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                                    countdownEl.innerText = `${hours}h ${mins}m ${secs}s`;
+                                }, 1000);
+                            });
+                        </script>
+                    {% endif %}
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+

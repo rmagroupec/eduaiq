@@ -1,223 +1,169 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}My Learning - EduAiQ{% endblock %}
+{% block title %}My Learning Dashboard - EduAiQ{% endblock %}
 
 {% block content %}
 
-<section class="inner-banner-wrap">
-  <div class="inner-baner-container" style="background-color: #f5f5f5;">
-    <div class="container">
-      <div class="inner-banner-content">
-        <h1 class="inner-title">My Learning Dashboard</h1>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="my-learning-section py-5">
-  <div class="container">
-    
-    <div class="filter-section mb-5">
-      <ul class="nav nav-tabs filter-tabs">
-        <li class="nav-item">
-          <a class="nav-link active" data-filter="all" href="#">All Courses</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" data-filter="ongoing" href="#">Ongoing</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" data-filter="completed" href="#">Completed</a>
-        </li>
-      </ul>
-
-      <div class="search-box mt-3">
-        <input 
-          type="text" 
-          id="searchInput" 
-          placeholder="Search courses..."
-          class="form-control">
-      </div>
-    </div>
-
-    <div class="stats-section mb-5">
-      <div class="row">
-        <div class="col-md-3 col-sm-6 mb-3">
-          <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-book"></i>
-            </div>
-            <div class="stat-content">
-              <h6>Total Courses</h6>
-              <p id="totalCourses">0</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-6 mb-3">
-          <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-graduation-cap"></i>
-            </div>
-            <div class="stat-content">
-              <h6>Completed</h6>
-              <p id="completedCourses">0</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-6 mb-3">
-          <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-hourglass-half"></i>
-            </div>
-            <div class="stat-content">
-              <h6>In Progress</h6>
-              <p id="ongoingCourses">0</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-6 mb-3">
-          <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-chart-line"></i>
-            </div>
-            <div class="stat-content">
-              <h6>Avg Progress</h6>
-              <p id="avgProgress">0%</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="enrollmentsGrid" class="row">
-      <p class="text-center col-12">Loading your courses...</p>
-    </div>
-
-    <div id="emptyState" class="empty-state" style="display: none;">
-      <div class="empty-state-icon">📚</div>
-      <h4 class="empty-state-title">No Courses Yet</h4>
-      <p class="empty-state-text">Start learning by exploring our course catalog</p>
-      <a href="/courses/" class="btn btn-primary">Browse Courses</a>
-    </div>
-
-  </div>
-</div>
-
 <style>
-  .my-learning-section {
-    background: #f8f9fa;
-    min-height: calc(100vh - 200px);
+  .dashboard-hero-wrap {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #2563eb 100%);
+    color: #ffffff;
+    padding: 3.5rem 0 3rem 0;
+    position: relative;
+    overflow: hidden;
   }
 
-  .filter-tabs {
-    border-bottom: 2px solid #ddd;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+  .dashboard-hero-wrap::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 140%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 65%);
+    pointer-events: none;
   }
 
-  .filter-tabs .nav-link {
-    color: #666;
-    border: none;
-    border-bottom: 3px solid transparent;
-    padding: 12px 20px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
-
-  .filter-tabs .nav-link:hover {
-    color: #667eea;
-  }
-
-  .filter-tabs .nav-link.active {
-    color: #667eea;
-    border-bottom-color: #667eea;
-  }
-
-  .search-box {
-    max-width: 400px;
-  }
-
-  .search-box input {
-    padding: 10px 15px;
-    border: 2px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
-    transition: all 0.3s;
-  }
-
-  .search-box input:focus {
-    border-color: #667eea;
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-  }
-
-  .stats-section {
-    margin-bottom: 40px;
-  }
-
-  .stat-card {
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s;
-  }
-
-  .stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
-  }
-
-  .stat-icon {
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border-radius: 10px;
+  .user-avatar-glow {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 1.8rem;
+    color: #ffffff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .my-learning-section {
+    background: #f8fafc;
+    min-height: calc(100vh - 200px);
+    padding-bottom: 5rem;
+  }
+
+  /* Stat Cards */
+  .stat-card-v2 {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .stat-card-v2:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 35px -10px rgba(37, 99, 235, 0.15);
+    border-color: #cbd5e1;
+  }
+
+  .stat-icon-v2 {
+    width: 56px;
+    height: 56px;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
     color: white;
-    font-size: 24px;
     flex-shrink: 0;
+    transition: transform 0.3s ease;
   }
 
-  .stat-card:nth-child(2) .stat-icon {
-    background: linear-gradient(135deg, #f093fb, #f5576c);
+  .stat-card-v2:hover .stat-icon-v2 {
+    transform: scale(1.12) rotate(-6deg);
   }
 
-  .stat-card:nth-child(3) .stat-icon {
-    background: linear-gradient(135deg, #4facfe, #00f2fe);
-  }
+  .icon-blue { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+  .icon-emerald { background: linear-gradient(135deg, #10b981, #059669); }
+  .icon-purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+  .icon-amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
 
-  .stat-card:nth-child(4) .stat-icon {
-    background: linear-gradient(135deg, #43e97b, #38f9d7);
-  }
-
-  .stat-content h6 {
-    font-size: 12px;
-    font-weight: 600;
-    color: #999;
-    margin: 0 0 5px 0;
-    text-transform: uppercase;
-  }
-
-  .stat-content p {
-    font-size: 24px;
+  .stat-content-v2 h6 {
+    font-size: 0.8rem;
     font-weight: 700;
-    color: #333;
-    margin: 0;
+    color: #64748b;
+    margin: 0 0 0.25rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
-  .enrollment-card {
-    background: white;
-    border-radius: 12px;
+  .stat-content-v2 p {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    line-height: 1;
+  }
+
+  /* Exam Cards */
+  .exam-card-v2 {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.25rem;
     overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .exam-card-v2:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 45px -10px rgba(37, 99, 235, 0.18);
+    border-color: #93c5fd;
+  }
+
+  .exam-card-v2 .badge {
+    font-size: 0.825rem;
+    font-weight: 700;
+    padding: 0.45rem 1rem;
+    border-radius: 50rem;
+  }
+
+  /* Navigation Filter Tabs */
+  .filter-tabs {
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  .filter-tabs .nav-link {
+    color: #64748b;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 0.75rem 1.5rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .filter-tabs .nav-link:hover {
+    color: #2563eb;
+  }
+
+  .filter-tabs .nav-link.active {
+    color: #2563eb;
+    border-bottom-color: #2563eb;
+    background: transparent;
+  }
+
+  /* Course Cards */
+  .enrollment-card {
+    background: #ffffff;
+    border-radius: 1.25rem;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -225,14 +171,15 @@
 
   .enrollment-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.14);
+    border-color: #cbd5e1;
   }
 
   .enrollment-image {
     width: 100%;
-    height: 200px;
+    height: 180px;
     overflow: hidden;
-    background: #f0f0f0;
+    background: #f1f5f9;
     position: relative;
   }
 
@@ -240,236 +187,315 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s;
+    transition: transform 0.4s ease;
   }
 
   .enrollment-card:hover .enrollment-image img {
-    transform: scale(1.05);
+    transform: scale(1.06);
   }
 
   .enrollment-badge {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(102, 126, 234, 0.9);
+    top: 12px;
+    right: 12px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
     color: white;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 50rem;
+    font-size: 0.75rem;
+    font-weight: 700;
   }
 
   .enrollment-body {
-    padding: 20px;
+    padding: 1.5rem;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
   }
 
   .enrollment-body h5 {
-    font-size: 16px;
-    font-weight: 600;
-    margin: 0 0 10px 0;
-    color: #333;
-    line-height: 1.4;
-  }
-
-  .enrollment-body p {
-    font-size: 12px;
-    color: #999;
-    margin: 0 0 15px 0;
-  }
-
-  .progress-section {
-    margin: 15px 0;
-    flex-grow: 1;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: #0f172a;
+    line-height: 1.35;
   }
 
   .progress-bar-wrapper {
-    background: #e9ecef;
+    background: #f1f5f9;
     height: 8px;
-    border-radius: 10px;
+    border-radius: 50rem;
     overflow: hidden;
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
   }
 
-  .progress-bar {
+  .progress-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #667eea, #764ba2);
-    border-radius: 10px;
-    transition: width 0.3s;
+    background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    border-radius: 50rem;
+    transition: width 0.4s ease;
   }
 
-  .progress-text {
-    font-size: 12px;
-    color: #666;
-    font-weight: 500;
-  }
-
-  .completed-badge {
-    background: #d4edda;
-    color: #155724;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 15px;
-    text-align: center;
-  }
-
-  .enrollment-date {
-    font-size: 11px;
-    color: #999;
-    margin-bottom: 15px;
-  }
-
-  .enrollment-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: auto;
-  }
-
-  .btn {
-    padding: 9px 15px;
-    font-size: 12px;
-    font-weight: 600;
-    border-radius: 5px;
-    transition: all 0.3s;
-    border: none;
-    cursor: pointer;
+  /* Quick Shortcut Banner Cards */
+  .shortcut-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
     text-decoration: none;
-    display: inline-block;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
   }
 
-  .btn-primary {
-    background: #667eea;
-    color: white;
-    flex: 1;
-  }
-
-  .btn-primary:hover {
-    background: #5568d3;
-    transform: translateY(-2px);
-  }
-
-  .btn-outline-secondary {
-    background: white;
-    color: #667eea;
-    border: 2px solid #667eea;
-  }
-
-  .btn-outline-secondary:hover {
-    background: #667eea;
-    color: white;
-  }
-
-  .btn-sm {
-    padding: 6px 12px;
-    font-size: 11px;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-  }
-
-  .empty-state-icon {
-    font-size: 64px;
-    margin-bottom: 20px;
-  }
-
-  .empty-state-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 10px;
-  }
-
-  .empty-state-text {
-    color: #999;
-    margin-bottom: 25px;
-  }
-
-  .no-results {
-    background: white;
-    padding: 40px;
-    border-radius: 10px;
-    text-align: center;
-    color: #999;
-  }
-
-  .no-results-icon {
-    font-size: 48px;
-    margin-bottom: 15px;
-  }
-
-  @media (max-width: 768px) {
-    .stat-card {
-      flex-direction: column;
-      text-align: center;
-      gap: 10px;
-    }
-
-    .stat-icon {
-      width: 50px;
-      height: 50px;
-      font-size: 20px;
-    }
-
-    .enrollment-body {
-      padding: 15px;
-    }
-
-    .enrollment-body h5 {
-      font-size: 14px;
-    }
-
-    .search-box {
-      max-width: 100%;
-    }
-
-    .filter-tabs .nav-link {
-      padding: 10px 12px;
-      font-size: 13px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .enrollment-image {
-      height: 150px;
-    }
-
-    .enrollment-body {
-      padding: 12px;
-    }
-
-    .enrollment-body h5 {
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    .stat-content p {
-      font-size: 20px;
-    }
-
-    .enrollment-actions {
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .btn {
-      width: 100%;
-    }
-
-    .filter-tabs {
-      overflow-x: auto;
-    }
-
-    .filter-tabs .nav-link {
-      white-space: nowrap;
-    }
+  .shortcut-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.15);
+    border-color: #93c5fd;
+    color: #2563eb;
   }
 </style>
+
+<!-- Hero Dashboard Banner -->
+<section class="dashboard-hero-wrap">
+  <div class="container">
+    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-4">
+      <div class="d-flex align-items-center gap-3 text-center text-md-start">
+        <div class="user-avatar-glow">
+          <i class="fas fa-user-graduate"></i>
+        </div>
+        <div>
+          <span class="badge bg-warning text-dark px-3 py-1 rounded-pill text-uppercase fw-bold mb-1">Student Portal</span>
+          <h2 class="text-white fw-bold mb-1">Welcome back, {{ request.user.first_name|default:request.user.username }}! 👋</h2>
+          <p class="text-white-50 mb-0 fs-6">Manage your Olympiad Entrance Exams, active courses, and learning achievements.</p>
+        </div>
+      </div>
+
+      <div class="d-flex flex-wrap gap-2 justify-content-center">
+        <a href="/olympiad-entrance/" class="btn btn-light rounded-pill px-4 py-2 fw-bold text-primary shadow-sm">
+          <i class="fas fa-trophy me-2"></i> Entrance Catalog
+        </a>
+        <a href="/olympiad-curriculum/" class="btn btn-outline-light rounded-pill px-4 py-2 fw-bold">
+          <i class="fas fa-file-pdf me-2"></i> Olympiad Syllabus
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="my-learning-section py-5">
+  <div class="container">
+
+    <!-- Top Dashboard Statistics -->
+    <div class="row g-4 mb-5">
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card-v2">
+          <div class="stat-icon-v2 icon-amber">
+            <i class="fas fa-award"></i>
+          </div>
+          <div class="stat-content-v2">
+            <h6>Registered Entrance</h6>
+            <p>{{ total_entrance_count }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card-v2">
+          <div class="stat-icon-v2 icon-emerald">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-content-v2">
+            <h6>Completed Exams</h6>
+            <p>{{ completed_entrance_count }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card-v2">
+          <div class="stat-icon-v2 icon-blue">
+            <i class="fas fa-book-open"></i>
+          </div>
+          <div class="stat-content-v2">
+            <h6>Active Courses</h6>
+            <p id="totalCourses">0</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card-v2">
+          <div class="stat-icon-v2 icon-purple">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="stat-content-v2">
+            <h6>Avg Progress</h6>
+            <p id="avgProgress">0%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- OLYMPIAD ENTRANCE EXAMS HUB -->
+    <div class="olympiad-entrance-section mb-5">
+      <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-4">
+        <div>
+          <h4 class="fw-bold text-dark mb-1"><i class="fas fa-trophy text-warning me-2"></i> Olympiad Entrance Exams Hub</h4>
+          <p class="text-muted small mb-0">Your registered Olympiad Entrance Examinations & Roll Numbers.</p>
+        </div>
+        <a href="/olympiad-entrance/" class="btn btn-sm btn-outline-primary rounded-pill px-4 py-2 fw-bold">
+          <i class="fas fa-search me-1"></i> Browse All Entrance Exams
+        </a>
+      </div>
+
+      {% if entrance_registrations %}
+        <div class="row g-4">
+          {% for reg in entrance_registrations %}
+            <div class="col-lg-6">
+              <div class="exam-card-v2">
+                <div class="p-4 flex-grow-1">
+                  <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span class="badge {{ reg.status_badge_class }} shadow-xs">{{ reg.status_label }}</span>
+                    <small class="text-muted"><i class="far fa-calendar-alt me-1"></i> {{ reg.registered_at|date:"d M Y" }}</small>
+                  </div>
+
+                  <h5 class="fw-bold text-dark mb-2 fs-5">{{ reg.olympiad.name }}</h5>
+                  
+                  <div class="p-3 bg-light rounded-3 mb-3 border">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <span class="small text-muted"><i class="fas fa-id-card text-primary me-1"></i> Candidate Roll No:</span>
+                      <strong class="text-primary font-monospace fs-6">{{ reg.roll_number }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="small text-muted"><i class="fas fa-layer-group text-primary me-1"></i> Class Target:</span>
+                      <strong class="text-dark small">{{ reg.olympiad.class_group }}</strong>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                    <span class="small text-secondary fw-semibold">
+                      <i class="far fa-clock text-primary me-1"></i> {{ reg.olympiad.exam_duration_minutes }} Minutes
+                    </span>
+
+                    {% if reg.is_completed %}
+                      <a href="{% url 'olympiad_entrance_result' reg.olympiad.id %}" class="btn btn-sm btn-success rounded-pill px-4 py-2 fw-bold shadow-sm">
+                        <i class="fas fa-poll me-1"></i> View Result Status
+                      </a>
+                    {% else %}
+                      <a href="{% url 'olympiad_entrance_attempt' reg.olympiad.id %}" class="btn btn-sm btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm">
+                        <i class="fas fa-play me-1"></i> {{ reg.action_label }}
+                      </a>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="p-5 bg-white rounded-4 border text-center text-muted shadow-xs">
+          <div class="trophy-icon-circle mx-auto mb-3 text-warning">
+            <i class="fas fa-award fa-3x"></i>
+          </div>
+          <h5 class="fw-bold text-dark mb-2">No Entrance Exams Registered Yet</h5>
+          <p class="mb-3 text-secondary small">Enroll in an Olympiad Entrance Exam to showcase your academic talent and earn scholarships.</p>
+          <a href="/olympiad-entrance/" class="btn btn-primary rounded-pill px-4 py-2 fw-bold">
+            <i class="fas fa-trophy me-2"></i> Explore Entrance Exams
+          </a>
+        </div>
+      {% endif %}
+    </div>
+
+
+    <!-- MY ENROLLED COURSES SECTION -->
+    <div class="courses-section">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+          <h4 class="fw-bold text-dark mb-1"><i class="fas fa-graduation-cap text-primary me-2"></i> My Enrolled Courses</h4>
+          <p class="text-muted small mb-0">Continue your regular learning modules and video lessons.</p>
+        </div>
+
+        <div class="search-box">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+            <input type="text" id="searchInput" placeholder="Search my courses..." class="form-control border-start-0 ps-0">
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <ul class="nav nav-tabs filter-tabs mb-4">
+        <li class="nav-item">
+          <a class="nav-link active" data-filter="all" href="#"><i class="fas fa-th-list me-1"></i> All Courses</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-filter="ongoing" href="#"><i class="fas fa-spinner me-1"></i> Ongoing</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-filter="completed" href="#"><i class="fas fa-check-circle me-1"></i> Completed</a>
+        </li>
+      </ul>
+
+      <!-- Grid for Courses -->
+      <div id="enrollmentsGrid" class="row g-4">
+        <div class="col-12 text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-2 text-muted small">Loading your courses...</p>
+        </div>
+      </div>
+
+      <div id="emptyState" class="empty-state" style="display: none;">
+        <div class="empty-state-icon">📚</div>
+        <h4 class="empty-state-title">No Courses Enrolled Yet</h4>
+        <p class="empty-state-text">Explore our skill development courses and expand your knowledge.</p>
+        <a href="/courses/" class="btn btn-primary rounded-pill px-4 py-2 fw-bold">Browse Courses Catalog</a>
+      </div>
+    </div>
+
+
+    <!-- QUICK SHORTCUT RESOURCES GRID -->
+    <div class="mt-5 pt-4 border-top">
+      <h5 class="fw-bold text-dark mb-3">Quick Resources & Shortcuts</h5>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <a href="/olympiad-curriculum/" class="shortcut-card">
+            <div class="fs-2 text-primary"><i class="fas fa-book"></i></div>
+            <div>
+              <h6 class="fw-bold mb-1">Olympiad Syllabus</h6>
+              <span class="small text-muted">Download syllabus & exam pattern</span>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-4">
+          <a href="/skill-development/" class="shortcut-card">
+            <div class="fs-2 text-success"><i class="fas fa-laptop-code"></i></div>
+            <div>
+              <h6 class="fw-bold mb-1">Skill Development</h6>
+              <span class="small text-muted">Explore AI, Coding & Tech courses</span>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-4">
+          <a href="/ai-lab/" class="shortcut-card">
+            <div class="fs-2 text-purple"><i class="fas fa-robot"></i></div>
+            <div>
+              <h6 class="fw-bold mb-1">AI Lab & Books</h6>
+              <span class="small text-muted">Access AI tools & study material</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <script>
   const API_BASE_URL = window.location.origin;
@@ -484,6 +510,10 @@
         credentials: 'include'
       });
 
+      if (!response.ok) {
+        throw new Error("HTTP error " + response.status);
+      }
+
       const data = await response.json();
       allEnrollments = data.results || [];
 
@@ -491,10 +521,14 @@
       displayEnrollments('all');
 
     } catch (error) {
-      console.error('Error:', error);
+      console.log('Course load info:', error);
       document.getElementById('enrollmentsGrid').innerHTML = `
-        <div class="col-12">
-          <p class="text-danger text-center">Failed to load enrollments</p>
+        <div class="col-12 text-center py-4">
+          <div class="p-4 bg-white rounded-4 border text-muted">
+            <i class="fas fa-book fa-2x mb-2 text-primary opacity-50"></i>
+            <p class="mb-2 fw-semibold">No standard courses enrolled currently.</p>
+            <a href="/courses/" class="btn btn-sm btn-outline-primary rounded-pill px-3">Browse Courses Catalog</a>
+          </div>
         </div>
       `;
     }
@@ -503,14 +537,11 @@
   function updateStats() {
     const total = allEnrollments.length;
     const completed = allEnrollments.filter(e => e.is_completed).length;
-    const ongoing = total - completed;
     const avgProgress = total > 0 
-      ? Math.round(allEnrollments.reduce((sum, e) => sum + parseFloat(e.progress_pct), 0) / total)
+      ? Math.round(allEnrollments.reduce((sum, e) => sum + parseFloat(e.progress_pct || 0), 0) / total)
       : 0;
 
     document.getElementById('totalCourses').textContent = total;
-    document.getElementById('completedCourses').textContent = completed;
-    document.getElementById('ongoingCourses').textContent = ongoing;
     document.getElementById('avgProgress').textContent = avgProgress + '%';
   }
 
@@ -527,105 +558,63 @@
 
     if (currentSearch) {
       filtered = filtered.filter(e => 
-        e.course.title.toLowerCase().includes(currentSearch.toLowerCase())
+        e.course && e.course.title && e.course.title.toLowerCase().includes(currentSearch.toLowerCase())
       );
     }
 
     if (filtered.length === 0) {
       document.getElementById('enrollmentsGrid').innerHTML = `
         <div class="col-12">
-          <div class="no-results">
-            <div class="no-results-icon">🔍</div>
-            <p>No courses found</p>
+          <div class="p-4 bg-white rounded-4 border text-center text-muted">
+            <i class="fas fa-search fa-2x mb-2 text-secondary"></i>
+            <p class="mb-0">No course enrollments matching filter.</p>
           </div>
         </div>
       `;
-      document.getElementById('emptyState').style.display = 'none';
       return;
     }
 
     document.getElementById('enrollmentsGrid').innerHTML = filtered.map(enrollment => `
-      <div class="col-md-6 col-lg-4 mb-4">
+      <div class="col-md-6 col-lg-4">
         <div class="enrollment-card">
           <div class="enrollment-image">
-            <img src="${enrollment.course.thumbnail || 'https://via.placeholder.com/400x200'}" 
+            <img src="${enrollment.course.thumbnail || '{% static "assets/img/educator-img12.jpg" %}'}" 
                  alt="${enrollment.course.title}">
             ${enrollment.is_completed ? 
-              '<span class="enrollment-badge">✅ Completed</span>' : 
+              '<span class="enrollment-badge bg-success">✅ Completed</span>' : 
               '<span class="enrollment-badge">📚 In Progress</span>'
             }
           </div>
           
           <div class="enrollment-body">
-            <h5>${enrollment.course.title}</h5>
-            <p>${enrollment.course.category || 'Professional Course'}</p>
+            <h5 class="fw-bold">${enrollment.course.title}</h5>
+            <p class="text-muted small">${enrollment.course.category || 'Skill Development Course'}</p>
             
             ${enrollment.is_completed ? `
-              <div class="completed-badge">
+              <div class="badge bg-light text-success p-2 rounded-3 mb-3 border">
                 ✅ Completed on ${new Date(enrollment.completion_date).toLocaleDateString()}
               </div>
             ` : `
-              <div class="progress-section">
-                <div class="progress-bar-wrapper">
-                  <div class="progress-bar" style="width: ${enrollment.progress_pct}%"></div>
+              <div class="mb-3">
+                <div class="d-flex justify-content-between small text-muted mb-1">
+                  <span>Course Progress</span>
+                  <strong>${Math.round(enrollment.progress_pct || 0)}%</strong>
                 </div>
-                <div class="progress-text">
-                  Progress: <strong>${Math.round(enrollment.progress_pct)}%</strong>
+                <div class="progress-bar-wrapper">
+                  <div class="progress-bar-fill" style="width: ${enrollment.progress_pct || 0}%"></div>
                 </div>
               </div>
             `}
             
-            <div class="enrollment-date">
-              Enrolled: ${new Date(enrollment.enrollment_date).toLocaleDateString()}
-            </div>
-            
-            <div class="enrollment-actions">
-              <a href="/course/?slug=${enrollment.course.slug}" class="btn btn-primary">
-                ${enrollment.is_completed ? 'Review Course' : 'Continue'}
+            <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
+              <a href="/course/?slug=${enrollment.course.slug}" class="btn btn-sm btn-primary rounded-pill px-3 fw-bold">
+                ${enrollment.is_completed ? 'Review Course' : 'Continue Learning'}
               </a>
-              <button class="btn btn-outline-secondary btn-sm" 
-                      onclick="updateProgress(${enrollment.id}, '${enrollment.course.slug}')">
-                Update
-              </button>
             </div>
           </div>
         </div>
       </div>
     `).join('');
-
-    document.getElementById('emptyState').style.display = 'none';
-  }
-
-  async function updateProgress(enrollmentId, courseSlug) {
-    const progressPct = prompt('Enter progress percentage (0-100):');
-
-    if (progressPct === null) return;
-    
-    if (isNaN(progressPct) || progressPct < 0 || progressPct > 100) {
-      alert('Please enter a valid percentage between 0 and 100');
-      return;
-    }
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/courses/enrollments/${enrollmentId}/progress/`, {
-        method: 'PATCH',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-        body: JSON.stringify({progress_pct: parseFloat(progressPct)})
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        alert('Progress updated successfully!');
-        loadMyEnrollments();
-      } else {
-        alert('Failed to update progress');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Error updating progress');
-    }
   }
 
   document.addEventListener('DOMContentLoaded', function() {
@@ -642,10 +631,13 @@
       });
     });
 
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-      currentSearch = this.value;
-      displayEnrollments(currentFilter);
-    });
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      searchInput.addEventListener('keyup', function() {
+        currentSearch = this.value;
+        displayEnrollments(currentFilter);
+      });
+    }
   });
 </script>
 

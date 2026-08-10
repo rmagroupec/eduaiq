@@ -5,6 +5,591 @@
 
 {% block description %}EduAiQ helps students, working professionals & institutions master in-demand skill development courses in India with AI-driven online courses, e-books & practical training. Start learning today.{% endblock %}
 
+{% block css %}
+<style>
+  .post {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .post:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(102, 126, 234, 0.15);
+    border-color: #667eea;
+  }
+
+  .feature-image {
+    position: relative;
+    overflow: hidden;
+    height: 220px;
+    margin: 0;
+  }
+
+  .feature-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .post:hover .feature-image img {
+    transform: scale(1.05);
+  }
+
+  .cat-meta {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    color: white !important;
+    background: rgba(102, 126, 234, 0.9) !important;
+    backdrop-filter: blur(4px);
+    padding: 6px 14px !important;
+    border-radius: 20px !important;
+    font-size: 11px !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .cat-meta a {
+    color: white !important;
+    text-decoration: none;
+  }
+
+  .entry-content {
+    padding: 24px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .entry-content h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    color: #1a202c;
+  }
+
+  .entry-content h4 a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .entry-content h4 a:hover {
+    color: #667eea;
+  }
+
+  .entry-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+  }
+
+  .entry-meta a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #667eea;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.2s;
+    background: rgba(102, 126, 234, 0.08);
+    padding: 8px 18px;
+    border-radius: 30px;
+    letter-spacing: 0.5px;
+  }
+
+  .entry-meta a:hover {
+    background: rgba(102, 126, 234, 0.15);
+    color: #5568d3;
+    transform: translateX(2px);
+  }
+
+  /* ==========================================================================
+     Professional Category Section & Hover Effects
+     ========================================================================== */
+  .home-service.category-section-pro {
+    position: relative;
+    margin: 30px 0 10px 0 !important;
+    padding: 35px 0 20px 0 !important;
+    background: linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%);
+  }
+
+  .category-main-heading {
+    font-size: 30px;
+    font-weight: 800;
+    color: #1a202c;
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+  }
+
+  .category-subheading {
+    font-size: 14px;
+    color: #718096;
+    margin-bottom: 0;
+  }
+
+  .category-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+  }
+
+  .category-card-pro {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .category-card-pro::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--cat-color, #f73859);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .category-card-link {
+    text-decoration: none !important;
+    color: inherit;
+    display: block;
+    height: 100%;
+  }
+
+  .category-card-body {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .category-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--cat-color, #f73859) 0%, #d62846 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 20px;
+    box-shadow: 0 6px 16px rgba(247, 56, 89, 0.28);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .category-card-info {
+    flex-grow: 1;
+  }
+
+  .category-card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 4px;
+    line-height: 1.3;
+    transition: color 0.3s ease;
+  }
+
+  .category-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #4a5568;
+    background: #f1f5f9;
+    padding: 3px 10px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+  }
+
+  .category-arrow-btn {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 50%;
+    background: #f7fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a0aec0;
+    font-size: 12px;
+    transition: all 0.3s ease;
+  }
+
+  /* Hover Effects */
+  .category-card-pro:hover {
+    transform: translateY(-6px);
+    border-color: rgba(102, 126, 234, 0.4);
+    box-shadow: 0 14px 30px rgba(102, 126, 234, 0.15);
+  }
+
+  .category-card-pro:hover::before {
+    opacity: 1;
+  }
+
+  .category-card-pro:hover .category-icon-wrapper {
+    transform: scale(1.12) rotate(4deg);
+    box-shadow: 0 8px 22px rgba(102, 126, 234, 0.4);
+  }
+
+  .category-card-pro:hover .category-card-title {
+    color: #5a67d8;
+  }
+
+  .category-card-pro:hover .category-badge-pill {
+    background: rgba(102, 126, 234, 0.12);
+    color: #4c51bf;
+  }
+
+  .category-card-pro:hover .category-arrow-btn {
+    background: #667eea;
+    color: #ffffff;
+    transform: translateX(3px);
+  }
+
+  .course-form-pro {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 32px 28px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+  }
+
+  .course-form-pro h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1a202c;
+    margin-bottom: 20px;
+  }
+
+  .form-control-pro {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    font-size: 14px;
+    transition: all 0.3s ease;
+  }
+
+  .form-control-pro:focus {
+    outline: none;
+    background: #ffffff;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  }
+
+  /* ==========================================================================
+     Ultra-Attractive Course Card UI & Dynamic Hover Transitions
+     ========================================================================== */
+  .home-course-section {
+    padding: 25px 0 50px 0 !important;
+    margin: 0 !important;
+    background: linear-gradient(180deg, #edf2f7 0%, #ffffff 100%);
+  }
+
+  .home-course-section .row.mb-5 {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .course-card-pro {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid rgba(226, 232, 240, 0.85);
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Top Accent Gradient Bar on Hover */
+  .course-card-pro::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0%;
+    height: 4px;
+    background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 5;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .course-thumb-wrap {
+    position: relative;
+    height: 215px;
+    width: 100%;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  }
+
+  .course-thumb-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+  }
+
+  /* Gradient Overlay at Bottom of Image */
+  .course-thumb-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 40%, rgba(15, 23, 42, 0.5) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .course-cat-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: 30px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    z-index: 3;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .course-price-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 6px 15px;
+    border-radius: 30px;
+    z-index: 3;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .course-card-body-pro {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  .course-meta-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 12px;
+  }
+
+  .course-level-badge {
+    background: #eef2ff;
+    color: #4f46e5;
+    border: 1px solid #e0e7ff;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .course-duration-text {
+    color: #64748b;
+    font-weight: 600;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .course-card-title-pro {
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.35;
+    margin-bottom: 14px;
+    color: #1e293b;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 52px;
+    letter-spacing: -0.3px;
+  }
+
+  .course-card-title-pro a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .course-rating-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed #e2e8f0;
+  }
+
+  .rating-stars {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #fef3c7;
+    padding: 3px 10px;
+    border-radius: 10px;
+    border: 1px solid #fef08a;
+  }
+
+  .rating-score {
+    font-weight: 800;
+    font-size: 13px;
+    color: #b45309;
+  }
+
+  .student-count {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .course-instructor-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .instructor-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+    transition: transform 0.3s ease;
+  }
+
+  .instructor-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+  }
+
+  .course-card-footer-pro {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .btn-enroll-pro {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    padding: 10px 22px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.35);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-enroll-pro i {
+    transition: transform 0.3s ease;
+  }
+
+  /* Highly Attractive Hover States */
+  .course-card-pro:hover {
+    transform: translateY(-10px) scale(1.015);
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.25), 0 10px 15px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .course-card-pro:hover::before {
+    width: 100%;
+  }
+
+  .course-card-pro:hover .course-thumb-wrap img {
+    transform: scale(1.1) rotate(0.5deg);
+    filter: brightness(1.05);
+  }
+
+  .course-card-pro:hover .course-price-badge {
+    transform: scale(1.08);
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+  }
+
+  .course-card-pro:hover .course-card-title-pro a {
+    color: #4f46e5;
+  }
+
+  .course-card-pro:hover .instructor-avatar {
+    transform: scale(1.1) rotate(5deg);
+  }
+
+  .course-card-pro:hover .btn-enroll-pro {
+    background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+    box-shadow: 0 8px 22px rgba(79, 70, 229, 0.5);
+  }
+
+  .course-card-pro:hover .btn-enroll-pro i {
+    transform: translateX(5px);
+  }
+
+
+</style>
+{% endblock %}
+
 {% block content %}
 <section class="home-banner d-flex align-items-end">
 <div class="container">
@@ -129,94 +714,69 @@
 </div>
 </section>
 
-<section class="home-service">
+<section class="home-service category-section-pro">
 <div class="pattern-overlay"></div>
 <div class="container">
-<div class="service-wrapper">
-<div class="pattern-circle overlay"></div>
-<div class="service-content">
-<div class="section-head">
+<div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
+<div>
 <div class="title-divider"></div>
-<h2>Our Best Categories</h2>
-<div class="service-btn">
-<a class="button-round-primary" href="/categories/">MORE CATEGORIES</a>
+<h2 class="category-main-heading">Explore Top Categories</h2>
+<p class="category-subheading">Master industry-relevant skills with AI-driven learning paths</p>
+</div>
+<div>
+<a class="button-round-primary" href="{% url 'categories' %}">MORE CATEGORIES <i class="fas fa-arrow-right ms-1"></i></a>
 </div>
 </div>
-<div class="course-type">
-<div class="course-icon">
-<i aria-hidden="true" class="fas fa-robot"></i>
+<div class="row g-4">
+<div class="col-lg-7 col-md-12">
+<div class="category-grid-container">
+{% for category in categories|slice:":6" %}
+<div class="category-card-pro">
+<a href="{% url 'courses' %}?category={{ category.slug }}" class="category-card-link">
+<div class="category-card-body">
+<div class="category-icon-wrapper" style="--cat-color: {{ category.color_code|default:'#667eea' }};">
+<i aria-hidden="true" class="{{ category.icon_class }}"></i>
 </div>
-<h4 class="course-title">
-<a href="/page/ai-lab/">
-                                        AI &amp; Machine Learning
-                                    </a>
-</h4>
-<p class="course-durations">Self-paced</p>
+<div class="category-card-info">
+<h4 class="category-card-title">{{ category.name }}</h4>
+<span class="category-badge-pill">
+<i class="fas fa-graduation-cap me-1"></i> {{ category.course_badge }}
+</span>
 </div>
-<div class="course-type">
-<div class="course-icon">
-<i aria-hidden="true" class="fas fa-laptop-code"></i>
-</div>
-<h4 class="course-title">
-<a href="/page/skill-development/">
-                                        Web &amp; Software Development
-                                    </a>
-</h4>
-<p class="course-durations">Mentor-led</p>
-</div>
-<div class="course-type">
-<div class="course-icon">
-<i aria-hidden="true" class="fas fa-chart-line"></i>
-</div>
-<h4 class="course-title">
-<a href="/page/skill-development/">
-                                        Data Science
-                                    </a>
-</h4>
-<p class="course-durations">12 modules</p>
+<div class="category-arrow-btn">
+<i class="fas fa-chevron-right"></i>
 </div>
 </div>
-<div class="service-content">
-<div class="course-type">
-<div class="course-icon">
-<i aria-hidden="true" class="fas fa-briefcase"></i>
+</a>
 </div>
-<h4 class="course-title">
-<a href="/page/skill-development/">
-                                        Business &amp; Communication
-                                    </a>
-</h4>
-<p class="course-durations">Self-paced</p>
+{% empty %}
+<div class="col-12">
+<div class="text-center p-4">
+<p class="text-muted">No categories available at the moment.</p>
 </div>
-<div class="course-type">
-<div class="course-icon">
-<i aria-hidden="true" class="fas fa-book"></i>
 </div>
-<h4 class="course-title">
-<a href="/page/ai-books/">
-                                        AI Books &amp; Guides
-                                    </a>
-</h4>
-<p class="course-durations">30+ titles</p>
+{% endfor %}
 </div>
-<div class="course-form">
+</div>
+<div class="col-lg-5 col-md-12">
+<div class="course-form course-form-pro">
 <h3>Get Free Courses ! Book Your Seat Now.</h3>
-<div class="course-field">
+<form action="{% url 'contact' %}" method="get" class="course-field">
 <div class="row">
-<div class="col-sm-6">
-<input name="name" placeholder="Your Name.." type="text"/>
+<div class="col-sm-6 mb-3">
+<input name="name" placeholder="Your Name.." type="text" class="form-control-pro"/>
 </div>
-<div class="col-sm-6">
-<input name="name" placeholder="Your Email.." type="email"/>
+<div class="col-sm-6 mb-3">
+<input name="email" placeholder="Your Email.." type="email" class="form-control-pro"/>
 </div>
-<div class="col-sm-7">
-<input name="name" placeholder="Your Subject.." type="text"/>
+<div class="col-sm-12 mb-3">
+<input name="subject" placeholder="Your Subject.." type="text" class="form-control-pro"/>
 </div>
-<div class="col-sm-5">
-<button class="button-round-secondary" type="submit">BOOK SEAT</button>
+<div class="col-sm-12">
+<button class="button-round-secondary w-100" type="submit">BOOK SEAT</button>
 </div>
 </div>
-</div>
+</form>
 </div>
 </div>
 </div>
@@ -225,150 +785,113 @@
 
 <section class="home-course-section">
 <div class="container">
-<div class="overlay-wrapper">
-<div class="row">
-<div class="col-lg-6 offset-lg-3">
-<div class="title-divider"></div>
-<h2 class="section-title">Most Featured Courses</h2>
-<p class="course-section-info">Hands-on tracks in AI, data, and software
-                                    development — built with mentors, not just recorded once and left untouched.</p>
+<div class="row mb-5">
+<div class="col-lg-6 offset-lg-3 text-center">
+<div class="title-divider-center"></div>
+<h2 class="category-main-heading">Most Featured Courses</h2>
+<p class="category-subheading">Hands-on tracks in AI, data, and software development — built with real mentors</p>
 </div>
 </div>
-<div class="inner-course-wrap">
-<div class="row d-flex justify-content-center justify-content-xl-start">
-<div class="col-sm-6 col-lg-4 pe-3 ps-3 pt-4 pt-lg-0 inner-course">
-<article class="post">
-<figure class="feature-image">
-<img alt="" src="{% static 'assets/img/educator-img30.jpg' %}"/>
-<a class="bookmark-icon" href="/page/ai-lab/">
-<i aria-hidden="true" class="far fa-bookmark"></i>
-</a>
-<span class="cat-meta">
-<a href="/page/ai-lab/">AI &amp; Machine Learning</a>
-</span>
-</figure>
-<div class="entry-content">
-<h4>
-<a href="/page/ai-lab/">AI &amp; Machine Learning Foundations</a>
+<div class="row g-4" id="homeCoursesGrid">
+<div class="col-sm-6 col-lg-4">
+<div class="course-card-pro" onclick="window.location.href='/courses/'">
+<div class="course-thumb-wrap">
+<img src="{% static 'assets/img/educator-img30.jpg' %}" alt="AI &amp; Machine Learning Foundations"/>
+<span class="course-cat-badge">AI &amp; ML</span>
+<span class="course-price-badge">₹1,999</span>
+</div>
+<div class="course-card-body-pro">
+<div class="course-meta-top">
+<span class="course-level-badge"><i class="fas fa-signal me-1"></i>Beginner</span>
+<span class="course-duration-text"><i class="far fa-clock me-1"></i>4 Weeks</span>
+</div>
+<h4 class="course-card-title-pro">
+<a href="/courses/">AI &amp; Machine Learning Foundations</a>
 </h4>
-<div class="rating-content">
-<span class="rating-info">(4.8 ratings)</span>
-<div class="rating-start-wrap">
-<div class="rating-start">
-<span style="width: 95%"></span>
+<div class="course-rating-row">
+<div class="rating-stars">
+<i class="fas fa-star text-warning"></i>
+<span class="rating-score">4.8</span>
+</div>
+<span class="student-count"><i class="fas fa-users me-1"></i>2,400+ enrolled</span>
+</div>
+<div class="course-instructor-row">
+<div class="instructor-avatar"><i class="fas fa-user-tie"></i></div>
+<span class="instructor-name">William Smith (Mentor)</span>
+</div>
+<div class="course-card-footer-pro">
+<span class="btn-enroll-pro">Explore Course <i class="fas fa-arrow-right ms-1"></i></span>
 </div>
 </div>
 </div>
-<div class="author-content">
-<figure class="author-img">
-<img alt="" src="{% static 'assets/img/educator-img21.jpg' %}"/>
-</figure>
-<h6 class="author-name">William Smith, AI Lab Mentor</h6>
 </div>
-<div class="entry-meta">
-<span class="student-number">
-<i aria-hidden="true" class="fas fa-user-friends"></i>
-                                                    2,400+ students
-                                                </span>
-<a href="/page/ai-lab/">
-                                                    ENROLL COURSE
-                                                    <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
-</a>
+<div class="col-sm-6 col-lg-4">
+<div class="course-card-pro" onclick="window.location.href='/courses/'">
+<div class="course-thumb-wrap">
+<img src="{% static 'assets/img/educator-img29.jpg' %}" alt="Full-Stack Web Development"/>
+<span class="course-cat-badge">Web Dev</span>
+<span class="course-price-badge">₹399</span>
 </div>
+<div class="course-card-body-pro">
+<div class="course-meta-top">
+<span class="course-level-badge"><i class="fas fa-signal me-1"></i>Intermediate</span>
+<span class="course-duration-text"><i class="far fa-clock me-1"></i>6 Weeks</span>
 </div>
-</article>
-</div>
-<div class="col-sm-6 col-lg-4 pe-3 ps-3 pt-4 pt-lg-0 inner-course">
-<article class="post">
-<figure class="feature-image">
-<img alt="" src="{% static 'assets/img/educator-img29.jpg' %}"/>
-<a class="bookmark-icon" href="/page/skill-development/">
-<i aria-hidden="true" class="far fa-bookmark"></i>
-</a>
-<span class="cat-meta">
-<a href="/page/skill-development/">Web Development</a>
-</span>
-</figure>
-<div class="entry-content">
-<h4>
-<a href="/page/skill-development/">Full-Stack Web Development</a>
+<h4 class="course-card-title-pro">
+<a href="/courses/">Full-Stack Web Development</a>
 </h4>
-<div class="rating-content">
-<span class="rating-info">(4.6 ratings)</span>
-<div class="rating-start-wrap">
-<div class="rating-start">
-<span style="width: 90%"></span>
+<div class="course-rating-row">
+<div class="rating-stars">
+<i class="fas fa-star text-warning"></i>
+<span class="rating-score">4.7</span>
+</div>
+<span class="student-count"><i class="fas fa-users me-1"></i>1,800+ enrolled</span>
+</div>
+<div class="course-instructor-row">
+<div class="instructor-avatar"><i class="fas fa-user-tie"></i></div>
+<span class="instructor-name">Jenny White (Coach)</span>
+</div>
+<div class="course-card-footer-pro">
+<span class="btn-enroll-pro">Explore Course <i class="fas fa-arrow-right ms-1"></i></span>
 </div>
 </div>
 </div>
-<div class="author-content">
-<figure class="author-img">
-<img alt="" src="{% static 'assets/img/educator-img24.jpg' %}"/>
-</figure>
-<h6 class="author-name">Jenny White, Skill Development Coach</h6>
 </div>
-<div class="entry-meta">
-<span class="student-number">
-<i aria-hidden="true" class="fas fa-user-friends"></i>
-                                                    1,800+ students
-                                                </span>
-<a href="/page/skill-development/">
-                                                    ENROLL COURSE
-                                                    <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
-</a>
+<div class="col-sm-6 col-lg-4">
+<div class="course-card-pro" onclick="window.location.href='/courses/'">
+<div class="course-thumb-wrap">
+<img src="{% static 'assets/img/educator-img31.jpg' %}" alt="Data Science For Beginners"/>
+<span class="course-cat-badge">Data Science</span>
+<span class="course-price-badge">₹1,499</span>
 </div>
+<div class="course-card-body-pro">
+<div class="course-meta-top">
+<span class="course-level-badge"><i class="fas fa-signal me-1"></i>Beginner</span>
+<span class="course-duration-text"><i class="far fa-clock me-1"></i>4 Weeks</span>
 </div>
-</article>
-</div>
-<div class="col-sm-6 col-lg-4 pe-3 ps-3 pt-4 pt-lg-0 inner-course">
-<article class="post">
-<figure class="feature-image">
-<img alt="" src="{% static 'assets/img/educator-img31.jpg' %}"/>
-<a class="bookmark-icon" href="/page/skill-development/">
-<i aria-hidden="true" class="far fa-bookmark"></i>
-</a>
-<span class="cat-meta">
-<a href="/page/skill-development/">Data Science</a>
-</span>
-</figure>
-<div class="entry-content">
-<h4>
-<a href="/page/skill-development/">Data Science For Beginners</a>
+<h4 class="course-card-title-pro">
+<a href="/courses/">Data Science For Beginners</a>
 </h4>
-<div class="rating-content">
-<span class="rating-info">(4.7 ratings)</span>
-<div class="rating-start-wrap">
-<div class="rating-start">
-<span style="width: 91%"></span>
+<div class="course-rating-row">
+<div class="rating-stars">
+<i class="fas fa-star text-warning"></i>
+<span class="rating-score">4.9</span>
+</div>
+<span class="student-count"><i class="fas fa-users me-1"></i>1,500+ enrolled</span>
+</div>
+<div class="course-instructor-row">
+<div class="instructor-avatar"><i class="fas fa-user-tie"></i></div>
+<span class="instructor-name">Rahul Mehta (Mentor)</span>
+</div>
+<div class="course-card-footer-pro">
+<span class="btn-enroll-pro">Explore Course <i class="fas fa-arrow-right ms-1"></i></span>
 </div>
 </div>
 </div>
-<div class="author-content">
-<figure class="author-img">
-<img alt="" src="{% static 'assets/img/educator-img25.jpg' %}"/>
-</figure>
-<h6 class="author-name">Rahul Mehta, Data Science Mentor</h6>
-</div>
-<div class="entry-meta">
-<span class="student-number">
-<i aria-hidden="true" class="fas fa-user-friends"></i>
-                                                    1,500+ students
-                                                </span>
-<a href="/page/skill-development/">
-                                                    ENROLL COURSE
-                                                    <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
-</a>
 </div>
 </div>
-</article>
-</div>
-</div>
-</div>
-<div class="course-bhn">
-<a class="button-round-primary" href="/courses/">VIEW ALL COURSES</a>
-</div>
-<div class="overlay overlay-circle"></div>
-<div class="pattern-overlay"></div>
+<div class="text-center mt-5">
+<a class="button-round-primary hover-glow" href="{% url 'courses' %}">VIEW ALL COURSES <i class="fas fa-arrow-right ms-1"></i></a>
 </div>
 </div>
 </section>
@@ -852,4 +1375,91 @@
 </div>
 </div>
 </div>
+{% endblock %}
+
+{% block js %}
+<script>
+  const API_BASE_URL = window.location.origin;
+
+  function formatCoursePrice(price) {
+    if (!price || parseFloat(price) === 0) return 'Free';
+    return '₹' + parseFloat(price).toLocaleString('en-IN');
+  }
+
+  function getInstructorName(instructor) {
+    if (!instructor) return 'EduAiQ Mentor';
+    if (typeof instructor === 'object') {
+      return instructor.username || instructor.first_name || 'EduAiQ Mentor';
+    }
+    return instructor;
+  }
+
+  function getCategoryName(course) {
+    if (course.category && course.category.name) return course.category.name;
+    if (course.category_name) return course.category_name;
+    return 'General';
+  }
+
+  async function loadHomeCourses() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/?page=1&page_size=3`, { credentials: 'same-origin' });
+      const data = await response.json();
+      const results = data.results || [];
+
+      if (results.length > 0) {
+        const grid = document.getElementById('homeCoursesGrid');
+        grid.innerHTML = results.map(course => {
+          const thumbnail = course.thumbnail || '/static/assets/img/educator-img30.jpg';
+          const title = course.title || 'Untitled Course';
+          const slug = course.slug || '';
+          const catName = getCategoryName(course);
+          const instructorName = getInstructorName(course.instructor);
+          const rating = parseFloat(course.average_rating || 4.8).toFixed(1);
+          const level = (course.level || 'Beginner');
+          const priceDisplay = formatCoursePrice(course.price);
+          const duration = course.duration_weeks ? `${course.duration_weeks} Weeks` : 'Self-Paced';
+
+          return `
+            <div class="col-sm-6 col-lg-4">
+              <div class="course-card-pro" onclick="window.location.href='/course/?slug=${slug}'">
+                <div class="course-thumb-wrap">
+                  <img src="${thumbnail}" alt="${title}" onerror="this.src='/static/assets/img/educator-img30.jpg'"/>
+                  <span class="course-cat-badge">${catName}</span>
+                  <span class="course-price-badge">${priceDisplay}</span>
+                </div>
+                <div class="course-card-body-pro">
+                  <div class="course-meta-top">
+                    <span class="course-level-badge"><i class="fas fa-signal me-1"></i>${level}</span>
+                    <span class="course-duration-text"><i class="far fa-clock me-1"></i>${duration}</span>
+                  </div>
+                  <h4 class="course-card-title-pro">
+                    <a href="/course/?slug=${slug}" onclick="event.stopPropagation();">${title}</a>
+                  </h4>
+                  <div class="course-rating-row">
+                    <div class="rating-stars">
+                      <i class="fas fa-star text-warning"></i>
+                      <span class="rating-score">${rating}</span>
+                    </div>
+                    <span class="student-count"><i class="fas fa-users me-1"></i>${course.total_students || 120}+ enrolled</span>
+                  </div>
+                  <div class="course-instructor-row">
+                    <div class="instructor-avatar"><i class="fas fa-user-tie"></i></div>
+                    <span class="instructor-name">${instructorName}</span>
+                  </div>
+                  <div class="course-card-footer-pro">
+                    <span class="btn-enroll-pro">Explore Course <i class="fas fa-arrow-right ms-1"></i></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    } catch (e) {
+      console.error('Error loading home courses:', e);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadHomeCourses);
+</script>
 {% endblock %}

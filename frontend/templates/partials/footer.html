@@ -3,27 +3,28 @@
     <div class="subscribe-section">
         <div class="container">
             <div class="subscribe-content">
-                <div class="overlay"></div>
                 <div class="row align-items-center">
-                    <div class="col-lg-5">
+                    <div class="col-lg-5 col-md-12 mb-3 mb-lg-0">
                         <h3 class="subscribe-title">Subscribe Our Newsletter !</h3>
-                        <p class="subscribe-info">Get updates on new courses, Olympiad cycles, and AI Lab
-                            modules — no spam, unsubscribe any time.</p>
+                        <p class="subscribe-info">Get updates on new courses, Olympiad cycles, and AI Lab modules — no spam, unsubscribe any time.</p>
                     </div>
-                    <div class="col-lg-7">
-                        <div class="form-content">
-                            <input type="email" name="email" placeholder="Enter Email Address">
-                            <button type="submit" class="button-round-primary">SUBSCRIBE</button>
-                        </div>
+                    <div class="col-lg-7 col-md-12">
+                        <form class="form-content-pro" onsubmit="event.preventDefault(); alert('Thank you for subscribing to EduAiQ newsletter!');">
+                            <input type="email" name="email" placeholder="Enter Email Address" required>
+                            <button type="submit" class="btn-subscribe-pro">SUBSCRIBE <i class="fas fa-paper-plane ms-1"></i></button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
     <div class="top-footer">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-3 col-md-6">
+            <div class="row g-4">
+                
+                <!-- Col 1: Brand & Social -->
+                <div class="col-lg-3 col-md-6 col-sm-12">
                     <aside class="widget widget_text img-textwidget">
                         <div class="footer-logo">
                             <a href="/"><img
@@ -40,78 +41,100 @@
                         <ul>
                             <li>
                                 <a href="https://www.instagram.com/eduaiq_2026?utm_source=qr&igsh=MTY2bXJuZXZyZTliag=="
-                                    target="_blank">
+                                    target="_blank" title="Instagram">
                                     <i class="fab fa-instagram" aria-hidden="true"></i>
                                 </a>
                             </li>
                             <li>
-                                <a href="https://whatsapp.com/channel/0029VbDa70SHltY9CSw9IP2B" target="_blank">
+                                <a href="https://whatsapp.com/channel/0029VbDa70SHltY9CSw9IP2B" target="_blank" title="WhatsApp">
                                     <i class="fab fa-whatsapp" aria-hidden="true"></i>
                                 </a>
                             </li>
                         </ul>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
+
+                <!-- Col 2: Quick Links -->
+                <div class="col-lg-3 col-md-6 col-sm-12">
                     <aside class="widget">
-                        <h5 class="widget-title">Quick LInks</h5>
+                        <h5 class="widget-title">Quick Links</h5>
                         <ul>
                             <li>
-                                <a href="/about/">About Us</a>
+                                <a href="/about/"><i class="fas fa-chevron-right me-2" style="font-size: 11px; opacity: 0.7;"></i>About Us</a>
                             </li>
                             <li>
-                                <a href="/ai-lab/">AI Lab</a>
+                                <a href="/ai-lab/"><i class="fas fa-chevron-right me-2" style="font-size: 11px; opacity: 0.7;"></i>AI Lab</a>
                             </li>
                             <li>
-                                <a href="/olympiads/">Olympiads</a>
+                                <a href="/olympiads/"><i class="fas fa-chevron-right me-2" style="font-size: 11px; opacity: 0.7;"></i>Olympiads</a>
                             </li>
                             <li>
-                                <a href="/legal-notice/">Legal Notice</a>
+                                <a href="/legal-notice/"><i class="fas fa-chevron-right me-2" style="font-size: 11px; opacity: 0.7;"></i>Legal Notice</a>
                             </li>
                         </ul>
                     </aside>
                 </div>
-                <div class="col-lg-3 col-md-6">
+
+                <!-- Col 3: Support -->
+                <div class="col-lg-3 col-md-6 col-sm-12">
                     <aside class="widget">
                         <h5 class="widget-title">Support</h5>
                         <ul>
                             <li>
-                                <a href="/page/support/">Help Center</a>
+                                <a href="/page/support/"><i class="fas fa-chevron-right me-2" style="font-size: 11px; opacity: 0.7;"></i>Help Center</a>
                             </li>
                             <li>
-                                <a href="/contact/">Contact Us</a>
+                                <a href="/contact/"><i class="fas fa-chevron-right me-2" style="font-size: 11px; opacity: 0.7;"></i>Contact Us</a>
                             </li>
                             <li>
-                                <a href="/checkout/">Pay Fee</a>
+                                <a href="/checkout/"><i class="fas fa-chevron-right me-2" style="font-size: 11px; opacity: 0.7;"></i>Pay Fee</a>
                             </li>
                             <li>
-                                <a href="/page/apply-for-franchise/">Apply For Franchise</a>
+                                <a href="/page/apply-for-franchise/"><i class="fas fa-chevron-right me-2" style="font-size: 11px; opacity: 0.7;"></i>Apply For Franchise</a>
                             </li>
                         </ul>
                     </aside>
                 </div>
-                <div class="col-lg-3 col-md-6">
+
+                <!-- Col 4: Contact -->
+                <div class="col-lg-3 col-md-6 col-sm-12">
                     <aside class="widget widget_text school-time">
                         <h5 class="widget-title">Get In Touch</h5>
-                        <span>
+                        
+                        <div class="contact-info-item-pro">
                             <i aria-hidden="true" class="fas fa-phone-alt"></i>
-                            8052350041 / 7985267620
-                        </span>
-                        <p>Contact us for more details about our AI-powered courses and franchise opportunities.
+                            <div>
+                                <a href="tel:+918052350041">+91 8052350041</a> / <a href="tel:+917985267620">+91 7985267620</a>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item-pro">
+                            <i aria-hidden="true" class="fas fa-envelope"></i>
+                            <div>
+                                <a href="mailto:info@eduaiq.co.in">info@eduaiq.co.in</a>
+                            </div>
+                        </div>
+
+                        <p style="font-size: 13px; color: #94a3b8; margin-top: 10px; margin-bottom: 12px; line-height: 1.5;">
+                            Contact us for more details about our AI-powered courses and franchise opportunities.
                         </p>
-                        <a href="/register/" class="button-round-secondary ">JOIN US NOW</a>
+                        
+                        <a href="/register/" class="btn-join-now-footer">JOIN US NOW <i class="fas fa-arrow-right"></i></a>
                     </aside>
                 </div>
+
             </div>
         </div>
     </div>
-    <div class="container">
-        <div class="bottom-footer">
-            <div class="row">
-                <div class="col-md-6">
+
+    <!-- Bottom Footer -->
+    <div class="bottom-footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 col-12 text-center text-md-start mb-2 mb-md-0">
                     <div class="copy-right">Copyright &copy; 2026 EduAiQ. All rights reserved.</div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 col-12 text-center text-md-end">
                     <div class="legal-list">
                         <ul>
                             <li>
@@ -121,7 +144,7 @@
                                 <a href="/contact/">SUPPORT</a>
                             </li>
                             <li>
-                                <a href="/legal-notice/">TERMS & CONDITION</a>
+                                <a href="/legal-notice/">TERMS & CONDITIONS</a>
                             </li>
                         </ul>
                     </div>
@@ -130,3 +153,336 @@
         </div>
     </div>
 </footer>
+
+<style>
+  /* ==========================================================================
+     Ultra-Professional & Mobile Responsive Footer Styling
+     ========================================================================== */
+  .site-footer {
+    background: linear-gradient(135deg, #1e1b4b 0%, #311042 50%, #1e1b4b 100%) !important;
+    position: relative;
+    color: #cbd5e1;
+    overflow: hidden;
+  }
+
+  .site-footer .subscribe-section {
+    position: relative;
+    z-index: 5;
+    padding: 0;
+    margin-bottom: 40px;
+  }
+
+  .site-footer .subscribe-content {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    padding: 35px 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .subscribe-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+
+  .subscribe-info {
+    font-size: 13px;
+    color: #94a3b8;
+    margin: 0;
+  }
+
+  .form-content-pro {
+    display: flex;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 40px;
+    padding: 5px 6px 5px 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transition: border-color 0.3s ease;
+  }
+
+  .form-content-pro:focus-within {
+    border-color: #f73859;
+  }
+
+  .form-content-pro input[type="email"] {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    font-size: 14px;
+    width: 100%;
+    padding: 8px 0;
+  }
+
+  .form-content-pro input[type="email"]::placeholder {
+    color: #94a3b8;
+  }
+
+  .btn-subscribe-pro {
+    background: linear-gradient(135deg, #f73859 0%, #ec4899 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 30px;
+    padding: 11px 26px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(247, 56, 89, 0.4);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.35s ease;
+  }
+
+  .btn-subscribe-pro:hover {
+    background: linear-gradient(135deg, #e02447 0%, #d62846 100%);
+    box-shadow: 0 8px 22px rgba(247, 56, 89, 0.6);
+    transform: translateY(-2px);
+  }
+
+  /* Top Footer Columns */
+  .site-footer .top-footer {
+    padding-bottom: 40px;
+  }
+
+  .footer-logo img {
+    max-height: 65px !important;
+    width: auto !important;
+    margin-bottom: 18px;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+  }
+
+  .textwidget.widget-text {
+    font-size: 14px;
+    color: #94a3b8;
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+
+  /* Social Icons */
+  .footer-social-links ul {
+    display: flex;
+    gap: 12px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-social-links a {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 18px;
+    text-decoration: none;
+    transition: all 0.35s ease;
+  }
+
+  .footer-social-links a:hover {
+    background: linear-gradient(135deg, #f73859 0%, #ec4899 100%);
+    border-color: transparent;
+    transform: translateY(-4px) scale(1.08);
+    box-shadow: 0 8px 20px rgba(247, 56, 89, 0.4);
+  }
+
+  /* Footer Widget Titles */
+  .site-footer .widget-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 8px;
+  }
+
+  .site-footer .widget-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 32px;
+    height: 3px;
+    background: linear-gradient(90deg, #f73859 0%, #ec4899 100%);
+    border-radius: 2px;
+  }
+
+  /* Nav Links in Footer */
+  .site-footer .widget ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .site-footer .widget ul li a {
+    color: #cbd5e1;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+
+  .site-footer .widget ul li a:hover {
+    color: #f73859;
+    transform: translateX(6px);
+  }
+
+  /* Contact Items */
+  .contact-info-item-pro {
+    font-size: 14px;
+    color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .contact-info-item-pro i {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 8px;
+    background: rgba(247, 56, 89, 0.15);
+    color: #f73859;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .contact-info-item-pro a {
+    color: #e2e8f0;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .contact-info-item-pro a:hover {
+    color: #f73859;
+  }
+
+  .btn-join-now-footer {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #f73859 0%, #ec4899 100%);
+    color: #ffffff !important;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 11px 26px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(247, 56, 89, 0.4);
+    text-decoration: none !important;
+    margin-top: 14px;
+    transition: all 0.35s ease;
+  }
+
+  .btn-join-now-footer:hover {
+    background: linear-gradient(135deg, #e02447 0%, #d62846 100%);
+    box-shadow: 0 8px 22px rgba(247, 56, 89, 0.6);
+    transform: translateY(-2px);
+  }
+
+  /* Bottom Footer */
+  .site-footer .bottom-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 24px 0;
+  }
+
+  .copy-right {
+    font-size: 13px;
+    color: #94a3b8;
+  }
+
+  .legal-list ul {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .legal-list a {
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .legal-list a:hover {
+    color: #f73859;
+  }
+
+  /* Mobile Responsive Tweaks */
+  @media (max-width: 991px) {
+    .site-footer .subscribe-content {
+      padding: 28px 24px;
+    }
+
+    .form-content-pro {
+      margin-top: 16px;
+    }
+
+    .site-footer .widget {
+      margin-bottom: 30px;
+    }
+
+    .legal-list ul {
+      justify-content: flex-start;
+      margin-top: 12px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .form-content-pro {
+      flex-direction: column;
+      background: transparent;
+      border: none;
+      padding: 0;
+      box-shadow: none;
+      gap: 12px;
+    }
+
+    .form-content-pro input[type="email"] {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 30px;
+      padding: 12px 20px;
+    }
+
+    .btn-subscribe-pro {
+      width: 100%;
+      padding: 12px 0;
+      text-align: center;
+    }
+
+    .copy-right {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .legal-list ul {
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+  }
+</style>

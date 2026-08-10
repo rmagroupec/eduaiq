@@ -37,8 +37,8 @@ def serialize_user(user):
     return {
         'id': user.id,
         'username': user.username,
-        'email': user.email,
-        'phone': user.phone,
+        'email': user.email or 'info@eduaiq.co.in',
+        'phone': getattr(user, 'phone', None) or '+91 8052350041',
         'first_name': user.first_name,
         'last_name': user.last_name,
         'profile_image': user.profile_image.url if user.profile_image else None,

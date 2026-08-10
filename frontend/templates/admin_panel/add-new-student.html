@@ -1,12 +1,12 @@
 {% extends 'admin_panel/base.html' %}
 {% load static %}
 
-{% block title %}EduAIQ - Add New Student{% endblock %}
+{% block title %}EduAIQ - Add New Student & Enroll Courses{% endblock %}
 
 {% block content %}
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
   <div>
-    <h1 class="fw-semibold mb-4 h6 text-primary-light">Add Student</h1>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Add New Institution Student</h1>
     <div class="d-flex align-items-center gap-2">
       <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
       <span class="text-secondary-light">/</span>
@@ -17,303 +17,192 @@
   </div>
 </div>
 
-<form id="addStudentForm" class="mt-24" enctype="multipart/form-data">
+<div id="alertContainer"></div>
+
+<form id="addInstitutionStudentForm" class="mt-24">
   {% csrf_token %}
   <div class="row gy-4">
-    <!-- Section 1: Academic Identity -->
+    
+    <!-- Section 1: Account Login Credentials -->
     <div class="col-lg-12">
-      <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-        <div class="card-header border-bottom bg-base py-16 px-24">
-          <h6 class="text-lg fw-semibold mb-0">Academic & System Links</h6>
+      <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden border border-neutral-200">
+        <div class="card-header border-bottom bg-neutral-50 py-16 px-24">
+          <h6 class="text-lg fw-bold mb-0 text-primary-600"><i class="ri-user-lock-line me-2"></i> Student Account Credentials (Login Details)</h6>
+          <span class="text-sm text-secondary-light">Credentials created here will be used by the student to log in to the Student Portal.</span>
         </div>
         <div class="card-body p-24">
           <div class="row gy-3">
-            <div class="col-md-4">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="institution">Institution <span class="text-danger-600">*</span></label>
-              <select class="form-control form-select radius-8" id="institution" name="institution" required>
-                <option value="" disabled selected>-- Choose Institution --</option>
-              </select>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="username">Login Username <span class="text-danger-600">*</span></label>
+              <input type="text" class="form-control radius-8" id="username" name="username" placeholder="e.g. student101" required>
             </div>
-            <div class="col-md-4">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="user">Student User Account <span class="text-danger-600">*</span></label>
-              <select class="form-control form-select radius-8" id="user" name="user_id" required>
-                <option value="" disabled selected>-- Select Student User --</option>
-              </select>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="password">Login Password <span class="text-danger-600">*</span></label>
+              <input type="password" class="form-control radius-8" id="password" name="password" placeholder="••••••••••••" required>
             </div>
-            <div class="col-md-4">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="parent_user">Parent User Account</label>
-              <select class="form-control form-select radius-8" id="parent_user" name="parent_user_id">
-                <option value="" selected>-- Select Parent User (Optional) --</option>
-              </select>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="email">Student Email Address</label>
+              <input type="email" class="form-control radius-8" id="email" name="email" placeholder="student@example.com">
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="phone">Phone / Mobile Number</label>
+              <input type="text" class="form-control radius-8" id="phone" name="phone" placeholder="+919876543210">
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Section 2: Student Details -->
+    <!-- Section 2: Student Academic Info -->
     <div class="col-lg-12">
-      <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-        <div class="card-header border-bottom bg-base py-16 px-24">
-          <h6 class="text-lg fw-semibold mb-0">Student Personal & Academic Info</h6>
+      <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden border border-neutral-200">
+        <div class="card-header border-bottom bg-neutral-50 py-16 px-24">
+          <h6 class="text-lg fw-bold mb-0 text-primary-600"><i class="ri-graduation-cap-line me-2"></i> Academic & Personal Profile</h6>
         </div>
         <div class="card-body p-24">
           <div class="row gy-3">
             <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="admission_no">Admission Number <span class="text-danger-600">*</span></label>
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="first_name">First Name</label>
+              <input type="text" class="form-control radius-8" id="first_name" name="first_name" placeholder="John">
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="last_name">Last Name</label>
+              <input type="text" class="form-control radius-8" id="last_name" name="last_name" placeholder="Doe">
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="admission_no">Admission / Roll No <span class="text-danger-600">*</span></label>
               <input type="text" class="form-control radius-8" id="admission_no" name="admission_no" placeholder="ADM2026001" required>
             </div>
             <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="roll_number">Roll Number</label>
-              <input type="text" class="form-control radius-8" id="roll_number" name="roll_number" placeholder="e.g. 15">
-            </div>
-            <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="class_grade">Class / Grade <span class="text-danger-600">*</span></label>
-              <input type="text" class="form-control radius-8" id="class_grade" name="class_grade" placeholder="e.g. Class 10" required>
-            </div>
-            <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="section">Section</label>
-              <input type="text" class="form-control radius-8" id="section" name="section" placeholder="e.g. A">
-            </div>
-            <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="academic_year">Academic Year <span class="text-danger-600">*</span></label>
-              <input type="text" class="form-control radius-8" id="academic_year" name="academic_year" placeholder="e.g. 2026-27" required>
-            </div>
-            <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="admission_date">Admission Date</label>
-              <input type="date" class="form-control radius-8" id="admission_date" name="admission_date">
-            </div>
-            <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="date_of_birth">Date of Birth</label>
-              <input type="date" class="form-control radius-8" id="date_of_birth" name="date_of_birth">
-            </div>
-            <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="gender">Gender</label>
-              <select class="form-control form-select radius-8" id="gender" name="gender">
-                <option value="prefer_not_to_say">Prefer Not to Say</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="blood_group">Blood Group</label>
-              <select class="form-control form-select radius-8" id="blood_group" name="blood_group">
-                <option value="">Select Blood Group</option>
-                <option value="a+">A+</option>
-                <option value="a-">A-</option>
-                <option value="b+">B+</option>
-                <option value="b-">B-</option>
-                <option value="ab+">AB+</option>
-                <option value="ab-">AB-</option>
-                <option value="o+">O+</option>
-                <option value="o-">O-</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="category">Category</label>
-              <select class="form-control form-select radius-8" id="category" name="category">
-                <option value="general">General</option>
-                <option value="obc">OBC</option>
-                <option value="sc">SC</option>
-                <option value="st">ST</option>
-                <option value="ews">EWS</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="emergency_contact_phone">Emergency Phone</label>
-              <input type="tel" class="form-control radius-8" id="emergency_contact_phone" name="emergency_contact_phone" placeholder="+91XXXXXXXXXX">
-            </div>
-            <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="status">Status</label>
-              <select class="form-control form-select radius-8" id="status" name="status">
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="graduated">Graduated</option>
-                <option value="transferred">Transferred</option>
-                <option value="dropped">Dropped Out</option>
-              </select>
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="class_grade">Class / Grade</label>
+              <input type="text" class="form-control radius-8" id="class_grade" name="class_grade" placeholder="e.g. Class 10" value="Class 10">
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Section 3: Guardian Info -->
+    <!-- Section 3: Course Enrollment Checklist -->
     <div class="col-lg-12">
-      <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-        <div class="card-header border-bottom bg-base py-16 px-24">
-          <h6 class="text-lg fw-semibold mb-0">Parent & Guardian Details</h6>
+      <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden border border-neutral-200">
+        <div class="card-header border-bottom bg-neutral-50 py-16 px-24">
+          <h6 class="text-lg fw-bold mb-0 text-primary-600"><i class="ri-book-read-line me-2"></i> Enroll Student into Institution Allowed Courses</h6>
+          <span class="text-sm text-secondary-light">Select which allowed course(s) the student will have access to after login.</span>
         </div>
         <div class="card-body p-24">
-          <div class="row gy-3">
-            <div class="col-md-4">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="father_name">Father's Name</label>
-              <input type="text" class="form-control radius-8" id="father_name" name="father_name" placeholder="Father's full name">
-            </div>
-            <div class="col-md-4">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="mother_name">Mother's Name</label>
-              <input type="text" class="form-control radius-8" id="mother_name" name="mother_name" placeholder="Mother's full name">
-            </div>
-            <div class="col-md-4">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="guardian_name">Guardian's Name</label>
-              <input type="text" class="form-control radius-8" id="guardian_name" name="guardian_name" placeholder="Guardian's name (if not parent)">
-            </div>
-            <div class="col-md-4">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="guardian_relation">Guardian Relation</label>
-              <input type="text" class="form-control radius-8" id="guardian_relation" name="guardian_relation" placeholder="e.g. Father, Uncle, Aunt">
-            </div>
-            <div class="col-md-4">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="guardian_phone">Guardian Phone</label>
-              <input type="tel" class="form-control radius-8" id="guardian_phone" name="guardian_phone" placeholder="+91XXXXXXXXXX">
-            </div>
-            <div class="col-md-4">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="guardian_email">Guardian Email</label>
-              <input type="email" class="form-control radius-8" id="guardian_email" name="guardian_email" placeholder="guardian@example.com">
+          <div id="courseChecklistContainer" class="row gy-3">
+            <div class="col-12 text-muted text-center py-4">
+              <i class="ri-loader-4-line ri-spin me-2"></i> Loading allowed courses...
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Section 4: File Documents -->
-    <div class="col-lg-12">
-      <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-        <div class="card-header border-bottom bg-base py-16 px-24">
-          <h6 class="text-lg fw-semibold mb-0">Documents & Photos</h6>
-        </div>
-        <div class="card-body p-24">
-          <div class="row gy-3">
-            <div class="col-md-6">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="profile_photo">Profile Photo</label>
-              <input type="file" class="form-control radius-8" id="profile_photo" name="profile_photo" accept="image/*">
-            </div>
-            <div class="col-md-6">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="aadhar_or_id_proof">Aadhar / ID Proof (PDF/Image)</label>
-              <input type="file" class="form-control radius-8" id="aadhar_or_id_proof" name="aadhar_or_id_proof">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-lg-12 mt-24">
-      <div class="d-flex align-items-center gap-16 justify-content-end">
-        <a href="/admin-panel/student-list/" class="btn btn-outline-neutral-400 radius-8">Cancel</a>
-        <button type="submit" class="btn btn-primary-600 radius-8" id="submitBtn">Save Student</button>
-      </div>
+    <!-- Submit Action -->
+    <div class="col-12 text-end">
+      <button type="submit" class="btn btn-primary-600 px-32 py-12 radius-8 fw-bold">
+        <i class="ri-user-add-line me-2"></i> Create Student Account & Assign Courses
+      </button>
     </div>
 
   </div>
 </form>
-{% endblock %}
 
-{% block js %}
 <script>
-$(document).ready(function() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const paramInstId = urlParams.get('institution_id');
+  const API_BASE_URL = window.location.origin;
 
-  // Load Institutions
-  function loadInstitutions() {
-    $.ajax({
-      url: '/api/institutions/?page_size=100',
-      type: 'GET',
-      xhrFields: { withCredentials: true },
-      success: function(response) {
-        const select = $('#institution');
-        if (response.results && response.results.length > 0) {
-          response.results.forEach(inst => {
-            select.append(`<option value="${inst.id}">${inst.name} (${inst.type})</option>`);
-          });
-          if (paramInstId) {
-            select.val(paramInstId);
-          }
+  document.addEventListener('DOMContentLoaded', function() {
+    loadAllowedCoursesChecklist();
+
+    document.getElementById('addInstitutionStudentForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const admission_no = document.getElementById('admission_no').value.trim();
+
+      const selectedCourses = Array.from(document.querySelectorAll('input[name="course_ids"]:checked')).map(cb => cb.value);
+
+      const payload = {
+        username: username,
+        password: password,
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        first_name: document.getElementById('first_name').value.trim(),
+        last_name: document.getElementById('last_name').value.trim(),
+        admission_no: admission_no,
+        class_grade: document.getElementById('class_grade').value.trim(),
+        course_ids: selectedCourses
+      };
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/students/create/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          document.getElementById('alertContainer').innerHTML = `
+            <div class="alert alert-success radius-12 p-16 d-flex align-items-center justify-content-between mb-24">
+              <div>
+                <strong><i class="ri-checkbox-circle-fill me-2"></i> Student Account Created Successfully!</strong><br>
+                <span>Username: <code>${data.student_username}</code> | Courses Enrolled: ${data.enrolled_courses.join(', ') || 'None'}</span>
+              </div>
+              <a href="/admin-panel/student-list/" class="btn btn-sm btn-success">View Student List</a>
+            </div>
+          `;
+          document.getElementById('addInstitutionStudentForm').reset();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          document.getElementById('alertContainer').innerHTML = `
+            <div class="alert alert-danger radius-12 p-16 mb-24">
+              <strong><i class="ri-error-warning-fill me-2"></i> Error:</strong> ${data.error || 'Failed to create student account.'}
+            </div>
+          `;
         }
-      }
-    });
-  }
-
-  // Load Student Users list (role=student)
-  function loadStudentUsers() {
-    $.ajax({
-      url: '/accounts/users/?role=student&page_size=200',
-      type: 'GET',
-      xhrFields: { withCredentials: true },
-      success: function(response) {
-        const select = $('#user');
-        if (response.results && response.results.length > 0) {
-          response.results.forEach(user => {
-            select.append(`<option value="${user.id}">${user.first_name} ${user.last_name} (${user.username})</option>`);
-          });
-        }
-      }
-    });
-  }
-
-  // Load Parent Users list (role=parent)
-  function loadParentUsers() {
-    $.ajax({
-      url: '/accounts/users/?role=parent&page_size=200',
-      type: 'GET',
-      xhrFields: { withCredentials: true },
-      success: function(response) {
-        const select = $('#parent_user');
-        if (response.results && response.results.length > 0) {
-          response.results.forEach(user => {
-            select.append(`<option value="${user.id}">${user.first_name} ${user.last_name} (${user.username})</option>`);
-          });
-        }
-      }
-    });
-  }
-
-  // Handle Form Submit
-  $('#addStudentForm').on('submit', function(e) {
-    e.preventDefault();
-
-    const instId = $('#institution').val();
-    if (!instId) {
-      showToast("Please select an Institution.", "warning");
-      return;
-    }
-
-    $('#submitBtn').prop('disabled', true).html('Saving...');
-
-    const formData = new FormData(this);
-
-    // CSRF Token header
-    const token = $('[name=csrfmiddlewaretoken]').val();
-
-    $.ajax({
-      url: `/api/institutions/${instId}/students/`,
-      type: 'POST',
-      headers: { 'X-CSRFToken': token },
-      data: formData,
-      processData: false,
-      contentType: false,
-      xhrFields: { withCredentials: true },
-      success: function(res) {
-        showToast("Student profile created successfully!", 'success');
-        setTimeout(function() {
-          window.location.href = `/admin-panel/student-list/?institution_id=${instId}`;
-        }, 1500);
-      },
-      error: function(xhr) {
-        $('#submitBtn').prop('disabled', false).html('Save Student');
-        let errorMsg = "Failed to save student.";
-        if (xhr.responseJSON && xhr.responseJSON.errors) {
-          errorMsg = JSON.stringify(xhr.responseJSON.errors, null, 2);
-        }
-        showToast(errorMsg, 'error');
+      } catch (err) {
+        document.getElementById('alertContainer').innerHTML = `
+          <div class="alert alert-danger radius-12 p-16 mb-24">
+            <strong><i class="ri-error-warning-fill me-2"></i> Error:</strong> ${err.message}
+          </div>
+        `;
       }
     });
   });
 
-  // Init loads
-  loadInstitutions();
-  loadStudentUsers();
-  loadParentUsers();
-});
+  async function loadAllowedCoursesChecklist() {
+    const container = document.getElementById('courseChecklistContainer');
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/`, { credentials: 'include' });
+      const data = await response.json();
+      const courses = data.results || [];
+
+      if (courses.length === 0) {
+        container.innerHTML = `<div class="col-12 text-muted text-center py-3">No allowed courses found for your institution.</div>`;
+        return;
+      }
+
+      container.innerHTML = courses.map(c => `
+        <div class="col-md-6 col-lg-4">
+          <div class="form-check p-16 border radius-8 bg-neutral-50 d-flex align-items-center gap-3">
+            <input class="form-check-input flex-shrink-0" type="checkbox" name="course_ids" value="${c.id}" id="course_${c.id}" checked>
+            <label class="form-check-label w-100 cursor-pointer mb-0" for="course_${c.id}">
+              <span class="fw-bold text-dark d-block text-sm">${c.title}</span>
+              <span class="text-xs text-secondary-light">${c.category_name || 'Course'} • ₹${c.price}</span>
+            </label>
+          </div>
+        </div>
+      `).join('');
+    } catch (e) {
+      container.innerHTML = `<div class="col-12 text-danger text-center py-3">Failed to load courses.</div>`;
+    }
+  }
 </script>
 {% endblock %}

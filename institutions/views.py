@@ -27,6 +27,7 @@ from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.decorators.http import require_GET, require_http_methods
+from django.views.decorators.csrf import csrf_exempt
 
 from .forms import InstitutionForm, StudentForm
 from .models import Institution, Student
@@ -186,11 +187,12 @@ def serialize_institution(inst, detailed=False):
             'admin_user': {
                 'id': inst.admin_user.id,
                 'username': inst.admin_user.username,
-                'email': inst.admin_user.email,
+                'email': inst.admin_user.email or 'info@eduaiq.co.in',
             } if inst.admin_user else None,
             'onboarded_by_partner_id': inst.onboarded_by_partner_id,
             'total_students': inst.students.count(),
             'created_at': inst.created_at.isoformat() if inst.created_at else None,
+            'allotted_course_ids': list(inst.allowed_courses.values_list('id', flat=True)),
         })
     return data
 
@@ -501,3 +503,133 @@ def update_student_status(request, pk):
         return JsonResponse({'success': False, 'errors': e.message_dict}, status=400)
 
     return JsonResponse({'success': True, 'student': serialize_student_full(student, request=request)})
+
+
+@login_required
+@require_http_methods(['POST'])
+def create_institution_student(request):
+    """
+    Institution Admin endpoint to create a new Student User Account & enroll into courses.
+    """
+    data = _body(request)
+    
+    username = data.get('username', '').strip()
+    email = data.get('email', '').strip()
+    password = data.get('password', '').strip()
+    first_name = data.get('first_name', '').strip()
+    last_name = data.get('last_name', '').strip()
+    phone = data.get('phone', '').strip()
+    admission_no = data.get('admission_no', '').strip()
+    class_grade = data.get('class_grade', 'Class 10').strip()
+    section = data.get('section', 'A').strip()
+    academic_year = data.get('academic_year', '2026-27').strip()
+    course_ids = data.get('course_ids', [])
+
+    if isinstance(course_ids, str):
+        import json
+        try:
+            course_ids = json.loads(course_ids)
+        except Exception:
+            course_ids = [c for c in course_ids.split(',') if c.strip().isdigit()]
+
+    if not username or not password or not admission_no:
+        return JsonResponse({'success': False, 'error': 'Username, Password, and Admission No are required.'}, status=400)
+
+    from accounts.models import User
+    from courses.models import Course, Enrollment
+
+    if User.objects.filter(username=username).exists():
+        return JsonResponse({'success': False, 'error': 'Username already exists. Please choose a different username.'}, status=400)
+
+    if email and User.objects.filter(email__iexact=email).exists():
+        return JsonResponse({'success': False, 'error': 'Email address already exists.'}, status=400)
+
+    if phone and User.objects.filter(phone=phone).exists():
+        return JsonResponse({'success': False, 'error': 'Phone number already exists.'}, status=400)
+
+    # Get institution linked to logged in user or selected institution
+    inst = None
+    if request.user.is_authenticated:
+        inst = Institution.objects.filter(admin_user=request.user).first()
+
+    if not inst:
+        inst_id = data.get('institution')
+        if inst_id:
+            inst = Institution.objects.filter(id=inst_id).first()
+
+    if not inst:
+        inst = Institution.objects.first()
+
+    try:
+        # Create User
+        user = User.objects.create_user(
+            username=username,
+            email=email if email else f"{username}@student.eduaiq.co.in",
+            password=password,
+            first_name=first_name,
+            last_name=last_name,
+            phone=phone if phone else f"+919{hash(username)%1000000000:09d}",
+            role='student'
+        )
+
+        # Create Student Profile
+        student = Student.objects.create(
+            user=user,
+            institution=inst,
+            admission_no=admission_no,
+            class_grade=class_grade,
+            section=section,
+            academic_year=academic_year
+        )
+
+        # Create Enrollments for selected courses
+        enrolled_courses = []
+        if course_ids:
+            from courses.models import Course, Enrollment
+            for cid in course_ids:
+                try:
+                    course = Course.objects.get(id=int(cid))
+                    Enrollment.objects.get_or_create(
+                        student=user,
+                        course=course,
+                        defaults={'covered_by_plan': True, 'amount_paid': 0}
+                    )
+                    enrolled_courses.append(course.title)
+                except Exception:
+                    continue
+
+        return JsonResponse({
+            'success': True,
+            'message': 'Student account created and enrolled successfully!',
+            'student_username': username,
+            'enrolled_courses': enrolled_courses
+        })
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@login_required
+@require_http_methods(['POST'])
+def institution_allot_courses(request, pk):
+    try:
+        inst = Institution.objects.get(pk=pk)
+    except ObjectDoesNotExist:
+        return JsonResponse({'error': 'Institution not found'}, status=404)
+
+    if not _is_staff(request.user):
+        return JsonResponse({'error': 'Forbidden'}, status=403)
+
+    data = _body(request)
+    course_ids = data.get('course_ids', [])
+
+    from courses.models import Course
+    valid_courses = Course.objects.filter(id__in=course_ids)
+    inst.allowed_courses.set(valid_courses)
+
+    return JsonResponse({
+        'success': True,
+        'message': f'Updated allotted courses for {inst.name}',
+        'allotted_course_ids': list(inst.allowed_courses.values_list('id', flat=True))
+    })

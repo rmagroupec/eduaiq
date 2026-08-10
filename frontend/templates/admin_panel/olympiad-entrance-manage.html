@@ -1,0 +1,176 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Olympiad Entrance Management - EduDash Admin{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h6 class="fw-semibold mb-0">Olympiad Entrance Exam Management</h6>
+    <div class="text-sm mt-1">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/ Olympiad Entrance</span>
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="/admin/olympiad/olympiad/" target="_blank" class="btn btn-outline-secondary radius-8 d-flex align-items-center gap-2">
+      <i class="ri-settings-4-line"></i> Django Admin
+    </a>
+    <a href="{% url 'admin_olympiad_entrance_add' %}" class="btn btn-primary-600 radius-8 d-flex align-items-center gap-2 font-weight-bold">
+      <i class="ri-add-line"></i> + Create Entrance Exam
+    </a>
+  </div>
+</div>
+
+<!-- Metric Overview Section -->
+<div class="row gy-4 mb-24">
+  <div class="col-md-4">
+    <div class="card p-20 radius-12 border border-primary-100 bg-primary-50">
+      <div class="d-flex align-items-center gap-3">
+        <div class="w-48-px h-48-px bg-primary-600 text-white rounded-circle d-flex justify-content-center align-items-center fs-4">
+          <i class="ri-trophy-line"></i>
+        </div>
+        <div>
+          <span class="text-secondary-light text-xs font-weight-bold text-uppercase">Entrance Exams</span>
+          <h4 class="mb-0 fw-bold text-primary-900">{{ total_exams }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="card p-20 radius-12 border border-success-100 bg-success-50">
+      <div class="d-flex align-items-center gap-3">
+        <div class="w-48-px h-48-px bg-success-600 text-white rounded-circle d-flex justify-content-center align-items-center fs-4">
+          <i class="ri-user-add-line"></i>
+        </div>
+        <div>
+          <span class="text-secondary-light text-xs font-weight-bold text-uppercase">Enrolled Candidates</span>
+          <h4 class="mb-0 fw-bold text-success-900">{{ total_candidates }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card p-20 radius-12 border border-info-100 bg-info-50">
+      <div class="d-flex align-items-center gap-3">
+        <div class="w-48-px h-48-px bg-info-600 text-white rounded-circle d-flex justify-content-center align-items-center fs-4">
+          <i class="ri-award-line"></i>
+        </div>
+        <div>
+          <span class="text-secondary-light text-xs font-weight-bold text-uppercase">Completed Attempts</span>
+          <h4 class="mb-0 fw-bold text-info-900">{{ total_attempts }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Exam Table Card -->
+<div class="card radius-12 overflow-hidden border border-neutral-200">
+  <div class="card-header p-24 bg-white border-bottom border-neutral-200 d-flex flex-wrap align-items-center justify-content-between gap-3">
+    <h6 class="mb-0 fw-bold text-lg"><i class="ri-file-list-3-line text-primary me-2"></i> All Entrance Examinations</h6>
+    <a href="/olympiad-entrance/" target="_blank" class="btn btn-sm btn-outline-primary radius-8">
+      <i class="ri-external-link-line me-1"></i> Public Catalog View
+    </a>
+  </div>
+  
+  <div class="card-body p-0">
+    {% if messages %}
+      <div class="p-24 pb-0">
+        {% for message in messages %}
+          <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show mb-0 radius-8" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-24">ID</th>
+            <th>Exam Name</th>
+            <th>Level & Group</th>
+            <th>Duration</th>
+            <th>Fee</th>
+            <th>Result Mode</th>
+            <th>Candidates</th>
+            <th>Status</th>
+            <th class="pe-24 text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for exam in exams %}
+            <tr>
+              <td class="ps-24 font-weight-bold">#{{ exam.id }}</td>
+              <td>
+                <h6 class="text-sm fw-bold text-neutral-900 mb-0">{{ exam.name }}</h6>
+                <small class="text-neutral-500">Date: {{ exam.exam_date|date:"d M Y, h:i A" }}</small>
+              </td>
+              <td>
+                <span class="badge bg-primary-100 text-primary-600 rounded-pill text-uppercase px-12 py-4 fw-bold text-xs">{{ exam.level }}</span>
+                <div class="text-xs text-neutral-500 mt-1"><i class="ri-graduation-cap-line me-1"></i>{{ exam.class_group }}</div>
+              </td>
+              <td class="fw-semibold text-neutral-800">
+                <i class="ri-time-line text-primary me-1"></i>{{ exam.exam_duration_minutes }} Mins
+              </td>
+              <td>
+                {% if exam.fee > 0 %}
+                  <span class="fw-bold text-neutral-900">₹{{ exam.fee }}</span>
+                {% else %}
+                  <span class="badge bg-success-100 text-success-600 rounded-pill px-8 py-2 font-weight-bold text-xs">FREE</span>
+                {% endif %}
+              </td>
+              <td>
+                <span class="badge bg-warning-100 text-warning-800 rounded-pill px-10 py-4 font-weight-bold text-xs">
+                  {{ exam.get_result_display_mode_display }}
+                </span>
+              </td>
+              <td>
+                <span class="badge bg-info-100 text-info-700 rounded-pill px-12 py-4 font-weight-bold text-xs">
+                  <i class="ri-user-line me-1"></i> {{ exam.enrolled_count }} Candidates
+                </span>
+              </td>
+              <td>
+                {% if exam.is_active %}
+                  <span class="badge bg-success-100 text-success-600 rounded-pill px-12 py-4 fw-bold text-xs"><i class="ri-checkbox-circle-fill me-1"></i> Active</span>
+                {% else %}
+                  <span class="badge bg-neutral-200 text-neutral-600 rounded-pill px-12 py-4 fw-bold text-xs"><i class="ri-close-circle-fill me-1"></i> Disabled</span>
+                {% endif %}
+              </td>
+              <td class="pe-24 text-end">
+                <div class="d-inline-flex gap-2">
+                  <a href="{% url 'admin_olympiad_entrance_questions' exam.id %}" class="btn btn-xs btn-primary-600 radius-6 p-6 font-weight-bold" title="Manage Questions & Quizzes">
+                    <i class="ri-questionnaire-line me-1"></i> Questions
+                  </a>
+                  <a href="{% url 'admin_olympiad_entrance_edit' exam.id %}" class="btn btn-xs btn-outline-primary radius-6 p-6" title="Edit Exam">
+                    <i class="ri-edit-line"></i> Edit
+                  </a>
+                  <a href="{% url 'admin_olympiad_entrance_toggle' exam.id %}" class="btn btn-xs {% if exam.is_active %}btn-outline-warning{% else %}btn-outline-success{% endif %} radius-6 p-6" title="Toggle Status">
+                    {% if exam.is_active %}Disable{% else %}Activate{% endif %}
+                  </a>
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="9" class="text-center py-5 text-neutral-500">
+                <i class="ri-file-list-line fs-1 d-block mb-2 text-neutral-400"></i>
+                <h6 class="fw-bold mb-1">No Olympiad Entrance Exams Created Yet</h6>
+                <p class="text-xs mb-3">Click the button below to create your first Entrance Exam.</p>
+                <a href="{% url 'admin_olympiad_entrance_add' %}" class="btn btn-sm btn-primary-600 radius-8">
+                  + Create Entrance Exam
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

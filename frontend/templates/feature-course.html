@@ -157,18 +157,22 @@ Data Science, Business Communication, AI Books, and Career Readiness.{% endblock
 
   .post {
     background: white;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-    transition: all 0.4s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative;
+    cursor: pointer;
   }
 
   .post:hover {
-    transform: translateY(-15px);
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(102, 126, 234, 0.15);
+    border-color: #667eea;
   }
 
   .feature-image {
@@ -182,11 +186,11 @@ Data Science, Business Communication, AI Books, and Career Readiness.{% endblock
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.4s ease;
+    transition: transform 0.5s ease;
   }
 
   .post:hover .feature-image img {
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
 
   .cat-meta {
@@ -194,37 +198,46 @@ Data Science, Business Communication, AI Books, and Career Readiness.{% endblock
     top: 15px;
     left: 15px;
     color: white;
-    padding: 8px 15px;
+    background: rgba(102, 126, 234, 0.9);
+    backdrop-filter: blur(4px);
+    padding: 6px 14px;
     border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .cat-meta a {
+    color: white !important;
     text-decoration: none;
-    transition: all 0.3s;
   }
 
   .cat-meta:hover {
-    /* background: rgba(102, 126, 234, 1); */
-    color: white;
+    background: rgba(102, 126, 234, 1);
   }
 
   .entry-content {
-    padding: 20px;
+    padding: 24px;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
   }
 
   .entry-content h4 {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 700;
     margin-bottom: 12px;
     line-height: 1.4;
+    color: #1a202c;
   }
 
   .entry-content h4 a {
-    color: #333;
+    color: inherit;
     text-decoration: none;
-    transition: color 0.3s;
+    transition: color 0.2s;
   }
 
   .entry-content h4 a:hover {
@@ -314,22 +327,20 @@ Data Science, Business Communication, AI Books, and Career Readiness.{% endblock
     gap: 8px;
     color: #667eea;
     text-decoration: none;
-    font-size: 12px;
-    font-weight: 600;
-    transition: all 0.3s;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.2s;
     background: rgba(102, 126, 234, 0.08);
-    padding: 8px 12px;
-    border-radius: 5px;
+    padding: 8px 18px;
+    border-radius: 30px;
+    letter-spacing: 0.5px;
     align-self: flex-start;
   }
 
   .entry-meta a:hover {
     background: rgba(102, 126, 234, 0.15);
     color: #5568d3;
-  }
-
-  .entry-meta a i {
-    font-size: 10px;
+    transform: translateX(2px);
   }
 
   .skill-container {
@@ -489,7 +500,7 @@ Data Science, Business Communication, AI Books, and Career Readiness.{% endblock
 
   async function loadFeaturedCourses() {
     try {
-      const response = await fetch(`${API_BASE_URL}/courses/courses/?page=1&page_size=6`);
+      const response = await fetch(`${API_BASE_URL}/courses/courses/?page=1&page_size=6`, { credentials: 'same-origin' });
       const data = await response.json();
 
       if (!data.results || data.results.length === 0) {
@@ -500,16 +511,13 @@ Data Science, Business Communication, AI Books, and Career Readiness.{% endblock
       const grid = document.getElementById('coursesGrid');
       grid.innerHTML = data.results.map(course => `
         <div class="col-sm-6 col-lg-4 pe-3 ps-3 pt-4 pt-lg-0 inner-course">
-          <article class="post">
+          <article class="post" onclick="window.location.href='/course/?slug=${course.slug}'">
             <figure class="feature-image">
               <img src="${course.thumbnail || 'https://via.placeholder.com/400x220'}" alt="${course.title}"/>
-              <span class="cat-meta">
-                <a href="/courses/?category=${course.category?.id}">${course.category?.name || 'Course'}</a>
-              </span>
             </figure>
             <div class="entry-content">
               <h4>
-                <a href="/course/?slug=${course.slug}">
+                <a href="/course/?slug=${course.slug}" onclick="event.stopPropagation();">
                   ${course.title}
                 </a>
               </h4>
@@ -530,7 +538,7 @@ Data Science, Business Communication, AI Books, and Career Readiness.{% endblock
                   <i class="fas fa-university"></i>
                   Used by ${Math.floor(Math.random() * 25) + 10}+ institutions
                 </span>
-                <a href="/course/?slug=${course.slug}">
+                <a href="/course/?slug=${course.slug}" onclick="event.stopPropagation();">
                   VIEW COURSE
                   <i class="fas fa-long-arrow-alt-right"></i>
                 </a>

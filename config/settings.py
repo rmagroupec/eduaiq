@@ -155,3 +155,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "accounts.User"
+
+# Allow internal sameorigin iframes for PDF & Video lesson viewers
+X_FRAME_OPTIONS = 'SAMEORIGIN'

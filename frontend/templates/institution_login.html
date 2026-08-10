@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Institution Portal Login - EduAiQ{% endblock %}
+
+{% block description %}Login to EduAiQ Institution Management Portal for partner schools, colleges, and LMS campus administrators.{% endblock %}
+
+{% block content %}
+<section class="institution-login-section py-5">
+  <div class="container">
+    <div class="row justify-content-center align-items-center min-vh-75 py-4">
+      <div class="col-lg-5 col-md-7 col-sm-10">
+        
+        <div class="institution-login-card shadow-2xl">
+          <!-- Header Banner -->
+          <div class="inst-card-header text-center mb-4">
+            <div class="inst-icon-wrap mx-auto mb-3">
+              <i class="fas fa-university"></i>
+            </div>
+            <h2 class="inst-title mb-2">Institution Portal Login</h2>
+            <p class="inst-subtitle text-muted mb-0">Access campus LMS, student analytics & institutional administration</p>
+          </div>
+
+          <!-- Error Alert -->
+          {% if form_errors %}
+            {% for error in form_errors %}
+              <div class="alert alert-danger radius-12 d-flex align-items-center gap-2 mb-4" role="alert">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                <div>{{ error }}</div>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <!-- Form -->
+          <form method="POST" action="{% url 'institution_login' %}">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+              <label class="form-label text-dark fw-bold">Institution Email / Username</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0"><i class="fas fa-building text-pink"></i></span>
+                <input type="text" name="username" class="form-control border-start-0 ps-0" placeholder="e.g. admin@school.edu.in or username" value="{{ old_username|default:'' }}" required autocomplete="username">
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <label class="form-label text-dark fw-bold mb-0">Password</label>
+                <a href="/contact/" class="text-sm text-pink fw-semibold text-decoration-none">Forgot Password?</a>
+              </div>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-pink"></i></span>
+                <input type="password" name="password" class="form-control border-start-0 ps-0" placeholder="••••••••••••" required autocomplete="current-password">
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-between mb-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="rememberMe" checked>
+                <label class="form-check-label text-muted text-sm" for="rememberMe">Remember Institution Session</label>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-inst-login w-100 py-3 radius-12 fw-bold text-white shadow-lg">
+              <i class="fas fa-sign-in-alt me-2"></i> LOGIN TO INSTITUTION PORTAL
+            </button>
+          </form>
+
+          <div class="inst-card-footer text-center mt-4 pt-3 border-top">
+            <p class="mb-1 text-muted text-sm">Need to onboard your school or college?</p>
+            <a href="/page/apply-for-franchise/" class="fw-bold text-pink text-decoration-none">
+              <i class="fas fa-handshake me-1"></i> Apply For Institution Partnership
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .institution-login-section {
+    background: linear-gradient(135deg, #41246D 0%, #1e1b4b 60%, #170d2c 100%) !important;
+    min-height: 82vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .institution-login-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 40px 36px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .inst-icon-wrap {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #f73859 0%, #ec4899 100%);
+    color: #ffffff;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 10px 25px rgba(247, 56, 89, 0.4);
+  }
+
+  .inst-title {
+    color: #41246D;
+    font-weight: 800;
+    font-size: 24px;
+  }
+
+  .inst-subtitle {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .btn-inst-login {
+    width: 100%;
+    padding: 14px 20px !important;
+    background: linear-gradient(135deg, #f73859 0%, #ec4899 100%) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 6px 18px rgba(247, 56, 89, 0.35) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .btn-inst-login:hover {
+    background: linear-gradient(135deg, #e02447 0%, #d62846 100%) !important;
+    box-shadow: 0 12px 28px rgba(247, 56, 89, 0.6) !important;
+    transform: translateY(-3px) scale(1.01) !important;
+    filter: brightness(1.03) !important;
+  }
+
+  .text-pink {
+    color: #f73859 !important;
+  }
+
+  .input-group-text {
+    border-color: #e2e8f0;
+    background: #f8fafc !important;
+  }
+
+  .form-control {
+    border-color: #e2e8f0;
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .form-control:focus {
+    border-color: #f73859;
+    box-shadow: 0 0 0 0.25rem rgba(247, 56, 89, 0.15);
+  }
+</style>
+{% endblock %}
