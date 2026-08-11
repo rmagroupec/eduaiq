@@ -5178,7 +5178,7 @@ input[type=submit]:focus {
 >>> Inner Banner  
 ----------------------------------------------------------------*/
 .inner-banner-wrap {
-  margin-bottom: 110px;
+  margin-bottom: 50px;
 }
 
 @media screen and (max-width: 767px) {
@@ -5193,7 +5193,7 @@ input[type=submit]:focus {
   background-position: center center;
   text-align: center;
   position: relative;
-  padding: 150px 0;
+  padding: 60px 0;
 }
 
 .inner-baner-container:before {
@@ -11408,27 +11408,27 @@ product slider range for price css
    instead of plain white, so scrolled state feels on-brand. */
 @media screen and (min-width: 992px) {
   .fixed-header {
-    background-color: #ffffff;
-    /* swap in your exact brand navy hex if you have it */
+    background-color: #ffffff !important;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12) !important;
   }
 
   .fixed-header .main-navigation .navigation>ul>li>a {
-    color: #492C6E;
+    color: #0F172A !important;
   }
 
   .fixed-header .main-navigation .navigation>ul>li>a:hover,
   .fixed-header .main-navigation .navigation>ul>li.current-menu-item>a {
-    color: #F24080;
+    color: #2563EB !important;
   }
 
   .fixed-header .header-icon-group .header-social ul li a i,
   .fixed-header .search-icon i {
-    color: #ffffff;
+    color: #ffffff !important;
   }
 
   .fixed-header .header-icon-group .header-social ul li a i:hover,
   .fixed-header .search-icon i:hover {
-    color: #F24080;
+    color: #2563EB !important;
   }
 }
 

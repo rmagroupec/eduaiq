@@ -33,12 +33,12 @@
         }
         .register-header h2 {
             font-size: 28px;
-            font-weight: bold;
-            color: #333;
+            font-weight: 800;
+            color: #D97706 !important;
             margin-bottom: 10px;
         }
         .register-header p {
-            color: #666;
+            color: #64748B;
             font-size: 14px;
         }
         .form-group {
@@ -47,28 +47,29 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
+            color: #1E293B !important;
+            font-weight: 600;
             font-size: 14px;
         }
         .form-group input {
             width: 100%;
             padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
             font-size: 14px;
+            color: #1E293B;
             transition: border-color 0.3s;
             box-sizing: border-box;
         }
         .form-group input:focus {
             outline: none;
-            border-color: #0066cc;
-            box-shadow: 0 0 0 3px rgba(0,102,204,0.1);
+            border-color: #D97706 !important;
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15) !important;
         }
         .form-group small {
             display: block;
             margin-top: 5px;
-            color: #999;
+            color: #94a3b8;
             font-size: 12px;
         }
         .password-wrapper {
@@ -82,12 +83,12 @@
             background: none;
             border: none;
             cursor: pointer;
-            color: #666;
+            color: #64748B;
             font-size: 18px;
             padding: 0;
         }
         .toggle-password:hover {
-            color: #0066cc;
+            color: #D97706 !important;
         }
         .alert {
             padding: 12px 16px;
@@ -122,38 +123,42 @@
             margin-bottom: 0;
             font-weight: normal;
             font-size: 14px;
+            color: #1E293B;
             cursor: pointer;
         }
         .form-check a {
-            color: #0066cc;
+            color: #D97706 !important;
+            font-weight: 700;
             text-decoration: none;
         }
         .form-check a:hover {
+            color: #1E293B !important;
             text-decoration: underline;
         }
         .btn-register {
             width: auto;
-            min-width: 200px;
+            min-width: 220px;
             margin: 0 auto;
             display: block;
-            padding: 10px 24px;
-            background: linear-gradient(135deg, #f73859 0%, #ec4899 100%);
-            color: white;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%) !important;
+            color: #ffffff !important;
             border: none;
             border-radius: 30px;
             font-size: 15px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(247, 56, 89, 0.4);
+            box-shadow: 0 4px 15px rgba(30, 41, 59, 0.35);
             transition: all 0.35s ease;
         }
         .btn-register:hover {
-            background: linear-gradient(135deg, #e02447 0%, #d62846 100%);
+            background: linear-gradient(135deg, #FFB800 0%, #D97706 100%) !important;
+            color: #ffffff !important;
             transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(247, 56, 89, 0.6);
+            box-shadow: 0 8px 22px rgba(217, 119, 6, 0.45);
         }
         .btn-register:disabled {
-            background-color: #ccc;
+            background-color: #ccc !important;
             cursor: not-allowed;
         }
         .register-footer {
@@ -161,14 +166,16 @@
             margin-top: 20px;
         }
         .register-footer p {
-            color: #666;
+            color: #64748B;
             font-size: 14px;
         }
         .register-footer a {
-            color: #0066cc;
+            color: #D97706 !important;
+            font-weight: 700;
             text-decoration: none;
         }
         .register-footer a:hover {
+            color: #1E293B !important;
             text-decoration: underline;
         }
         .logo {
@@ -200,7 +207,9 @@
         <div class="register-card">
             <!-- Logo -->
             <div class="logo">
-                <img alt="EduAiQ Logo" src="{% static 'admin_assets/images/logo.png' %}" style="max-height: 50px;"/>
+                <a href="/">
+                    <img alt="EduAiQ Logo" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop/RH5FCbrpj5oYZFFX/file_00000000cfc0720984e9245a8aa83486__2_-removebg-preview-I5iSFuXKpmUWVA3H.png" style="max-height: 80px; width: auto; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.08));"/>
+                </a>
             </div>
 
             <!-- Header -->

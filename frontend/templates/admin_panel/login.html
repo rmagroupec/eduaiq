@@ -12,14 +12,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #25a194;
-            --accent: #1d857a;
+            --primary: #0F172A;
+            --accent: #FFB800;
             --bg-color: #f6f5fb;
             --card-bg: #ffffff;
             --border-color: #e2e0ed;
-            --text-main: #2b263b;
-            --text-muted: #736f85;
-            --input-bg: #ffffff;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --input-bg: #F8FAFC;
         }
 
         body {
@@ -40,7 +40,7 @@
             position: absolute;
             width: 500px;
             height: 500px;
-            background: radial-gradient(circle, rgba(37, 161, 148, 0.06) 0%, rgba(255, 255, 255, 0) 70%);
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
             top: -10%;
             left: -10%;
             z-index: 0;
@@ -52,7 +52,7 @@
             position: absolute;
             width: 500px;
             height: 500px;
-            background: radial-gradient(circle, rgba(29, 133, 122, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
+            background: radial-gradient(circle, rgba(15, 23, 42, 0.06) 0%, rgba(255, 255, 255, 0) 70%);
             bottom: -10%;
             right: -10%;
             z-index: 0;
@@ -75,35 +75,38 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 24px;
-            padding: 48px 40px;
+            padding: 40px 40px;
             max-width: 460px;
             width: 100%;
-            box-shadow: 0 16px 48px rgba(37, 161, 148, 0.08);
+            box-shadow: 0 16px 48px rgba(15, 23, 42, 0.08);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .login-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 24px 64px rgba(37, 161, 148, 0.12);
+            box-shadow: 0 24px 64px rgba(15, 23, 42, 0.12);
         }
 
         .logo {
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
         }
 
         .logo img {
-            max-height: 45px;
+            max-height: 95px !important;
+            width: auto !important;
+            object-fit: contain !important;
+            filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.08));
         }
 
         .login-header {
             text-align: center;
-            margin-bottom: 36px;
+            margin-bottom: 28px;
         }
 
         .login-header h2 {
-            font-size: 28px;
-            font-weight: 700;
+            font-size: 26px;
+            font-weight: 800;
             color: var(--text-main);
             margin-bottom: 8px;
             letter-spacing: -0.5px;
@@ -111,42 +114,47 @@
 
         .login-header p {
             color: var(--text-muted);
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
             color: var(--text-main);
-            font-weight: 500;
-            font-size: 14px;
+            font-weight: 600;
+            font-size: 13.5px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px 16px;
+            padding: 10px 14px;
             background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            font-size: 15px;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 10px;
+            font-size: 14px;
             color: var(--text-main);
             box-sizing: border-box;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .form-group input::placeholder {
-            color: #b0adbe;
+            color: #94A3B8;
+        }
+
+        .form-group input:hover {
+            border-color: #CBD5E1;
+            background: #FFFFFF;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: var(--primary);
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(37, 161, 148, 0.08);
+            border-color: #F59E0B;
+            background: #FFFFFF;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.18);
         }
 
         .password-wrapper {
@@ -175,33 +183,35 @@
         }
 
         .alert {
-            padding: 14px 18px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            font-size: 14px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 13.5px;
             border: 1px solid #fecaca;
             background: #fef2f2;
             color: #b91c1c;
         }
 
+        /* Log In Button -> Logo Dark Navy Base & Yellow Hover */
         .btn-login {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--primary) 0%, #1e8277 100%);
-            color: #ffffff;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+            color: #ffffff !important;
             border: none;
             border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 15px;
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 12px rgba(37, 161, 148, 0.15);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
         }
 
         .btn-login:hover {
             transform: translateY(-2px);
-            background: linear-gradient(135deg, var(--accent) 0%, #176a61 100%);
-            box-shadow: 0 8px 24px rgba(37, 161, 148, 0.25);
+            background: linear-gradient(135deg, #FFB800 0%, #F59E0B 100%) !important;
+            color: #0F172A !important;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.45);
         }
 
         .btn-login:active {
@@ -210,20 +220,20 @@
 
         .login-footer {
             text-align: center;
-            margin-top: 28px;
-            font-size: 14px;
+            margin-top: 24px;
+            font-size: 13.5px;
             color: var(--text-muted);
         }
 
         .login-footer a {
-            color: var(--primary);
+            color: #D97706 !important;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             transition: color 0.2s;
         }
 
         .login-footer a:hover {
-            color: var(--accent);
+            color: #B45309 !important;
             text-decoration: underline;
         }
     </style>
@@ -232,8 +242,12 @@
 <body>
     <div class="login-container">
         <div class="login-card">
+            <!-- Logo -->
             <div class="logo">
-                <img alt="EduAiQ Logo" src="{% static 'admin_assets/images/logo.png' %}" />
+                <a href="/">
+                    <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop/RH5FCbrpj5oYZFFX/file_00000000cfc0720984e9245a8aa83486__2_-removebg-preview-I5iSFuXKpmUWVA3H.png"
+                        alt="EduAiQ Logo" />
+                </a>
             </div>
             <div class="login-header">
                 <h2>Welcome Back 👋</h2>
