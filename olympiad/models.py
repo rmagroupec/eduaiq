@@ -29,9 +29,13 @@ class Olympiad(models.Model):
     exam_date = models.DateTimeField()
     exam_duration_minutes = models.PositiveIntegerField(default=60)
     result_display_mode = models.CharField(max_length=20, choices=RESULT_MODES, default='immediate')
+    result_timing_mode = models.CharField(max_length=20, choices=RESULT_MODES, default='immediate')
     result_declaration_date = models.DateTimeField(null=True, blank=True)
+    result_publish_at = models.DateTimeField(null=True, blank=True)
+    is_result_published = models.BooleanField(default=False)
     next_day_release_time = models.TimeField(default='09:00:00', help_text="Release time for 'Next Day' result mode")
     quizzes = models.ManyToManyField('courses.Quiz', through='OlympiadQuiz', blank=True, related_name='olympiad_exams')
+    is_entrance_exam = models.BooleanField(default=True, help_text="Designates if this exam is an Olympiad Entrance Exam")
     is_active = models.BooleanField(default=True)
 
 

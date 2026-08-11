@@ -190,7 +190,8 @@ def eduaiq_ecosystem(request):
 @login_required(login_url='/login/')
 def my_learning(request):
     """
-    Student learning dashboard - shows enrolled courses, progress, and Olympiad Entrance Exams
+    Student learning dashboard - shows enrolled courses, progress, Olympiad Entrance Exams,
+    Certificates, Student ID Card, and Exam Admit Cards.
     Template: my-learning.html
     """
     entrance_registrations = list(OlympiadRegistration.objects.filter(
@@ -201,9 +202,24 @@ def my_learning(request):
     in_progress_count = 0
     not_started_count = 0
 
+    certificates_list = []
+    admit_cards_list = []
+
     for reg in entrance_registrations:
         attempt = OlympiadAttempt.objects.filter(registration=reg).first()
         reg.active_attempt = attempt
+        
+        # Admit card payload
+        admit_cards_list.append({
+            'exam_name': reg.olympiad.name,
+            'roll_number': reg.roll_number,
+            'registered_at': reg.registered_at,
+            'class_group': reg.olympiad.class_group,
+            'duration_minutes': reg.olympiad.exam_duration_minutes,
+            'exam_id': reg.olympiad.id,
+            'is_completed': bool(attempt and attempt.submitted_at),
+        })
+
         if not attempt:
             reg.status_label = 'Not Started'
             reg.status_badge_class = 'bg-secondary text-white'
@@ -222,6 +238,44 @@ def my_learning(request):
             reg.action_label = 'View Result / Status'
             reg.is_completed = True
             completed_count += 1
+            
+            # Certificate payload
+            pct = float(attempt.score_pct or 0)
+            if pct >= 85.0:
+                award = "Gold Medal & 100% Scholarship"
+            elif pct >= 70.0:
+                award = "Silver Medal & 50% Scholarship"
+            elif pct >= 50.0:
+                award = "Bronze Medal & 25% Scholarship"
+            else:
+                award = "Certificate of Participation"
+                
+            certificates_list.append({
+                'title': f"{reg.olympiad.name} - Merit Certificate",
+                'type': 'Olympiad Entrance',
+                'issued_date': attempt.submitted_at,
+                'cert_url': f"/olympiad-entrance/{reg.olympiad.id}/certificate/",
+                'serial_no': f"EDUAIQ-CERT-{reg.olympiad.id}-{reg.roll_number}",
+                'award': award,
+                'score_pct': attempt.score_pct,
+            })
+
+    # Student ID Card Data
+    from institutions.models import Student
+    student_profile = Student.objects.filter(user=request.user).select_related('institution').first()
+    inst_name = student_profile.institution.name if (student_profile and student_profile.institution) else "EduAiQ Academy"
+    roll_no = student_profile.roll_number if (student_profile and student_profile.roll_number) else f"STU-{request.user.id:05d}"
+    
+    id_card_data = {
+        'full_name': request.user.get_full_name() or request.user.username,
+        'username': request.user.username,
+        'email': request.user.email,
+        'phone': getattr(request.user, 'phone', '') or 'N/A',
+        'role': getattr(request.user, 'role', 'student').capitalize(),
+        'roll_number': roll_no,
+        'institution_name': inst_name,
+        'joined_date': request.user.date_joined,
+    }
 
     return render(request, "my-learning.html", {
         'entrance_registrations': entrance_registrations,
@@ -229,6 +283,9 @@ def my_learning(request):
         'completed_entrance_count': completed_count,
         'in_progress_entrance_count': in_progress_count,
         'not_started_entrance_count': not_started_count,
+        'id_card': id_card_data,
+        'certificates_list': certificates_list,
+        'admit_cards_list': admit_cards_list,
     })
 
 
