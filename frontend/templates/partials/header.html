@@ -206,12 +206,12 @@
   }
 
   /* Top Bar Badges */
-  .institution-top-badge,
-  .franchise-top-badge {
+  .header-contact-info a.institution-top-badge,
+  .header-contact-info a.franchise-top-badge {
     display: inline-flex !important;
     align-items: center !important;
     white-space: nowrap !important;
-    padding: 5px 16px !important;
+    padding: 6px 18px !important;
     border-radius: 50px !important;
     font-size: 12px !important;
     font-weight: 700 !important;
@@ -221,33 +221,53 @@
   }
 
   /* Institution Login Badge -> Dark Navy Blue Pill */
-  .institution-top-badge {
-    background: rgba(255, 255, 255, 0.12) !important;
-    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  .header-contact-info a.institution-top-badge {
+    background: rgba(15, 23, 42, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
     color: #ffffff !important;
   }
 
-  .institution-top-badge:hover {
-    background: #ffffff !important;
-    color: var(--logo-navy) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2) !important;
+  .header-contact-info a.institution-top-badge i {
+    color: #f97316 !important;
+    transition: color 0.3s ease;
   }
 
-  /* Franchise Badge -> Golden Yellow Accent */
-  .franchise-top-badge {
-    background: var(--brand-yellow-gradient) !important;
-    border: none !important;
-    color: var(--logo-navy) !important;
+  .header-contact-info a.institution-top-badge:hover {
+    background: linear-gradient(135deg, #f6a055 0%, #f97316 100%) !important;
+    border-color: #f97316 !important;
+    color: #0f172a !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(249, 115, 22, 0.45) !important;
+  }
+
+  .header-contact-info a.institution-top-badge:hover i {
+    color: #0f172a !important;
+  }
+
+  /* Franchise Badge -> Golden Yellow Accent Pill */
+  .header-contact-info a.franchise-top-badge {
+    background: linear-gradient(135deg, #f6a055 0%, #f97316 100%) !important;
+    border: 1px solid #f97316 !important;
+    color: #0f172a !important;
     font-weight: 800 !important;
-    box-shadow: 0 3px 10px rgba(245, 158, 11, 0.35) !important;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35) !important;
   }
 
-  .franchise-top-badge:hover {
-    background: var(--brand-yellow-hover) !important;
+  .header-contact-info a.franchise-top-badge i {
+    color: #0f172a !important;
+    transition: color 0.3s ease;
+  }
+
+  .header-contact-info a.franchise-top-badge:hover {
+    background: #0f172a !important;
+    border-color: #f97316 !important;
     color: #ffffff !important;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(245, 158, 11, 0.5) !important;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.5) !important;
+  }
+
+  .header-contact-info a.franchise-top-badge:hover i {
+    color: #f97316 !important;
   }
 
   /* Top Bar Social Icons & Search */

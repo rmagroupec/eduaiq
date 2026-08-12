@@ -278,7 +278,7 @@
 
 <style>
   /* ==========================================================================
-     Ultra-Premium Course Detail UI Styling
+     EduAiQ Logo-Matched Course Detail UI Styling & Rich Hover Effects
      ========================================================================== */
   .course-detail-section {
     padding: 50px 0 80px 0;
@@ -286,11 +286,11 @@
   }
 
   .text-indigo {
-    color: #4f46e5 !important;
+    color: #f97316 !important;
   }
 
   .bg-indigo {
-    background-color: #4f46e5 !important;
+    background: linear-gradient(135deg, #f6a055 0%, #f97316 100%) !important;
   }
 
   .course-detail-hero-card {
@@ -301,6 +301,12 @@
     padding: 24px;
     margin-bottom: 30px;
     position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .course-detail-hero-card:hover {
+    box-shadow: 0 20px 45px -5px rgba(15, 23, 42, 0.09);
+    border-color: #cbd5e1;
   }
 
   .course-thumb-hero-wrap {
@@ -329,10 +335,10 @@
     position: absolute;
     top: 18px;
     left: 18px;
-    background: rgba(15, 23, 42, 0.8);
+    background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     color: #ffffff;
     padding: 8px 20px;
     border-radius: 30px;
@@ -353,7 +359,7 @@
   }
 
   .meta-pill-card {
-    background: #f8fafc;
+    background: #ffffff;
     border: 1px solid rgba(226, 232, 240, 0.85);
     border-radius: 16px;
     padding: 14px 12px;
@@ -362,7 +368,9 @@
     gap: 12px;
     min-width: 0;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+    cursor: pointer;
   }
 
   .meta-pill-card > div:last-child {
@@ -372,9 +380,9 @@
 
   .meta-pill-card:hover {
     background: #ffffff;
-    border-color: #f73859;
-    box-shadow: 0 8px 20px rgba(247, 56, 89, 0.15);
-    transform: translateY(-2px);
+    border-color: #f97316;
+    box-shadow: 0 10px 24px rgba(249, 115, 22, 0.18);
+    transform: translateY(-4px);
   }
 
   .meta-pill-icon {
@@ -382,13 +390,18 @@
     height: 42px;
     min-width: 42px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #f73859 0%, #ec4899 100%);
+    background: linear-gradient(135deg, #f6a055 0%, #f97316 100%);
     color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 17px;
-    box-shadow: 0 4px 12px rgba(247, 56, 89, 0.3);
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+    transition: transform 0.3s ease;
+  }
+
+  .meta-pill-card:hover .meta-pill-icon {
+    transform: scale(1.08) rotate(4deg);
   }
 
   .meta-pill-label {
@@ -433,10 +446,16 @@
     text-decoration: none;
   }
 
+  .nav-pills-pro .nav-link:hover:not(.active) {
+    color: #f97316;
+    background: rgba(249, 115, 22, 0.08);
+    transform: translateY(-1px);
+  }
+
   .nav-pills-pro .nav-link.active {
-    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    background: linear-gradient(135deg, #f6a055 0%, #f97316 100%);
     color: #ffffff !important;
-    box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35);
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35);
   }
 
   .tab-card-pro {
@@ -466,7 +485,6 @@
   .outcomes-list-pro {
     padding-left: 0;
     list-style: none;
-
   }
 
   .outcomes-list-pro li {
@@ -485,8 +503,8 @@
     top: 0;
     width: 20px;
     height: 20px;
-    background: #dcfce7;
-    color: #15803d;
+    background: #fff7ed;
+    color: #f97316;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -512,7 +530,7 @@
   .stat-num {
     font-size: 26px;
     font-weight: 900;
-    color: #4f46e5;
+    color: #f97316;
     margin-bottom: 2px;
   }
 
@@ -530,6 +548,11 @@
     padding: 28px;
     margin-bottom: 24px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s ease;
+  }
+  .overview-section-box:hover {
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+    border-color: #cbd5e1;
   }
   .overview-heading-row {
     display: flex;
@@ -541,13 +564,13 @@
     width: 36px;
     height: 36px;
     border-radius: 10px;
-    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    background: linear-gradient(135deg, #f6a055 0%, #f97316 100%);
     color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 16px;
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
   }
   .overview-heading-title {
     font-size: 15px;
@@ -570,32 +593,38 @@
     margin-top: 14px;
   }
   .outcome-item-card {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     border: 1px solid #e2e8f0;
     border-radius: 14px;
     padding: 14px 18px;
     display: flex;
     align-items: center;
     gap: 12px;
-    transition: all 0.25s ease;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .outcome-item-card:hover {
     background: #ffffff;
-    border-color: #cbd5e1;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+    border-color: #f97316;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.12);
   }
   .outcome-check-icon {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: #dcfce7;
-    color: #16a34a;
+    background: #fff7ed;
+    color: #f97316;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 13px;
     flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  .outcome-item-card:hover .outcome-check-icon {
+    background: #f97316;
+    color: #ffffff;
+    transform: scale(1.1);
   }
   .outcome-text-content {
     font-size: 14px;
@@ -612,21 +641,25 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
   }
   .highlight-metric-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 28px rgba(79, 70, 229, 0.12);
-    border-color: #c7d2fe;
+    transform: translateY(-5px);
+    box-shadow: 0 14px 28px rgba(249, 115, 22, 0.15);
+    border-color: #f97316;
   }
   .metric-icon-circle {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-    color: #2563eb;
+    background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+    color: #f97316;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 18px;
     margin: 0 auto 12px auto;
+    transition: transform 0.3s ease;
+  }
+  .highlight-metric-card:hover .metric-icon-circle {
+    transform: scale(1.1) rotate(6deg);
   }
   .metric-stat-num {
     font-size: 28px;
@@ -657,6 +690,12 @@
     position: relative;
     overflow: hidden;
     margin-bottom: 24px;
+    transition: all 0.3s ease;
+  }
+
+  .sidebar-card-pro:hover {
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.1);
+    border-color: #cbd5e1;
   }
 
   .sidebar-card-pro::before {
@@ -666,7 +705,7 @@
     left: 0;
     right: 0;
     height: 5px;
-    background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
+    background: linear-gradient(90deg, #f6a055 0%, #f97316 50%, #1e293b 100%);
   }
 
   .price-display-wrap {
@@ -691,10 +730,10 @@
     font-size: 15px;
     font-weight: 800;
     color: #ffffff !important;
-    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    background: linear-gradient(135deg, #f6a055 0%, #f97316 100%);
     padding: 14px 28px;
-    border-radius: 30px;
-    box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+    border-radius: 50px;
+    box-shadow: 0 8px 25px rgba(249, 115, 22, 0.35);
     border: none;
     cursor: pointer;
     transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -705,9 +744,39 @@
   }
 
   .btn-enroll-pro-cta:hover {
-    background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
-    box-shadow: 0 12px 30px rgba(79, 70, 229, 0.55);
-    transform: translateY(-3px);
+    background: linear-gradient(135deg, #ea580c 0%, #d97706 100%);
+    box-shadow: 0 12px 30px rgba(249, 115, 22, 0.55);
+    transform: translateY(-3px) scale(1.01);
+  }
+
+  .btn-login-access-pill {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 15.5px;
+    font-weight: 800;
+    color: #1e293b !important;
+    background: linear-gradient(135deg, #f6a055 0%, #f97316 100%) !important;
+    border: 2px solid #1e293b !important;
+    padding: 13px 26px !important;
+    border-radius: 50px !important;
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.35) !important;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    margin-bottom: 16px;
+    text-transform: none;
+    letter-spacing: 0.3px;
+    text-decoration: none !important;
+  }
+
+  .btn-login-access-pill:hover {
+    background: #1e293b !important;
+    color: #f6a055 !important;
+    border-color: #f97316 !important;
+    box-shadow: 0 10px 25px rgba(30, 41, 59, 0.4) !important;
+    transform: translateY(-3px) scale(1.01) !important;
   }
 
   .btn-enroll-pro-cta i {
@@ -734,18 +803,26 @@
     font-size: 14px;
     color: #475569;
     font-weight: 600;
+    transition: all 0.2s ease;
   }
 
   .spec-icon-box {
     width: 36px;
     height: 36px;
     border-radius: 10px;
-    background: #eef2ff;
-    color: #4f46e5;
+    background: #fff7ed;
+    color: #f97316;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 15px;
+    transition: transform 0.3s ease;
+  }
+
+  .spec-item-pro:hover .spec-icon-box {
+    transform: scale(1.1);
+    background: #f97316;
+    color: #ffffff;
   }
 
   .includes-card-pro {
@@ -754,6 +831,12 @@
     border: 1px solid rgba(226, 232, 240, 0.9);
     box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04);
     padding: 24px;
+    transition: all 0.3s ease;
+  }
+
+  .includes-card-pro:hover {
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    border-color: #cbd5e1;
   }
 
   .includes-title {
@@ -779,32 +862,38 @@
     font-size: 14px;
     color: #334155;
     font-weight: 600;
+    transition: all 0.2s ease;
   }
 
   .includes-icon {
     width: 34px;
     height: 34px;
     border-radius: 10px;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #f6a055 0%, #f97316 100%);
     color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 14px;
-    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
+    box-shadow: 0 4px 10px rgba(249, 115, 22, 0.25);
+    transition: transform 0.3s ease;
+  }
+
+  .includes-item:hover .includes-icon {
+    transform: scale(1.1) rotate(5deg);
   }
 
   .instructor-avatar-large {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #f6a055 0%, #f97316 100%);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 26px;
-    box-shadow: 0 6px 15px rgba(79, 70, 229, 0.3);
+    box-shadow: 0 6px 15px rgba(249, 115, 22, 0.3);
   }
 
   .info-badge-item {
@@ -818,6 +907,12 @@
     font-size: 14px;
     color: #475569;
     font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .info-badge-item:hover {
+    background: #fff7ed;
+    color: #1e293b;
   }
 
   @media (max-width: 768px) {
@@ -859,8 +954,9 @@
     margin: 0;
   }
   .module-badge-pill {
-    background: #e0e7ff;
-    color: #4338ca;
+    background: #fff7ed;
+    color: #f97316;
+    border: 1px solid #ffedd5;
     font-weight: 600;
     font-size: 12px;
     padding: 4px 10px;
@@ -885,7 +981,8 @@
     border-bottom: none;
   }
   .lesson-row-item:hover {
-    background: #f8fafc;
+    background: #fff7ed;
+    border-left: 3px solid #f97316;
     transform: translateX(4px);
   }
   .lesson-icon-badge {
@@ -898,8 +995,8 @@
     font-size: 16px;
     flex-shrink: 0;
   }
-  .icon-video { background: #e0f2fe; color: #0284c7; }
-  .icon-text { background: #f3e8ff; color: #9333ea; }
+  .icon-video { background: #fff7ed; color: #f97316; }
+  .icon-text { background: #f1f5f9; color: #1e293b; }
   .icon-quiz { background: #ffedd5; color: #ea580c; }
   .icon-pdf { background: #fee2e2; color: #dc2626; }
 
@@ -915,7 +1012,7 @@
     margin-bottom: 2px;
   }
   .lesson-row-item:hover .lesson-title-text {
-    color: #2563eb;
+    color: #f97316;
   }
   .lesson-meta-right {
     display: flex;
@@ -944,7 +1041,7 @@
     transition: all 0.2s ease;
   }
   .lesson-row-item:hover .action-arrow-icon {
-    background: #2563eb;
+    background: #f97316;
     color: #ffffff;
   }
 
@@ -970,8 +1067,8 @@
   }
   .quiz-card-item:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.1);
-    border-color: #bfdbfe;
+    box-shadow: 0 14px 30px rgba(249, 115, 22, 0.15);
+    border-color: #f97316;
   }
   .quiz-card-top {
     display: flex;
@@ -983,8 +1080,8 @@
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-    color: #2563eb;
+    background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+    color: #f97316;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1024,20 +1121,20 @@
   }
   .btn-take-quiz {
     width: 100%;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, #f6a055 0%, #f97316 100%);
     color: #ffffff;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 14px;
     padding: 10px 18px;
     border-radius: 10px;
     border: none;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(249, 115, 22, 0.3);
+    transition: all 0.25s ease;
   }
   .btn-take-quiz:hover {
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, #ea580c 0%, #d97706 100%);
+    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.45);
+    transform: translateY(-2px);
     color: #ffffff;
   }
 </style>
@@ -1192,7 +1289,7 @@
               } else {
                 if (!isLoggedIn) {
                   btnHTML = `
-                    <button class="btn btn-outline-primary w-100 fw-semibold" onclick="window.location.href='/login/?next=/course/?slug=${course.slug}'">
+                    <button class="btn btn-login-access-pill w-100" onclick="window.location.href='/login/?next=/course/?slug=${course.slug}'">
                       🔒 Login to Access Quiz
                     </button>
                   `;
@@ -1251,11 +1348,11 @@
         `;
       } else {
         if (!isLoggedIn) {
-          enrollBtn.textContent = '🔒 Login to Access Course';
-          enrollBtn.className = 'btn btn-outline-primary btn-lg w-100 mb-2';
+          enrollBtn.innerHTML = '🔒 Login to Access Course';
+          enrollBtn.className = 'btn-login-access-pill';
           enrollBtn.onclick = () => window.location.href = `/login/?next=/course/?slug=${course.slug}`;
           document.getElementById('enrollmentStatus').innerHTML = `
-            <div class="alert alert-warning py-2 text-center" style="font-size: 12px;">
+            <div class="alert alert-warning py-2 text-center" style="font-size: 12px; border-radius: 12px; background: #fff7ed; border-color: #ffedd5; color: #9a3412;">
               Please log in with your Institution Account to start learning.
             </div>
           `;
