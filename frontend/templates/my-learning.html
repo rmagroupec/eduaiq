@@ -293,12 +293,12 @@
     <div class="row g-4 mb-5">
       <div class="col-md-3 col-sm-6">
         <div class="stat-card-v2">
-          <div class="stat-icon-v2 icon-amber">
-            <i class="fas fa-award"></i>
+          <div class="stat-icon-v2 icon-blue">
+            <i class="fas fa-graduation-cap"></i>
           </div>
           <div class="stat-content-v2">
-            <h6>Registered Entrance</h6>
-            <p>{{ total_entrance_count }}</p>
+            <h6>Assigned Courses</h6>
+            <p>{{ total_assigned_courses }}</p>
           </div>
         </div>
       </div>
@@ -306,23 +306,23 @@
       <div class="col-md-3 col-sm-6">
         <div class="stat-card-v2">
           <div class="stat-icon-v2 icon-emerald">
-            <i class="fas fa-check-circle"></i>
+            <i class="fas fa-book-reader"></i>
           </div>
           <div class="stat-content-v2">
-            <h6>Completed Exams</h6>
-            <p>{{ completed_entrance_count }}</p>
+            <h6>Assigned AI Books</h6>
+            <p>{{ total_assigned_books }}</p>
           </div>
         </div>
       </div>
 
       <div class="col-md-3 col-sm-6">
         <div class="stat-card-v2">
-          <div class="stat-icon-v2 icon-blue">
-            <i class="fas fa-book-open"></i>
+          <div class="stat-icon-v2 icon-amber">
+            <i class="fas fa-file-signature"></i>
           </div>
           <div class="stat-content-v2">
-            <h6>Active Courses</h6>
-            <p id="totalCourses">0</p>
+            <h6>Assigned Quizzes</h6>
+            <p>{{ total_assigned_quizzes }}</p>
           </div>
         </div>
       </div>
@@ -334,128 +334,268 @@
           </div>
           <div class="stat-content-v2">
             <h6>Avg Progress</h6>
-            <p id="avgProgress">0%</p>
+            <p>{{ avg_progress }}%</p>
           </div>
         </div>
       </div>
     </div>
 
-
-    <!-- OLYMPIAD ENTRANCE EXAMS HUB -->
-    <div class="olympiad-entrance-section mb-5">
-      <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-4">
-        <div>
-          <h4 class="fw-bold text-dark mb-1"><i class="fas fa-trophy text-warning me-2"></i> Olympiad Entrance Exams Hub</h4>
-          <p class="text-muted small mb-0">Your registered Olympiad Entrance Examinations & Roll Numbers.</p>
-        </div>
-        <a href="/olympiad-entrance/" class="btn btn-sm btn-outline-primary rounded-pill px-4 py-2 fw-bold">
-          <i class="fas fa-search me-1"></i> Browse All Entrance Exams
-        </a>
-      </div>
-
-      {% if entrance_registrations %}
-        <div class="row g-4">
-          {% for reg in entrance_registrations %}
-            <div class="col-lg-6">
-              <div class="exam-card-v2">
-                <div class="p-4 flex-grow-1">
-                  <div class="d-flex justify-content-between align-items-start mb-3">
-                    <span class="badge {{ reg.status_badge_class }} shadow-xs">{{ reg.status_label }}</span>
-                    <small class="text-muted"><i class="far fa-calendar-alt me-1"></i> {{ reg.registered_at|date:"d M Y" }}</small>
-                  </div>
-
-                  <h5 class="fw-bold text-dark mb-2 fs-5">{{ reg.olympiad.name }}</h5>
-                  
-                  <div class="p-3 bg-light rounded-3 mb-3 border">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                      <span class="small text-muted"><i class="fas fa-id-card text-primary me-1"></i> Candidate Roll No:</span>
-                      <strong class="text-primary font-monospace fs-6">{{ reg.roll_number }}</strong>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <span class="small text-muted"><i class="fas fa-layer-group text-primary me-1"></i> Class Target:</span>
-                      <strong class="text-dark small">{{ reg.olympiad.class_group }}</strong>
-                    </div>
-                  </div>
-
-                  <div class="d-flex justify-content-between align-items-center pt-2 border-top">
-                    <span class="small text-secondary fw-semibold">
-                      <i class="far fa-clock text-primary me-1"></i> {{ reg.olympiad.exam_duration_minutes }} Minutes
-                    </span>
-
-                    {% if reg.is_completed %}
-                      <a href="{% url 'olympiad_entrance_result' reg.olympiad.id %}" class="btn btn-sm btn-success rounded-pill px-4 py-2 fw-bold shadow-sm">
-                        <i class="fas fa-poll me-1"></i> View Result Status
-                      </a>
-                    {% else %}
-                      <a href="{% url 'olympiad_entrance_attempt' reg.olympiad.id %}" class="btn btn-sm btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm">
-                        <i class="fas fa-play me-1"></i> {{ reg.action_label }}
-                      </a>
-                    {% endif %}
-                  </div>
-                </div>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-      {% else %}
-        <div class="p-5 bg-white rounded-4 border text-center text-muted shadow-xs">
-          <div class="trophy-icon-circle mx-auto mb-3 text-warning">
-            <i class="fas fa-award fa-3x"></i>
-          </div>
-          <h5 class="fw-bold text-dark mb-2">No Entrance Exams Registered Yet</h5>
-          <p class="mb-3 text-secondary small">Enroll in an Olympiad Entrance Exam to showcase your academic talent and earn scholarships.</p>
-          <a href="/olympiad-entrance/" class="btn btn-primary rounded-pill px-4 py-2 fw-bold">
-            <i class="fas fa-trophy me-2"></i> Explore Entrance Exams
-          </a>
-        </div>
-      {% endif %}
-    </div>
-
-
-    <!-- MY ENROLLED COURSES SECTION -->
-    <div class="courses-section">
-      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-        <div>
-          <h4 class="fw-bold text-dark mb-1"><i class="fas fa-graduation-cap text-primary me-2"></i> My Enrolled Courses</h4>
-          <p class="text-muted small mb-0">Continue your regular learning modules and video lessons.</p>
-        </div>
-
-        <div class="search-box">
-          <div class="input-group">
-            <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-            <input type="text" id="searchInput" placeholder="Search my courses..." class="form-control border-start-0 ps-0">
-          </div>
-        </div>
-      </div>
-
-      <!-- Filter Tabs -->
-      <ul class="nav nav-tabs filter-tabs mb-4">
-        <li class="nav-item">
-          <a class="nav-link active" data-filter="all" href="#"><i class="fas fa-th-list me-1"></i> All Courses</a>
+    <!-- INSTITUTION ALLOTTED RESOURCES TABS -->
+    <div class="b2b-learning-tabs-wrap mb-5">
+      <ul class="nav nav-pills nav-justified bg-white p-2 rounded-4 shadow-sm border mb-4" id="learningTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active fw-bold py-3 rounded-3" id="courses-tab" data-bs-toggle="pill" data-bs-target="#courses-pane" type="button" role="tab">
+            <i class="fas fa-graduation-cap text-primary me-2"></i> Assigned Courses ({{ total_assigned_courses }})
+          </button>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" data-filter="ongoing" href="#"><i class="fas fa-spinner me-1"></i> Ongoing</a>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link fw-bold py-3 rounded-3" id="books-tab" data-bs-toggle="pill" data-bs-target="#books-pane" type="button" role="tab">
+            <i class="fas fa-book-reader text-success me-2"></i> Assigned AI Books ({{ total_assigned_books }})
+          </button>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" data-filter="completed" href="#"><i class="fas fa-check-circle me-1"></i> Completed</a>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link fw-bold py-3 rounded-3" id="quizzes-tab" data-bs-toggle="pill" data-bs-target="#quizzes-pane" type="button" role="tab">
+            <i class="fas fa-file-signature text-warning me-2"></i> Assigned Assessments ({{ total_assigned_quizzes }})
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link fw-bold py-3 rounded-3" id="entrance-tab" data-bs-toggle="pill" data-bs-target="#entrance-pane" type="button" role="tab">
+            <i class="fas fa-trophy text-danger me-2"></i> Olympiad Entrance ({{ total_entrance_count }})
+          </button>
         </li>
       </ul>
 
-      <!-- Grid for Courses -->
-      <div id="enrollmentsGrid" class="row g-4">
-        <div class="col-12 text-center py-5">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+      <div class="tab-content" id="learningTabsContent">
+        
+        <!-- PANE 1: ASSIGNED COURSES -->
+        <div class="tab-pane fade show active" id="courses-pane" role="tabpanel">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <h4 class="fw-bold text-dark mb-1"><i class="fas fa-graduation-cap text-primary me-2"></i> Institution Allotted Courses</h4>
+              <p class="text-muted small mb-0">Courses assigned to your account by your Institution Administrator.</p>
+            </div>
           </div>
-          <p class="mt-2 text-muted small">Loading your courses...</p>
-        </div>
-      </div>
 
-      <div id="emptyState" class="empty-state" style="display: none;">
-        <div class="empty-state-icon">📚</div>
-        <h4 class="empty-state-title">No Courses Enrolled Yet</h4>
-        <p class="empty-state-text">Explore our skill development courses and expand your knowledge.</p>
-        <a href="/courses/" class="btn btn-primary rounded-pill px-4 py-2 fw-bold">Browse Courses Catalog</a>
+          <div class="row g-4">
+            {% for item in assigned_courses_data %}
+              <div class="col-md-6 col-lg-4">
+                <div class="enrollment-card">
+                  <div class="enrollment-image">
+                    <img src="{% if item.course.thumbnail %}{{ item.course.thumbnail.url }}{% else %}{% static 'assets/img/educator-img12.jpg' %}{% endif %}" alt="{{ item.course.title }}">
+                    {% if item.is_completed %}
+                      <span class="enrollment-badge bg-success">✅ Completed</span>
+                    {% else %}
+                      <span class="enrollment-badge">🏛️ Provided by Institution</span>
+                    {% endif %}
+                  </div>
+                  
+                  <div class="enrollment-body">
+                    <h5 class="fw-bold">{{ item.course.title }}</h5>
+                    <p class="text-muted small mb-3">{{ item.course.category.name|default:'Skill Development Course' }}</p>
+                    
+                    <div class="mb-3">
+                      <div class="d-flex justify-content-between small text-muted mb-1">
+                        <span>Course Progress</span>
+                        <strong>{{ item.progress_pct|floatformat:0 }}%</strong>
+                      </div>
+                      <div class="progress-bar-wrapper">
+                        <div class="progress-bar-fill" style="width: {{ item.progress_pct|floatformat:0 }}%"></div>
+                      </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
+                      <a href="/course/?slug={{ item.course.slug }}" class="btn btn-sm btn-primary rounded-pill px-4 fw-bold">
+                        {% if item.is_completed %}Review Course{% else %}Start / Resume Learning{% endif %}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <div class="col-12 text-center py-5">
+                <div class="p-5 bg-white rounded-4 border text-muted shadow-xs">
+                  <i class="fas fa-graduation-cap fa-3x mb-3 text-primary opacity-50"></i>
+                  <h5 class="fw-bold text-dark mb-2">No Standard Courses Assigned Yet</h5>
+                  <p class="mb-0 text-secondary small">Contact your Institution Administrator to allot courses for your learning track.</p>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- PANE 2: ASSIGNED AI BOOKS -->
+        <div class="tab-pane fade" id="books-pane" role="tabpanel">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <h4 class="fw-bold text-dark mb-1"><i class="fas fa-book-reader text-success me-2"></i> Institution Allotted AI Books</h4>
+              <p class="text-muted small mb-0">Digital AI Study Guides & interactive e-books provided by your Institution.</p>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            {% for item in assigned_books_data %}
+              <div class="col-md-6 col-lg-4">
+                <div class="enrollment-card">
+                  <div class="enrollment-image">
+                    <img src="{% if item.book.thumbnail %}{{ item.book.thumbnail.url }}{% else %}{% static 'assets/img/educator-img12.jpg' %}{% endif %}" alt="{{ item.book.title }}">
+                    <span class="enrollment-badge bg-success">📖 AI Book Access</span>
+                  </div>
+                  
+                  <div class="enrollment-body">
+                    <h5 class="fw-bold">{{ item.book.title }}</h5>
+                    <p class="text-muted small mb-3">Interactive Digital AI Study Guide</p>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
+                      <span class="badge bg-light text-dark border">Provided by Institution</span>
+                      <a href="/book-reader/{{ item.book.slug }}/" class="btn btn-sm btn-success rounded-pill px-4 fw-bold">
+                        <i class="fas fa-book-open me-1"></i> Read Book
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <div class="col-12 text-center py-5">
+                <div class="p-5 bg-white rounded-4 border text-muted shadow-xs">
+                  <i class="fas fa-book fa-3x mb-3 text-success opacity-50"></i>
+                  <h5 class="fw-bold text-dark mb-2">No AI Books Assigned Yet</h5>
+                  <p class="mb-0 text-secondary small">Contact your Institution Administrator to request digital AI book access.</p>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- PANE 3: ASSIGNED ASSESSMENTS & QUIZZES -->
+        <div class="tab-pane fade" id="quizzes-pane" role="tabpanel">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <h4 class="fw-bold text-dark mb-1"><i class="fas fa-file-signature text-warning me-2"></i> Institution Assigned Assessments</h4>
+              <p class="text-muted small mb-0">Quizzes and evaluations pushed by your Institution to test your knowledge.</p>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            {% for qitem in assigned_quizzes_data %}
+              <div class="col-lg-6">
+                <div class="exam-card-v2">
+                  <div class="p-4 flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                      <span class="badge {{ qitem.badge_class }} shadow-xs">{{ qitem.status_label }}</span>
+                      <span class="badge bg-light text-dark border"><i class="fas fa-shield-alt text-primary me-1"></i> Encrypted Test</span>
+                    </div>
+
+                    <h5 class="fw-bold text-dark mb-1 fs-5">{{ qitem.quiz.lesson.title }}</h5>
+                    <p class="text-muted small mb-3"><i class="fas fa-book-open me-1 text-primary"></i> Course: {{ qitem.course_title }}</p>
+
+                    <div class="p-3 bg-light rounded-3 mb-3 border">
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="small text-muted"><i class="far fa-clock text-primary me-1"></i> Time Limit:</span>
+                        <strong class="text-dark small">{{ qitem.time_limit }} Minutes</strong>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span class="small text-muted"><i class="fas fa-bullseye text-primary me-1"></i> Passing Score:</span>
+                        <strong class="text-dark small">{{ qitem.passing_score }}%</strong>
+                      </div>
+                      {% if qitem.latest_attempt and qitem.latest_attempt.submitted_at %}
+                        <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+                          <span class="small text-muted"><i class="fas fa-star text-warning me-1"></i> Score Obtained:</span>
+                          <strong class="text-success small">{{ qitem.latest_attempt.score_pct|floatformat:1 }}% ({% if qitem.latest_attempt.passed %}PASSED{% else %}NEEDS RETAKE{% endif %})</strong>
+                        </div>
+                      {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                      <span class="small text-muted">Assigned by Institution</span>
+                      <a href="/quiz/?id={{ qitem.quiz.id }}" class="btn btn-sm btn-warning rounded-pill px-4 py-2 fw-bold shadow-sm text-dark">
+                        {% if qitem.status_label == 'Completed' %}Retake Assessment{% else %}Take Assessment{% endif %} <i class="fas fa-arrow-right ms-1"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <div class="col-12 text-center py-5">
+                <div class="p-5 bg-white rounded-4 border text-muted shadow-xs">
+                  <i class="fas fa-file-signature fa-3x mb-3 text-warning opacity-50"></i>
+                  <h5 class="fw-bold text-dark mb-2">No Assessments Assigned Yet</h5>
+                  <p class="mb-0 text-secondary small">Assessments pushed by your Institution will appear here once published.</p>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- PANE 4: OLYMPIAD ENTRANCE EXAMS -->
+        <div class="tab-pane fade" id="entrance-pane" role="tabpanel">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <h4 class="fw-bold text-dark mb-1"><i class="fas fa-trophy text-danger me-2"></i> Olympiad Entrance Examinations</h4>
+              <p class="text-muted small mb-0">Your registered Olympiad Entrance Examinations & Roll Numbers.</p>
+            </div>
+            <a href="/olympiad-entrance/" class="btn btn-sm btn-outline-primary rounded-pill px-4 py-2 fw-bold">
+              <i class="fas fa-search me-1"></i> Browse Catalog
+            </a>
+          </div>
+
+          {% if entrance_registrations %}
+            <div class="row g-4">
+              {% for reg in entrance_registrations %}
+                <div class="col-lg-6">
+                  <div class="exam-card-v2">
+                    <div class="p-4 flex-grow-1">
+                      <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="badge {{ reg.status_badge_class }} shadow-xs">{{ reg.status_label }}</span>
+                        <small class="text-muted"><i class="far fa-calendar-alt me-1"></i> {{ reg.registered_at|date:"d M Y" }}</small>
+                      </div>
+
+                      <h5 class="fw-bold text-dark mb-2 fs-5">{{ reg.olympiad.name }}</h5>
+                      
+                      <div class="p-3 bg-light rounded-3 mb-3 border">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                          <span class="small text-muted"><i class="fas fa-id-card text-primary me-1"></i> Candidate Roll No:</span>
+                          <strong class="text-primary font-monospace fs-6">{{ reg.roll_number }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <span class="small text-muted"><i class="fas fa-layer-group text-primary me-1"></i> Class Target:</span>
+                          <strong class="text-dark small">{{ reg.olympiad.class_group }}</strong>
+                        </div>
+                      </div>
+
+                      <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <span class="small text-secondary fw-semibold">
+                          <i class="far fa-clock text-primary me-1"></i> {{ reg.olympiad.exam_duration_minutes }} Minutes
+                        </span>
+
+                        {% if reg.is_completed %}
+                          <a href="{% url 'olympiad_entrance_result' reg.olympiad.id %}" class="btn btn-sm btn-success rounded-pill px-4 py-2 fw-bold shadow-sm">
+                            <i class="fas fa-poll me-1"></i> View Result Status
+                          </a>
+                        {% else %}
+                          <a href="{% url 'olympiad_entrance_attempt' reg.olympiad.id %}" class="btn btn-sm btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm">
+                            <i class="fas fa-play me-1"></i> {{ reg.action_label }}
+                          </a>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="p-5 bg-white rounded-4 border text-center text-muted shadow-xs">
+              <div class="trophy-icon-circle mx-auto mb-3 text-warning">
+                <i class="fas fa-award fa-3x"></i>
+              </div>
+              <h5 class="fw-bold text-dark mb-2">No Entrance Exams Registered Yet</h5>
+              <p class="mb-3 text-secondary small">Enroll in an Olympiad Entrance Exam to showcase your academic talent and earn scholarships.</p>
+              <a href="/olympiad-entrance/" class="btn btn-primary rounded-pill px-4 py-2 fw-bold">
+                <i class="fas fa-trophy me-2"></i> Explore Entrance Exams
+              </a>
+            </div>
+          {% endif %}
+        </div>
+
       </div>
     </div>
 
@@ -619,146 +759,9 @@
 </div>
 
 <script>
-  const API_BASE_URL = window.location.origin;
-  let allEnrollments = [];
-  let currentFilter = 'all';
-  let currentSearch = '';
-
-  async function loadMyEnrollments() {
-    try {
-      const response = await fetch(`${API_BASE_URL}/courses/my-enrollments/?page=1&page_size=50`, {
-        headers: {'Accept': 'application/json'},
-        credentials: 'include'
-      });
-
-      if (!response.ok) {
-        throw new Error("HTTP error " + response.status);
-      }
-
-      const data = await response.json();
-      allEnrollments = data.results || [];
-
-      updateStats();
-      displayEnrollments('all');
-
-    } catch (error) {
-      console.log('Course load info:', error);
-      document.getElementById('enrollmentsGrid').innerHTML = `
-        <div class="col-12 text-center py-4">
-          <div class="p-4 bg-white rounded-4 border text-muted">
-            <i class="fas fa-book fa-2x mb-2 text-primary opacity-50"></i>
-            <p class="mb-2 fw-semibold">No standard courses enrolled currently.</p>
-            <a href="/courses/" class="btn btn-sm btn-outline-primary rounded-pill px-3">Browse Courses Catalog</a>
-          </div>
-        </div>
-      `;
-    }
-  }
-
-  function updateStats() {
-    const total = allEnrollments.length;
-    const completed = allEnrollments.filter(e => e.is_completed).length;
-    const avgProgress = total > 0 
-      ? Math.round(allEnrollments.reduce((sum, e) => sum + parseFloat(e.progress_pct || 0), 0) / total)
-      : 0;
-
-    document.getElementById('totalCourses').textContent = total;
-    document.getElementById('avgProgress').textContent = avgProgress + '%';
-  }
-
-  function displayEnrollments(filter) {
-    currentFilter = filter;
-
-    let filtered = allEnrollments;
-
-    if (filter === 'ongoing') {
-      filtered = allEnrollments.filter(e => !e.is_completed);
-    } else if (filter === 'completed') {
-      filtered = allEnrollments.filter(e => e.is_completed);
-    }
-
-    if (currentSearch) {
-      filtered = filtered.filter(e => 
-        e.course && e.course.title && e.course.title.toLowerCase().includes(currentSearch.toLowerCase())
-      );
-    }
-
-    if (filtered.length === 0) {
-      document.getElementById('enrollmentsGrid').innerHTML = `
-        <div class="col-12">
-          <div class="p-4 bg-white rounded-4 border text-center text-muted">
-            <i class="fas fa-search fa-2x mb-2 text-secondary"></i>
-            <p class="mb-0">No course enrollments matching filter.</p>
-          </div>
-        </div>
-      `;
-      return;
-    }
-
-    document.getElementById('enrollmentsGrid').innerHTML = filtered.map(enrollment => `
-      <div class="col-md-6 col-lg-4">
-        <div class="enrollment-card">
-          <div class="enrollment-image">
-            <img src="${enrollment.course.thumbnail || '{% static "assets/img/educator-img12.jpg" %}'}" 
-                 alt="${enrollment.course.title}">
-            ${enrollment.is_completed ? 
-              '<span class="enrollment-badge bg-success">✅ Completed</span>' : 
-              '<span class="enrollment-badge">📚 In Progress</span>'
-            }
-          </div>
-          
-          <div class="enrollment-body">
-            <h5 class="fw-bold">${enrollment.course.title}</h5>
-            <p class="text-muted small">${enrollment.course.category || 'Skill Development Course'}</p>
-            
-            ${enrollment.is_completed ? `
-              <div class="badge bg-light text-success p-2 rounded-3 mb-3 border">
-                ✅ Completed on ${new Date(enrollment.completion_date).toLocaleDateString()}
-              </div>
-            ` : `
-              <div class="mb-3">
-                <div class="d-flex justify-content-between small text-muted mb-1">
-                  <span>Course Progress</span>
-                  <strong>${Math.round(enrollment.progress_pct || 0)}%</strong>
-                </div>
-                <div class="progress-bar-wrapper">
-                  <div class="progress-bar-fill" style="width: ${enrollment.progress_pct || 0}%"></div>
-                </div>
-              </div>
-            `}
-            
-            <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
-              <a href="/course/?slug=${enrollment.course.slug}" class="btn btn-sm btn-primary rounded-pill px-3 fw-bold">
-                ${enrollment.is_completed ? 'Review Course' : 'Continue Learning'}
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    `).join('');
-  }
-
+  // Student Learning Dashboard interactive handlers
   document.addEventListener('DOMContentLoaded', function() {
-    loadMyEnrollments();
-
-    document.querySelectorAll('.filter-tabs .nav-link').forEach(link => {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelectorAll('.filter-tabs .nav-link').forEach(l => {
-          l.classList.remove('active');
-        });
-        this.classList.add('active');
-        displayEnrollments(this.dataset.filter);
-      });
-    });
-
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-      searchInput.addEventListener('keyup', function() {
-        currentSearch = this.value;
-        displayEnrollments(currentFilter);
-      });
-    }
+    console.log("EduAiQ B2B Student Dashboard Initialized.");
   });
 </script>
 

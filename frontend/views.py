@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 
-from courses.models import Course, CourseCategory, Quiz
+from courses.models import Course, CourseCategory, Quiz, QuizAttempt, Enrollment
 from courses.utils import (
     get_allowed_courses_for_user,
     get_allowed_categories_for_user,
@@ -178,19 +178,14 @@ def book_reader(request, slug):
         slug=slug
     )
 
-    is_accessible = False
     user = request.user
+    is_accessible = False
 
     if user.is_authenticated:
-        if user.is_superuser or getattr(user, 'role', '') in ['admin', 'institution_admin', 'teacher', 'instructor']:
+        if is_course_accessible_by_user(user, book):
             is_accessible = True
-        elif hasattr(user, 'enrollments') and user.enrollments.filter(course=book, status='active').exists():
+        elif Enrollment.objects.filter(student=user, course=book).exists():
             is_accessible = True
-        elif hasattr(user, 'institution') and user.institution:
-            if hasattr(user.institution, 'allowed_courses') and user.institution.allowed_courses.filter(id=book.id).exists():
-                is_accessible = True
-            elif hasattr(book, 'institutions') and book.institutions.filter(id=user.institution.id).exists():
-                is_accessible = True
 
     # If book has price <= 0, allow reading access
     if not is_accessible and (not book.price or book.price <= 0):
@@ -254,8 +249,8 @@ def eduaiq_ecosystem(request):
 @login_required(login_url='/login/')
 def my_learning(request):
     """
-    Student learning dashboard - shows enrolled courses, progress, Olympiad Entrance Exams,
-    Certificates, Student ID Card, and Exam Admit Cards.
+    Student learning dashboard - shows institution-assigned courses, AI Books,
+    quizzes/assessments, Olympiad Entrance Exams, Certificates, Student ID Card, and Admit Cards.
     Template: my-learning.html
     """
     entrance_registrations = list(OlympiadRegistration.objects.filter(
@@ -341,6 +336,83 @@ def my_learning(request):
         'joined_date': request.user.date_joined,
     }
 
+    # ---------------------------------------------------------
+    # Institution Allotted Courses & AI Books
+    # ---------------------------------------------------------
+    allowed_courses_qs = get_allowed_courses_for_user(request.user, exclude_books=False)
+    
+    assigned_courses = list(allowed_courses_qs.exclude(category__slug=AI_BOOKS_CATEGORY_SLUG).select_related('category'))
+    assigned_books = list(allowed_courses_qs.filter(category__slug=AI_BOOKS_CATEGORY_SLUG).select_related('category'))
+
+    direct_enrollments = list(Enrollment.objects.filter(student=request.user).select_related('course', 'course__category'))
+    enrollment_map = {e.course_id: e for e in direct_enrollments}
+    
+    for e in direct_enrollments:
+        c = e.course
+        if c.category and c.category.slug == AI_BOOKS_CATEGORY_SLUG:
+            if c not in assigned_books:
+                assigned_books.append(c)
+        else:
+            if c not in assigned_courses:
+                assigned_courses.append(c)
+
+    assigned_courses_data = []
+    total_progress_sum = 0.0
+    for c in assigned_courses:
+        e = enrollment_map.get(c.id)
+        pct = float(e.progress_pct) if e else 0.0
+        total_progress_sum += pct
+        is_comp = e.is_completed if e else False
+        assigned_courses_data.append({
+            'course': c,
+            'progress_pct': pct,
+            'is_completed': is_comp,
+        })
+
+    avg_progress = round(total_progress_sum / len(assigned_courses)) if assigned_courses else 0
+
+    assigned_books_data = []
+    for b in assigned_books:
+        assigned_books_data.append({
+            'book': b,
+            'is_accessible': True,
+        })
+
+    # ---------------------------------------------------------
+    # Institution Assigned Quizzes & Assessments
+    # ---------------------------------------------------------
+    all_assigned_course_ids = [c.id for c in assigned_courses] + [b.id for b in assigned_books]
+    quizzes_qs = Quiz.objects.filter(
+        lesson__module__course_id__in=all_assigned_course_ids,
+        is_active=True
+    ).select_related('lesson', 'lesson__module', 'lesson__module__course')
+
+    assigned_quizzes_data = []
+    completed_quizzes_count = 0
+    for quiz in quizzes_qs:
+        attempt = QuizAttempt.objects.filter(quiz=quiz, student=request.user).order_by('-started_at').first()
+        status_label = 'Not Started'
+        badge_class = 'bg-secondary text-white'
+        if attempt:
+            if attempt.status in ('submitted', 'graded') or attempt.submitted_at:
+                status_label = 'Completed'
+                badge_class = 'bg-success text-white'
+                completed_quizzes_count += 1
+            else:
+                status_label = 'In Progress'
+                badge_class = 'bg-warning text-dark'
+        
+        assigned_quizzes_data.append({
+            'quiz': quiz,
+            'course_title': quiz.lesson.module.course.title if (quiz.lesson and quiz.lesson.module) else 'General Course',
+            'lesson_title': quiz.lesson.title if quiz.lesson else 'Assessment Quiz',
+            'latest_attempt': attempt,
+            'status_label': status_label,
+            'badge_class': badge_class,
+            'passing_score': quiz.passing_score_pct,
+            'time_limit': quiz.time_limit_minutes,
+        })
+
     return render(request, "my-learning.html", {
         'entrance_registrations': entrance_registrations,
         'total_entrance_count': len(entrance_registrations),
@@ -350,6 +422,14 @@ def my_learning(request):
         'id_card': id_card_data,
         'certificates_list': certificates_list,
         'admit_cards_list': admit_cards_list,
+        'assigned_courses_data': assigned_courses_data,
+        'assigned_books_data': assigned_books_data,
+        'assigned_quizzes_data': assigned_quizzes_data,
+        'total_assigned_courses': len(assigned_courses_data),
+        'total_assigned_books': len(assigned_books_data),
+        'total_assigned_quizzes': len(assigned_quizzes_data),
+        'completed_quizzes_count': completed_quizzes_count,
+        'avg_progress': avg_progress,
     })
 
 
