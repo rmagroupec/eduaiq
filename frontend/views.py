@@ -476,16 +476,19 @@ def lesson_player(request):
 @login_required(login_url='/admin-panel/login/')
 def dashboard(request):
     """
-    Real-World Admin Dashboard - Computes live counts across platform entities.
+    Real-World Admin Dashboard - Computes live counts and recent records across platform entities.
     """
     total_students = User.objects.filter(role='student').count() or User.objects.count()
     try:
         from institutions.models import Institution
         total_institutions = Institution.objects.count()
+        recent_institutions = Institution.objects.order_by('-created_at')[:5]
     except Exception:
         total_institutions = 0
+        recent_institutions = []
 
     total_courses = Course.objects.count()
+    recent_courses = Course.objects.order_by('-created_at')[:5] if total_courses else []
     total_teachers = User.objects.filter(role='teacher').count()
     total_olympiads = Olympiad.objects.filter(is_active=True).count()
     total_registrations = OlympiadRegistration.objects.count()
@@ -495,7 +498,9 @@ def dashboard(request):
     return render(request, "admin_panel/index.html", {
         'total_students': total_students,
         'total_institutions': total_institutions,
+        'recent_institutions': recent_institutions,
         'total_courses': total_courses,
+        'recent_courses': recent_courses,
         'total_teachers': total_teachers,
         'total_olympiads': total_olympiads,
         'total_registrations': total_registrations,

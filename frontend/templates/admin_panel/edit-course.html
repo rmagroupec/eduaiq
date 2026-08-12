@@ -47,7 +47,7 @@
         <!-- Delivery Mode -->
         <div class="col-md-6">
           <label class="form-label" for="delivery_mode">Delivery Mode <span class="text-danger">*</span></label>
-          <select id="delivery_mode" name="delivery_mode" class="form-select" required>
+          <select id="delivery_mode" name="delivery_mode" class="form-select" required onchange="toggleUploadModeFieldsEdit()">
             <option value="hybrid">Hybrid — Video + Content</option>
             <option value="video_lecture">Video Lecture Based</option>
             <option value="content_based">Content/Reading Based</option>
@@ -90,13 +90,37 @@
           <input type="text" id="author" name="author" class="form-control" placeholder="e.g. EduAiQ Editorial Team"/>
         </div>
 
-        <!-- PDF Document Input -->
-        <div class="col-md-6">
-          <label class="form-label" for="pdf_file">
-            Book PDF Document <span class="text-primary-600 fw-semibold">(For Interactive Reader)</span>
-          </label>
-          <input type="file" id="pdf_file" name="pdf_file" class="form-control" accept="application/pdf"/>
-          <div id="pdfCurrentStatus" class="mt-1 text-sm text-secondary-light"></div>
+        <!-- Dynamic Content Uploading Container -->
+        <div class="col-12" id="uploadModeContainerEdit">
+          <div class="p-20 radius-8 border border-neutral-200 bg-neutral-50">
+            <h6 class="fw-semibold text-primary-600 mb-12" id="uploadModeTitleEdit">
+              <i class="ri-upload-cloud-line me-1"></i> Content & Media Uploading Mode
+            </h6>
+            <div class="row g-3">
+              <!-- Video Upload & Link Field -->
+              <div class="col-md-6" id="videoUploadColEdit">
+                <label class="form-label fw-semibold" for="video_url">
+                  Course Video Link / URL <span class="text-xs text-muted">(YouTube / Vimeo / Direct Link)</span>
+                </label>
+                <input type="url" id="video_url" name="video_url" class="form-control mb-2" placeholder="https://www.youtube.com/watch?v=..."/>
+
+                <label class="form-label fw-semibold" for="video_file">
+                  OR Update Video File <span class="text-xs text-muted">(MP4 / WebM)</span>
+                </label>
+                <input type="file" id="video_file" name="video_file" class="form-control" accept="video/*"/>
+                <div id="videoCurrentStatus" class="mt-1 text-xs text-secondary-light"></div>
+              </div>
+
+              <!-- PDF Upload Field -->
+              <div class="col-md-6" id="pdfUploadColEdit">
+                <label class="form-label fw-semibold" for="pdf_file">
+                  Book PDF Document <span class="text-primary-600">(For Digital Reader)</span>
+                </label>
+                <input type="file" id="pdf_file" name="pdf_file" class="form-control" accept="application/pdf"/>
+                <div id="pdfCurrentStatus" class="mt-1 text-xs text-secondary-light"></div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Current Thumbnail View -->
@@ -155,6 +179,29 @@
   const urlParams = new URLSearchParams(window.location.search);
   const querySlug = urlParams.get('slug');
   const redirectUrl = urlParams.get('next') || (document.referrer.includes('/admin-panel/books/') ? '/admin-panel/books/' : '/admin-panel/courses/');
+
+  function toggleUploadModeFieldsEdit() {
+    const modeSelect = document.getElementById('delivery_mode');
+    if (!modeSelect) return;
+    const mode = modeSelect.value;
+    const videoCol = document.getElementById('videoUploadColEdit');
+    const pdfCol = document.getElementById('pdfUploadColEdit');
+    const title = document.getElementById('uploadModeTitleEdit');
+
+    if (mode === 'video_lecture') {
+      if (videoCol) videoCol.classList.remove('d-none');
+      if (pdfCol) pdfCol.classList.add('d-none');
+      if (title) title.innerHTML = '<i class="ri-video-line me-1"></i> Video Lecture Uploading Mode';
+    } else if (mode === 'content_based') {
+      if (videoCol) videoCol.classList.add('d-none');
+      if (pdfCol) pdfCol.classList.remove('d-none');
+      if (title) title.innerHTML = '<i class="ri-file-pdf-line me-1"></i> Content & Reading Document Uploading Mode';
+    } else {
+      if (videoCol) videoCol.classList.remove('d-none');
+      if (pdfCol) pdfCol.classList.remove('d-none');
+      if (title) title.innerHTML = '<i class="ri-sparkles-line me-1"></i> Hybrid Uploading Mode (Video + Reading Material)';
+    }
+  }
 
   function togglePublishDateFieldEdit() {
     // optional helper if needed
@@ -224,6 +271,7 @@
       }
 
       document.getElementById('delivery_mode').value = c.delivery_mode;
+      toggleUploadModeFieldsEdit();
       document.getElementById('price').value = c.price;
       document.getElementById('status').value = c.status;
       document.getElementById('version').value = c.version;
@@ -232,9 +280,15 @@
       if (document.getElementById('author')) {
         document.getElementById('author').value = c.author || 'EduAiQ Editorial Team';
       }
+      if (document.getElementById('video_url')) {
+        document.getElementById('video_url').value = c.video_url || '';
+      }
 
       if (c.pdf_file && document.getElementById('pdfCurrentStatus')) {
         document.getElementById('pdfCurrentStatus').innerHTML = `Current PDF: <a href="${c.pdf_file}" target="_blank" class="text-primary-600 fw-semibold hover-underline"><i class="ri-file-pdf-line"></i> View Current Ebook PDF</a>`;
+      }
+      if (c.video_file && document.getElementById('videoCurrentStatus')) {
+        document.getElementById('videoCurrentStatus').innerHTML = `Current Video: <a href="${c.video_file}" target="_blank" class="text-info fw-semibold hover-underline"><i class="ri-video-line"></i> View Current Video</a>`;
       }
 
       // Update Pages & Chapters management links

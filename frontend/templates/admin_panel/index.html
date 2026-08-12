@@ -1,1398 +1,283 @@
 {% extends 'admin_panel/base.html' %}
 {% load static %}
 
-{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
+{% block title %}Dashboard | EduAiQ Admin Panel{% endblock %}
 
-{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+{% block description %}EduAiQ Platform Administration Dashboard - Real-time metrics for Institutions, Courses, Students, and Olympiad Exams.{% endblock %}
 
 {% block content %}
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-<div class="">
-<h6 class="fw-semibold mb-0">Dashboard</h6>
-<p class="text-neutral-600 mt-4 mb-0">School -&gt; Manage your school, track attendance, expense, and net worth.</p>
+  <div>
+    <h5 class="fw-bold text-primary-900 mb-1">
+      <i class="ri-dashboard-3-line text-primary-600 me-2"></i>EduAiQ Management Dashboard
+    </h5>
+    <p class="text-neutral-600 text-sm mb-0">Overview of active institutions, courses, user registrations, and entrance examinations.</p>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="badge bg-success-100 text-success-700 px-12 py-8 radius-8 font-weight-bold text-sm">
+      <i class="ri-checkbox-circle-fill me-1"></i> System Active
+    </span>
+  </div>
 </div>
-<!-- OLYMPIAD ENTRANCE MODULE OVERVIEW SECTION -->
+
+<!-- STAT CARDS OVERVIEW -->
 <div class="row gy-4 mb-24">
-  <div class="col-12">
-    <div class="card radius-12 border border-primary-100 bg-primary-50 p-20 shadow-1">
-      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-16">
-        <div>
-          <h5 class="fw-bold text-primary-900 mb-1 d-flex align-items-center gap-2">
-            <i class="ri-trophy-fill text-warning-600 fs-3"></i> Olympiad Entrance Module Status
-          </h5>
-          <p class="text-neutral-600 text-sm mb-0">Real-time candidate enrollments, active entrance examinations, and attempt statistics.</p>
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card shadow-1 radius-8 border border-neutral-200 h-100 bg-base">
+      <div class="card-body p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="w-44-px h-44-px bg-primary-100 text-primary-600 radius-8 d-flex justify-content-center align-items-center fs-4">
+            <i class="ri-building-line"></i>
+          </span>
+          <span class="text-xs text-primary-600 fw-bold bg-primary-50 px-8 py-4 radius-4">Live</span>
         </div>
-        <div class="d-flex gap-2">
-          <a href="/olympiad-entrance/" target="_blank" class="btn btn-sm btn-outline-primary radius-8 font-weight-bold">
-            <i class="ri-external-link-line me-1"></i> Public Catalog
-          </a>
-          <a href="/admin-panel/olympiad-entrance/" class="btn btn-sm btn-primary radius-8 font-weight-bold">
-            <i class="ri-settings-4-line me-1"></i> Manage Entrance
-          </a>
-
-        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Institutions</span>
+        <h3 class="mb-0 fw-bold text-primary-900">{{ total_institutions|default:0 }}</h3>
       </div>
+    </div>
+  </div>
 
-      <div class="row gy-3">
-        <div class="col-md-4">
-          <div class="bg-white p-16 radius-8 border border-neutral-200 d-flex align-items-center gap-3">
-            <div class="w-48-px h-48-px bg-primary-100 text-primary-600 rounded-circle d-flex justify-content-center align-items-center fs-4 fw-bold">
-              <i class="ri-file-list-3-line"></i>
-            </div>
-            <div>
-              <span class="text-secondary-light text-xs font-weight-bold text-uppercase">Active Entrance Exams</span>
-              <h4 class="mb-0 fw-bold text-primary-900">{{ total_olympiads|default:0 }}</h4>
-            </div>
-          </div>
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card shadow-1 radius-8 border border-neutral-200 h-100 bg-base">
+      <div class="card-body p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="w-44-px h-44-px bg-purple-100 text-purple-600 radius-8 d-flex justify-content-center align-items-center fs-4">
+            <i class="ri-book-open-line"></i>
+          </span>
+          <span class="text-xs text-purple-600 fw-bold bg-purple-50 px-8 py-4 radius-4">Live</span>
         </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Courses</span>
+        <h3 class="mb-0 fw-bold text-primary-900">{{ total_courses|default:0 }}</h3>
+      </div>
+    </div>
+  </div>
 
-        <div class="col-md-4">
-          <div class="bg-white p-16 radius-8 border border-neutral-200 d-flex align-items-center gap-3">
-            <div class="w-48-px h-48-px bg-success-100 text-success-600 rounded-circle d-flex justify-content-center align-items-center fs-4 fw-bold">
-              <i class="ri-user-add-line"></i>
-            </div>
-            <div>
-              <span class="text-secondary-light text-xs font-weight-bold text-uppercase">Candidate Enrollments</span>
-              <h4 class="mb-0 fw-bold text-success-900">{{ total_registrations|default:0 }}</h4>
-            </div>
-          </div>
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card shadow-1 radius-8 border border-neutral-200 h-100 bg-base">
+      <div class="card-body p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="w-44-px h-44-px bg-success-100 text-success-600 radius-8 d-flex justify-content-center align-items-center fs-4">
+            <i class="ri-graduation-cap-line"></i>
+          </span>
+          <span class="text-xs text-success-600 fw-bold bg-success-50 px-8 py-4 radius-4">Registered</span>
         </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Students</span>
+        <h3 class="mb-0 fw-bold text-primary-900">{{ total_students|default:0 }}</h3>
+      </div>
+    </div>
+  </div>
 
-        <div class="col-md-4">
-          <div class="bg-white p-16 radius-8 border border-neutral-200 d-flex align-items-center gap-3">
-            <div class="w-48-px h-48-px bg-info-100 text-info-600 rounded-circle d-flex justify-content-center align-items-center fs-4 fw-bold">
-              <i class="ri-award-line"></i>
-            </div>
-            <div>
-              <span class="text-secondary-light text-xs font-weight-bold text-uppercase">Exam Attempts Recorded</span>
-              <h4 class="mb-0 fw-bold text-info-900">{{ total_attempts|default:0 }}</h4>
-            </div>
-          </div>
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card shadow-1 radius-8 border border-neutral-200 h-100 bg-base">
+      <div class="card-body p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="w-44-px h-44-px bg-info-100 text-info-600 radius-8 d-flex justify-content-center align-items-center fs-4">
+            <i class="ri-user-follow-line"></i>
+          </span>
+          <span class="text-xs text-info-600 fw-bold bg-info-50 px-8 py-4 radius-4">Active</span>
         </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Teachers</span>
+        <h3 class="mb-0 fw-bold text-primary-900">{{ total_teachers|default:0 }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card shadow-1 radius-8 border border-neutral-200 h-100 bg-base">
+      <div class="card-body p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="w-44-px h-44-px bg-warning-100 text-warning-600 radius-8 d-flex justify-content-center align-items-center fs-4">
+            <i class="ri-trophy-line"></i>
+          </span>
+          <span class="text-xs text-warning-600 fw-bold bg-warning-50 px-8 py-4 radius-4">Active</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Olympiad Exams</span>
+        <h3 class="mb-0 fw-bold text-primary-900">{{ total_olympiads|default:0 }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card shadow-1 radius-8 border border-neutral-200 h-100 bg-base">
+      <div class="card-body p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="w-44-px h-44-px bg-danger-100 text-danger-600 radius-8 d-flex justify-content-center align-items-center fs-4">
+            <i class="ri-award-line"></i>
+          </span>
+          <span class="text-xs text-danger-600 fw-bold bg-danger-50 px-8 py-4 radius-4">Attempts</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Exam Attempts</span>
+        <h3 class="mb-0 fw-bold text-primary-900">{{ total_attempts|default:0 }}</h3>
       </div>
     </div>
   </div>
 </div>
 
-<div class="mt-24">
-<div class="row gy-4">
-
-<div class="col-xxl-8">
-<div class="row gy-4">
-<div class="col-xxl-4 col-sm-6">
-<div class="card shadow-1 radius-8 gradient-bg-end-1 h-100">
-<div class="card-body p-20">
-<div class="d-flex flex-wrap align-items-center gap-3 mb-16">
-<div class="w-44-px h-44-px bg-warning-600 rounded-circle d-flex justify-content-center align-items-center">
-<img alt="Icon" src="{% static 'admin_assets/images/icons/dashboard-icon1.png' %}"/>
-</div>
-<p class="fw-medium text-primary-light mb-1">Total Students</p>
-</div>
-<h6 class="mb-0">{{ total_students|default:0 }}</h6>
-<p class="fw-medium text-sm text-primary-light mt-12 mb-0 d-flex align-items-center gap-2">
-<span class="d-inline-flex align-items-center gap-1 text-primary-600 text-sm fw-semibold">
-                      Live
-                      <iconify-icon class="text-xs" icon="bxs:up-arrow"></iconify-icon>
-</span>
-                    Registered Students
-                  </p>
-</div>
-</div>
-</div>
-<div class="col-xxl-4 col-sm-6">
-<div class="card shadow-1 radius-8 gradient-bg-end-2 h-100">
-<div class="card-body p-20">
-<div class="d-flex flex-wrap align-items-center gap-3 mb-16">
-<div class="w-44-px h-44-px bg-blue-600 rounded-circle d-flex justify-content-center align-items-center">
-<img alt="Icon" src="{% static 'admin_assets/images/icons/dashboard-icon2.png' %}"/>
-</div>
-<p class="fw-medium text-primary-light mb-1">Total Institutions</p>
-</div>
-<h6 class="mb-0">{{ total_institutions|default:0 }}</h6>
-<p class="fw-medium text-sm text-primary-light mt-12 mb-0 d-flex align-items-center gap-2">
-<span class="d-inline-flex align-items-center gap-1 text-primary-600 text-sm fw-semibold">
-                      Live
-                      <iconify-icon class="text-xs" icon="bxs:up-arrow"></iconify-icon>
-</span>
-                    Schools & Colleges
-                  </p>
-</div>
-</div>
-</div>
-<div class="col-xxl-4 col-sm-6">
-<div class="card shadow-1 radius-8 gradient-bg-end-3 h-100">
-<div class="card-body p-20">
-<div class="d-flex flex-wrap align-items-center gap-3 mb-16">
-<div class="w-44-px h-44-px bg-purple-600 rounded-circle d-flex justify-content-center align-items-center">
-<img alt="Icon" src="{% static 'admin_assets/images/icons/dashboard-icon3.png' %}"/>
-</div>
-<p class="fw-medium text-primary-light mb-1">Total Courses</p>
-</div>
-<h6 class="mb-0">{{ total_courses|default:0 }}</h6>
-<p class="fw-medium text-sm text-primary-light mt-12 mb-0 d-flex align-items-center gap-2">
-<span class="d-inline-flex align-items-center gap-1 text-primary-600 text-sm fw-semibold">
-                      Live
-                      <iconify-icon class="text-xs" icon="bxs:up-arrow"></iconify-icon>
-</span>
-                    Active Courses
-                  </p>
-</div>
-</div>
-</div>
-<div class="col-xxl-4 col-sm-6">
-<div class="card shadow-1 radius-8 gradient-bg-end-4 h-100">
-<div class="card-body p-20">
-<div class="d-flex flex-wrap align-items-center gap-3 mb-16">
-<div class="w-44-px h-44-px bg-primary-600 rounded-circle d-flex justify-content-center align-items-center">
-<img alt="Icon" src="{% static 'admin_assets/images/icons/dashboard-icon4.png' %}"/>
-</div>
-<p class="fw-medium text-primary-light mb-1">Total Teachers</p>
-</div>
-<h6 class="mb-0">{{ total_teachers|default:0 }}</h6>
-<p class="fw-medium text-sm text-primary-light mt-12 mb-0 d-flex align-items-center gap-2">
-<span class="d-inline-flex align-items-center gap-1 text-primary-600 text-sm fw-semibold">
-                      Live
-                      <iconify-icon class="text-xs" icon="bxs:up-arrow"></iconify-icon>
-</span>
-                    Faculty Members
-                  </p>
-</div>
-</div>
-</div>
-<div class="col-xxl-4 col-sm-6">
-<div class="card shadow-1 radius-8 gradient-bg-end-5 h-100">
-<div class="card-body p-20">
-<div class="d-flex flex-wrap align-items-center gap-3 mb-16">
-<div class="w-44-px h-44-px bg-success-600 rounded-circle d-flex justify-content-center align-items-center">
-<img alt="Icon" src="{% static 'admin_assets/images/icons/dashboard-icon5.png' %}"/>
-</div>
-<p class="fw-medium text-primary-light mb-1">Active Olympiad Exams</p>
-</div>
-<h6 class="mb-0">{{ total_olympiads|default:0 }}</h6>
-<p class="fw-medium text-sm text-primary-light mt-12 mb-0 d-flex align-items-center gap-2">
-<span class="d-inline-flex align-items-center gap-1 text-primary-600 text-sm fw-semibold">
-                      Live
-                      <iconify-icon class="text-xs" icon="bxs:up-arrow"></iconify-icon>
-</span>
-                    Entrance Examinations
-                  </p>
-</div>
-</div>
-</div>
-<div class="col-xxl-4 col-sm-6">
-<div class="card shadow-1 radius-8 gradient-bg-end-6 h-100">
-<div class="card-body p-20">
-<div class="d-flex flex-wrap align-items-center gap-3 mb-16">
-<div class="w-44-px h-44-px bg-cyan-600 rounded-circle d-flex justify-content-center align-items-center">
-<img alt="Icon" src="{% static 'admin_assets/images/icons/dashboard-icon6.png' %}"/>
-</div>
-<p class="fw-medium text-primary-light mb-1">Candidate Enrollments</p>
-</div>
-<h6 class="mb-0">{{ total_registrations|default:0 }}</h6>
-<p class="fw-medium text-sm text-primary-light mt-12 mb-0 d-flex align-items-center gap-2">
-<span class="d-inline-flex align-items-center gap-1 text-primary-600 text-sm fw-semibold">
-                      Live
-                      <iconify-icon class="text-xs" icon="bxs:up-arrow"></iconify-icon>
-</span>
-                    Olympiad Candidates
-                  </p>
-</div>
-</div>
+<!-- QUICK ACTIONS -->
+<div class="card radius-12 border border-neutral-200 p-20 mb-24 bg-base">
+  <h6 class="fw-bold text-primary-900 mb-16">Quick Management Shortcuts</h6>
+  <div class="d-flex flex-wrap gap-3">
+    {% if request.user.role != 'institution' %}
+    <a href="/admin-panel/add-new-institution/" class="btn btn-primary radius-8 font-weight-bold d-flex align-items-center gap-2">
+      <i class="ri-building-line"></i> + Add Institution
+    </a>
+    <a href="/admin-panel/add-new-course/" class="btn btn-outline-primary radius-8 font-weight-bold d-flex align-items-center gap-2">
+      <i class="ri-add-circle-line"></i> + Add New Course
+    </a>
+    <a href="/admin-panel/books/add/" class="btn btn-outline-secondary radius-8 font-weight-bold d-flex align-items-center gap-2">
+      <i class="ri-file-pdf-line"></i> + Add AI Book
+    </a>
+    <a href="/admin-panel/olympiad-entrance/" class="btn btn-outline-warning radius-8 font-weight-bold d-flex align-items-center gap-2">
+      <i class="ri-trophy-line"></i> Olympiad Entrance
+    </a>
+    {% endif %}
+    <a href="/admin-panel/add-new-student/" class="btn btn-outline-success radius-8 font-weight-bold d-flex align-items-center gap-2">
+      <i class="ri-user-add-line"></i> + Add New Student
+    </a>
+  </div>
 </div>
 
-</div>
-</div>
-<div class="col-xxl-4">
-<div class="card h-100">
-<div class="card-body p-0">
-<div class="d-flex flex-wrap align-items-center justify-content-between px-20 py-16 border-bottom border-neutral-200">
-<h6 class="text-lg mb-0">Student Attendance</h6>
-</div>
-<div class="p-20">
-<div class="d-flex gap-6">
-<div class="h-44-px bg-primary-600 rounded" style="width: 87%;"></div>
-<div class="h-44-px bg-warning-600 rounded" style="width: 40%;"></div>
-<div class="h-44-px bg-purple-600 rounded" style="width: 20%;"></div>
-<div class="h-44-px bg-success-600 rounded" style="width: 20%;"></div>
-</div>
-<div class="mt-32 d-flex flex-column gap-24">
-<div class="d-flex align-items-center justify-content-between">
-<div class="d-flex align-items-center gap-2">
-<span class="w-12-px h-12-px radius-2 bg-primary-600"></span>
-<span class="text-neutral-600">Present </span>
-</div>
-<span class="fw-semibold text-primary-light">87%</span>
-</div>
-<div class="d-flex align-items-center justify-content-between">
-<div class="d-flex align-items-center gap-2">
-<span class="w-12-px h-12-px radius-2 bg-warning-600"></span>
-<span class="text-neutral-600">Absent: </span>
-</div>
-<span class="fw-semibold text-primary-light">40%</span>
-</div>
-<div class="d-flex align-items-center justify-content-between">
-<div class="d-flex align-items-center gap-2">
-<span class="w-12-px h-12-px radius-2 bg-purple-600"></span>
-<span class="text-neutral-600">Late </span>
-</div>
-<span class="fw-semibold text-primary-light">20%</span>
-</div>
-<div class="d-flex align-items-center justify-content-between">
-<div class="d-flex align-items-center gap-2">
-<span class="w-12-px h-12-px radius-2 bg-success-600"></span>
-<span class="text-neutral-600">Half day </span>
-</div>
-<span class="fw-semibold text-primary-light">20%</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-12">
+<!-- TABLES SECTION -->
 <div class="row gy-4">
-<div class="col-xxl-8">
-<div class="row gy-4">
-<div class="col-12">
-<div class="card h-100">
-<div class="card-body p-0">
-<div class="d-flex flex-wrap align-items-center justify-content-between px-20 py-16 border-bottom border-neutral-200">
-<h6 class="text-lg mb-0">Revenue Statistic</h6>
-</div>
-<div class="p-20">
-<ul class="d-flex flex-wrap align-items-center justify-content-center mb-16 gap-3">
-<li class="d-flex align-items-center gap-8">
-<span class="w-12-px h-12-px radius-2 rotate-45-deg bg-primary-600"></span>
-<span class="text-secondary-light text-sm fw-semibold">
-                              Total Fee:
-                              <span class="text-primary-light fw-bold">$500</span>
-</span>
-</li>
-<li class="d-flex align-items-center gap-8">
-<span class="w-12-px h-12-px radius-2 rotate-45-deg bg-warning-600"></span>
-<span class="text-secondary-light text-sm font-semibold">
-                              Collected Fee:
-                              <span class="text-primary-light fw-bold"> $300</span>
-</span>
-</li>
-</ul>
-<div id="revenueStatistic"></div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-md-6">
-<div class="card h-100">
-<div class="card-body p-0">
-<div class="d-flex flex-wrap align-items-center justify-content-between px-20 py-16 border-bottom border-neutral-200">
-<h6 class="text-lg mb-0">Notice Board</h6>
-<div class="dropdown">
-<button aria-expanded="false" data-bs-toggle="dropdown" type="button">
-<iconify-icon class="icon text-secondary-light" icon="entypo:dots-three-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu p-12 border bg-base shadow">
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="hugeicons:view"></iconify-icon>
-                                View
-                              </button>
-</li>
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="lucide:edit"></iconify-icon>
-                                Edit
-                              </button>
-</li>
-<li>
-<button class="delete-item dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-danger-100 text-hover-danger-600 d-flex align-items-center gap-10" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="fluent:delete-24-regular"></iconify-icon>
-                                Delete
-                              </button>
-</li>
-</ul>
-</div>
-</div>
-<div class="ps-20 pt-20 pb-20">
-<div class="pe-20 d-flex flex-column gap-20 max-h-462-px overflow-y-auto scroll-sm">
-<div class="d-flex align-items-start gap-16">
-<img alt="Thumbnail" class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0" src="{% static 'admin_assets/images/thumbs/notice-board-img1.png' %}"/>
-<div class="">
-<h6 class="mb-4 text-lg">Admin</h6>
-<p class="text-secondary-light text-sm mb-0">Lorem Ipsum is simply dummy text of the
-                                printing and typesetti</p>
-<span class="text-secondary-light text-sm mb-0 mt-4">25 Jan 2024</span>
-</div>
-</div>
-<div class="d-flex align-items-start gap-16">
-<img alt="Thumbnail" class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0" src="{% static 'admin_assets/images/thumbs/notice-board-img2.png' %}"/>
-<div class="">
-<h6 class="mb-4 text-lg">Kathryn Murphy</h6>
-<p class="text-secondary-light text-sm mb-0">Lorem Ipsum is simply dummy text of the
-                                printing and typesett ing industry Lorem Ipsum is simply dummy text of the printing and
-                                typesetting industry.</p>
-<span class="text-secondary-light text-sm mb-0 mt-4">25 Jan 2024</span>
-</div>
-</div>
-<div class="d-flex align-items-start gap-16">
-<img alt="Thumbnail" class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0" src="{% static 'admin_assets/images/thumbs/notice-board-img3.png' %}"/>
-<div class="">
-<h6 class="mb-4 text-lg">Admin</h6>
-<p class="text-secondary-light text-sm mb-0">Lorem Ipsum is simply dummy text of the
-                                printing and typesetti</p>
-<span class="text-secondary-light text-sm mb-0 mt-4">25 Jan 2024</span>
-</div>
-</div>
-<div class="d-flex align-items-start gap-16">
-<img alt="Thumbnail" class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0" src="{% static 'admin_assets/images/thumbs/notice-board-img2.png' %}"/>
-<div class="">
-<h6 class="mb-4 text-lg">John Doe</h6>
-<p class="text-secondary-light text-sm mb-0">Lorem ipsum dolor sit amet consectetur
-                                adipisicing elit. Laborum voluptas corporis qui dolore est odit officia fuga?</p>
-<span class="text-secondary-light text-sm mb-0 mt-4">25 Jan 2024</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-md-6">
-<div class="card h-100">
-<div class="card-body p-0">
-<div class="d-flex flex-wrap align-items-center justify-content-between px-20 py-16 border-bottom border-neutral-200">
-<h6 class="text-lg mb-0">Leave Requests</h6>
-<div class="dropdown">
-<button aria-expanded="false" data-bs-toggle="dropdown" type="button">
-<iconify-icon class="icon text-secondary-light" icon="entypo:dots-three-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu p-12 border bg-base shadow">
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="hugeicons:view"></iconify-icon>
-                                View
-                              </button>
-</li>
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="lucide:edit"></iconify-icon>
-                                Edit
-                              </button>
-</li>
-<li>
-<button class="delete-item dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-danger-100 text-hover-danger-600 d-flex align-items-center gap-10" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="fluent:delete-24-regular"></iconify-icon>
-                                Delete
-                              </button>
-</li>
-</ul>
-</div>
-</div>
-<div class="ps-20 pt-20 pb-20">
-<div class="pe-20 d-flex flex-column gap-28 max-h-462-px overflow-y-auto scroll-sm">
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="d-flex align-items-start gap-16">
-<img alt="Thumbnail" class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0" src="{% static 'admin_assets/images/thumbs/leave-request-img1.png' %}"/>
-<div class="">
-<h6 class="mb-0 text-lg">Darlene Robertson</h6>
-<span class="text-secondary-light text-sm mb-0">English Teacher</span>
-</div>
-</div>
-<div class="text-end">
-<span class="d-block fw-bold text-primary-light">3 Days</span>
-<p class="text-secondary-light text-sm mb-0">Apply on: 10 April</p>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="d-flex align-items-start gap-16">
-<img alt="Thumbnail" class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0" src="{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}"/>
-<div class="">
-<h6 class="mb-0 text-lg">Esther Howard</h6>
-<span class="text-secondary-light text-sm mb-0">English Teacher</span>
-</div>
-</div>
-<div class="text-end">
-<span class="d-block fw-bold text-primary-light">3 Days</span>
-<p class="text-secondary-light text-sm mb-0">Apply on: 10 April</p>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="d-flex align-items-start gap-16">
-<img alt="Thumbnail" class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0" src="{% static 'admin_assets/images/thumbs/leave-request-img3.png' %}"/>
-<div class="">
-<h6 class="mb-0 text-lg">Kristin Watson</h6>
-<span class="text-secondary-light text-sm mb-0">English Teacher</span>
-</div>
-</div>
-<div class="text-end">
-<span class="d-block fw-bold text-primary-light">3 Days</span>
-<p class="text-secondary-light text-sm mb-0">Apply on: 10 April</p>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="d-flex align-items-start gap-16">
-<img alt="Thumbnail" class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0" src="{% static 'admin_assets/images/thumbs/leave-request-img4.png' %}"/>
-<div class="">
-<h6 class="mb-0 text-lg">Leslie Alexander</h6>
-<span class="text-secondary-light text-sm mb-0">English Teacher</span>
-</div>
-</div>
-<div class="text-end">
-<span class="d-block fw-bold text-primary-light">3 Days</span>
-<p class="text-secondary-light text-sm mb-0">Apply on: 10 April</p>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="d-flex align-items-start gap-16">
-<img alt="Thumbnail" class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0" src="{% static 'admin_assets/images/thumbs/leave-request-img5.png' %}"/>
-<div class="">
-<h6 class="mb-0 text-lg">Dianne Russell</h6>
-<span class="text-secondary-light text-sm mb-0">English Teacher</span>
-</div>
-</div>
-<div class="text-end">
-<span class="d-block fw-bold text-primary-light">3 Days</span>
-<p class="text-secondary-light text-sm mb-0">Apply on: 10 April</p>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="d-flex align-items-start gap-16">
-<img alt="Thumbnail" class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0" src="{% static 'admin_assets/images/thumbs/leave-request-img3.png' %}"/>
-<div class="">
-<h6 class="mb-0 text-lg">Kristin Watson</h6>
-<span class="text-secondary-light text-sm mb-0">English Teacher</span>
-</div>
-</div>
-<div class="text-end">
-<span class="d-block fw-bold text-primary-light">3 Days</span>
-<p class="text-secondary-light text-sm mb-0">Apply on: 10 April</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xxl-4">
-<div class="card h-100">
-<div class="card-body p-0">
-<div class="d-flex flex-wrap align-items-center justify-content-between px-20 py-16 border-bottom border-neutral-200">
-<h6 class="text-lg mb-0">Calendar</h6>
-</div>
-<div class="p-20">
-<div class="calendar">
-<div class="calendar__header">
-<button class="calendar__arrow left" type="button">
-<i class="ri-arrow-left-s-line"></i>
-</button>
-<p class="display text-md text-secondary-light fw-semibold mb-0">""</p>
-<button class="calendar__arrow right" type="button">
-<i class="ri-arrow-right-s-line"></i>
-</button>
-</div>
-<div class="calendar__week week">
-<div class="calendar__week-text">Su</div>
-<div class="calendar__week-text">Mo</div>
-<div class="calendar__week-text">Tu</div>
-<div class="calendar__week-text">We</div>
-<div class="calendar__week-text">Th</div>
-<div class="calendar__week-text">Fr</div>
-<div class="calendar__week-text">Sa</div>
-</div>
-<div class="days"></div>
-</div>
-</div>
-<div class="ps-20 pt-20 pb-20 border-top border-neutral-200">
-<h6 class="text-lg mb-20">Upcoming Events</h6>
-<div class="pe-20 d-flex flex-column gap-32 overflow-y-auto max-h-500-px scroll-sm">
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="ps-10 border-start-width-3-px border-purple-600">
-<div class="d-flex align-items-end gap-6">
-<h6 class="text-lg fw-normal mb-0">09:00 - 09:45</h6>
-<span class="text-xs text-secondary-light line-height-1 mb-2">AM</span>
-</div>
-<p class="text-secondary-light mt-4 mb-2 text-sm">Marketing Strategy Kickoff</p>
-<p class="text-xs text-secondary-light mb-0">Lead by <a class="text-primary-600 hover-underline" href="javascript:void(0)">Robert Fox</a></p>
-</div>
-<div>
-<a class="py-6 px-16 radius-4 bg-neutral-100 text-secondary-light fw-semibold bg-hover-primary-600 hover-text-white" href="javascript:void(0)">View</a>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="ps-10 border-start-width-3-px border-warning-600">
-<div class="d-flex align-items-end gap-6">
-<h6 class="text-lg fw-normal mb-0">11:15 - 12:00</h6>
-<span class="text-xs text-secondary-light line-height-1 mb-2">AM</span>
-</div>
-<p class="text-secondary-light mt-4 mb-2 text-sm">Product Design Brainstorm</p>
-<p class="text-xs text-secondary-light mb-0">Lead by <a class="text-primary-600 hover-underline" href="javascript:void(0)">Leslie Alexander</a></p>
-</div>
-<div>
-<a class="py-6 px-16 radius-4 bg-neutral-100 text-secondary-light fw-semibold bg-hover-primary-600 hover-text-white" href="javascript:void(0)">View</a>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="ps-10 border-start-width-3-px border-blue-600">
-<div class="d-flex align-items-end gap-6">
-<h6 class="text-lg fw-normal mb-0">02:00 - 03:00</h6>
-<span class="text-xs text-secondary-light line-height-1 mb-2">PM</span>
-</div>
-<p class="text-secondary-light mt-4 mb-2 text-sm">Client Feedback Review</p>
-<p class="text-xs text-secondary-light mb-0">Lead by <a class="text-primary-600 hover-underline" href="javascript:void(0)">Courtney Henry</a></p>
-</div>
-<div>
-<a class="py-6 px-16 radius-4 bg-neutral-100 text-secondary-light fw-semibold bg-hover-primary-600 hover-text-white" href="javascript:void(0)">View</a>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="ps-10 border-start-width-3-px border-success-600">
-<div class="d-flex align-items-end gap-6">
-<h6 class="text-lg fw-normal mb-0">04:15 - 05:00</h6>
-<span class="text-xs text-secondary-light line-height-1 mb-2">PM</span>
-</div>
-<p class="text-secondary-light mt-4 mb-2 text-sm">Sprint Planning &amp; Task Allocation</p>
-<p class="text-xs text-secondary-light mb-0">Lead by <a class="text-primary-600 hover-underline" href="javascript:void(0)">Eleanor Pena</a></p>
-</div>
-<div>
-<a class="py-6 px-16 radius-4 bg-neutral-100 text-secondary-light fw-semibold bg-hover-primary-600 hover-text-white" href="javascript:void(0)">View</a>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="ps-10 border-start-width-3-px border-primary-600">
-<div class="d-flex align-items-end gap-6">
-<h6 class="text-lg fw-normal mb-0">01:15 - 02:00</h6>
-<span class="text-xs text-secondary-light line-height-1 mb-2">PM</span>
-</div>
-<p class="text-secondary-light mt-4 mb-2 text-sm">Client Feedback Review</p>
-<p class="text-xs text-secondary-light mb-0">Lead by <a class="text-primary-600 hover-underline" href="javascript:void(0)">John</a></p>
-</div>
-<div>
-<a class="py-6 px-16 radius-4 bg-neutral-100 text-secondary-light fw-semibold bg-hover-primary-600 hover-text-white" href="javascript:void(0)">View</a>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="ps-10 border-start-width-3-px border-warning-600">
-<div class="d-flex align-items-end gap-6">
-<h6 class="text-lg fw-normal mb-0">11:15 - 12:00</h6>
-<span class="text-xs text-secondary-light line-height-1 mb-2">AM</span>
-</div>
-<p class="text-secondary-light mt-4 mb-2 text-sm">Product Design Brainstorm</p>
-<p class="text-xs text-secondary-light mb-0">Lead by <a class="text-primary-600 hover-underline" href="javascript:void(0)">Leslie Alexander</a></p>
-</div>
-<div>
-<a class="py-6 px-16 radius-4 bg-neutral-100 text-secondary-light fw-semibold bg-hover-primary-600 hover-text-white" href="javascript:void(0)">View</a>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xxl-4 col-lg-6">
-<div class="card h-100">
-<div class="card-body p-0">
-<div class="d-flex flex-wrap align-items-center justify-content-between px-20 py-16 border-bottom border-neutral-200">
-<h6 class="text-lg mb-0">User Overview</h6>
-<div class="dropdown">
-<button aria-expanded="false" data-bs-toggle="dropdown" type="button">
-<iconify-icon class="icon text-secondary-light" icon="entypo:dots-three-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu p-12 border bg-base shadow">
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="hugeicons:view"></iconify-icon>
-                        View
-                      </button>
-</li>
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="lucide:edit"></iconify-icon>
-                        Edit
-                      </button>
-</li>
-<li>
-<button class="delete-item dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-danger-100 text-hover-danger-600 d-flex align-items-center gap-10" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="fluent:delete-24-regular"></iconify-icon>
-                        Delete
-                      </button>
-</li>
-</ul>
-</div>
-</div>
-<div class="p-20">
-<div>
-<div class="mt-40 mb-24 pe-110 position-relative max-w-288-px mx-auto">
-<div class="w-170-px h-170-px rounded-circle z-1 position-relative d-inline-flex justify-content-center align-items-center">
-<img alt="Image" class="position-absolute top-0 start-0 z-n1 w-100 h-100 object-fit-cover" src="{% static 'admin_assets/images/icons/radial-bg1.png' %}"/>
-<h5 class="text-white"> 60% </h5>
-</div>
-<div class="w-144-px h-144-px rounded-circle z-1 position-relative d-inline-flex justify-content-center align-items-center position-absolute top-0 end-0 mt--36">
-<img alt="Image" class="position-absolute top-0 start-0 z-n1 w-100 h-100 object-fit-cover" src="{% static 'admin_assets/images/icons/radial-bg2.png' %}"/>
-<h5 class="text-white"> 30% </h5>
-</div>
-<div class="w-110-px h-110-px rounded-circle z-1 position-relative d-inline-flex justify-content-center align-items-center position-absolute bottom-0 start-50 translate-middle-x ms-48">
-<img alt="Image" class="position-absolute top-0 start-0 z-n1 w-100 h-100 object-fit-cover" src="{% static 'admin_assets/images/icons/radial-bg3.png' %}"/>
-<h5 class="text-white"> 10% </h5>
-</div>
-</div>
-<div class="d-flex align-items-center flex-wrap gap-24 justify-content-evenly">
-<div class="d-flex flex-column align-items-start">
-<div class="d-flex align-items-center gap-2">
-<span class="w-12-px h-12-px rounded-pill bg-success-600"></span>
-<span class="text-secondary-light text-sm fw-normal">Student</span>
-</div>
-<h6 class="text-primary-light fw-semibold mb-0 mt-4 text-lg">750</h6>
-</div>
-<div class="d-flex flex-column align-items-start">
-<div class="d-flex align-items-center gap-2">
-<span class="w-12-px h-12-px rounded-pill bg-warning-600"></span>
-<span class="text-secondary-light text-sm fw-normal">Teacher</span>
-</div>
-<h6 class="text-primary-light fw-semibold mb-0 mt-4 text-lg">56</h6>
-</div>
-<div class="d-flex flex-column align-items-start">
-<div class="d-flex align-items-center gap-2">
-<span class="w-12-px h-12-px rounded-pill bg-blue-600"></span>
-<span class="text-secondary-light text-sm fw-normal">Staffs </span>
-</div>
-<h6 class="text-primary-light fw-semibold mb-0 mt-4 text-lg">15</h6>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xxl-8 col-lg-6">
-<div class="card h-100">
-<div class="card-body p-0">
-<div class="d-flex flex-wrap align-items-center justify-content-between px-20 py-16 border-bottom border-neutral-200">
-<h6 class="text-lg mb-0">Income Vs Expense </h6>
-<div class="dropdown">
-<button aria-expanded="false" data-bs-toggle="dropdown" type="button">
-<iconify-icon class="icon text-secondary-light" icon="entypo:dots-three-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu p-12 border bg-base shadow">
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="hugeicons:view"></iconify-icon>
-                        View
-                      </button>
-</li>
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="lucide:edit"></iconify-icon>
-                        Edit
-                      </button>
-</li>
-<li>
-<button class="delete-item dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-danger-100 text-hover-danger-600 d-flex align-items-center gap-10" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="fluent:delete-24-regular"></iconify-icon>
-                        Delete
-                      </button>
-</li>
-</ul>
-</div>
-</div>
-<div class="p-20">
-<ul class="d-flex flex-wrap align-items-center justify-content-center mb-16 gap-3">
-<li class="d-flex align-items-center gap-8">
-<span class="w-12-px h-12-px rounded-circle bg-primary-600"></span>
-<span class="text-secondary-light text-sm fw-semibold">
-                      Income:
-                      <span class="text-primary-light fw-bold">$500</span>
-</span>
-</li>
-<li class="d-flex align-items-center gap-8">
-<span class="w-12-px h-12-px rounded-circle bg-warning-600"></span>
-<span class="text-secondary-light text-sm font-semibold">
-                      Expense:
-                      <span class="text-primary-light fw-bold"> $300</span>
-</span>
-</li>
-</ul>
-<div class="apexcharts-tooltip-style-1" id="incomeExpense"></div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xxl-4 col-lg-6">
-<div class="card h-100">
-<div class="card-body p-0">
-<div class="d-flex flex-wrap align-items-center justify-content-between px-20 py-16 border-bottom border-neutral-200">
-<h6 class="text-lg mb-0">Top Teachers</h6>
-<div class="dropdown">
-<button aria-expanded="false" data-bs-toggle="dropdown" type="button">
-<iconify-icon class="icon text-secondary-light" icon="entypo:dots-three-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu p-12 border bg-base shadow">
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="hugeicons:view"></iconify-icon>
-                        View
-                      </button>
-</li>
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="lucide:edit"></iconify-icon>
-                        Edit
-                      </button>
-</li>
-<li>
-<button class="delete-item dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-danger-100 text-hover-danger-600 d-flex align-items-center gap-10" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="fluent:delete-24-regular"></iconify-icon>
-                        Delete
-                      </button>
-</li>
-</ul>
-</div>
-</div>
-<div class="ps-20 pt-20 pb-20">
-<div class="pe-20 d-flex flex-column gap-20 max-h-462-px overflow-y-auto scroll-sm">
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="d-flex align-items-start gap-16">
-<img alt="Thumbnail" class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0" src="{% static 'admin_assets/images/thumbs/top-teacher-img1.png' %}"/>
-<div class="">
-<h6 class="mb-0 text-lg">Theresa Webb</h6>
-<span class="text-secondary-light text-sm mb-0">example@gmail.com</span>
-</div>
-</div>
-<div class="text-end">
-<span class="d-block fw-semibold text-primary-light">Mathematics</span>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="d-flex align-items-start gap-16">
-<img alt="Thumbnail" class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0" src="{% static 'admin_assets/images/thumbs/top-teacher-img2.png' %}"/>
-<div class="">
-<h6 class="mb-0 text-lg">Darrell Steward</h6>
-<span class="text-secondary-light text-sm mb-0">example@gmail.com</span>
-</div>
-</div>
-<div class="text-end">
-<span class="d-block fw-semibold text-primary-light">Physics</span>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="d-flex align-items-start gap-16">
-<img alt="Thumbnail" class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0" src="{% static 'admin_assets/images/thumbs/top-teacher-img3.png' %}"/>
-<div class="">
-<h6 class="mb-0 text-lg">Jane Cooper</h6>
-<span class="text-secondary-light text-sm mb-0">example@gmail.com</span>
-</div>
-</div>
-<div class="text-end">
-<span class="d-block fw-semibold text-primary-light">Biology</span>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="d-flex align-items-start gap-16">
-<img alt="Thumbnail" class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0" src="{% static 'admin_assets/images/thumbs/top-teacher-img4.png' %}"/>
-<div class="">
-<h6 class="mb-0 text-lg">Savannah Nguyen</h6>
-<span class="text-secondary-light text-sm mb-0">example@gmail.com</span>
-</div>
-</div>
-<div class="text-end">
-<span class="d-block fw-semibold text-primary-light">English</span>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-16">
-<div class="d-flex align-items-start gap-16">
-<img alt="Thumbnail" class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0" src="{% static 'admin_assets/images/thumbs/top-teacher-img5.png' %}"/>
-<div class="">
-<h6 class="mb-0 text-lg">Eleanor Pena</h6>
-<span class="text-secondary-light text-sm mb-0">example@gmail.com</span>
-</div>
-</div>
-<div class="text-end">
-<span class="d-block fw-semibold text-primary-light">Math</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xxl-4 col-lg-6">
-<div class="card h-100">
-<div class="card-body p-0">
-<div class="d-flex flex-wrap align-items-center justify-content-between px-20 py-16 border-bottom border-neutral-200">
-<h6 class="text-lg mb-0">New Admissions</h6>
-<div class="dropdown">
-<button aria-expanded="false" data-bs-toggle="dropdown" type="button">
-<iconify-icon class="icon text-secondary-light" icon="entypo:dots-three-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu p-12 border bg-base shadow">
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="hugeicons:view"></iconify-icon>
-                        View
-                      </button>
-</li>
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="lucide:edit"></iconify-icon>
-                        Edit
-                      </button>
-</li>
-<li>
-<button class="delete-item dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-danger-100 text-hover-danger-600 d-flex align-items-center gap-10" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="fluent:delete-24-regular"></iconify-icon>
-                        Delete
-                      </button>
-</li>
-</ul>
-</div>
-</div>
-<div class="p-20">
-<div class="position-relative text-center">
-<div class="y-value-left apexcharts-tooltip-z-none" id="newAdmissions"></div>
-<div class="text-center position-absolute top-50 start-50 translate-middle">
-<h5 class="mb-4">50</h5>
-<span class="text-secondary-light">Total Admissions</span>
-</div>
-</div>
-<ul class="d-flex flex-wrap align-items-center justify-content-center mt-48 gap-24">
-<li class="d-flex align-items-center gap-2">
-<span class="w-12-px h-12-px radius-2 bg-success-600 rotate-45-deg"></span>
-<div class="">
-<span class="text-secondary-light fw-medium">
-                        English:
-                        <span class="fw-bold text-primary-light">15</span>
-</span>
-</div>
-</li>
-<li class="d-flex align-items-center gap-2">
-<span class="w-12-px h-12-px radius-2 bg-blue-600 rotate-45-deg"></span>
-<div class="">
-<span class="text-secondary-light fw-medium">
-                        Math:
-                        <span class="fw-bold text-primary-light">15</span>
-</span>
-</div>
-</li>
-<li class="d-flex align-items-center gap-2">
-<span class="w-12-px h-12-px radius-2 bg-warning-600 rotate-45-deg"></span>
-<div class="">
-<span class="text-secondary-light fw-medium">
-                        Biology:
-                        <span class="fw-bold text-primary-light">5</span>
-</span>
-</div>
-</li>
-<li class="d-flex align-items-center gap-2">
-<span class="w-12-px h-12-px radius-2 bg-primary-600 rotate-45-deg"></span>
-<div class="">
-<span class="text-secondary-light fw-medium">
-                        Physics:
-                        <span class="fw-bold text-primary-light">10</span>
-</span>
-</div>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xxl-4">
-<div class="card radius-12 border-0 h-100">
-<div class="d-flex align-items-center flex-wrap gap-2 justify-content-between py-12 px-20 border-bottom border-neutral-200">
-<h6 class="mb-2 fw-bold text-lg">Top Student</h6>
-<div class="dropdown">
-<button aria-expanded="false" data-bs-toggle="dropdown" type="button">
-<iconify-icon class="icon text-secondary-light" icon="entypo:dots-three-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu p-12 border bg-base shadow">
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="hugeicons:view"></iconify-icon>
-                      View
-                    </button>
-</li>
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="lucide:edit"></iconify-icon>
-                      Edit
-                    </button>
-</li>
-<li>
-<button class="delete-item dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-danger-100 text-hover-danger-600 d-flex align-items-center gap-10" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<iconify-icon class="icon text-lg line-height-1" icon="fluent:delete-24-regular"></iconify-icon>
-                      Delete
-                    </button>
-</li>
-</ul>
-</div>
-</div>
-<div class="card-body">
-<div class="d-flex flex-column gap-28">
-<div class="d-flex align-items-center justify-content-between gap-10">
-<div class="d-flex align-items-center gap-12">
-<span class="w-44-px h-44-px rounded-circle d-flex justify-content-center align-items-center">
-<img alt="Icon" class="w-44-px h-44-px object-fit-cover rounded-circle" src="{% static 'admin_assets/images/thumbs/avatar-img1.png' %}"/>
-</span>
-<div class="">
-<h6 class="text-sm mb-2">Brooklyn Simmons</h6>
-<span class="text-xs text-secondary-light">Class: Six</span>
-</div>
-</div>
-<div class="d-flex align-items-center gap-8">
-<span class="text-sm text-secondary-light">Marks</span>
-<span class="text-primary-light text-sm d-block text-end">
-<svg class="radial-progress w-44-px" data-percentage="20" viewbox="0 0 80 80">
-<circle class="incomplete stroke-8-px opacity-02 stroke-blue" cx="40" cy="40" r="35"></circle>
-<circle class="complete stroke-8-px stroke-blue" cx="40" cy="40" r="35">
-</circle>
-<text class="percentage fill-black" transform="matrix(0, 1, -1, 0, 80, 0)" x="50%" y="57%">20</text>
-</svg>
-</span>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-10">
-<div class="d-flex align-items-center gap-12">
-<span class="w-44-px h-44-px rounded-circle d-flex justify-content-center align-items-center">
-<img alt="Icon" class="w-44-px h-44-px object-fit-cover rounded-circle" src="{% static 'admin_assets/images/thumbs/avatar-img2.png' %}"/>
-</span>
-<div class="">
-<h6 class="text-sm mb-2">Floyd Miles</h6>
-<span class="text-xs text-secondary-light">Class: Seven</span>
-</div>
-</div>
-<div class="d-flex align-items-center gap-8">
-<span class="text-sm text-secondary-light">Marks</span>
-<span class="text-primary-light text-sm d-block text-end">
-<svg class="radial-progress w-44-px" data-percentage="35" viewbox="0 0 80 80">
-<circle class="incomplete stroke-8-px opacity-02 stroke-red" cx="40" cy="40" r="35"></circle>
-<circle class="complete stroke-8-px stroke-red" cx="40" cy="40" r="35">
-</circle>
-<text class="percentage fill-black" transform="matrix(0, 1, -1, 0, 80, 0)" x="50%" y="57%">35</text>
-</svg>
-</span>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-10">
-<div class="d-flex align-items-center gap-12">
-<span class="w-44-px h-44-px rounded-circle d-flex justify-content-center align-items-center">
-<img alt="Icon" class="w-44-px h-44-px object-fit-cover rounded-circle" src="{% static 'admin_assets/images/thumbs/avatar-img2.png' %}"/>
-</span>
-<div class="">
-<h6 class="text-sm mb-2">Courtney Henry</h6>
-<span class="text-xs text-secondary-light">Class: Eight</span>
-</div>
-</div>
-<div class="d-flex align-items-center gap-8">
-<span class="text-sm text-secondary-light">Marks</span>
-<span class="text-primary-light text-sm d-block text-end">
-<svg class="radial-progress w-44-px" data-percentage="45" viewbox="0 0 80 80">
-<circle class="incomplete stroke-8-px opacity-02 stroke-warning" cx="40" cy="40" r="35">
-</circle>
-<circle class="complete stroke-8-px stroke-warning" cx="40" cy="40" r="35">
-</circle>
-<text class="percentage fill-black" transform="matrix(0, 1, -1, 0, 80, 0)" x="50%" y="57%">45</text>
-</svg>
-</span>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-10">
-<div class="d-flex align-items-center gap-12">
-<span class="w-44-px h-44-px rounded-circle d-flex justify-content-center align-items-center">
-<img alt="Icon" class="w-44-px h-44-px object-fit-cover rounded-circle" src="{% static 'admin_assets/images/thumbs/avatar-img4.png' %}"/>
-</span>
-<div class="">
-<h6 class="text-sm mb-2">Kathryn Murphy</h6>
-<span class="text-xs text-secondary-light">Class: Nine</span>
-</div>
-</div>
-<div class="d-flex align-items-center gap-8">
-<span class="text-sm text-secondary-light">Marks</span>
-<span class="text-primary-light text-sm d-block text-end">
-<svg class="radial-progress w-44-px" data-percentage="65" viewbox="0 0 80 80">
-<circle class="incomplete stroke-8-px opacity-02 stroke-green" cx="40" cy="40" r="35"></circle>
-<circle class="complete stroke-8-px stroke-green" cx="40" cy="40" r="35">
-</circle>
-<text class="percentage fill-black" transform="matrix(0, 1, -1, 0, 80, 0)" x="50%" y="57%">65</text>
-</svg>
-</span>
-</div>
-</div>
-<div class="d-flex align-items-center justify-content-between gap-10">
-<div class="d-flex align-items-center gap-12">
-<span class="w-44-px h-44-px rounded-circle d-flex justify-content-center align-items-center">
-<img alt="Icon" class="w-44-px h-44-px object-fit-cover rounded-circle" src="{% static 'admin_assets/images/thumbs/avatar-img5.png' %}"/>
-</span>
-<div class="">
-<h6 class="text-sm mb-2">Annette Black</h6>
-<span class="text-xs text-secondary-light">Class: Ten</span>
-</div>
-</div>
-<div class="d-flex align-items-center gap-8">
-<span class="text-sm text-secondary-light">Marks</span>
-<span class="text-primary-light text-sm d-block text-end">
-<svg class="radial-progress w-44-px" data-percentage="65" viewbox="0 0 80 80">
-<circle class="incomplete stroke-8-px opacity-02 stroke-blue" cx="40" cy="40" r="35"></circle>
-<circle class="complete stroke-8-px stroke-blue" cx="40" cy="40" r="35">
-</circle>
-<text class="percentage fill-black" transform="matrix(0, 1, -1, 0, 80, 0)" x="50%" y="57%">65</text>
-</svg>
-</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+  <!-- RECENT INSTITUTIONS -->
+  {% if request.user.role != 'institution' %}
+  <div class="col-xxl-6 col-lg-12">
+    <div class="card radius-12 border border-neutral-200 h-100 bg-base">
+      <div class="card-header border-bottom border-neutral-200 p-20 d-flex align-items-center justify-content-between">
+        <h6 class="fw-bold mb-0 text-primary-900">
+          <i class="ri-building-4-line me-2 text-primary-600"></i>Recent Institutions
+        </h6>
+        <a href="/admin-panel/institution-list/" class="text-sm font-weight-bold text-primary-600 hover-text-primary-800">
+          View All <i class="ri-arrow-right-line"></i>
+        </a>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table text-left align-middle mb-0">
+            <thead class="bg-neutral-100 text-neutral-600 text-sm fw-bold">
+              <tr>
+                <th class="ps-20">Institution Name</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for inst in recent_institutions %}
+              <tr>
+                <td class="ps-20 fw-semibold text-primary-900">{{ inst.name }}</td>
+                <td><span class="badge bg-neutral-200 text-neutral-800 text-capitalize">{{ inst.get_type_display }}</span></td>
+                <td class="text-secondary-light text-sm">{{ inst.city }}, {{ inst.state }}</td>
+                <td>
+                  {% if inst.status == 'active' %}
+                    <span class="badge bg-success-100 text-success-700">Active</span>
+                  {% else %}
+                    <span class="badge bg-warning-100 text-warning-700 text-capitalize">{{ inst.status }}</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="text-center py-20 text-secondary-light">No institutions registered yet.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- RECENT COURSES -->
+  <div class="{% if request.user.role != 'institution' %}col-xxl-6 col-lg-12{% else %}col-12{% endif %}">
+    <div class="card radius-12 border border-neutral-200 h-100 bg-base">
+      <div class="card-header border-bottom border-neutral-200 p-20 d-flex align-items-center justify-content-between">
+        <h6 class="fw-bold mb-0 text-primary-900">
+          <i class="ri-book-3-line me-2 text-purple-600"></i>Recent Courses
+        </h6>
+        <a href="/admin-panel/courses/" class="text-sm font-weight-bold text-primary-600 hover-text-primary-800">
+          View All <i class="ri-arrow-right-line"></i>
+        </a>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table text-left align-middle mb-0">
+            <thead class="bg-neutral-100 text-neutral-600 text-sm fw-bold">
+              <tr>
+                <th class="ps-20">Course Title</th>
+                <th>Category</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for course in recent_courses %}
+              <tr>
+                <td class="ps-20 fw-semibold text-primary-900">{{ course.title }}</td>
+                <td class="text-secondary-light text-sm">{{ course.category.name|default:"General" }}</td>
+                <td>
+                  {% if course.status == 'published' or course.is_live %}
+                    <span class="badge bg-success-100 text-success-700">Published</span>
+                  {% else %}
+                    <span class="badge bg-secondary-100 text-secondary-700">Draft</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="3" class="text-center py-20 text-secondary-light">No courses available.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECENT OLYMPIAD ENTRANCE REGISTRATIONS -->
+  <div class="col-12">
+    <div class="card radius-12 border border-neutral-200 bg-base">
+      <div class="card-header border-bottom border-neutral-200 p-20 d-flex align-items-center justify-content-between">
+        <h6 class="fw-bold mb-0 text-primary-900">
+          <i class="ri-trophy-line me-2 text-warning-600"></i>Recent Olympiad Entrance Registrations
+        </h6>
+        <a href="/admin-panel/olympiad-entrance/" class="text-sm font-weight-bold text-primary-600 hover-text-primary-800">
+          Manage Exams <i class="ri-arrow-right-line"></i>
+        </a>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table text-left align-middle mb-0">
+            <thead class="bg-neutral-100 text-neutral-600 text-sm fw-bold">
+              <tr>
+                <th class="ps-20">Candidate Name</th>
+                <th>Email</th>
+                <th>Exam Title</th>
+                <th>Date Registered</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for reg in recent_registrations %}
+              <tr>
+                <td class="ps-20 fw-semibold text-primary-900">{{ reg.student.get_full_name|default:reg.student.username }}</td>
+                <td class="text-secondary-light text-sm">{{ reg.student.email }}</td>
+                <td class="fw-semibold text-primary-800">{{ reg.olympiad.title }}</td>
+                <td class="text-secondary-light text-sm">{{ reg.registered_at|date:"d M Y, h:i A" }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="text-center py-20 text-secondary-light">No Olympiad registrations recorded yet.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
 
 {% block js %}
-    <script>
-
-  // ============================ Revenue Statistics Chart start ===============================
-  var options = {
-    series: [{
-      name: 'Total Fee',
-      data: [25, 35, 50, 60, 26, 20, 40, 20, 50, 16, 10, 40]
-    }, {
-      name: 'Collected Fee',
-      data: [15, 16, 24, 30, 20, 15, 20, 10, 25, 10, 6, 20]
-    }],
-    chart: {
-      type: 'bar',
-      height: 250,
-      stacked: true,
-      toolbar: {
-        show: false
-      },
-      zoom: {
-        enabled: true
-      }
-    },
-    colors: ["#25A194", "#FF7A2C"],
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: "50%",
-        shape: "pyramid",
-      },
-    },
-    xaxis: {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr',
-        'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-      ],
-    },
-    yaxis: {
-      labels: {
-        formatter: function (value) {
-          return "$" + value + "k";
-        },
-        style: {
-          fontSize: "14px"
-        }
-      },
-    },
-    legend: {
-      show: false,
-    },
-    fill: {
-      opacity: 1
-    }
-  };
-
-  var chart = new ApexCharts(document.querySelector("#revenueStatistic"), options);
-  chart.render()
-  // ============================ Revenue Statistics Chart End ===============================
-
-  // ===================== Income Vs Expense Start =============================== 
-  function createChartThree(chartId, color1, color2) {
-    var options = {
-      series: [{
-        name: 'Income',
-        data: [48, 35, 55, 32, 48, 30, 15, 50, 57]
-      }, {
-        name: 'Expense',
-        data: [12, 20, 15, 26, 22, 60, 40, 32, 25]
-      }],
-      legend: {
-        show: false
-      },
-      chart: {
-        type: 'area',
-        width: '100%',
-        height: 260,
-        toolbar: {
-          show: false
-        },
-        padding: {
-          left: 0,
-          right: 0,
-          top: 0,
-          bottom: 0
-        }
-      },
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        curve: 'stepline',
-        width: 2,
-        colors: [color1, color2],
-        lineCap: 'round'
-      },
-      grid: {
-        show: true,
-        borderColor: '#D1D5DB',
-        strokeDashArray: 1,
-        position: 'back',
-        xaxis: {
-          lines: {
-            show: false
-          }
-        },
-        yaxis: {
-          lines: {
-            show: true
-          }
-        },
-        row: {
-          colors: undefined,
-          opacity: 0.2
-        },
-        column: {
-          colors: undefined,
-          opacity: 0.2
-        },
-        padding: {
-          top: -20,
-          right: 0,
-          bottom: -10,
-          left: 0
-        },
-      },
-      colors: [color1, color2],
-      markers: {
-        colors: [color1, color2],
-        strokeWidth: 1,
-        size: 0,
-        hover: {
-          size: 10
-        }
-      },
-      xaxis: {
-        labels: {
-          show: false
-        },
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        tooltip: {
-          enabled: false
-        },
-        labels: {
-          formatter: function (value) {
-            return value;
-          },
-          style: {
-            fontSize: "14px"
-          }
-        }
-      },
-      yaxis: {
-        labels: {
-          formatter: function (value) {
-            return "$" + value + "k";
-          },
-          style: {
-            fontSize: "14px"
-          }
-        },
-      },
-      tooltip: {
-        x: {
-          format: 'dd/MM/yy HH:mm'
-        }
-      },
-      fill: {
-        type: "gradient",
-        gradient: {
-          shade: "light",
-          type: "vertical",
-          opacityFrom: 0.4,
-          opacityTo: 0.05,
-          stops: [0, 100]
-        }
-      }
-    };
-
-    var chart = new ApexCharts(document.querySelector(`#${chartId}`), options);
-    chart.render();
-  }
-
-  createChartThree('incomeExpense', '#16a34a', '#FF9F29');
-  // ===================== Income Vs Expense End =============================== 
-
-  // ================================ New Admissions Chart Start ================================ 
-  var options = {
-    series: [40, 87, 87, 30],
-    colors: ['#0A51CE', '#25A194', '#FF7A2C', '#009F5E'],
-    labels: ['Health', 'Business', 'Lifestyle', 'Entertainment'],
-    legend: {
-      show: false
-    },
-    chart: {
-      type: 'donut',
-      height: 270,
-      sparkline: {
-        enabled: true // Remove whitespace
-      },
-      margin: {
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0
-      },
-      padding: {
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0
-      }
-    },
-    stroke: {
-      width: 2,
-    },
-    dataLabels: {
-      enabled: false
-    },
-    responsive: [{
-      breakpoint: 480,
-      options: {
-        chart: {
-          width: 200
-        },
-        legend: {
-          position: 'bottom'
-        }
-      }
-    }],
-  };
-
-  var chart = new ApexCharts(document.querySelector("#newAdmissions"), options);
-  chart.render();
-  // ================================ New Admissions Chart End ================================ 
-
-  // ================================ Animated Radial Progress Bar Start ================================ 
-  $('svg.radial-progress').each(function (index, value) {
-    $(this).find($('circle.complete')).removeAttr('style');
-  });
-
-  // Activate progress animation on scroll
-  $(window).scroll(function () {
-    $('svg.radial-progress').each(function (index, value) {
-      // Trigger when the element is fully in the viewport
-      if (
-        $(window).scrollTop() >= $(this).offset().top - $(window).height() &&
-        $(window).scrollTop() <= $(this).offset().top + $(this).height()
-      ) {
-        // Get percentage of progress
-        const percent = $(value).data('percentage');
-        // Get radius of the svg's circle.complete
-        const radius = $(this).find($('circle.complete')).attr('r');
-        // Get circumference (2πr)
-        const circumference = 2 * Math.PI * radius;
-        // Get stroke-dashoffset value based on the percentage of the circumference
-        const strokeDashOffset = circumference - ((percent * circumference) / 100);
-        // Transition progress for 1.25 seconds
-        $(this).find($('circle.complete')).animate({ 'stroke-dashoffset': strokeDashOffset }, 1250);
-      }
-    });
-  }).trigger('scroll');
-  // ================================ Animated Radial Progress Bar End ================================
-
-  // ============================= Calendar Js Start =================================
-  let display = document.querySelector(".display");
-  let days = document.querySelector(".days");
-  let previous = document.querySelector(".left");
-  let next = document.querySelector(".right");
-
-  let date = new Date();
-
-  let year = date.getFullYear();
-  let month = date.getMonth();
-
-  function displayCalendar() {
-    const firstDay = new Date(year, month, 1);
-
-    const lastDay = new Date(year, month + 1, 0);
-
-    const firstDayIndex = firstDay.getDay(); //4
-
-    const numberOfDays = lastDay.getDate(); //31
-
-    let formattedDate = date.toLocaleString("en-US", {
-      month: "long",
-      year: "numeric"
-    });
-
-    display.innerHTML = `${formattedDate}`;
-
-    for (let x = 1; x <= firstDayIndex; x++) {
-      const div = document.createElement("div");
-      div.innerHTML += "";
-
-      days.appendChild(div);
-    }
-
-    for (let i = 1; i <= numberOfDays; i++) {
-      let div = document.createElement("div");
-      let currentDate = new Date(year, month, i);
-
-      div.dataset.date = currentDate.toDateString();
-
-      div.innerHTML += i;
-      days.appendChild(div);
-      if (
-        currentDate.getFullYear() === new Date().getFullYear() &&
-        currentDate.getMonth() === new Date().getMonth() &&
-        currentDate.getDate() === new Date().getDate()
-      ) {
-        div.classList.add("current-date");
-      }
-    }
-  }
-
-  // Call the function to display the calendar
-  displayCalendar();
-
-  previous.addEventListener("click", () => {
-    days.innerHTML = "";
-
-    if (month < 0) {
-      month = 11;
-      year = year - 1;
-    }
-    month = month - 1;
-    date.setMonth(month);
-    displayCalendar();
-  });
-
-  next.addEventListener("click", () => {
-    days.innerHTML = "";
-
-    if (month > 11) {
-      month = 0;
-      year = year + 1;
-    }
-
-    month = month + 1;
-    date.setMonth(month);
-
-    displayCalendar();
-  });
-  // ============================= Calendar Js End =================================
-
-
-    </script>
 {% endblock %}

@@ -243,9 +243,10 @@
             <select class="form-select custom-input" name="role" required>
                 <option value="">Choose your role</option>
                 <option value="student" {% if old_role == 'student' %}selected{% endif %}>Student</option>
+                <option value="institution" {% if old_role == 'institution' %}selected{% endif %}>Institution (School / College)</option>
                 <option value="teacher" {% if old_role == 'teacher' %}selected{% endif %}>Teacher</option>
-                <option value="guardian" {% if old_role == 'guardian' %}selected{% endif %}>Guardian</option>
-                <option value="admin" {% if old_role == 'admin' %}selected{% endif %}>Admin</option>
+                <option value="parent" {% if old_role == 'parent' or old_role == 'guardian' %}selected{% endif %}>Parent / Guardian</option>
+                <option value="partner" {% if old_role == 'partner' %}selected{% endif %}>Growth Partner</option>
             </select>
         </div>
         <!-- Password -->

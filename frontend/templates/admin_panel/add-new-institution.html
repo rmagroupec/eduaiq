@@ -135,19 +135,19 @@ $(document).ready(function() {
   // Load Available Courses & Books
   function loadCourses() {
     $.ajax({
-      url: '/courses/courses/?page_size=200',
+      url: '/courses/courses/?page_size=200&exclude_books=false',
       type: 'GET',
       xhrFields: { withCredentials: true },
       success: function(res) {
         const container = $('#courseAllotmentContainer');
-        const list = res.results || [];
-        if (list.length === 0) {
+        const list = res.results || res || [];
+        if (!Array.isArray(list) || list.length === 0) {
           container.html('<div class="col-12 text-muted">No courses available.</div>');
           return;
         }
         let html = '';
         list.forEach(c => {
-          const isBook = c.category_slug === 'ai-books' || c.category_name === 'AI Books & Guides';
+          const isBook = c.category_slug === 'ai-books' || (c.category && c.category.slug === 'ai-books') || c.category_name === 'AI Books & Guides';
           const badge = isBook ? '<span class="badge bg-purple text-white ms-2">AI Book</span>' : '<span class="badge bg-info text-white ms-2">Course</span>';
           html += `
             <div class="col-md-6 col-lg-4">
@@ -155,7 +155,7 @@ $(document).ready(function() {
                 <input class="form-check-input flex-shrink-0" type="checkbox" name="allowed_courses" value="${c.id}" id="inst_course_${c.id}">
                 <label class="form-check-label w-100 cursor-pointer mb-0 text-sm" for="inst_course_${c.id}">
                   <span class="fw-semibold text-dark d-block">${c.title} ${badge}</span>
-                  <span class="text-xs text-secondary-light">₹${c.price} • ${c.category_name || 'General'}</span>
+                  <span class="text-xs text-secondary-light">₹${c.price} • ${c.category_name || (c.category ? c.category.name : 'General')}</span>
                 </label>
               </div>
             </div>

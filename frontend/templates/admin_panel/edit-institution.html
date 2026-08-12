@@ -147,19 +147,19 @@ $(document).ready(function() {
   // Load Courses
   function loadCourses() {
     $.ajax({
-      url: '/courses/courses/?page_size=200',
+      url: '/courses/courses/?page_size=200&exclude_books=false',
       type: 'GET',
       xhrFields: { withCredentials: true },
       success: function(res) {
         const container = $('#courseAllotmentContainer');
-        const list = res.results || [];
-        if (list.length === 0) {
-          container.html('<div class="col-12 text-muted">No courses available.</div>');
+        const list = res.results || res || [];
+        if (!Array.isArray(list) || list.length === 0) {
+          container.html('<div class="col-12 text-muted">No courses available to allot.</div>');
           return;
         }
         let html = '';
         list.forEach(c => {
-          const isBook = c.category_slug === 'ai-books' || c.category_name === 'AI Books & Guides';
+          const isBook = c.category_slug === 'ai-books' || (c.category && c.category.slug === 'ai-books') || c.category_name === 'AI Books & Guides';
           const badge = isBook ? '<span class="badge bg-purple text-white ms-2">AI Book</span>' : '<span class="badge bg-info text-white ms-2">Course</span>';
           const isChecked = allottedCourseIds.includes(c.id) ? 'checked' : '';
           html += `
@@ -168,13 +168,16 @@ $(document).ready(function() {
                 <input class="form-check-input flex-shrink-0" type="checkbox" name="allowed_courses" value="${c.id}" id="inst_course_${c.id}" ${isChecked}>
                 <label class="form-check-label w-100 cursor-pointer mb-0 text-sm" for="inst_course_${c.id}">
                   <span class="fw-semibold text-dark d-block">${c.title} ${badge}</span>
-                  <span class="text-xs text-secondary-light">₹${c.price} • ${c.category_name || 'General'}</span>
+                  <span class="text-xs text-secondary-light">₹${c.price} • ${c.category_name || (c.category ? c.category.name : 'General')}</span>
                 </label>
               </div>
             </div>
           `;
         });
         container.html(html);
+      },
+      error: function() {
+        $('#courseAllotmentContainer').html('<div class="col-12 text-danger">Failed to load courses list.</div>');
       }
     });
   }
@@ -188,7 +191,7 @@ $(document).ready(function() {
       success: function(res) {
         const container = $('#categoryAllotmentContainer');
         const list = res.results || res || [];
-        if (list.length === 0) {
+        if (!Array.isArray(list) || list.length === 0) {
           container.html('<div class="col-12 text-muted">No categories available.</div>');
           return;
         }
@@ -207,6 +210,9 @@ $(document).ready(function() {
           `;
         });
         container.html(html);
+      },
+      error: function() {
+        $('#categoryAllotmentContainer').html('<div class="col-12 text-danger">Failed to load categories.</div>');
       }
     });
   }
@@ -236,11 +242,12 @@ $(document).ready(function() {
         allottedCourseIds = inst.allotted_course_ids || [];
         allottedCategoryIds = inst.allotted_category_ids || [];
 
-        loadCourses();
-        loadCategories();
+        // Check checkboxes for allotted courses & categories
+        allottedCourseIds.forEach(id => $('#inst_course_' + id).prop('checked', true));
+        allottedCategoryIds.forEach(id => $('#inst_cat_' + id).prop('checked', true));
       },
       error: function(err) {
-        showToast("Failed to load details. Ensure you have the permissions to manage this institution.", 'error');
+        showToast("Failed to load institution details.", 'error');
       }
     });
   }
@@ -293,6 +300,8 @@ $(document).ready(function() {
     });
   });
 
+  loadCourses();
+  loadCategories();
   loadUsers(function() {
     loadInstitutionDetails();
   });
