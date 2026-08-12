@@ -193,6 +193,7 @@ def serialize_institution(inst, detailed=False):
             'total_students': inst.students.count(),
             'created_at': inst.created_at.isoformat() if inst.created_at else None,
             'allotted_course_ids': list(inst.allowed_courses.values_list('id', flat=True)),
+            'allotted_category_ids': list(inst.allowed_categories.values_list('id', flat=True)),
         })
     return data
 
@@ -293,12 +294,23 @@ def institution_list(request):
     if not _is_staff(request.user):
         return JsonResponse({'error': 'Forbidden'}, status=403)
 
-    form = InstitutionForm(_body(request))
+    body = _body(request)
+    form = InstitutionForm(body)
     if form.is_valid():
         institution = form.save(commit=False)
         try:
             institution.full_clean()
             institution.save()
+            if 'allowed_courses' in body or 'course_ids' in body:
+                c_ids = body.get('allowed_courses') if 'allowed_courses' in body else body.get('course_ids')
+                if isinstance(c_ids, list):
+                    from courses.models import Course
+                    institution.allowed_courses.set(Course.objects.filter(id__in=c_ids))
+            if 'allowed_categories' in body or 'category_ids' in body:
+                cat_ids = body.get('allowed_categories') if 'allowed_categories' in body else body.get('category_ids')
+                if isinstance(cat_ids, list):
+                    from courses.models import CourseCategory
+                    institution.allowed_categories.set(CourseCategory.objects.filter(id__in=cat_ids))
         except DjangoValidationError as e:
             return JsonResponse({'success': False, 'errors': e.message_dict}, status=400)
         return JsonResponse(
@@ -341,6 +353,16 @@ def institution_detail(request, pk):
         try:
             institution.full_clean()
             institution.save()
+            if 'allowed_courses' in body or 'course_ids' in body:
+                c_ids = body.get('allowed_courses') if 'allowed_courses' in body else body.get('course_ids')
+                if isinstance(c_ids, list):
+                    from courses.models import Course
+                    institution.allowed_courses.set(Course.objects.filter(id__in=c_ids))
+            if 'allowed_categories' in body or 'category_ids' in body:
+                cat_ids = body.get('allowed_categories') if 'allowed_categories' in body else body.get('category_ids')
+                if isinstance(cat_ids, list):
+                    from courses.models import CourseCategory
+                    institution.allowed_categories.set(CourseCategory.objects.filter(id__in=cat_ids))
         except DjangoValidationError as e:
             return JsonResponse({'success': False, 'errors': e.message_dict}, status=400)
         return JsonResponse({'success': True, 'institution': serialize_institution(institution, detailed=True)})

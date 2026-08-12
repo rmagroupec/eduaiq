@@ -69,6 +69,36 @@
           <textarea class="form-control radius-8" id="address" name="address" rows="3" placeholder="Enter physical street address..." required></textarea>
         </div>
 
+        <!-- Section: Purchased Courses & AI Books Allotment -->
+        <div class="col-12 mt-24">
+          <div class="card border border-neutral-200 radius-12 overflow-hidden">
+            <div class="card-header bg-neutral-50 py-16 px-24 border-bottom">
+              <h6 class="text-md fw-bold mb-0 text-primary-600"><i class="ri-book-read-line me-2"></i> Purchased Courses & AI Books Allotment</h6>
+              <span class="text-xs text-secondary-light">Select which courses & AI books this institution has purchased. Students belonging to this institution will automatically get full access.</span>
+            </div>
+            <div class="card-body p-24">
+              <div id="courseAllotmentContainer" class="row gy-3">
+                <div class="col-12 text-muted py-2"><i class="ri-loader-4-line ri-spin me-2"></i> Loading available courses & books...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Category Allotment -->
+        <div class="col-12 mt-16">
+          <div class="card border border-neutral-200 radius-12 overflow-hidden">
+            <div class="card-header bg-neutral-50 py-16 px-24 border-bottom">
+              <h6 class="text-md fw-bold mb-0 text-primary-600"><i class="ri-folders-line me-2"></i> Allowed Course Categories Allotment</h6>
+              <span class="text-xs text-secondary-light">Selecting a category gives access to all present and future published courses in that category.</span>
+            </div>
+            <div class="card-body p-24">
+              <div id="categoryAllotmentContainer" class="row gy-3">
+                <div class="col-12 text-muted py-2"><i class="ri-loader-4-line ri-spin me-2"></i> Loading categories...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="col-12 mt-24">
           <div class="d-flex align-items-center gap-16 justify-content-end">
             <a href="/admin-panel/institution-list/" class="btn btn-outline-neutral-400 radius-8">Cancel</a>
@@ -102,6 +132,77 @@ $(document).ready(function() {
     });
   }
 
+  // Load Available Courses & Books
+  function loadCourses() {
+    $.ajax({
+      url: '/courses/courses/?page_size=200',
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        const container = $('#courseAllotmentContainer');
+        const list = res.results || [];
+        if (list.length === 0) {
+          container.html('<div class="col-12 text-muted">No courses available.</div>');
+          return;
+        }
+        let html = '';
+        list.forEach(c => {
+          const isBook = c.category_slug === 'ai-books' || c.category_name === 'AI Books & Guides';
+          const badge = isBook ? '<span class="badge bg-purple text-white ms-2">AI Book</span>' : '<span class="badge bg-info text-white ms-2">Course</span>';
+          html += `
+            <div class="col-md-6 col-lg-4">
+              <div class="form-check p-12 border radius-8 bg-neutral-50 d-flex align-items-center gap-2">
+                <input class="form-check-input flex-shrink-0" type="checkbox" name="allowed_courses" value="${c.id}" id="inst_course_${c.id}">
+                <label class="form-check-label w-100 cursor-pointer mb-0 text-sm" for="inst_course_${c.id}">
+                  <span class="fw-semibold text-dark d-block">${c.title} ${badge}</span>
+                  <span class="text-xs text-secondary-light">₹${c.price} • ${c.category_name || 'General'}</span>
+                </label>
+              </div>
+            </div>
+          `;
+        });
+        container.html(html);
+      },
+      error: function() {
+        $('#courseAllotmentContainer').html('<div class="col-12 text-danger">Failed to load courses list.</div>');
+      }
+    });
+  }
+
+  // Load Available Categories
+  function loadCategories() {
+    $.ajax({
+      url: '/courses/categories/?page_size=100',
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        const container = $('#categoryAllotmentContainer');
+        const list = res.results || res || [];
+        if (list.length === 0) {
+          container.html('<div class="col-12 text-muted">No categories available.</div>');
+          return;
+        }
+        let html = '';
+        list.forEach(cat => {
+          html += `
+            <div class="col-md-4 col-lg-3">
+              <div class="form-check p-12 border radius-8 bg-neutral-50 d-flex align-items-center gap-2">
+                <input class="form-check-input flex-shrink-0" type="checkbox" name="allowed_categories" value="${cat.id}" id="inst_cat_${cat.id}">
+                <label class="form-check-label w-100 cursor-pointer mb-0 text-sm fw-semibold text-dark" for="inst_cat_${cat.id}">
+                  ${cat.name}
+                </label>
+              </div>
+            </div>
+          `;
+        });
+        container.html(html);
+      },
+      error: function() {
+        $('#categoryAllotmentContainer').html('<div class="col-12 text-danger">Failed to load categories.</div>');
+      }
+    });
+  }
+
   // Submit Handler
   $('#addInstitutionForm').on('submit', function(e) {
     e.preventDefault();
@@ -110,7 +211,9 @@ $(document).ready(function() {
     const match = document.cookie.match(/csrftoken=([^;]+)/);
     const token = match ? match[1] : $('[name=csrfmiddlewaretoken]').val();
     
-    // Read values
+    const selectedCourses = $('input[name="allowed_courses"]:checked').map(function() { return parseInt($(this).val()); }).get();
+    const selectedCategories = $('input[name="allowed_categories"]:checked').map(function() { return parseInt($(this).val()); }).get();
+
     const data = {
       name: $('#name').val(),
       type: $('#type').val(),
@@ -119,7 +222,9 @@ $(document).ready(function() {
       city: $('#city').val(),
       state: $('#state').val(),
       admin_user: parseInt($('#admin_user').val()),
-      address: $('#address').val()
+      address: $('#address').val(),
+      allowed_courses: selectedCourses,
+      allowed_categories: selectedCategories
     };
 
     $.ajax({
@@ -130,7 +235,7 @@ $(document).ready(function() {
       data: JSON.stringify(data),
       xhrFields: { withCredentials: true },
       success: function(res) {
-        showToast("Institution registered successfully!", 'success');
+        showToast("Institution registered successfully with allotted courses!", 'success');
         setTimeout(function() {
           window.location.href = "/admin-panel/institution-list/";
         }, 1500);
@@ -147,6 +252,8 @@ $(document).ready(function() {
   });
 
   loadUsers();
+  loadCourses();
+  loadCategories();
 });
 </script>
 {% endblock %}
