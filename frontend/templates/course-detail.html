@@ -1348,21 +1348,27 @@
         `;
       } else {
         if (!isLoggedIn) {
-          enrollBtn.innerHTML = '🔒 Login to Access Course';
-          enrollBtn.className = 'btn-login-access-pill';
-          enrollBtn.onclick = () => window.location.href = `/login/?next=/course/?slug=${course.slug}`;
+          enrollBtn.innerHTML = `💳 Pay & Buy Course (₹${course.price})`;
+          enrollBtn.className = 'btn-enroll-pro-cta w-100 mb-2';
+          enrollBtn.onclick = () => openPaymentModal(course);
+          
           document.getElementById('enrollmentStatus').innerHTML = `
-            <div class="alert alert-warning py-2 text-center" style="font-size: 12px; border-radius: 12px; background: #fff7ed; border-color: #ffedd5; color: #9a3412;">
-              Please log in with your Institution Account to start learning.
+            <button class="btn-login-access-pill w-100 mb-2" onclick="window.location.href='/login/?next=/course/?slug=${course.slug}'">
+              🔒 Login with Institution Account
+            </button>
+            <div class="alert alert-warning py-2 text-center mt-2" style="font-size: 12px; border-radius: 12px; background: #fff7ed; border-color: #ffedd5; color: #9a3412;">
+              LogIn or Pay to unlock complete course access.
             </div>
           `;
         } else {
-          enrollBtn.textContent = '🔒 Course Not Included in Plan';
-          enrollBtn.className = 'btn btn-secondary btn-lg w-100 mb-2';
-          enrollBtn.disabled = true;
+          enrollBtn.innerHTML = `💳 Pay & Enroll Now (₹${course.price})`;
+          enrollBtn.className = 'btn-enroll-pro-cta w-100 mb-2';
+          enrollBtn.disabled = false;
+          enrollBtn.onclick = () => openPaymentModal(course);
+
           document.getElementById('enrollmentStatus').innerHTML = `
-            <div class="alert alert-danger py-2 text-center" style="font-size: 12px;">
-              This course is not allotted to your Institution. Contact your Institution Admin to unlock.
+            <div class="alert alert-info py-2 text-center" style="font-size: 12px; border-radius: 12px;">
+              Course not yet unlocked. Click above to Pay ₹${course.price} & Enroll.
             </div>
           `;
         }
@@ -1371,6 +1377,116 @@
     } catch (error) {
       console.error('Error:', error);
       alert('Failed to load course details');
+    }
+  }
+
+  function openPaymentModal(course) {
+    const modalHTML = `
+      <div class="modal fade show" id="paymentGatewayModal" tabindex="-1" style="display: block; background: rgba(15,23,42,0.75); backdrop-filter: blur(8px); z-index: 1055;" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content" style="border-radius: 24px; border: 1px solid rgba(249,115,22,0.3); overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.3);">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #fff; padding: 20px 28px;">
+              <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-credit-card text-warning" style="font-size: 22px;"></i>
+                <h5 class="modal-title fw-bold mb-0" style="color: #fff;">EduAiQ Checkout & Payment</h5>
+              </div>
+              <button type="button" class="btn-close btn-close-white" onclick="closePaymentModal()"></button>
+            </div>
+            <div class="modal-body p-4" style="background: #f8fafc;">
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <div class="card p-3 border-0 shadow-sm radius-16" style="background: #fff;">
+                    <span class="badge bg-warning-light text-warning fw-bold mb-2 align-self-start">SELECTED COURSE</span>
+                    <h6 class="fw-bold text-dark mb-1">${course.title}</h6>
+                    <p class="text-muted text-xs mb-3">Instant Lifetime Access & Institution License</p>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="text-secondary text-sm">Course Price:</span>
+                      <strong class="text-dark">₹${course.price}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="text-secondary text-sm">GST (Included):</span>
+                      <span class="text-success text-sm fw-bold">₹0.00</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="fw-bold text-dark">Total Amount:</span>
+                      <h4 class="fw-extrabold text-primary mb-0">₹${course.price}</h4>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <h6 class="fw-bold mb-3 text-dark">Select Payment Method</h6>
+                  <div class="form-check p-3 mb-2 border rounded-12 bg-white d-flex align-items-center justify-content-between">
+                    <div>
+                      <input class="form-check-input" type="radio" name="payMethod" id="payUPI" checked>
+                      <label class="form-check-label fw-bold text-dark ms-2" for="payUPI">UPI / GPay / PhonePe / Paytm</label>
+                    </div>
+                    <span class="fs-4">📱</span>
+                  </div>
+                  <div class="form-check p-3 mb-2 border rounded-12 bg-white d-flex align-items-center justify-content-between">
+                    <div>
+                      <input class="form-check-input" type="radio" name="payMethod" id="payCard">
+                      <label class="form-check-label fw-bold text-dark ms-2" for="payCard">Debit / Credit Card</label>
+                    </div>
+                    <span class="fs-4">💳</span>
+                  </div>
+                  <div class="form-check p-3 mb-3 border rounded-12 bg-white d-flex align-items-center justify-content-between">
+                    <div>
+                      <input class="form-check-input" type="radio" name="payMethod" id="payNetbank">
+                      <label class="form-check-label fw-bold text-dark ms-2" for="payNetbank">Institution NetBanking / Invoice</label>
+                    </div>
+                    <span class="fs-4">🏛️</span>
+                  </div>
+                  <button class="btn-enroll-pro-cta w-100" onclick="processCoursePayment('${course.slug}')">
+                    <i class="fas fa-lock me-1"></i> Pay ₹${course.price} & Unlock Access
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    let existingModal = document.getElementById('paymentGatewayModal');
+    if (existingModal) existingModal.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+  }
+
+  function closePaymentModal() {
+    const modal = document.getElementById('paymentGatewayModal');
+    if (modal) modal.remove();
+  }
+
+  async function processCoursePayment(slug) {
+    try {
+      const response = await fetch(`/courses/courses/${slug}/enroll/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken') || ''
+        },
+        credentials: 'include'
+      });
+      
+      if (response.status === 401) {
+        alert('Please log in first to complete your course purchase!');
+        window.location.href = `/login/?next=/course/?slug=${slug}`;
+        return;
+      }
+      
+      const data = await response.json();
+      if (data.success) {
+        closePaymentModal();
+        alert('🎉 Payment Successful! Course has been unlocked for your account.');
+        window.location.reload();
+      } else {
+        alert(data.error || 'Payment failed. Please try again.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Payment processing error.');
     }
   }
 
@@ -1386,32 +1502,6 @@
     } catch (e) {
       console.error(e);
       alert('Error fetching quiz details.');
-    }
-  }
-
-  async function enrollCourse(slug, price) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/courses/courses/${slug}/enroll/`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-        body: JSON.stringify({covered_by_plan: false, amount_paid: price})
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        document.getElementById('enrollmentStatus').innerHTML = `
-          <div class="alert alert-success">
-            ✅ Successfully enrolled!
-          </div>
-        `;
-        setTimeout(() => window.location.href = '/my-learning/', 2000);
-      } else {
-        alert('Error: ' + (data.error || 'Enrollment failed'));
-      }
-    } catch (error) {
-      console.error('Error:', error);
     }
   }
 

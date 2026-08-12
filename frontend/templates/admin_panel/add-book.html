@@ -190,7 +190,7 @@
       const response = await fetch(`${API_BASE_URL}/courses/categories/`);
       const data = await response.json();
       const results = data.results || [];
-      const aiCat = results.find(c => c.slug === AI_BOOKS_CATEGORY_SLUG);
+      const aiCat = results.find(c => c.slug === AI_BOOKS_CATEGORY_SLUG || c.slug === 'ai-books-guides' || c.name.toLowerCase().includes('ai book'));
       if (aiCat) {
         input.value = aiCat.id;
       }
@@ -204,9 +204,6 @@
     const form = document.getElementById('addBookForm');
     const formData = new FormData(form);
 
-    // Django expects an ISO-ish datetime; datetime-local gives "YYYY-MM-DDTHH:MM"
-    // which Django's DateTimeField parses fine as-is.
-
     try {
       const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
       const response = await fetch(`${API_BASE_URL}/courses/courses/`, {
@@ -218,17 +215,22 @@
         credentials: 'include'
       });
 
-      const data = await response.json();
+      let data = {};
+      try {
+        data = await response.json();
+      } catch (jsonErr) {
+        console.error('Non-JSON server response:', jsonErr);
+      }
 
-      if (response.ok || data.success) {
+      if (response.ok && (data.success || data.id)) {
         showToast('Book saved successfully!', 'success');
         setTimeout(() => {
           window.location.href = '/admin-panel/books/';
-        }, 1500);
+        }, 1200);
       } else {
-        let errMsg = data.error || 'Validation failed.';
+        let errMsg = data.error || 'Validation failed while saving book.';
         if (data.errors) {
-          errMsg += ' | ' + Object.entries(data.errors).map(([f, errs]) => `${f}: ${errs.join(', ')}`).join(' | ');
+          errMsg += ' | ' + Object.entries(data.errors).map(([f, errs]) => `${f}: ${Array.isArray(errs) ? errs.join(', ') : errs}`).join(' | ');
         }
         showToast(errMsg, 'error');
       }

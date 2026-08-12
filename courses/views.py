@@ -429,23 +429,28 @@ def course_list(request):
 
     if not request.user.is_authenticated:
         return JsonResponse({'error': 'Authentication required'}, status=401)
-    data = _body(request).copy()
+    
+    data = request.POST.copy() if request.POST else _body(request).copy()
     if not data.get('category'):
-        cat_obj, _ = CourseCategory.objects.get_or_create(
-            slug='ai-books',
-            defaults={'name': 'AI Books & Guides', 'description': 'AI E-Books & Guides Category'}
-        )
-        data['category'] = cat_obj.id
+        cat_obj = CourseCategory.objects.filter(
+            dj_models.Q(slug='ai-books') | dj_models.Q(name__icontains='AI Books')
+        ).first()
+        if not cat_obj:
+            cat_obj = CourseCategory.objects.create(
+                slug='ai-books',
+                name='AI Books & Guides',
+                description='AI E-Books & Guides Category'
+            )
+        elif cat_obj.slug != 'ai-books':
+            cat_obj.slug = 'ai-books'
+            cat_obj.save()
+        data['category'] = str(cat_obj.id)
 
     form = CourseForm(data, request.FILES)
     if form.is_valid():
         course = form.save(commit=False)
-        if not course.category:
-            cat_obj, _ = CourseCategory.objects.get_or_create(
-                slug='ai-books',
-                defaults={'name': 'AI Books & Guides', 'description': 'AI E-Books & Guides Category'}
-            )
-            course.category = cat_obj
+        if not hasattr(course, 'category') or not course.category_id:
+            course.category_id = int(data['category'])
         course.created_by = request.user
         try:
             course.save()
@@ -1149,3 +1154,34 @@ def admin_attempts(request):
             'cheating_details': a.cheating_details,
         })
     return JsonResponse({'results': results})
+
+
+@csrf_exempt
+@require_http_methods(['POST'])
+def enroll_course(request, slug):
+    if not request.user or not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Authentication required. Please log in first.'}, status=401)
+
+    course = _get_course_or_404(slug)
+    if not course:
+        return JsonResponse({'success': False, 'error': 'Course not found'}, status=404)
+
+    enrollment, created = Enrollment.objects.get_or_create(
+        student=request.user,
+        course=course,
+        defaults={
+            'amount_paid': course.price,
+            'covered_by_plan': False
+        }
+    )
+
+    inst = get_user_institution(request.user)
+    if inst:
+        inst.allowed_courses.add(course)
+
+    return JsonResponse({
+        'success': True,
+        'message': f'Successfully enrolled in {course.title}!',
+        'enrolled': True,
+        'course_slug': course.slug
+    })
