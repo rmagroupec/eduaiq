@@ -29,27 +29,58 @@
 <!-- main css -->
 <link href="{% static 'admin_assets/css/style.css' %}" rel="stylesheet"/>
 <style>
-  .form-control, .form-select {
+  .custom-input, textarea.custom-input {
     border-radius: 10px !important;
-    transition: all 0.2s ease-in-out;
+    background-color: #F8FAFC !important;
+    border: 1.5px solid #E2E8F0 !important;
+    color: #0F172A !important;
+    font-size: 13px !important;
+    padding: 8px 14px !important;
+    height: auto !important;
+    min-height: 38px !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
-  .form-control:hover, .form-select:hover {
-    border-color: #25a194 !important;
-    background-color: #f8fafc;
+  .custom-input:hover, textarea.custom-input:hover {
+    border-color: #CBD5E1 !important;
+    background-color: #FFFFFF !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04) !important;
   }
-  .form-control:focus, .form-select:focus {
-    border-color: #25a194 !important;
-    background-color: #ffffff;
-    box-shadow: 0 0 0 3px rgba(37, 161, 148, 0.15) !important;
+  .custom-input:focus, textarea.custom-input:focus {
+    border-color: #F59E0B !important;
+    background-color: #FFFFFF !important;
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.18) !important;
+    transform: translateY(-1px);
+    outline: none !important;
   }
+  
+  .btn-create-account {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.5px;
+    border-radius: 12px !important;
+    width: 100% !important;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+  .btn-create-account:hover {
+    background: linear-gradient(135deg, #FFB800 0%, #D97706 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(217, 119, 6, 0.45) !important;
+  }
+
   .register-right-pane {
     overflow-x: hidden;
+    background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 50%, #FFFBEB 100%) !important;
   }
   .pane-glow-1 {
     position: absolute;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(37, 161, 148, 0.06) 0%, rgba(255, 255, 255, 0) 70%);
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
     top: -5%;
     left: -5%;
     z-index: 1;
@@ -57,9 +88,9 @@
   }
   .pane-glow-2 {
     position: absolute;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(29, 133, 122, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(15, 23, 42, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
     bottom: -5%;
     right: -5%;
     z-index: 1;
@@ -151,60 +182,65 @@
 <img alt="Register Image" class="w-100 h-100 object-fit-cover" src="{% static 'admin_assets/images/thumbs/login-img.png' %}"/>
 </div>
 <!-- Right Form -->
-<div class="w-100 w-lg-50 px-24 py-24 d-flex justify-content-center align-items-center h-100 overflow-y-auto register-right-pane" style="flex: 1; background-color: #f6f5fb; position: relative;">
+<div class="w-100 w-lg-50 px-16 py-16 px-lg-32 py-lg-24 d-flex justify-content-center align-items-center h-100 overflow-hidden register-right-pane" style="flex: 1; background-color: #f6f5fb; position: relative;">
 <!-- Glows -->
 <div class="pane-glow-1"></div>
 <div class="pane-glow-2"></div>
 
-<div class="register-card p-32 p-lg-40 w-100" style="max-width: 640px; background: #ffffff; border-radius: 24px; border: 1px solid #e2e0ed; box-shadow: 0 16px 48px rgba(37, 161, 148, 0.06); position: relative; z-index: 2;">
-<a href="index" class="d-block text-center mb-16">
-<img alt="Logo" src="{% static 'admin_assets/images/logo.png' %}"/>
+<div class="register-card p-24 p-lg-32 w-100" style="max-width: 600px; background: #ffffff; border-radius: 20px; border: 1px solid #E2E8F0; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08); position: relative; z-index: 2;">
+<!-- Logo -->
+<a href="/" class="d-block text-center mb-8">
+    <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop/RH5FCbrpj5oYZFFX/file_00000000cfc0720984e9245a8aa83486__2_-removebg-preview-I5iSFuXKpmUWVA3H.png" 
+         alt="EduAiQ Logo" style="max-height: 95px; width: auto; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.08));" />
 </a>
-<div class="text-center mb-24">
-<h1 class="h6 fw-bold text-primary-light mb-4">Create Your Account 🚀</h1>
-<p class="text-sm text-secondary-light">
-                    Fill in the details to get started
-                </p>
+
+<div class="text-center mb-16">
+    <h1 class="h6 fw-bold text-navy mb-4" style="color: #D97706; font-weight: 800;">Create Your Account 🚀</h1>
+    <p class="text-xs" style="color: #64748B;">
+        Fill in the details to get started
+    </p>
 </div>
+
 {% if form_errors %}
-<div class="alert alert-danger py-8 px-16 mb-16 text-sm">
-<ul class="mb-0 ps-16">
-{% for error in form_errors %}
-<li>{{ error }}</li>
-{% endfor %}
-</ul>
+<div class="alert alert-danger py-8 px-14 mb-14 text-xs" style="border-radius: 10px; background-color: #FEF2F2; color: #991B1B; border: 1px solid #FCA5A5;">
+    <ul class="mb-0 ps-14">
+    {% for error in form_errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
 </div>
 {% endif %}
-<form action="{% url 'register_submit' %}" method="post" class="d-flex flex-column gap-16">
+
+<form action="{% url 'register_submit' %}" method="post" class="d-flex flex-column gap-12">
     {% csrf_token %}
-    <div class="row g-3">
+    <div class="row g-2">
         <!-- Username -->
         <div class="col-md-6">
-            <label class="text-sm fw-semibold text-primary-light mb-8">
-                Username <span class="text-danger-600">*</span>
+            <label class="text-xs fw-semibold mb-6" style="color: #0F172A;">
+                Username <span style="color: #EF4444;">*</span>
             </label>
-            <input class="form-control" name="username" value="{{ old_username|default:'' }}" placeholder="Enter your username" type="text" required/>
+            <input class="form-control custom-input" name="username" value="{{ old_username|default:'' }}" placeholder="Enter your username" type="text" required/>
         </div>
         <!-- Email -->
         <div class="col-md-6">
-            <label class="text-sm fw-semibold text-primary-light mb-8">
-                Email Address <span class="text-danger-600">*</span>
+            <label class="text-xs fw-semibold mb-6" style="color: #0F172A;">
+                Email Address <span style="color: #EF4444;">*</span>
             </label>
-            <input class="form-control" name="email" value="{{ old_email|default:'' }}" placeholder="Enter your email" type="email" required/>
+            <input class="form-control custom-input" name="email" value="{{ old_email|default:'' }}" placeholder="Enter your email" type="email" required/>
         </div>
         <!-- Phone -->
         <div class="col-md-6">
-            <label class="text-sm fw-semibold text-primary-light mb-8">
-                Phone Number <span class="text-danger-600">*</span>
+            <label class="text-xs fw-semibold mb-6" style="color: #0F172A;">
+                Phone Number <span style="color: #EF4444;">*</span>
             </label>
-            <input class="form-control" name="phone" value="{{ old_phone|default:'' }}" placeholder="Enter your phone number" type="text" required/>
+            <input class="form-control custom-input" name="phone" value="{{ old_phone|default:'' }}" placeholder="Enter your phone number" type="text" required/>
         </div>
         <!-- Role Select -->
         <div class="col-md-6">
-            <label class="text-sm fw-semibold text-primary-light mb-8">
-                Select Role <span class="text-danger-600">*</span>
+            <label class="text-xs fw-semibold mb-6" style="color: #0F172A;">
+                Select Role <span style="color: #EF4444;">*</span>
             </label>
-            <select class="form-select" name="role" required>
+            <select class="form-select custom-input" name="role" required>
                 <option value="">Choose your role</option>
                 <option value="student" {% if old_role == 'student' %}selected{% endif %}>Student</option>
                 <option value="teacher" {% if old_role == 'teacher' %}selected{% endif %}>Teacher</option>
@@ -214,43 +250,46 @@
         </div>
         <!-- Password -->
         <div class="col-md-6">
-            <label class="text-sm fw-semibold text-primary-light mb-8" for="password">
-                Password <span class="text-danger-600">*</span>
+            <label class="text-xs fw-semibold mb-6" style="color: #0F172A;" for="password">
+                Password <span style="color: #EF4444;">*</span>
             </label>
             <div class="position-relative">
-                <input class="form-control" id="password" name="password1" placeholder="Enter your password" required="" type="password"/>
+                <input class="form-control custom-input" id="password" name="password1" placeholder="Enter your password" required="" type="password"/>
                 <button aria-label="Toggle password visibility" class="toggle-password btn p-0 border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light cursor-pointer ri-eye-line" data-toggle="#password" type="button">
                 </button>
             </div>
         </div>
         <!-- Confirm Password -->
         <div class="col-md-6">
-            <label class="text-sm fw-semibold text-primary-light mb-8" for="confirmPassword">
-                Confirm Password <span class="text-danger-600">*</span>
+            <label class="text-xs fw-semibold mb-6" style="color: #0F172A;" for="confirmPassword">
+                Confirm Password <span style="color: #EF4444;">*</span>
             </label>
             <div class="position-relative">
-                <input class="form-control" id="confirmPassword" name="password2" placeholder="Confirm your password" required="" type="password"/>
+                <input class="form-control custom-input" id="confirmPassword" name="password2" placeholder="Confirm your password" required="" type="password"/>
                 <button aria-label="Toggle password visibility" class="toggle-password btn p-0 border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light cursor-pointer ri-eye-line" data-toggle="#confirmPassword" type="button">
                 </button>
             </div>
         </div>
     </div>
     <!-- Terms -->
-    <div class="form-check style-check d-flex align-items-center my-4">
-        <input class="form-check-input border border-neutral-400" id="remeber" type="checkbox" value="" required/>
-        <label class="form-check-label text-sm ms-8" for="remeber"> I agree to the <a class="text-primary-600 text-decoration-underline fw-semibold" href="#">Terms &amp; Conditions</a> </label>
+    <div class="form-check style-check d-flex align-items-center my-2">
+        <input class="form-check-input border border-neutral-400" id="remeber" type="checkbox" value="" required style="cursor: pointer; border-radius: 4px; width: 16px; height: 16px;"/>
+        <label class="form-check-label text-xs ms-8" for="remeber" style="color: #475569; cursor: pointer;"> 
+            I agree to the <a class="fw-bold" style="color: #D97706; text-decoration: none;" href="/legal-notice/">Terms &amp; Conditions</a> 
+        </label>
     </div>
-    <!-- Submit -->
-    <button class="btn btn-primary-600 w-auto px-32 py-8 rounded-pill text-sm fw-semibold mt-4 d-block mx-auto">
+    <!-- Full-Width Submit Button -->
+    <button type="submit" class="btn btn-create-account w-100 py-12 text-sm fw-extrabold mt-2 d-block">
         Create Account
     </button>
 </form>
+
 <!-- Login Link -->
-<div class="mt-16 text-center text-sm">
-                Already have an account?
-                <a class="text-primary-600 fw-semibold text-decoration-underline" href="/admin-panel/login/">
-                    Log In
-                </a>
+<div class="mt-14 text-center text-xs" style="color: #64748B;">
+    Already have an account?
+    <a class="fw-bold text-decoration-none" style="color: #D97706;" href="/admin-panel/login/">
+        Log In
+    </a>
 </div>
 </div>
 </div>

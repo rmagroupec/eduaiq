@@ -3,7 +3,8 @@
 
 {% block title %}EduAiQ - AI-Powered Education & Skill Development Courses in India{% endblock %}
 
-{% block description %}EduAiQ helps students, working professionals & institutions master in-demand skill development courses in India with AI-driven online courses, e-books & practical training. Start learning today.{% endblock %}
+{% block description %}EduAiQ helps students, working professionals & institutions master in-demand skill development
+courses in India with AI-driven online courses, e-books & practical training. Start learning today.{% endblock %}
 
 {% block css %}
 <style>
@@ -47,25 +48,40 @@
   }
 
   .cat-meta {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    color: white !important;
-    background: rgba(102, 126, 234, 0.9) !important;
-    backdrop-filter: blur(4px);
-    padding: 6px 14px !important;
-    border-radius: 20px !important;
-    font-size: 11px !important;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    z-index: 5;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    display: inline-block !important;
+    z-index: 1 !important;
   }
 
   .cat-meta a {
-    color: white !important;
-    text-decoration: none;
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    font-weight: 800 !important;
+    padding: 7px 18px !important;
+    border-radius: 50px !important;
+    font-size: 11.5px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35) !important;
+    display: inline-block !important;
+    text-decoration: none !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .cat-meta a:hover {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.3) !important;
+    transform: translateY(-2px) !important;
   }
 
   .entry-content {
@@ -332,7 +348,7 @@
     z-index: 1;
   }
 
-  /* Top Accent Gradient Bar on Hover */
+  /* Top Accent Gradient Bar on Hover -> Logo Yellow to Navy */
   .course-card-pro::before {
     content: '';
     position: absolute;
@@ -341,7 +357,7 @@
     transform: translateX(-50%);
     width: 0%;
     height: 4px;
-    background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
+    background: linear-gradient(90deg, #fd7e14 0%, #fd7e14 50%, #0F172A 100%);
     transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 5;
     border-radius: 20px 20px 0 0;
@@ -372,11 +388,12 @@
     z-index: 1;
   }
 
+  /* Category Badge -> Midnight Navy Pill */
   .course-cat-badge {
     position: absolute;
     top: 14px;
     left: 14px;
-    background: rgba(15, 23, 42, 0.75);
+    background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     color: #ffffff;
@@ -391,23 +408,24 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
+  /* Price Badge -> Golden Yellow Gradient matching logo "AiQ" */
   .course-price-badge {
     position: absolute;
     top: 14px;
     right: 14px;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%);
+    color: #0F172A;
     font-size: 13px;
     font-weight: 800;
     padding: 6px 15px;
     border-radius: 30px;
     z-index: 3;
-    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
   .course-card-body-pro {
-    padding: 24px;
+    padding: 22px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -421,10 +439,11 @@
     font-size: 12px;
   }
 
+  /* Level Badge -> Warm Amber Tint */
   .course-level-badge {
-    background: #eef2ff;
-    color: #4f46e5;
-    border: 1px solid #e0e7ff;
+    background: #FFFBEB;
+    color: #fd7e14;
+    border: 1px solid #FDE68A;
     font-weight: 700;
     padding: 4px 12px;
     border-radius: 12px;
@@ -445,17 +464,18 @@
     gap: 5px;
   }
 
+  /* Systematic Course Title Typography */
   .course-card-title-pro {
-    font-size: 19px;
+    font-size: 17.5px;
     font-weight: 800;
     line-height: 1.35;
-    margin-bottom: 14px;
-    color: #1e293b;
+    margin-bottom: 12px;
+    color: #0F172A;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    height: 52px;
+    height: 48px;
     letter-spacing: -0.3px;
   }
 
@@ -469,8 +489,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
-    padding-bottom: 14px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
     border-bottom: 1px dashed #e2e8f0;
   }
 
@@ -478,16 +498,16 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background: #fef3c7;
+    background: #FFFBEB;
     padding: 3px 10px;
     border-radius: 10px;
-    border: 1px solid #fef08a;
+    border: 1px solid #FDE68A;
   }
 
   .rating-score {
     font-weight: 800;
     font-size: 13px;
-    color: #b45309;
+    color: #fd7e14;
   }
 
   .student-count {
@@ -500,20 +520,21 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
   }
 
+  /* Instructor Avatar -> Midnight Navy */
   .instructor-avatar {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
     color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 14px;
-    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
     transition: transform 0.3s ease;
   }
 
@@ -530,17 +551,18 @@
     justify-content: flex-end;
   }
 
+  /* Explore Course Button -> Logo Midnight Navy Base & Golden Yellow Hover */
   .btn-enroll-pro {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     font-size: 13px;
-    font-weight: 700;
-    color: #ffffff;
-    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    font-weight: 800;
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
     padding: 10px 22px;
     border-radius: 30px;
-    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.35);
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.25) !important;
     transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -550,9 +572,9 @@
 
   /* Highly Attractive Hover States */
   .course-card-pro:hover {
-    transform: translateY(-10px) scale(1.015);
-    border-color: rgba(99, 102, 241, 0.5);
-    box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.25), 0 10px 15px -5px rgba(0, 0, 0, 0.04);
+    transform: translateY(-8px) scale(1.012);
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12), 0 8px 15px -5px rgba(0, 0, 0, 0.04);
   }
 
   .course-card-pro:hover::before {
@@ -560,820 +582,1293 @@
   }
 
   .course-card-pro:hover .course-thumb-wrap img {
-    transform: scale(1.1) rotate(0.5deg);
+    transform: scale(1.08) rotate(0.5deg);
     filter: brightness(1.05);
   }
 
   .course-card-pro:hover .course-price-badge {
     transform: scale(1.08);
-    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+    box-shadow: 0 6px 18px rgba(245, 158, 11, 0.5);
   }
 
   .course-card-pro:hover .course-card-title-pro a {
-    color: #4f46e5;
+    color: #fd7e14;
   }
 
   .course-card-pro:hover .instructor-avatar {
-    transform: scale(1.1) rotate(5deg);
+    transform: scale(1.08) rotate(5deg);
   }
 
+  /* Explore Course Button Hover State -> Vibrant Golden Yellow */
   .course-card-pro:hover .btn-enroll-pro {
-    background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
-    box-shadow: 0 8px 22px rgba(79, 70, 229, 0.5);
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    box-shadow: 0 8px 22px rgba(245, 158, 11, 0.45) !important;
+    transform: translateY(-2px);
   }
 
-  .course-card-pro:hover .btn-enroll-pro i {
-    transform: translateX(5px);
+  /* ==========================================================================
+     EduAiQ Hero Section Brand Palette (Midnight Dark Navy & Golden Yellow)
+     ========================================================================== */
+  .home-banner {
+    background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #0F172A 100%) !important;
+    position: relative;
+    overflow: hidden;
   }
 
+  .home-banner::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+    pointer-events: none;
+    z-index: 1;
+  }
 
+  .home-banner::after {
+    content: '';
+    position: absolute;
+    bottom: -20%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .home-banner .banner-pretitle {
+    color: #fd7e14 !important;
+    font-weight: 800 !important;
+    letter-spacing: 1px !important;
+    font-size: 13.5px !important;
+  }
+
+  .home-banner .banner-content .banner-title h1 {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+  }
+
+  .home-banner .highlight-yellow {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .home-banner .banner-content .banner-text p {
+    color: #E2E8F0 !important;
+    font-size: 15.5px !important;
+  }
+
+  /* Hero Section Button -> Golden Yellow Gradient matching EduAiQ logo */
+  .home-banner .banner-button .button-round-secondary {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    border: none !important;
+    font-weight: 800 !important;
+    border-radius: 50px !important;
+    padding: 14px 36px !important;
+    font-size: 14px !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    display: inline-block !important;
+    text-decoration: none !important;
+  }
+
+  .home-banner .banner-button .button-round-secondary:hover {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(245, 158, 11, 0.6) !important;
+  }
+
+  /* ==========================================================================
+     EduAiQ About Us & Category Sections Brand Palette (Navy & Golden Yellow)
+     ========================================================================== */
+
+  /* Progress Bars Styling */
+  .home-about-us .skill-container .ab-progress,
+  .home-about-us .progress-wrapper .ab-progress {
+    background: #F1F5F9 !important;
+    border-radius: 50px !important;
+    height: 8px !important;
+    overflow: hidden !important;
+  }
+
+  .home-about-us .ab-progress .ab-progress-bar,
+  .home-about-us .skill-container .ab-progress-bar,
+  .home-about-us .progress-bar {
+    background: linear-gradient(90deg, #0F172A 0%, #fd7e14 100%) !important;
+    border-radius: 50px !important;
+    height: 8px !important;
+  }
+
+  .home-about-us .skill-titile {
+    color: #0F172A !important;
+    font-weight: 700 !important;
+  }
+
+  /* Qualification Feature Icons */
+  .home-about-us .qualifaction-icon i {
+    color: #fd7e14 !important;
+  }
+
+  .home-about-us .qualifaction-title h5 {
+    color: #0F172A !important;
+    font-weight: 800 !important;
+  }
+
+  .home-about-us .about-title {
+    color: #fd7e14 !important;
+  }
+
+  /* MORE ABOUT US Button -> Yellow Base & Navy Hover */
+  .home-about-us .about-btn .button-round-secondary {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    border: none !important;
+    font-weight: 800 !important;
+    border-radius: 50px !important;
+    padding: 12px 32px !important;
+    font-size: 13.5px !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    display: inline-block !important;
+    text-decoration: none !important;
+  }
+
+  .home-about-us .about-btn .button-round-secondary:hover {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.3) !important;
+  }
+
+  /* MORE CATEGORIES Button -> Navy Base & Yellow Hover */
+  .category-section-pro .button-round-primary {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 800 !important;
+    border-radius: 50px !important;
+    padding: 12px 28px !important;
+    font-size: 13.5px !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.25) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    display: inline-block !important;
+    text-decoration: none !important;
+  }
+
+  .category-section-pro .button-round-primary:hover {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(245, 158, 11, 0.45) !important;
+  }
+
+  /* BOOK SEAT Button -> Yellow Base & Navy Hover */
+  .course-form-pro .button-round-secondary {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    border: none !important;
+    font-weight: 800 !important;
+    border-radius: 50px !important;
+    padding: 12px 28px !important;
+    font-size: 14px !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    cursor: pointer;
+  }
+
+  .course-form-pro .button-round-secondary:hover {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.3) !important;
+  }
+
+  /* Form Container */
+  .course-form-pro {
+    border-radius: 24px !important;
+    border: 1px solid #E2E8F0 !important;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06) !important;
+  }
+
+  .course-form-pro h3 {
+    color: #0F172A !important;
+    font-weight: 800 !important;
+  }
+
+  /* ==========================================================================
+     EduAiQ Global Homepage Brand Palette Overrides (Navy & Golden Yellow)
+     ========================================================================== */
+
+  /* 1. Global Buttons (Primary Navy / Secondary Golden Yellow) */
+  .button-round-primary,
+  .button-primary {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 800 !important;
+    border-radius: 50px !important;
+    padding: 12px 30px !important;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.25) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+  }
+
+  .button-round-primary:hover,
+  .button-primary:hover {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.45) !important;
+  }
+
+  .button-round-secondary,
+  .button-secondary {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    border: none !important;
+    font-weight: 800 !important;
+    border-radius: 50px !important;
+    padding: 12px 30px !important;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+  }
+
+  .button-round-secondary:hover,
+  .button-secondary:hover {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.35) !important;
+  }
+
+  /* 2. Limitless Learning Banner Section (.home-banner-2 / .home-progress-section) */
+  .home-banner-2,
+  .home-progress-section,
+  .home-banner.home-banner-2 {
+    background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #0F172A 100%) !important;
+  }
+
+  .home-banner-2 .banner-content ul li i,
+  .home-progress-section ul li i,
+  .home-banner-2 i.fa-check {
+    color: #fd7e14 !important;
+  }
+
+  /* 3. Our Best Features Section (.home-feature / .feature-item) */
+  .home-feature .feature-icon,
+  .home-service .service-icon,
+  .feature-icon-wrap i {
+    color: #fd7e14 !important;
+  }
+
+  .feature-item:hover .feature-icon,
+  .service-item:hover .service-icon {
+    transform: scale(1.1) rotate(5deg);
+    color: #fd7e14 !important;
+  }
+
+  /* 4. Meet Our Best Teachers Section (.home-team / .team-item) */
+  .home-team .team-item .team-designation,
+  .team-content .team-designation {
+    color: #fd7e14 !important;
+    font-weight: 700 !important;
+  }
+
+  .team-social-links a,
+  .team-item .social-links a {
+    background: #0F172A !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .team-social-links a:hover,
+  .team-item .social-links a:hover {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    transform: translateY(-2px);
+  }
+
+  /* 5. Video Play Button & Result Banner (.video-play-btn / .home-testimonial) */
+  .video-play-btn,
+  .video-button a {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.45) !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .video-play-btn:hover,
+  .video-button a:hover {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    transform: scale(1.1);
+  }
+
+  /* 6. Counter / Stats Section (.home-counter / .counter-section) */
+  .home-counter,
+  .counter-section {
+    background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #0F172A 100%) !important;
+  }
+
+  .home-counter .counter-title,
+  .counter-item .counter-title,
+  .counter-item p {
+    color: #fd7e14 !important;
+    font-weight: 700 !important;
+  }
+
+  .home-counter .counter-number,
+  .counter-item .counter-number,
+  .counter-item h2,
+  .counter-item h3 {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+  }
+
+  /* ==========================================================================
+     EduAiQ Our Best Features Section (Midnight Navy & Golden Yellow Palette)
+     ========================================================================== */
+  .home-feature-section .feature-wrapper .feature-type {
+    border: 2px dashed rgba(15, 23, 42, 0.18) !important;
+    border-radius: 25px !important;
+    background: #ffffff !important;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .home-feature-section .feature-wrapper .feature-type:hover {
+    border-color: #fd7e14 !important;
+    transform: translateY(-6px) !important;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08) !important;
+  }
+
+  /* Icons */
+  .home-feature-section .feature-wrapper .feature-type .feature-icon i {
+    color: #fd7e14 !important;
+    transition: transform 0.35s ease !important;
+  }
+
+  .home-feature-section .feature-wrapper .feature-type:nth-child(even) .feature-icon i {
+    color: #0F172A !important;
+  }
+
+  .home-feature-section .feature-wrapper .feature-type:hover .feature-icon i {
+    transform: scale(1.08) rotate(3deg) !important;
+  }
+
+  /* Number Badges (1, 2, 3) */
+  .home-feature-section .feature-wrapper .feature-type .feature-icon .meta-no {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    font-weight: 800 !important;
+    border: 4px solid #ffffff !important;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35) !important;
+  }
+
+  .home-feature-section .feature-wrapper .feature-type:nth-child(even) .feature-icon .meta-no {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25) !important;
+  }
+
+  /* Headings & Descriptions */
+  .home-feature-section .feature-wrapper .feature-type .feature-heading {
+    color: #0F172A !important;
+    font-weight: 800 !important;
+  }
+
+  .home-feature-section .feature-wrapper .feature-type .feature-info {
+    color: #475569 !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Bottom Circular Arrow Button */
+  .home-feature-section .feature-wrapper .feature-type .right-arrow-link i {
+    background-color: #0F172A !important;
+    color: #fd7e14 !important;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25) !important;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .home-feature-section .feature-wrapper .feature-type .right-arrow-link:hover i,
+  .home-feature-section .feature-wrapper .feature-type:hover .right-arrow-link i {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    box-shadow: 0 10px 25px rgba(245, 158, 11, 0.45) !important;
+    transform: scale(1.1) !important;
+  }
+
+  /* ==========================================================================
+     EduAiQ Blog & News Section Brand Overrides (Navy & Golden Yellow Palette)
+     ========================================================================== */
+  .home-blog-section .blog-section-title {
+    color: #0F172A !important;
+    font-weight: 800 !important;
+  }
+
+  .home-blog-section .blog-section-info {
+    color: #475569 !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post {
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    border: 1px solid #E2E8F0 !important;
+    background: #ffffff !important;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06) !important;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post:hover {
+    border-color: #fd7e14 !important;
+    transform: translateY(-6px) !important;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12) !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post .feature-image {
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post .feature-image img {
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post:hover .feature-image img {
+    transform: scale(1.06) !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post .feature-image:before {
+    display: none !important;
+    content: none !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post .entry-content h4 a {
+    color: #0F172A !important;
+    font-weight: 800 !important;
+    transition: color 0.3s ease !important;
+    text-decoration: none !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post .entry-content h4 a:hover {
+    color: #fd7e14 !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post .entry-content .blog-info {
+    color: #64748B !important;
+    font-size: 14.5px !important;
+    line-height: 1.6 !important;
+  }
 </style>
 {% endblock %}
 
 {% block content %}
 <section class="home-banner d-flex align-items-end">
-<div class="container">
-<div class="row align-items-end">
-<div class="banner-left col-md-6">
-<div class="image-overlay pattern-overlay"></div>
-<div class="banner-content">
-<div class="title-divider"></div>
-<p class="banner-pretitle">SMART LEARNING. REAL CAREERS. BETTER OUTCOMES.</p>
-<div class="banner-title">
-<h1>Empowering Minds Through AI-Driven Education</h1>
-</div>
-<div class="banner-text">
-<p>EduAiQ is India's innovative EdTech platform helping students and professionals
-                                        build job-ready skills — through AI-powered courses, practical e-books, and
-                                        smart learning tools.</p>
-</div>
-<div class="banner-button">
-<a class="button-round-secondary" href="{% url 'register' %}">REGISTER TO JOIN US</a>
-</div>
-</div>
-</div>
-<div class="banner-right col-md-6">
-<figure class="banner-img">
-<div class="image-overlay-oval pattern-overlay"></div>
-<img alt="" src="{% static 'assets/img/educator-img33.png' %}"/>
-</figure>
-</div>
-</div>
-</div>
-<div class="overlay-image pattern-overlay"></div>
+  <div class="container">
+    <div class="row align-items-end">
+      <div class="banner-left col-md-6">
+        <div class="image-overlay pattern-overlay"></div>
+        <div class="banner-content">
+          <div class="title-divider"></div>
+          <p class="banner-pretitle">SMART LEARNING. REAL CAREERS. BETTER OUTCOMES.</p>
+          <div class="banner-title">
+            <h1>Empowering Minds Through <span class="highlight-yellow">AI-Driven Education</span></h1>
+          </div>
+          <div class="banner-text">
+            <p>EduAiQ is India's innovative EdTech platform helping students and professionals
+              build job-ready skills — through AI-powered courses, practical e-books, and
+              smart learning tools.</p>
+          </div>
+          <div class="banner-button">
+            <a class="button-round-secondary" href="{% url 'register' %}">REGISTER TO JOIN US</a>
+          </div>
+        </div>
+      </div>
+      <div class="banner-right col-md-6">
+        <figure class="banner-img">
+          <div class="image-overlay-oval pattern-overlay"></div>
+          <img alt="" src="{% static 'assets/img/educator-img33.png' %}" />
+        </figure>
+      </div>
+    </div>
+  </div>
+  <div class="overlay-image pattern-overlay"></div>
 </section>
 
 <section class="home-about-us">
-<div class="container">
-<div class="row">
-<div class="col-md-6">
-<div class="about-left-content">
-<figure class="figure-round-border">
-<img alt="" src="{% static 'assets/img/educator-img13.jpg' %}"/>
-</figure>
-<div class="skill-container">
-<div class="skill-wrapper">
-<h6 class="skill-titile">AI Lab Projects Completed</h6>
-<div class="progress-wrapper">
-<div class="ab-progress example" data-progress="" data-value="92"></div>
-</div>
-</div>
-<div class="skill-wrapper">
-<h6 class="skill-titile">Learner Satisfaction</h6>
-<div class="progress-wrapper">
-<div class="ab-progress example" data-progress="" data-value="98"></div>
-</div>
-</div>
-<div class="skill-wrapper">
-<h6 class="skill-titile">Mentor Response Rate</h6>
-<div class="progress-wrapper">
-<div class="ab-progress example" data-progress="" data-value="90"></div>
-</div>
-</div>
-</div>
-<div class="regarding-us">
-<div class="qulifaction-content left-content">
-<div class="qualification-tag">
-<div class="qualifaction-icon">
-<i aria-hidden="true" class="fas fa-medal"></i>
-</div>
-<div class="qualifaction-title">
-<h5>
-                                                    Certified Institute
-                                                </h5>
-</div>
-</div>
-<div class="qulifaction-detail">
-<p>
-                                                Recognized curriculum standards across AI Lab, Skill Development,
-                                                and Olympiad programs, reviewed each cycle.
-                                            </p>
-</div>
-</div>
-<div class="qulifaction-content right-content">
-<div class="qualification-tag">
-<div class="qualifaction-icon">
-<i aria-hidden="true" class="fas fa-user"></i>
-</div>
-<div class="qualifaction-title">
-<h5>
-                                                    Qualifed Teachers
-                                                </h5>
-</div>
-</div>
-<div class="qulifaction-detail">
-<p>
-                                                Mentors with real industry and classroom experience, not just
-                                                recorded lecture slides.
-                                            </p>
-</div>
-</div>
-</div>
-<div class="about-btn">
-<a class="button-round-secondary" href="/about/">MORE ABOUT US</a>
-</div>
-</div>
-</div>
-<div class="col-md-6">
-<div class="about-right-content">
-<div class="title-divider"></div>
-<h2 class="about-title">Why Students Choose Us for Gaining Knowledge !</h2>
-<p class="about-desc">
-                                    EduAiQ pairs every course with hands-on practice — AI Lab projects, real
-                                    datasets, and mentor feedback — so learners build a portfolio, not just a
-                                    certificate. Institutions get the same approach at scale, with admission,
-                                    learning, and examination tools running on one connected platform.
-                                </p>
-<figure class="figure-round-border">
-<img alt="" src="{% static 'assets/img/educator-img12-500px.jpg' %}"/>
-</figure>
-</div>
-</div>
-</div>
-<div class="pattern-overlay"></div>
-</div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="about-left-content">
+          <figure class="figure-round-border">
+            <img alt="" src="{% static 'assets/img/educator-img13.jpg' %}" />
+          </figure>
+          <div class="skill-container">
+            <div class="skill-wrapper">
+              <h6 class="skill-titile">AI Lab Projects Completed</h6>
+              <div class="progress-wrapper">
+                <div class="ab-progress example" data-progress="" data-value="92"></div>
+              </div>
+            </div>
+            <div class="skill-wrapper">
+              <h6 class="skill-titile">Learner Satisfaction</h6>
+              <div class="progress-wrapper">
+                <div class="ab-progress example" data-progress="" data-value="98"></div>
+              </div>
+            </div>
+            <div class="skill-wrapper">
+              <h6 class="skill-titile">Mentor Response Rate</h6>
+              <div class="progress-wrapper">
+                <div class="ab-progress example" data-progress="" data-value="90"></div>
+              </div>
+            </div>
+          </div>
+          <div class="regarding-us">
+            <div class="qulifaction-content left-content">
+              <div class="qualification-tag">
+                <div class="qualifaction-icon">
+                  <i aria-hidden="true" class="fas fa-medal"></i>
+                </div>
+                <div class="qualifaction-title">
+                  <h5>
+                    Certified Institute
+                  </h5>
+                </div>
+              </div>
+              <div class="qulifaction-detail">
+                <p>
+                  Recognized curriculum standards across AI Lab, Skill Development,
+                  and Olympiad programs, reviewed each cycle.
+                </p>
+              </div>
+            </div>
+            <div class="qulifaction-content right-content">
+              <div class="qualification-tag">
+                <div class="qualifaction-icon">
+                  <i aria-hidden="true" class="fas fa-user"></i>
+                </div>
+                <div class="qualifaction-title">
+                  <h5>
+                    Qualifed Teachers
+                  </h5>
+                </div>
+              </div>
+              <div class="qulifaction-detail">
+                <p>
+                  Mentors with real industry and classroom experience, not just
+                  recorded lecture slides.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="about-btn">
+            <a class="button-round-secondary" href="/about/">MORE ABOUT US</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="about-right-content">
+          <div class="title-divider"></div>
+          <h2 class="about-title">Why Students Choose Us for Gaining Knowledge !</h2>
+          <p class="about-desc">
+            EduAiQ pairs every course with hands-on practice — AI Lab projects, real
+            datasets, and mentor feedback — so learners build a portfolio, not just a
+            certificate. Institutions get the same approach at scale, with admission,
+            learning, and examination tools running on one connected platform.
+          </p>
+          <figure class="figure-round-border">
+            <img alt="" src="{% static 'assets/img/educator-img12-500px.jpg' %}" />
+          </figure>
+        </div>
+      </div>
+    </div>
+    <div class="pattern-overlay"></div>
+  </div>
 </section>
 
 <section class="home-service category-section-pro">
-<div class="pattern-overlay"></div>
-<div class="container">
-<div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
-<div>
-<div class="title-divider"></div>
-<h2 class="category-main-heading">Explore Top Categories</h2>
-<p class="category-subheading">Master industry-relevant skills with AI-driven learning paths</p>
-</div>
-<div>
-<a class="button-round-primary" href="{% url 'categories' %}">MORE CATEGORIES <i class="fas fa-arrow-right ms-1"></i></a>
-</div>
-</div>
-<div class="row g-4">
-<div class="col-lg-7 col-md-12">
-<div class="category-grid-container">
-{% for category in categories|slice:":6" %}
-<div class="category-card-pro">
-<a href="{% url 'courses' %}?category={{ category.slug }}" class="category-card-link">
-<div class="category-card-body">
-<div class="category-icon-wrapper" style="--cat-color: {{ category.color_code|default:'#667eea' }};">
-<i aria-hidden="true" class="{{ category.icon_class }}"></i>
-</div>
-<div class="category-card-info">
-<h4 class="category-card-title">{{ category.name }}</h4>
-<span class="category-badge-pill">
-<i class="fas fa-graduation-cap me-1"></i> {{ category.course_badge }}
-</span>
-</div>
-<div class="category-arrow-btn">
-<i class="fas fa-chevron-right"></i>
-</div>
-</div>
-</a>
-</div>
-{% empty %}
-<div class="col-12">
-<div class="text-center p-4">
-<p class="text-muted">No categories available at the moment.</p>
-</div>
-</div>
-{% endfor %}
-</div>
-</div>
-<div class="col-lg-5 col-md-12">
-<div class="course-form course-form-pro">
-<h3>Get Free Courses ! Book Your Seat Now.</h3>
-<form action="{% url 'contact' %}" method="get" class="course-field">
-<div class="row">
-<div class="col-sm-6 mb-3">
-<input name="name" placeholder="Your Name.." type="text" class="form-control-pro"/>
-</div>
-<div class="col-sm-6 mb-3">
-<input name="email" placeholder="Your Email.." type="email" class="form-control-pro"/>
-</div>
-<div class="col-sm-12 mb-3">
-<input name="subject" placeholder="Your Subject.." type="text" class="form-control-pro"/>
-</div>
-<div class="col-sm-12">
-<button class="button-round-secondary w-100" type="submit">BOOK SEAT</button>
-</div>
-</div>
-</form>
-</div>
-</div>
-</div>
-</div>
+  <div class="pattern-overlay"></div>
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
+      <div>
+        <div class="title-divider"></div>
+        <h2 class="category-main-heading">Explore Top Categories</h2>
+        <p class="category-subheading">Master industry-relevant skills with AI-driven learning paths</p>
+      </div>
+      <div>
+        <a class="button-round-primary" href="{% url 'categories' %}">MORE CATEGORIES <i
+            class="fas fa-arrow-right ms-1"></i></a>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-7 col-md-12">
+        <div class="category-grid-container">
+          {% for category in categories|slice:":6" %}
+          <div class="category-card-pro">
+            <a href="{% url 'courses' %}?category={{ category.slug }}" class="category-card-link">
+              <div class="category-card-body">
+                <div class="category-icon-wrapper" style="--cat-color: {{ category.color_code|default:'#667eea' }};">
+                  <i aria-hidden="true" class="{{ category.icon_class }}"></i>
+                </div>
+                <div class="category-card-info">
+                  <h4 class="category-card-title">{{ category.name }}</h4>
+                  <span class="category-badge-pill">
+                    <i class="fas fa-graduation-cap me-1"></i> {{ category.course_badge }}
+                  </span>
+                </div>
+                <div class="category-arrow-btn">
+                  <i class="fas fa-chevron-right"></i>
+                </div>
+              </div>
+            </a>
+          </div>
+          {% empty %}
+          <div class="col-12">
+            <div class="text-center p-4">
+              <p class="text-muted">No categories available at the moment.</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="col-lg-5 col-md-12">
+        <div class="course-form course-form-pro">
+          <h3>Get Free Courses ! Book Your Seat Now.</h3>
+          <form action="{% url 'contact' %}" method="get" class="course-field">
+            <div class="row">
+              <div class="col-sm-6 mb-3">
+                <input name="name" placeholder="Your Name.." type="text" class="form-control-pro" />
+              </div>
+              <div class="col-sm-6 mb-3">
+                <input name="email" placeholder="Your Email.." type="email" class="form-control-pro" />
+              </div>
+              <div class="col-sm-12 mb-3">
+                <input name="subject" placeholder="Your Subject.." type="text" class="form-control-pro" />
+              </div>
+              <div class="col-sm-12">
+                <button class="button-round-secondary w-100" type="submit">BOOK SEAT</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section class="home-course-section">
-<div class="container">
-<div class="row mb-5">
-<div class="col-lg-6 offset-lg-3 text-center">
-<div class="title-divider-center"></div>
-<h2 class="category-main-heading">Most Featured Courses</h2>
-<p class="category-subheading">Hands-on tracks in AI, data, and software development — built with real mentors</p>
-</div>
-</div>
-<div class="row g-4" id="homeCoursesGrid">
-<div class="col-sm-6 col-lg-4">
-<div class="course-card-pro" onclick="window.location.href='/courses/'">
-<div class="course-thumb-wrap">
-<img src="{% static 'assets/img/educator-img30.jpg' %}" alt="AI &amp; Machine Learning Foundations"/>
-<span class="course-cat-badge">AI &amp; ML</span>
-<span class="course-price-badge">₹1,999</span>
-</div>
-<div class="course-card-body-pro">
-<div class="course-meta-top">
-<span class="course-level-badge"><i class="fas fa-signal me-1"></i>Beginner</span>
-<span class="course-duration-text"><i class="far fa-clock me-1"></i>4 Weeks</span>
-</div>
-<h4 class="course-card-title-pro">
-<a href="/courses/">AI &amp; Machine Learning Foundations</a>
-</h4>
-<div class="course-rating-row">
-<div class="rating-stars">
-<i class="fas fa-star text-warning"></i>
-<span class="rating-score">4.8</span>
-</div>
-<span class="student-count"><i class="fas fa-users me-1"></i>2,400+ enrolled</span>
-</div>
-<div class="course-instructor-row">
-<div class="instructor-avatar"><i class="fas fa-user-tie"></i></div>
-<span class="instructor-name">William Smith (Mentor)</span>
-</div>
-<div class="course-card-footer-pro">
-<span class="btn-enroll-pro">Explore Course <i class="fas fa-arrow-right ms-1"></i></span>
-</div>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-lg-4">
-<div class="course-card-pro" onclick="window.location.href='/courses/'">
-<div class="course-thumb-wrap">
-<img src="{% static 'assets/img/educator-img29.jpg' %}" alt="Full-Stack Web Development"/>
-<span class="course-cat-badge">Web Dev</span>
-<span class="course-price-badge">₹399</span>
-</div>
-<div class="course-card-body-pro">
-<div class="course-meta-top">
-<span class="course-level-badge"><i class="fas fa-signal me-1"></i>Intermediate</span>
-<span class="course-duration-text"><i class="far fa-clock me-1"></i>6 Weeks</span>
-</div>
-<h4 class="course-card-title-pro">
-<a href="/courses/">Full-Stack Web Development</a>
-</h4>
-<div class="course-rating-row">
-<div class="rating-stars">
-<i class="fas fa-star text-warning"></i>
-<span class="rating-score">4.7</span>
-</div>
-<span class="student-count"><i class="fas fa-users me-1"></i>1,800+ enrolled</span>
-</div>
-<div class="course-instructor-row">
-<div class="instructor-avatar"><i class="fas fa-user-tie"></i></div>
-<span class="instructor-name">Jenny White (Coach)</span>
-</div>
-<div class="course-card-footer-pro">
-<span class="btn-enroll-pro">Explore Course <i class="fas fa-arrow-right ms-1"></i></span>
-</div>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-lg-4">
-<div class="course-card-pro" onclick="window.location.href='/courses/'">
-<div class="course-thumb-wrap">
-<img src="{% static 'assets/img/educator-img31.jpg' %}" alt="Data Science For Beginners"/>
-<span class="course-cat-badge">Data Science</span>
-<span class="course-price-badge">₹1,499</span>
-</div>
-<div class="course-card-body-pro">
-<div class="course-meta-top">
-<span class="course-level-badge"><i class="fas fa-signal me-1"></i>Beginner</span>
-<span class="course-duration-text"><i class="far fa-clock me-1"></i>4 Weeks</span>
-</div>
-<h4 class="course-card-title-pro">
-<a href="/courses/">Data Science For Beginners</a>
-</h4>
-<div class="course-rating-row">
-<div class="rating-stars">
-<i class="fas fa-star text-warning"></i>
-<span class="rating-score">4.9</span>
-</div>
-<span class="student-count"><i class="fas fa-users me-1"></i>1,500+ enrolled</span>
-</div>
-<div class="course-instructor-row">
-<div class="instructor-avatar"><i class="fas fa-user-tie"></i></div>
-<span class="instructor-name">Rahul Mehta (Mentor)</span>
-</div>
-<div class="course-card-footer-pro">
-<span class="btn-enroll-pro">Explore Course <i class="fas fa-arrow-right ms-1"></i></span>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="text-center mt-5">
-<a class="button-round-primary hover-glow" href="{% url 'courses' %}">VIEW ALL COURSES <i class="fas fa-arrow-right ms-1"></i></a>
-</div>
-</div>
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-lg-6 offset-lg-3 text-center">
+        <div class="title-divider-center"></div>
+        <h2 class="category-main-heading">Most Featured Courses</h2>
+        <p class="category-subheading">Hands-on tracks in AI, data, and software development — built with real mentors
+        </p>
+      </div>
+    </div>
+    <div class="row g-4" id="homeCoursesGrid">
+      <div class="col-sm-6 col-lg-4">
+        <div class="course-card-pro" onclick="window.location.href='/courses/'">
+          <div class="course-thumb-wrap">
+            <img src="{% static 'assets/img/educator-img30.jpg' %}" alt="AI &amp; Machine Learning Foundations" />
+            <span class="course-cat-badge">AI &amp; ML</span>
+            <span class="course-price-badge">₹1,999</span>
+          </div>
+          <div class="course-card-body-pro">
+            <div class="course-meta-top">
+              <span class="course-level-badge"><i class="fas fa-signal me-1"></i>Beginner</span>
+              <span class="course-duration-text"><i class="far fa-clock me-1"></i>4 Weeks</span>
+            </div>
+            <h4 class="course-card-title-pro">
+              <a href="/courses/">AI &amp; Machine Learning Foundations</a>
+            </h4>
+            <div class="course-rating-row">
+              <div class="rating-stars">
+                <i class="fas fa-star text-warning"></i>
+                <span class="rating-score">4.8</span>
+              </div>
+              <span class="student-count"><i class="fas fa-users me-1"></i>2,400+ enrolled</span>
+            </div>
+            <div class="course-instructor-row">
+              <div class="instructor-avatar"><i class="fas fa-user-tie"></i></div>
+              <span class="instructor-name">William Smith (Mentor)</span>
+            </div>
+            <div class="course-card-footer-pro">
+              <span class="btn-enroll-pro">Explore Course <i class="fas fa-arrow-right ms-1"></i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-4">
+        <div class="course-card-pro" onclick="window.location.href='/courses/'">
+          <div class="course-thumb-wrap">
+            <img src="{% static 'assets/img/educator-img29.jpg' %}" alt="Full-Stack Web Development" />
+            <span class="course-cat-badge">Web Dev</span>
+            <span class="course-price-badge">₹399</span>
+          </div>
+          <div class="course-card-body-pro">
+            <div class="course-meta-top">
+              <span class="course-level-badge"><i class="fas fa-signal me-1"></i>Intermediate</span>
+              <span class="course-duration-text"><i class="far fa-clock me-1"></i>6 Weeks</span>
+            </div>
+            <h4 class="course-card-title-pro">
+              <a href="/courses/">Full-Stack Web Development</a>
+            </h4>
+            <div class="course-rating-row">
+              <div class="rating-stars">
+                <i class="fas fa-star text-warning"></i>
+                <span class="rating-score">4.7</span>
+              </div>
+              <span class="student-count"><i class="fas fa-users me-1"></i>1,800+ enrolled</span>
+            </div>
+            <div class="course-instructor-row">
+              <div class="instructor-avatar"><i class="fas fa-user-tie"></i></div>
+              <span class="instructor-name">Jenny White (Coach)</span>
+            </div>
+            <div class="course-card-footer-pro">
+              <span class="btn-enroll-pro">Explore Course <i class="fas fa-arrow-right ms-1"></i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-4">
+        <div class="course-card-pro" onclick="window.location.href='/courses/'">
+          <div class="course-thumb-wrap">
+            <img src="{% static 'assets/img/educator-img31.jpg' %}" alt="Data Science For Beginners" />
+            <span class="course-cat-badge">Data Science</span>
+            <span class="course-price-badge">₹1,499</span>
+          </div>
+          <div class="course-card-body-pro">
+            <div class="course-meta-top">
+              <span class="course-level-badge"><i class="fas fa-signal me-1"></i>Beginner</span>
+              <span class="course-duration-text"><i class="far fa-clock me-1"></i>4 Weeks</span>
+            </div>
+            <h4 class="course-card-title-pro">
+              <a href="/courses/">Data Science For Beginners</a>
+            </h4>
+            <div class="course-rating-row">
+              <div class="rating-stars">
+                <i class="fas fa-star text-warning"></i>
+                <span class="rating-score">4.9</span>
+              </div>
+              <span class="student-count"><i class="fas fa-users me-1"></i>1,500+ enrolled</span>
+            </div>
+            <div class="course-instructor-row">
+              <div class="instructor-avatar"><i class="fas fa-user-tie"></i></div>
+              <span class="instructor-name">Rahul Mehta (Mentor)</span>
+            </div>
+            <div class="course-card-footer-pro">
+              <span class="btn-enroll-pro">Explore Course <i class="fas fa-arrow-right ms-1"></i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-5">
+      <a class="button-round-primary hover-glow" href="{% url 'courses' %}">VIEW ALL COURSES <i
+          class="fas fa-arrow-right ms-1"></i></a>
+    </div>
+  </div>
 </section>
 
 <section class="home-fact-section">
-<div class="overlay"></div>
-<div class="container">
-<div class="row align-items-center">
-<div class="col-lg-6">
-<div class="fact-section-head">
-<div class="title-divider"></div>
-<h2 class="fact-section-title">Limitless Learning, Limitless Possibilities !</h2>
-<p class="fact-section-info">
-                                    Whether you're a student, a working professional, or an institution, the same
-                                    ecosystem scales to fit — from a single AI Lab course to a full campus
-                                    rollout.
-                                </p>
-<div class="fact-list">
-<ul>
-<li>Hands-on projects instead of passive video lectures.</li>
-<li>Mentor feedback on every submission, not just auto-grading.</li>
-<li>One login connecting courses, Olympiads, and certification.</li>
-</ul>
-</div>
-<div class="service-btn">
-<a class="button-round-secondary" href="/register/">JOIN US NOW</a>
-</div>
-</div>
-</div>
-<div class="col-lg-6">
-<div class="fact-right-inner-wrap">
-<div class="fact-inner-box">
-<div class="fact-content top-left-content">
-<div class="pattern-overlay circle-patten"></div>
-<h4>Our Expertise Is Best Earned Through
-                                            Our Experience</h4>
-</div>
-<figure class="fact-image top-right-image"></figure>
-<figure class="fact-image bottom-left-image"></figure>
-<div class="fact-content bottom-right-content">
-<div class="pattern-overlay circle-c-patten"></div>
-<h4>Our Best Team For Your Any Advice For Your Education</h4>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <div class="fact-section-head">
+          <div class="title-divider"></div>
+          <h2 class="fact-section-title">Limitless Learning, Limitless Possibilities !</h2>
+          <p class="fact-section-info">
+            Whether you're a student, a working professional, or an institution, the same
+            ecosystem scales to fit — from a single AI Lab course to a full campus
+            rollout.
+          </p>
+          <div class="fact-list">
+            <ul>
+              <li>Hands-on projects instead of passive video lectures.</li>
+              <li>Mentor feedback on every submission, not just auto-grading.</li>
+              <li>One login connecting courses, Olympiads, and certification.</li>
+            </ul>
+          </div>
+          <div class="service-btn">
+            <a class="button-round-secondary" href="/register/">JOIN US NOW</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="fact-right-inner-wrap">
+          <div class="fact-inner-box">
+            <div class="fact-content top-left-content">
+              <div class="pattern-overlay circle-patten"></div>
+              <h4>Our Expertise Is Best Earned Through
+                Our Experience</h4>
+            </div>
+            <figure class="fact-image top-right-image"></figure>
+            <figure class="fact-image bottom-left-image"></figure>
+            <div class="fact-content bottom-right-content">
+              <div class="pattern-overlay circle-c-patten"></div>
+              <h4>Our Best Team For Your Any Advice For Your Education</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section class="home-feature-section">
-<div class="container">
-<div class="row">
-<div class="col-lg-6 offset-lg-3">
-<div class="title-divider"></div>
-<h2 class="feature-section-title text-center">Our Best Features</h2>
-<p class="feature-section-info text-center">The details that make the difference
-                                between finishing a course and actually using what you learned.</p>
-</div>
-</div>
-<div class="feature-wrapper">
-<div class="feature-type">
-<div class="feature-icon">
-<h5 class="meta-no">1</h5>
-<i aria-hidden="true" class="fas fa-chalkboard-teacher"></i>
-</div>
-<h4 class="feature-heading">Expert Mentors</h4>
-<p class="feature-info">90+ mentors with real classroom and industry experience
-                                guiding every course, Olympiad, and AI Lab module.</p>
-<a class="right-arrow-link" href="/team/">
-<i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
-</a>
-</div>
-<div class="feature-type">
-<div class="feature-icon">
-<h5 class="meta-no">2</h5>
-<i aria-hidden="true" class="fas fa-tags"></i>
-</div>
-<h4 class="feature-heading">Affordable Courses</h4>
-<p class="feature-info">Transparent pricing across courses, Olympiad registration,
-                                and franchise programs — no hidden fees at checkout.</p>
-<a class="right-arrow-link" href="/checkout/">
-<i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
-</a>
-</div>
-<div class="feature-type">
-<div class="feature-icon">
-<h5 class="meta-no">3</h5>
-<i aria-hidden="true" class="fas fa-bolt"></i>
-</div>
-<h4 class="feature-heading">Efficient &amp; Flexible</h4>
-<p class="feature-info">Self-paced AI Lab modules that fit around school, work, or a
-                                full academic calendar — learn on your own schedule.</p>
-<a class="right-arrow-link" href="/page/ai-lab/">
-<i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
-</a>
-</div>
-</div>
-</div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 offset-lg-3">
+        <div class="title-divider"></div>
+        <h2 class="feature-section-title text-center">Our Best Features</h2>
+        <p class="feature-section-info text-center">The details that make the difference
+          between finishing a course and actually using what you learned.</p>
+      </div>
+    </div>
+    <div class="feature-wrapper">
+      <div class="feature-type">
+        <div class="feature-icon">
+          <h5 class="meta-no">1</h5>
+          <i aria-hidden="true" class="fas fa-chalkboard-teacher"></i>
+        </div>
+        <h4 class="feature-heading">Expert Mentors</h4>
+        <p class="feature-info">90+ mentors with real classroom and industry experience
+          guiding every course, Olympiad, and AI Lab module.</p>
+        <a class="right-arrow-link" href="/team/">
+          <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
+        </a>
+      </div>
+      <div class="feature-type">
+        <div class="feature-icon">
+          <h5 class="meta-no">2</h5>
+          <i aria-hidden="true" class="fas fa-tags"></i>
+        </div>
+        <h4 class="feature-heading">Affordable Courses</h4>
+        <p class="feature-info">Transparent pricing across courses, Olympiad registration,
+          and franchise programs — no hidden fees at checkout.</p>
+        <a class="right-arrow-link" href="/checkout/">
+          <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
+        </a>
+      </div>
+      <div class="feature-type">
+        <div class="feature-icon">
+          <h5 class="meta-no">3</h5>
+          <i aria-hidden="true" class="fas fa-bolt"></i>
+        </div>
+        <h4 class="feature-heading">Efficient &amp; Flexible</h4>
+        <p class="feature-info">Self-paced AI Lab modules that fit around school, work, or a
+          full academic calendar — learn on your own schedule.</p>
+        <a class="right-arrow-link" href="/page/ai-lab/">
+          <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section class="home-team-section">
-<div class="container">
-<div class="overlay"></div>
-<div class="row align-items-end">
-<div class="col-md-6 text-md-start text-center">
-<div class="title-divider"></div>
-<h2 class="team-section-title">Meet Our Best Teachers</h2>
-</div>
-<div class="col-md-6 text-md-end text-center">
-<a class="button-round-secondary" href="/team/">ALL TEAM MEMBER</a>
-</div>
-</div>
-<div class="group-member">
-<div class="row">
-<div class="col-sm-6 col-lg-3 p-4">
-<figure class="team-img">
-<img alt="" src="{% static 'assets/img/educator-img8.png' %}"/>
-</figure>
-<div class="team-content text-center">
-<h4>
-<a href="/team/sample-member/">William Smith</a>
-</h4>
-<p>AI Lab Mentor</p>
-</div>
-<div class="d-flex justify-content-center align-items-center">
-<div class="social-links team-social-link">
-<ul>
-<li>
-<a href="https://www.facebook.com/">
-<i class="fab fa-facebook"></i>
-</a>
-</li>
-<li>
-<a href="https://twitter.com/?lang=en">
-<i class="fab fa-twitter"></i>
-</a>
-</li>
-<li>
-<a href="https://www.whatsapp.com/">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-lg-3 p-4">
-<figure class="team-img">
-<img alt="" src="{% static 'assets/img/educator-img11.png' %}"/>
-</figure>
-<div class="team-content text-center">
-<h4>
-<a href="/team/sample-member/">Jenny White</a>
-</h4>
-<p>Skill Development Coach</p>
-</div>
-<div class="d-flex justify-content-center align-items-center">
-<div class="social-links team-social-link">
-<ul>
-<li>
-<a href="https://www.facebook.com/">
-<i class="fab fa-facebook"></i>
-</a>
-</li>
-<li>
-<a href="https://twitter.com/?lang=en">
-<i class="fab fa-twitter"></i>
-</a>
-</li>
-<li>
-<a href="https://www.whatsapp.com/">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-lg-3 p-4">
-<figure class="team-img">
-<img alt="" src="{% static 'assets/img/educator-img9.png' %}"/>
-</figure>
-<div class="team-content text-center">
-<h4>
-<a href="/team/sample-member/">George Hobbs</a>
-</h4>
-<p>Olympiad Curriculum Lead</p>
-</div>
-<div class="d-flex justify-content-center align-items-center">
-<div class="social-links team-social-link">
-<ul>
-<li>
-<a href="https://www.facebook.com/">
-<i class="fab fa-facebook"></i>
-</a>
-</li>
-<li>
-<a href="https://twitter.com/?lang=en">
-<i class="fab fa-twitter"></i>
-</a>
-</li>
-<li>
-<a href="https://www.whatsapp.com/">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-lg-3 p-4">
-<figure class="team-img">
-<img alt="" src="{% static 'assets/img/educator-img10.png' %}"/>
-</figure>
-<div class="team-content text-center">
-<h4>
-<a href="/team/sample-member/">Alice Heard</a>
-</h4>
-<p>AI Books Author</p>
-</div>
-<div class="d-flex justify-content-center align-items-center">
-<div class="social-links team-social-link">
-<ul>
-<li>
-<a href="https://www.facebook.com/">
-<i class="fab fa-facebook"></i>
-</a>
-</li>
-<li>
-<a href="https://twitter.com/?lang=en">
-<i class="fab fa-twitter"></i>
-</a>
-</li>
-<li>
-<a href="https://www.whatsapp.com/">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+  <div class="container">
+    <div class="overlay"></div>
+    <div class="row align-items-end">
+      <div class="col-md-6 text-md-start text-center">
+        <div class="title-divider"></div>
+        <h2 class="team-section-title">Meet Our Best Teachers</h2>
+      </div>
+      <div class="col-md-6 text-md-end text-center">
+        <a class="button-round-secondary" href="/team/">ALL TEAM MEMBER</a>
+      </div>
+    </div>
+    <div class="group-member">
+      <div class="row">
+        <div class="col-sm-6 col-lg-3 p-4">
+          <figure class="team-img">
+            <img alt="" src="{% static 'assets/img/educator-img8.png' %}" />
+          </figure>
+          <div class="team-content text-center">
+            <h4>
+              <a href="/team/sample-member/">William Smith</a>
+            </h4>
+            <p>AI Lab Mentor</p>
+          </div>
+          <div class="d-flex justify-content-center align-items-center">
+            <div class="social-links team-social-link">
+              <ul>
+                <li>
+                  <a href="https://www.facebook.com/">
+                    <i class="fab fa-facebook"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://twitter.com/?lang=en">
+                    <i class="fab fa-twitter"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.whatsapp.com/">
+                    <i class="fab fa-whatsapp"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3 p-4">
+          <figure class="team-img">
+            <img alt="" src="{% static 'assets/img/educator-img11.png' %}" />
+          </figure>
+          <div class="team-content text-center">
+            <h4>
+              <a href="/team/sample-member/">Jenny White</a>
+            </h4>
+            <p>Skill Development Coach</p>
+          </div>
+          <div class="d-flex justify-content-center align-items-center">
+            <div class="social-links team-social-link">
+              <ul>
+                <li>
+                  <a href="https://www.facebook.com/">
+                    <i class="fab fa-facebook"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://twitter.com/?lang=en">
+                    <i class="fab fa-twitter"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.whatsapp.com/">
+                    <i class="fab fa-whatsapp"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3 p-4">
+          <figure class="team-img">
+            <img alt="" src="{% static 'assets/img/educator-img9.png' %}" />
+          </figure>
+          <div class="team-content text-center">
+            <h4>
+              <a href="/team/sample-member/">George Hobbs</a>
+            </h4>
+            <p>Olympiad Curriculum Lead</p>
+          </div>
+          <div class="d-flex justify-content-center align-items-center">
+            <div class="social-links team-social-link">
+              <ul>
+                <li>
+                  <a href="https://www.facebook.com/">
+                    <i class="fab fa-facebook"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://twitter.com/?lang=en">
+                    <i class="fab fa-twitter"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.whatsapp.com/">
+                    <i class="fab fa-whatsapp"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3 p-4">
+          <figure class="team-img">
+            <img alt="" src="{% static 'assets/img/educator-img10.png' %}" />
+          </figure>
+          <div class="team-content text-center">
+            <h4>
+              <a href="/team/sample-member/">Alice Heard</a>
+            </h4>
+            <p>AI Books Author</p>
+          </div>
+          <div class="d-flex justify-content-center align-items-center">
+            <div class="social-links team-social-link">
+              <ul>
+                <li>
+                  <a href="https://www.facebook.com/">
+                    <i class="fab fa-facebook"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://twitter.com/?lang=en">
+                    <i class="fab fa-twitter"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.whatsapp.com/">
+                    <i class="fab fa-whatsapp"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section class="home-goal-section">
-<div class="container">
-<div class="row align-items-center">
-<div class="col-lg-7">
-<div class="inner-goal-image">
-<figure class="video-play-image">
-<img alt="" src="{% static 'assets/img/educator-img13.jpg' %}"/>
-<div class="overlay02 overlay"></div>
-<div class="video-button">
-<a data-video-id="IUN664s7N-c" id="video-container">
-<i class="fas fa-play"></i>
-</a>
-</div>
-</figure>
-</div>
-</div>
-<div class="col-lg-5">
-<div class="goal-content">
-<div class="pattern-overlay"></div>
-<div class="title-divider"></div>
-<h2 class="goal-title">Committed To The Best Results !</h2>
-<p class="goal-info">Every course, Olympiad, and AI Lab module is reviewed each
-                                    cycle against real outcomes — completion rates, mentor feedback, and student
-                                    results — not left unchanged once it's published.</p>
-<a class="button-round-secondary" href="/register/">JOIN US NOW</a>
-</div>
-</div>
-</div>
-</div>
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-7">
+        <div class="inner-goal-image">
+          <figure class="video-play-image">
+            <img alt="" src="{% static 'assets/img/educator-img13.jpg' %}" />
+            <div class="overlay02 overlay"></div>
+            <div class="video-button">
+              <a data-video-id="IUN664s7N-c" id="video-container">
+                <i class="fas fa-play"></i>
+              </a>
+            </div>
+          </figure>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="goal-content">
+          <div class="pattern-overlay"></div>
+          <div class="title-divider"></div>
+          <h2 class="goal-title">Committed To The Best Results !</h2>
+          <p class="goal-info">Every course, Olympiad, and AI Lab module is reviewed each
+            cycle against real outcomes — completion rates, mentor feedback, and student
+            results — not left unchanged once it's published.</p>
+          <a class="button-round-secondary" href="/register/">JOIN US NOW</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <div class="home-progress-section">
-<div class="overlay"></div>
-<div class="container">
-<div class="counter-inner">
-<div class="counter-item-wrap row">
-<div class="col-lg-3 col-sm-6 counter-item">
-<div class="counter-no">
-<span class="counter">45</span>k+
-                                </div>
-<div class="Completed">
-                                    Active Students
-                                </div>
-</div>
-<div class="col-lg-3 col-sm-6 counter-item">
-<div class="counter-no">
-<span class="counter">72</span>+
-                                </div>
-<div class="Completed">
-                                    AI-Powered Courses
-                                </div>
-</div>
-<div class="col-lg-3 col-sm-6 counter-item">
-<div class="counter-no">
-<span class="counter">90</span>+
-                                </div>
-<div class="Completed">
-                                    Expert Mentors
-                                </div>
-</div>
-<div class="col-lg-3 col-sm-6 counter-item">
-<div class="counter-no">
-<span class="counter">35</span>
-</div>
-<span class="Completed">
-                                    Partner Institutions
-                                </span>
-</div>
-</div>
-</div>
-</div>
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="counter-inner">
+      <div class="counter-item-wrap row">
+        <div class="col-lg-3 col-sm-6 counter-item">
+          <div class="counter-no">
+            <span class="counter">45</span>k+
+          </div>
+          <div class="Completed">
+            Active Students
+          </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 counter-item">
+          <div class="counter-no">
+            <span class="counter">72</span>+
+          </div>
+          <div class="Completed">
+            AI-Powered Courses
+          </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 counter-item">
+          <div class="counter-no">
+            <span class="counter">90</span>+
+          </div>
+          <div class="Completed">
+            Expert Mentors
+          </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 counter-item">
+          <div class="counter-no">
+            <span class="counter">35</span>
+          </div>
+          <span class="Completed">
+            Partner Institutions
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <section class="home-testimonial-section">
-<div class="container">
-<div class="row">
-<div class="col-lg-6 offset-lg-3">
-<div class="title-divider-center"></div>
-<h2 class="testimonial-section-title text-center">Reviews From Colleges</h2>
-<p class="testimonial-section-info text-center">Hear directly from the institutions
-                                running the EduAiQ ecosystem — AI Lab, LMS, admission CRM, and Olympiad programs —
-                                on their own campuses.</p>
-</div>
-</div>
-<div class="row">
-<div class="col-md-6">
-<div class="client-content left-content">
-<div class="pattern-overlay circle-patten"></div>
-<p class="client-review">
-                                    "Rolling out the AI Lab across our computer science department took a fraction
-                                    of the time we expected. Our admission CRM and LMS now run on one connected
-                                    system instead of three separate logins."
-                                </p>
-<div class="author-content">
-<div class="author-info">
-<h5 class="author-name">Dr. Ramesh Iyer</h5>
-<span class="author-title">PRINCIPAL, GREENFIELD DEGREE COLLEGE</span>
-</div>
-<figure class="author-img">
-<img alt="" src="{% static 'assets/img/educator-img22.jpg' %}"/>
-</figure>
-</div>
-</div>
-</div>
-<div class="col-md-6">
-<div class="client-content right-content">
-<div class="pattern-overlay circle-patten"></div>
-<p class="client-review">
-                                    "We registered over 300 students for the Math and Science Olympiads through
-                                    EduAiQ's platform in our first cycle. The published curriculum meant our
-                                    teachers knew exactly how to prepare students in advance."
-                                </p>
-<div class="author-content">
-<div class="author-info">
-<h5 class="author-name">Sunita Rao</h5>
-<span class="author-title">ACADEMIC DIRECTOR, ST. XAVIER'S HIGH SCHOOL</span>
-</div>
-<figure class="author-img">
-<img alt="" src="{% static 'assets/img/educator-img21.jpg' %}"/>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div class="testimonial-btn text-center">
-<a class="button-round-primary" href="/testimonial/">MORE REVIEWS NOW</a>
-</div>
-</div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 offset-lg-3">
+        <div class="title-divider-center"></div>
+        <h2 class="testimonial-section-title text-center">Reviews From Colleges</h2>
+        <p class="testimonial-section-info text-center">Hear directly from the institutions
+          running the EduAiQ ecosystem — AI Lab, LMS, admission CRM, and Olympiad programs —
+          on their own campuses.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="client-content left-content">
+          <div class="pattern-overlay circle-patten"></div>
+          <p class="client-review">
+            "Rolling out the AI Lab across our computer science department took a fraction
+            of the time we expected. Our admission CRM and LMS now run on one connected
+            system instead of three separate logins."
+          </p>
+          <div class="author-content">
+            <div class="author-info">
+              <h5 class="author-name">Dr. Ramesh Iyer</h5>
+              <span class="author-title">PRINCIPAL, GREENFIELD DEGREE COLLEGE</span>
+            </div>
+            <figure class="author-img">
+              <img alt="" src="{% static 'assets/img/educator-img22.jpg' %}" />
+            </figure>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="client-content right-content">
+          <div class="pattern-overlay circle-patten"></div>
+          <p class="client-review">
+            "We registered over 300 students for the Math and Science Olympiads through
+            EduAiQ's platform in our first cycle. The published curriculum meant our
+            teachers knew exactly how to prepare students in advance."
+          </p>
+          <div class="author-content">
+            <div class="author-info">
+              <h5 class="author-name">Sunita Rao</h5>
+              <span class="author-title">ACADEMIC DIRECTOR, ST. XAVIER'S HIGH SCHOOL</span>
+            </div>
+            <figure class="author-img">
+              <img alt="" src="{% static 'assets/img/educator-img21.jpg' %}" />
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-btn text-center">
+      <a class="button-round-primary" href="/testimonial/">MORE REVIEWS NOW</a>
+    </div>
+  </div>
 </section>
 
 <section class="home-blog-section">
-<div class="container">
-<div class="overlay-wrapper">
-<div class="pattern-overlay c-patten"></div>
-<div class="row">
-<div class="col-lg-6 offset-lg-3">
-<div class="title-divider-center"></div>
-<h2 class="blog-section-title text-center">Checkout Our Blog</h2>
-<p class="blog-section-info text-center">Practical guides on AI skills, Olympiad
-                                    prep, and career development — from the mentors building the courses.</p>
-</div>
-</div>
-<div class="inner-blog-wrap">
-<article class="post">
-<figure class="feature-image">
-<img alt="" src="{% static 'assets/img/educator-img12.jpg' %}"/>
-<span class="cat-meta">
-<a href="/blog/">AI LAB</a>
-</span>
-</figure>
-<div class="entry-content">
-<h4>
-<a href="/blog/">5 AI Skills Every Student Should Learn in 2026</a>
-</h4>
-<p class="blog-info">
-                                        A practical starting list for students beginning in the AI Lab — no prior
-                                        coding background required.
-                                    </p>
-</div>
-</article>
-<article class="post">
-<figure class="feature-image">
-<img alt="" src="{% static 'assets/img/educator-img14.jpg' %}"/>
-<span class="cat-meta">
-<a href="/blog/">OLYMPIADS</a>
-</span>
-</figure>
-<div class="entry-content">
-<h4>
-<a href="/blog/">How To Prepare For The Math Olympiad In 90 Days</a>
-</h4>
-<p class="blog-info">
-                                        A grade-by-grade study plan built around the published Olympiad
-                                        curriculum.
-                                    </p>
-</div>
-</article>
-<article class="post item-3">
-<figure class="feature-image">
-<img alt="" src="{% static 'assets/img/educator-img13.jpg' %}"/>
-<span class="cat-meta">
-<a href="/blog/">CAREERS</a>
-</span>
-</figure>
-<div class="entry-content">
-<h4>
-<a href="/blog/">From Classroom To AI Lab: A Student's Journey</a>
-</h4>
-<p class="blog-info">
-                                        How one student went from a first AI Lab module to a portfolio-ready
-                                        project in a single semester.
-                                    </p>
-</div>
-</article>
-</div>
-</div>
-</div>
+  <div class="container">
+    <div class="overlay-wrapper">
+      <div class="pattern-overlay c-patten"></div>
+      <div class="row">
+        <div class="col-lg-6 offset-lg-3">
+          <div class="title-divider-center"></div>
+          <h2 class="blog-section-title text-center">Checkout Our Blog</h2>
+          <p class="blog-section-info text-center">Practical guides on AI skills, Olympiad
+            prep, and career development — from the mentors building the courses.</p>
+        </div>
+      </div>
+      <div class="inner-blog-wrap">
+        <article class="post">
+          <figure class="feature-image">
+            <img alt="" src="{% static 'assets/img/educator-img12.jpg' %}" />
+          </figure>
+          <div class="entry-content">
+            <h4>
+              <a href="/blog/">5 AI Skills Every Student Should Learn in 2026</a>
+            </h4>
+            <p class="blog-info">
+              A practical starting list for students beginning in the AI Lab — no prior
+              coding background required.
+            </p>
+            <div class="d-flex justify-content-end mt-3">
+              <span class="cat-meta">
+                <a href="/blog/">AI LAB</a>
+              </span>
+            </div>
+          </div>
+        </article>
+        <article class="post">
+          <figure class="feature-image">
+            <img alt="" src="{% static 'assets/img/educator-img14.jpg' %}" />
+          </figure>
+          <div class="entry-content">
+            <h4>
+              <a href="/blog/">How To Prepare For The Math Olympiad In 90 Days</a>
+            </h4>
+            <p class="blog-info">
+              A grade-by-grade study plan built around the published Olympiad
+              curriculum.
+            </p>
+            <div class="d-flex justify-content-end mt-3">
+              <span class="cat-meta">
+                <a href="/blog/">OLYMPIADS</a>
+              </span>
+            </div>
+          </div>
+        </article>
+        <article class="post item-3">
+          <figure class="feature-image">
+            <img alt="" src="{% static 'assets/img/educator-img13.jpg' %}" />
+          </figure>
+          <div class="entry-content">
+            <h4>
+              <a href="/blog/">From Classroom To AI Lab: A Student's Journey</a>
+            </h4>
+            <p class="blog-info">
+              How one student went from a first AI Lab module to a portfolio-ready
+              project in a single semester.
+            </p>
+            <div class="d-flex justify-content-end mt-3">
+              <span class="cat-meta">
+                <a href="/blog/">CAREERS</a>
+              </span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
 </section>
 
 <div class="slider-section">
-<div class="container">
-<div class="client-slider text-center">
-<div class="client-item">
-<figure>
-<img alt="" src="{% static 'assets/img/educator-img16.png' %}"/>
-</figure>
-</div>
-<div class="client-item">
-<figure>
-<img alt="" src="{% static 'assets/img/educator-img17.png' %}"/>
-</figure>
-</div>
-<div class="client-item">
-<figure>
-<img alt="" src="{% static 'assets/img/educator-img18.png' %}"/>
-</figure>
-</div>
-<div class="client-item">
-<figure>
-<img alt="" src="{% static 'assets/img/educator-img19.png' %}"/>
-</figure>
-</div>
-<div class="client-item">
-<figure>
-<img alt="" src="{% static 'assets/img/educator-img20.png' %}"/>
-</figure>
-</div>
-<div class="client-item">
-<figure>
-<img alt="" src="{% static 'assets/img/educator-img18.png' %}"/>
-</figure>
-</div>
-</div>
-</div>
+  <div class="container">
+    <div class="client-slider text-center">
+      <div class="client-item">
+        <figure>
+          <img alt="" src="{% static 'assets/img/educator-img16.png' %}" />
+        </figure>
+      </div>
+      <div class="client-item">
+        <figure>
+          <img alt="" src="{% static 'assets/img/educator-img17.png' %}" />
+        </figure>
+      </div>
+      <div class="client-item">
+        <figure>
+          <img alt="" src="{% static 'assets/img/educator-img18.png' %}" />
+        </figure>
+      </div>
+      <div class="client-item">
+        <figure>
+          <img alt="" src="{% static 'assets/img/educator-img19.png' %}" />
+        </figure>
+      </div>
+      <div class="client-item">
+        <figure>
+          <img alt="" src="{% static 'assets/img/educator-img20.png' %}" />
+        </figure>
+      </div>
+      <div class="client-item">
+        <figure>
+          <img alt="" src="{% static 'assets/img/educator-img18.png' %}" />
+        </figure>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
 
