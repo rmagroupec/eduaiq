@@ -80,6 +80,10 @@ def serialize_course(c, detailed=False, request=None):
     if c.thumbnail:
         thumbnail_url = request.build_absolute_uri(c.thumbnail.url) if request else c.thumbnail.url
 
+    pdf_file_url = None
+    if c.pdf_file:
+        pdf_file_url = request.build_absolute_uri(c.pdf_file.url) if request else c.pdf_file.url
+
     data = {
         'id': c.id,
         'title': c.title,
@@ -93,6 +97,8 @@ def serialize_course(c, detailed=False, request=None):
         'category_name': c.category.name,
         'delivery_mode': c.delivery_mode,
         'description': c.description,
+        'author': c.author or 'EduAiQ Editorial Team',
+        'pdf_file': pdf_file_url,
         'level': 'beginner',
         'instructor': {
             'id': c.created_by.id,
@@ -109,6 +115,8 @@ def serialize_course(c, detailed=False, request=None):
         'total_students': total_students,
         'average_rating': 4.8,
         'is_published': c.status == 'published',
+        'is_live': c.is_live,                # NEW — published AND publish date has passed
+        'is_coming_soon': c.is_coming_soon,   # NEW — approved, or published with a future date
         'created_by': c.created_by_id,
         'version': c.version,
         'published_at': c.published_at,
@@ -353,17 +361,48 @@ def category_detail(request, pk):
 @require_http_methods(['GET', 'POST'])
 def course_list(request):
     if request.method == 'GET':
-        qs = get_allowed_courses_for_user(request.user)
-
         category = request.GET.get('category')
+        exclude_param = request.GET.get('exclude_books')
+        if exclude_param is not None:
+            exclude_books = (exclude_param.lower() == 'true')
+        else:
+            exclude_books = (category != 'ai-books')
+
+        qs = get_allowed_courses_for_user(request.user, exclude_books=exclude_books)
+
         if category:
             if str(category).isdigit():
                 qs = qs.filter(category_id=int(category))
             else:
                 qs = qs.filter(dj_models.Q(category__slug__iexact=category) | dj_models.Q(category__name__iexact=category))
-        status = request.GET.get('status')
-        if status and _is_staff(request.user):
-            qs = qs.filter(status=status)
+        elif exclude_books:
+            qs = qs.exclude(category__slug='ai-books')
+
+        # ------------------------------------------------------------------
+        # Public-safe view filter (NEW)
+        # Non-staff callers can only ever see: published+live courses by
+        # default, or coming-soon courses via ?view=coming_soon. They can
+        # NOT pull arbitrary statuses (draft/in_review/archived etc.) — that
+        # was previously an open gap since the old code only gated the
+        # `status` param behind _is_staff() and otherwise applied no status
+        # filter at all for anonymous/non-staff GETs.
+        # ------------------------------------------------------------------
+        view_mode = request.GET.get('view')  # 'live' (default) | 'coming_soon'
+        if not _is_staff(request.user):
+            now = timezone.now()
+            if view_mode == 'coming_soon':
+                qs = qs.filter(
+                    dj_models.Q(status='approved') |
+                    dj_models.Q(status='published', published_at__gt=now)
+                )
+            else:
+                qs = qs.filter(status='published', published_at__lte=now)
+        else:
+            status = request.GET.get('status')
+            if status:
+                qs = qs.filter(status=status)
+        # ------------------------------------------------------------------
+
         search = request.GET.get('q', '').strip()
         if search:
             qs = qs.filter(title__icontains=search)
@@ -390,10 +429,23 @@ def course_list(request):
 
     if not request.user.is_authenticated:
         return JsonResponse({'error': 'Authentication required'}, status=401)
-    data = _body(request)
+    data = _body(request).copy()
+    if not data.get('category'):
+        cat_obj, _ = CourseCategory.objects.get_or_create(
+            slug='ai-books',
+            defaults={'name': 'AI Books & Guides', 'description': 'AI E-Books & Guides Category'}
+        )
+        data['category'] = cat_obj.id
+
     form = CourseForm(data, request.FILES)
     if form.is_valid():
         course = form.save(commit=False)
+        if not course.category:
+            cat_obj, _ = CourseCategory.objects.get_or_create(
+                slug='ai-books',
+                defaults={'name': 'AI Books & Guides', 'description': 'AI E-Books & Guides Category'}
+            )
+            course.category = cat_obj
         course.created_by = request.user
         try:
             course.save()

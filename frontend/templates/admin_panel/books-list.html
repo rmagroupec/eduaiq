@@ -1,453 +1,181 @@
 {% extends 'admin_panel/base.html' %}
+{% load static %}
 
-{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
-
-{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+{% block title %}Books List - EduAIQ Admin{% endblock %}
 
 {% block content %}
+{% csrf_token %}
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-<div class="">
-<h1 class="fw-semibold mb-4 h6 text-primary-light">Books List </h1>
-<div class="">
-<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
-<span class="text-secondary-light">/ Books List </span>
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Books List</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/ Books List</span>
+    </div>
+  </div>
+  <a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/books/add/">
+    <span class="d-flex text-md">
+      <i class="ri-add-large-line"></i>
+    </span>
+    Add Book
+  </a>
 </div>
-</div>
-<button class="my-sidebar-btn btn btn-primary-600 d-flex align-items-center gap-6" type="button">
-<span class="d-flex text-md">
-<i class="ri-add-large-line"></i>
-</span>
-                Add Book
-            </button>
-</div>
+
 <div class="mt-24">
-<div class="card h-100">
-<div class="card-body p-0 dataTable-wrapper">
-<div class="d-flex align-items-center justify-content-between flex-wrap gap-16 px-20 py-12 border-bottom border-neutral-200">
-<div class="d-flex flex-wrap align-items-center gap-16">
-<div class="dropdown">
-<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
-<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
-<i class="ri-file-upload-line text-md line-height-1"></i>
-                                        Export
-                                    </span>
-<span class="">
-<i class="ri-arrow-down-s-line"></i>
-</span>
-</button>
-<ul class="dropdown-menu p-12 border bg-base shadow">
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
-<i class="ri-file-3-line"></i>
-                                            PDF
-                                        </button>
-</li>
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
-<i class="ri-file-excel-line"></i>
-                                            Excel
-                                        </button>
-</li>
-</ul>
-</div>
-<form class="navbar-search dt-search m-0">
-    {% csrf_token %}
-<input aria-controls="dataTable" class="dt-input bg-transparent radius-4" name="search" placeholder="Search..." type="text"/>
-<iconify-icon class="icon" icon="ion:search-outline"></iconify-icon>
-</form>
-</div>
-<div class="d-flex align-items-center gap-8 text-secondary-light">
-<span class="">
-                                Rows per page:
-                            </span>
-<div class="dt-length">
-<select aria-controls="dataTable" class="dt-input form-control form-select" name="dataTable_length">
-<option value="5">5</option>
-<option selected="" value="10">10</option>
-<option value="25">25</option>
-<option value="50">50</option>
-<option value="100">100</option>
-</select>
-</div>
-</div>
-</div>
-<div class="p-0">
-<table class="table bordered-table mb-0 data-table" data-page-length="10" id="dataTable">
-<thead>
-<tr>
-<th scope="col">
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">
-                                                S.L
-                                            </label>
-</div>
-</th>
-<th scope="col">Subject</th>
-<th scope="col">Book Name</th>
-<th scope="col">Publisher</th>
-<th scope="col">Author</th>
-<th scope="col">Number</th>
-<th scope="col">Rack No</th>
-<th scope="col">Qty</th>
-<th scope="col">Available</th>
-<th scope="col">Price</th>
-<th scope="col">Exam Date</th>
-<th scope="col">Action</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">01</label>
-</div>
-</td>
-<td>Art</td>
-<td>The Little Prince</td>
-<td>Devon Lane</td>
-<td>Darrell Steward</td>
-<td>101</td>
-<td>1234</td>
-<td>60</td>
-<td>20</td>
-<td>$250</td>
-<td>05 Jun 2015</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-edit-2-line"></i>
-                                                        Edit
-                                                    </button>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<i class="ri-delete-bin-6-line"></i>
-                                                        Delete
-                                                    </button>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">02</label>
-</div>
-</td>
-<td>Mathematics</td>
-<td>Advanced Algebra</td>
-<td>Penguin Books</td>
-<td>Jane Cooper</td>
-<td>102</td>
-<td>5678</td>
-<td>40</td>
-<td>18</td>
-<td>$300</td>
-<td>10 Jul 2016</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button"><i class="ri-edit-2-line"></i>Edit</button></li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button"><i class="ri-delete-bin-6-line"></i>Delete</button></li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">03</label>
-</div>
-</td>
-<td>Science</td>
-<td>Physics for Beginners</td>
-<td>HarperCollins</td>
-<td>Guy Hawkins</td>
-<td>103</td>
-<td>8790</td>
-<td>55</td>
-<td>30</td>
-<td>$280</td>
-<td>15 Mar 2017</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button"><i class="ri-edit-2-line"></i>Edit</button></li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button"><i class="ri-delete-bin-6-line"></i>Delete</button></li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">04</label>
-</div>
-</td>
-<td>History</td>
-<td>World Wars</td>
-<td>Oxford Press</td>
-<td>Leslie Alexander</td>
-<td>104</td>
-<td>3210</td>
-<td>35</td>
-<td>12</td>
-<td>$200</td>
-<td>21 Sep 2018</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button"><i class="ri-edit-2-line"></i>Edit</button></li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button"><i class="ri-delete-bin-6-line"></i>Delete</button></li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">05</label>
-</div>
-</td>
-<td>Geography</td>
-<td>Earth &amp; Beyond</td>
-<td>Macmillan</td>
-<td>Robert Fox</td>
-<td>105</td>
-<td>4311</td>
-<td>45</td>
-<td>10</td>
-<td>$310</td>
-<td>08 Jan 2019</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button"><i class="ri-edit-2-line"></i>Edit</button></li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button"><i class="ri-delete-bin-6-line"></i>Delete</button></li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">06</label>
-</div>
-</td>
-<td>Biology</td>
-<td>Human Anatomy</td>
-<td>Cambridge House</td>
-<td>Annette Black</td>
-<td>106</td>
-<td>2915</td>
-<td>70</td>
-<td>35</td>
-<td>$400</td>
-<td>11 Dec 2020</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button"><i class="ri-edit-2-line"></i>Edit</button></li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button"><i class="ri-delete-bin-6-line"></i>Delete</button></li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">07</label>
-</div>
-</td>
-<td>Economics</td>
-<td>Money &amp; Markets</td>
-<td>Random House</td>
-<td>Esther Howard</td>
-<td>107</td>
-<td>3425</td>
-<td>50</td>
-<td>28</td>
-<td>$270</td>
-<td>19 Mar 2021</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button"><i class="ri-edit-2-line"></i>Edit</button></li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button"><i class="ri-delete-bin-6-line"></i>Delete</button></li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">08</label>
-</div>
-</td>
-<td>Computer Science</td>
-<td>JavaScript Essentials</td>
-<td>TechWorld</td>
-<td>Kathryn Murphy</td>
-<td>108</td>
-<td>5320</td>
-<td>80</td>
-<td>60</td>
-<td>$500</td>
-<td>05 Apr 2022</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button"><i class="ri-edit-2-line"></i>Edit</button></li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button"><i class="ri-delete-bin-6-line"></i>Delete</button></li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">09</label>
-</div>
-</td>
-<td>English</td>
-<td>Shakespeare's Works</td>
-<td>Vintage Books</td>
-<td>Courtney Henry</td>
-<td>109</td>
-<td>1567</td>
-<td>65</td>
-<td>45</td>
-<td>$350</td>
-<td>12 May 2023</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button"><i class="ri-edit-2-line"></i>Edit</button></li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button"><i class="ri-delete-bin-6-line"></i>Delete</button></li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">10</label>
-</div>
-</td>
-<td>Chemistry</td>
-<td>Organic Compounds</td>
-<td>Scholastic</td>
-<td>Wade Warren</td>
-<td>110</td>
-<td>4879</td>
-<td>75</td>
-<td>55</td>
-<td>$420</td>
-<td>10 Feb 2024</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button"><i class="ri-edit-2-line"></i>Edit</button></li>
-<li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button"><i class="ri-delete-bin-6-line"></i>Delete</button></li>
-</ul>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-{% endblock %}
+  <div class="card h-100">
+    <div class="card-body p-0 dataTable-wrapper">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 px-20 py-12 border-bottom border-neutral-200">
+        <div class="d-flex flex-wrap align-items-center gap-16">
+          <form class="navbar-search dt-search m-0" onsubmit="event.preventDefault(); loadAiBooks();">
+            <input id="adminBookSearch" class="form-control bg-transparent radius-4" placeholder="Search books..." type="text" onkeyup="loadAiBooks()"/>
+          </form>
+        </div>
+      </div>
 
-{% block js %}
-    <script>
+      <div class="table-responsive p-20">
+        <table class="table table-bordered align-middle" id="booksTable">
+          <thead class="table-light">
+            <tr>
+              <th>Cover</th>
+              <th>Title</th>
+              <th>Format</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th>Published At</th>
+              <th>Enrolled</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="booksTableBody">
+            <tr>
+              <td colspan="8" class="text-center py-5 text-muted">
+                <i class="ri-loader-4-line ri-spin align-middle me-2"></i> Loading books...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
 
-    let table = new DataTable('#dataTable');
+<script>
+  const API_BASE_URL = window.location.origin;
+  const AI_BOOKS_CATEGORY_SLUG = 'ai-books';
+  const IS_SUPERADMIN = "{{ user.is_superuser }}" === "True" || "{{ user.role }}" === "admin";
 
-    // ✅ Data Table start
-    $('.data-table').each(function () {
-        const $table = $(this);
-        const tableInstance = new DataTable(this);
+  async function loadAiBooks() {
+    const searchVal = document.getElementById('adminBookSearch').value.trim();
+    let url = `${API_BASE_URL}/courses/courses/?category=${AI_BOOKS_CATEGORY_SLUG}`;
+    if (searchVal) {
+      url += `&q=${encodeURIComponent(searchVal)}`;
+    }
 
-        // Handle search input (inside same wrapper)
-        $table.closest('.dataTable-wrapper').find('.dt-search .dt-input').on('keyup', function () {
-            tableInstance.search(this.value).draw();
-        });
+    try {
+      const response = await fetch(url, { credentials: 'include' });
+      const data = await response.json();
+      const results = data.results || [];
+      const tbody = document.getElementById('booksTableBody');
 
-        // Handle page length change (inside same wrapper)
-        $table.closest('.dataTable-wrapper').find('.dt-length .dt-input').on('change', function () {
-            const value = $(this).val();
-            tableInstance.page.len(value).draw();
-        });
-    });
-    // ✅ Data Table end
+      if (results.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">
+          No books yet. Click "Add Book" to create the first one.
+        </td></tr>`;
+        return;
+      }
 
-    // Sidebar js start
-    $('.my-sidebar-btn').on('click', function () {
-        $('.my-sidebar').addClass('active');
-        $('.overlay').addClass('active');
-    });
-    $('.close-my-sidebar, .overlay').on('click', function () {
-        $('.my-sidebar').removeClass('active');
-        $('.overlay').removeClass('active');
-    });
+      tbody.innerHTML = results.map(c => `
+        <tr>
+          <td>
+            <img src="${c.thumbnail || 'https://via.placeholder.com/60x80'}" alt="${c.title}" style="width: 60px; height: 80px; object-fit: cover; border-radius: 4px;">
+          </td>
+          <td class="fw-semibold text-dark">${c.title}</td>
+          <td class="text-capitalize">${c.delivery_mode.replace('_', ' ')}</td>
+          <td class="fw-bold">₹${c.price}</td>
+          <td>${getBookStateBadge(c)}</td>
+          <td>${c.published_at ? new Date(c.published_at).toLocaleString() : '<span class="text-muted">Not set</span>'}</td>
+          <td>${c.total_students ?? 0}</td>
+          <td>
+            <div class="d-flex gap-2">
+              <a class="btn btn-sm btn-success text-white" href="/book-reader/${c.slug}/" target="_blank" title="Open Google Books style interactive reader">
+                <i class="ri-book-read-line"></i> Read Book
+              </a>
+              <a class="btn btn-sm btn-outline-primary" href="/admin-panel/courses/edit/?slug=${c.slug}&next=/admin-panel/books/">
+                <i class="ri-edit-line"></i> Edit / Upload PDF
+              </a>
+              ${IS_SUPERADMIN ? `
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteBook('${c.slug}', '${c.title}')">
+                <i class="ri-delete-bin-line"></i> Delete
+              </button>
+              ` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    } catch (e) {
+      console.error(e);
+      document.getElementById('booksTableBody').innerHTML = `
+        <tr><td colspan="8" class="text-center py-4 text-danger">Failed to load books from API.</td></tr>
+      `;
+    }
+  }
 
+  // Uses is_live / is_coming_soon from the API response so the admin table
+  // matches exactly what the public AI Books page will show.
+  function getBookStateBadge(c) {
+    if (c.is_live) {
+      return `<span class="badge bg-success">Live</span>`;
+    }
+    if (c.is_coming_soon) {
+      return `<span class="badge bg-warning text-dark">Coming Soon</span>`;
+    }
+    const labels = {
+      draft: 'bg-secondary', in_review: 'bg-info text-dark',
+      changes_requested: 'bg-info text-dark', archived: 'bg-dark',
+    };
+    return `<span class="badge ${labels[c.status] || 'bg-primary'}">${c.status.replace('_', ' ')}</span>`;
+  }
 
-    $('.edit-sidebar-btn').on('click', function () {
-        $('.edit-sidebar').addClass('active');
-        $('.overlay').addClass('active');
-    });
-    $('.close-edit-sidebar, .overlay').on('click', function () {
-        $('.edit-sidebar').removeClass('active');
-        $('.overlay').removeClass('active');
-    });
-    // Sidebar js end
+  async function deleteBook(slug, title) {
+    if (!confirm(`Are you sure you want to delete "${title}"?`)) {
+      return;
+    }
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(`${API_BASE_URL}/courses/courses/${slug}/`, {
+        method: 'DELETE',
+        headers: { 'X-CSRFToken': csrfToken },
+        credentials: 'include'
+      });
 
-    </script>
-{% endblock %}
+      if (response.ok) {
+        showToast('Book deleted successfully!', 'success');
+        loadAiBooks();
+      } else {
+        const data = await response.json();
+        showToast('Failed to delete book: ' + (data.error || 'Server error'), 'error');
+      }
+    } catch (e) {
+      console.error(e);
+      showToast('Error deleting book.', 'error');
+    }
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener('DOMContentLoaded', loadAiBooks);
+</script>
+{% endblock %}-

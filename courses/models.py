@@ -147,6 +147,8 @@ class Course(models.Model):
     status = models.CharField(max_length=20, choices=STATUS, default='draft')
     created_by = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, related_name='authored_courses')
     reviewed_by = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_courses')
+    author = models.CharField(max_length=200, default='EduAiQ Editorial Team', blank=True)
+    pdf_file = models.FileField(upload_to='book_pdfs/', null=True, blank=True)
     version = models.PositiveIntegerField(default=1)
     published_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -165,8 +167,30 @@ class Course(models.Model):
             raise ValidationError("Price must be greater than 0")
 
     def save(self, *args, **kwargs):
+        if self.status == 'published' and not self.published_at:
+            self.published_at = timezone.now()
         self.full_clean()
         super().save(*args, **kwargs)
+
+    # ------------------------------------------------------------------
+    # Catalog display helpers — no schema change, computed from
+    # existing status + published_at. Not queryable directly in a
+    # .filter() — use the equivalent status/published_at conditions
+    # in querysets (see courses/page_views.py and course_list view).
+    # ------------------------------------------------------------------
+    @property
+    def is_live(self):
+        """Published AND publish date has already passed — shows Enroll."""
+        return self.status == 'published' and self.published_at and self.published_at <= timezone.now()
+
+    @property
+    def is_coming_soon(self):
+        """Approved (ready, not yet published) OR published with a future date — shows Notify Me."""
+        if self.status == 'approved':
+            return True
+        if self.status == 'published' and self.published_at and self.published_at > timezone.now():
+            return True
+        return False
 
 
 # ============================================================================

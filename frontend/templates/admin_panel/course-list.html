@@ -65,9 +65,9 @@
 
   async function loadAdminCourses() {
     const searchVal = document.getElementById('adminCourseSearch').value.trim();
-    let url = `${API_BASE_URL}/courses/courses/`;
+    let url = `${API_BASE_URL}/courses/courses/?exclude_books=true`;
     if (searchVal) {
-      url += `?q=${encodeURIComponent(searchVal)}`;
+      url += `&q=${encodeURIComponent(searchVal)}`;
     }
 
     try {

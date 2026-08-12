@@ -18,9 +18,11 @@ class CourseCategoryForm(forms.ModelForm):
 
 
 class CourseForm(forms.ModelForm):
+    category = forms.ModelChoiceField(queryset=CourseCategory.objects.all(), required=False)
+
     class Meta:
         model = Course
-        fields = ['title', 'slug', 'category', 'delivery_mode', 'description', 'price', 'status', 'thumbnail', 'version']
+        fields = ['title', 'slug', 'category', 'delivery_mode', 'description', 'price', 'status', 'thumbnail', 'author', 'pdf_file', 'version', 'published_at']
 
 
 class CourseModuleForm(forms.ModelForm):

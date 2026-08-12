@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse
+from django.db.models import Count, Q
 
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
@@ -27,6 +28,7 @@ from olympiad.models import (
 
 User = get_user_model()
 
+AI_BOOKS_CATEGORY_SLUG = "ai-books"  # create this CourseCategory once in /admin/
 
 
 # ==========================
@@ -61,9 +63,9 @@ def about(request):
 def courses(request):
     """
     All courses listing page.
-    Publicly accessible catalog display.
+    Publicly accessible catalog display (excludes AI Books so books stay in AI Books section).
     """
-    allowed_courses = get_allowed_courses_for_user(request.user)
+    allowed_courses = get_allowed_courses_for_user(request.user, exclude_books=True)
     return render(request, "courses.html", {
         'courses': allowed_courses
     })
@@ -134,8 +136,70 @@ def ai_lab(request):
 
 
 def ai_books(request):
-    """AI Books page"""
-    return render(request, "ai-books.html")
+    """
+    AI Books page — books are Course objects filed under the "AI Books &
+    Guides" category. Splits them into featured_books (live: published AND
+    the publish date has passed or null) and coming_soon_books (approved, or
+    published with a future date).
+    """
+    now = timezone.now()
+
+    base_qs = (
+        Course.objects.filter(category__slug=AI_BOOKS_CATEGORY_SLUG)
+        .select_related("category")
+        .annotate(student_count=Count("enrollments", distinct=True))
+    )
+
+    featured_books = base_qs.filter(
+        Q(status="published") | Q(status="approved")
+    ).order_by("-student_count", "-created_at")
+
+    coming_soon_books = base_qs.filter(
+        status="in_review"
+    ).order_by("-created_at")
+
+    return render(request, "ai-books.html", {
+        'featured_books': featured_books,
+        'coming_soon_books': coming_soon_books,
+    })
+
+
+def book_reader(request, slug):
+    """
+    Google Books style interactive reader view.
+    Checks if the user has access to read the book via:
+    1. Superuser / Staff / Admin role.
+    2. Student enrolled in the book/course.
+    3. Student belonging to an Institution assigned to the book.
+    4. Free preview / public demo.
+    """
+    book = get_object_or_404(
+        Course.objects.prefetch_related('modules__lessons'),
+        slug=slug
+    )
+
+    is_accessible = False
+    user = request.user
+
+    if user.is_authenticated:
+        if user.is_superuser or getattr(user, 'role', '') in ['admin', 'institution_admin', 'teacher', 'instructor']:
+            is_accessible = True
+        elif hasattr(user, 'enrollments') and user.enrollments.filter(course=book, status='active').exists():
+            is_accessible = True
+        elif hasattr(user, 'institution') and user.institution:
+            if hasattr(user.institution, 'allowed_courses') and user.institution.allowed_courses.filter(id=book.id).exists():
+                is_accessible = True
+            elif hasattr(book, 'institutions') and book.institutions.filter(id=user.institution.id).exists():
+                is_accessible = True
+
+    # If book has price <= 0, allow reading access
+    if not is_accessible and (not book.price or book.price <= 0):
+        is_accessible = True
+
+    return render(request, "book-reader.html", {
+        'book': book,
+        'is_accessible': is_accessible,
+    })
 
 
 def olympiads(request):
@@ -398,6 +462,22 @@ def admin_edit_course(request):
 def admin_course_details(request):
     """Admin course details page"""
     return render(request, "admin_panel/course-details.html")
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_books(request):
+    """
+    Admin AI Books list page. All data (title, status, is_live/is_coming_soon,
+    etc.) is fetched client-side from /courses/courses/?category=ai-books —
+    same pattern as admin_courses + course-list.html.
+    """
+    return render(request, "admin_panel/books-list.html")
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_add_book(request):
+    """Admin add new AI Book page — POSTs to /courses/courses/ with category locked to ai-books."""
+    return render(request, "admin_panel/add-book.html")
 
 
 @login_required(login_url='/admin-panel/login/')
@@ -1266,5 +1346,3 @@ def admin_olympiad_entrance_questions(request, pk):
         'question_types': OlympiadQuestion.QUESTION_TYPES,
         'difficulties': OlympiadQuestion.DIFFICULTY,
     })
-
-

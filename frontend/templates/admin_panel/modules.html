@@ -108,6 +108,13 @@
         opt.textContent = c.title;
         select.appendChild(opt);
       });
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const querySlug = urlParams.get('slug');
+      if (querySlug) {
+        select.value = querySlug;
+        onCourseChange();
+      }
     } catch (e) {
       console.error(e);
     }

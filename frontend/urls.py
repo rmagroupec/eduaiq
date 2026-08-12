@@ -28,7 +28,11 @@ urlpatterns = [
     path('courses/', views.courses, name='courses'),                      # All courses listing
     path('course/', views.course_detail, name='course_detail'),           # Single course detail
     path('categories/', views.categories, name='categories'),             # Course categories
-    path('search/', views.search, name='search'),                         # Search results
+    path('search/', views.search, name='search'),    
+    path('admin-panel/books/', views.admin_books, name='admin_books'),
+    path('admin-panel/books/add/', views.admin_add_book, name='admin_add_book'),
+    path('book-reader/<slug:slug>/', views.book_reader, name='book_reader'),
+# Search results
 
     # ==========================
     # Learning Pages (Login Required)

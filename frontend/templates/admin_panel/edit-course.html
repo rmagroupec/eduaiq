@@ -63,9 +63,10 @@
         <!-- Status -->
         <div class="col-md-4">
           <label class="form-label" for="status">Status <span class="text-danger">*</span></label>
-          <select id="status" name="status" class="form-select" required>
+          <select id="status" name="status" class="form-select" required onchange="togglePublishDateFieldEdit()">
             <option value="draft">Draft</option>
             <option value="in_review">In Review</option>
+            <option value="approved">Approved (Coming Soon)</option>
             <option value="published">Published</option>
             <option value="archived">Archived</option>
           </select>
@@ -75,6 +76,27 @@
         <div class="col-md-4">
           <label class="form-label" for="version">Version <span class="text-danger">*</span></label>
           <input type="number" id="version" name="version" class="form-control" min="1" required/>
+        </div>
+
+        <!-- Published At -->
+        <div class="col-md-4" id="publishedAtCol">
+          <label class="form-label" for="published_at">Published At Date</label>
+          <input type="datetime-local" id="published_at" name="published_at" class="form-control"/>
+        </div>
+
+        <!-- Author -->
+        <div class="col-md-6">
+          <label class="form-label" for="author">Author / Publisher</label>
+          <input type="text" id="author" name="author" class="form-control" placeholder="e.g. EduAiQ Editorial Team"/>
+        </div>
+
+        <!-- PDF Document Input -->
+        <div class="col-md-6">
+          <label class="form-label" for="pdf_file">
+            Book PDF Document <span class="text-primary-600 fw-semibold">(For Interactive Reader)</span>
+          </label>
+          <input type="file" id="pdf_file" name="pdf_file" class="form-control" accept="application/pdf"/>
+          <div id="pdfCurrentStatus" class="mt-1 text-sm text-secondary-light"></div>
         </div>
 
         <!-- Current Thumbnail View -->
@@ -91,13 +113,36 @@
 
         <!-- Description -->
         <div class="col-12">
-          <label class="form-label" for="description">Course Description</label>
+          <label class="form-label" for="description">Course / Book Description</label>
           <textarea id="description" name="description" class="form-control" rows="5"></textarea>
+        </div>
+
+        <!-- Book Chapters & Pages Management Section -->
+        <div class="col-12 mt-4 p-20 radius-8 border border-neutral-200 bg-neutral-50">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+            <div>
+              <h6 class="fw-semibold text-primary-600 mb-1">
+                <i class="ri-book-open-line me-1"></i> Book Chapters & Reading Pages
+              </h6>
+              <span class="text-sm text-secondary-light">Create and organize chapters (modules) and digital reading pages (lessons) for this book.</span>
+            </div>
+            <div class="d-flex gap-2">
+              <a class="btn btn-sm btn-outline-primary" id="manageChaptersBtn" href="#" target="_blank">
+                <i class="ri-pages-line"></i> Manage Chapters
+              </a>
+              <a class="btn btn-sm btn-outline-secondary" id="managePagesBtn" href="#" target="_blank">
+                <i class="ri-file-text-line"></i> Manage Digital Pages
+              </a>
+            </div>
+          </div>
+          <div id="bookChaptersList" class="text-sm text-muted">
+            <em>Loading book chapters and pages...</em>
+          </div>
         </div>
 
         <!-- Submit Buttons -->
         <div class="col-12 mt-4 text-end">
-          <a class="btn btn-outline-secondary me-2" href="/admin-panel/courses/">Cancel</a>
+          <a class="btn btn-outline-secondary me-2" id="cancelBtn" href="/admin-panel/courses/">Cancel</a>
           <button type="submit" class="btn btn-primary-600">Save Changes</button>
         </div>
       </div>
@@ -107,7 +152,13 @@
 
 <script>
   const API_BASE_URL = window.location.origin;
-  const querySlug = new URLSearchParams(window.location.search).get('slug');
+  const urlParams = new URLSearchParams(window.location.search);
+  const querySlug = urlParams.get('slug');
+  const redirectUrl = urlParams.get('next') || (document.referrer.includes('/admin-panel/books/') ? '/admin-panel/books/' : '/admin-panel/courses/');
+
+  function togglePublishDateFieldEdit() {
+    // optional helper if needed
+  }
 
   function previewSelectedImageEdit(event) {
     const file = event.target.files[0];
@@ -125,10 +176,13 @@
   }
 
   async function initEditPage() {
+    const cancelBtn = document.getElementById('cancelBtn');
+    if (cancelBtn) cancelBtn.href = redirectUrl;
+
     if (!querySlug) {
       showToast('No course slug specified for editing!', 'error');
       setTimeout(() => {
-        window.location.href = '/admin-panel/courses/';
+        window.location.href = redirectUrl;
       }, 1500);
       return;
     }
@@ -163,12 +217,73 @@
 
       document.getElementById('title').value = c.title;
       document.getElementById('slug').value = c.slug;
-      document.getElementById('category').value = c.category;
+      
+      const catVal = (c.category && typeof c.category === 'object') ? c.category.id : c.category;
+      if (catVal) {
+        document.getElementById('category').value = String(catVal);
+      }
+
       document.getElementById('delivery_mode').value = c.delivery_mode;
       document.getElementById('price').value = c.price;
       document.getElementById('status').value = c.status;
       document.getElementById('version').value = c.version;
       document.getElementById('description').value = c.description || '';
+
+      if (document.getElementById('author')) {
+        document.getElementById('author').value = c.author || 'EduAiQ Editorial Team';
+      }
+
+      if (c.pdf_file && document.getElementById('pdfCurrentStatus')) {
+        document.getElementById('pdfCurrentStatus').innerHTML = `Current PDF: <a href="${c.pdf_file}" target="_blank" class="text-primary-600 fw-semibold hover-underline"><i class="ri-file-pdf-line"></i> View Current Ebook PDF</a>`;
+      }
+
+      // Update Pages & Chapters management links
+      if (document.getElementById('manageChaptersBtn')) {
+        document.getElementById('manageChaptersBtn').href = `/admin-panel/modules/?slug=${c.slug}`;
+      }
+      if (document.getElementById('managePagesBtn')) {
+        document.getElementById('managePagesBtn').href = `/admin-panel/lessons/?slug=${c.slug}`;
+      }
+
+      // Render mini chapters summary
+      const chaptersContainer = document.getElementById('bookChaptersList');
+      if (chaptersContainer) {
+        if (c.modules && c.modules.length > 0) {
+          chaptersContainer.innerHTML = `
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered bg-white mb-0 align-middle">
+                <thead>
+                  <tr class="table-light"><th>Order</th><th>Chapter Title</th><th>Reading Pages</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                  ${c.modules.map(m => `
+                    <tr>
+                      <td class="fw-bold text-center" style="width: 100px;">Chapter ${m.order}</td>
+                      <td>${m.title}</td>
+                      <td>${m.lessons ? m.lessons.length : 0} page(s)</td>
+                      <td>
+                        <a href="/admin-panel/lessons/?slug=${c.slug}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2 text-xs">
+                          <i class="ri-add-line"></i> Manage Pages
+                        </a>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
+        } else {
+          chaptersContainer.innerHTML = `
+            <div class="alert alert-info py-2 px-3 mb-0 text-sm">
+              No digital chapters created yet. Click <strong>"Manage Chapters"</strong> above to create book chapters and digital pages.
+            </div>
+          `;
+        }
+      }
+
+      if (c.published_at) {
+        document.getElementById('published_at').value = c.published_at.substring(0, 16);
+      }
 
       if (c.thumbnail) {
         document.getElementById('thumbnailPreview').src = c.thumbnail;
@@ -199,10 +314,10 @@
       const data = await response.json();
 
       if (response.ok || data.success) {
-        showToast('Course updated successfully!', 'success');
+        showToast('Saved successfully!', 'success');
         setTimeout(() => {
-          window.location.href = '/admin-panel/courses/';
-        }, 1500);
+          window.location.href = redirectUrl;
+        }, 1200);
       } else {
         let errMsg = data.error || 'Validation failed.';
         if (data.errors) {
@@ -212,7 +327,7 @@
       }
     } catch (err) {
       console.error(err);
-      showToast('Error saving course changes.', 'error');
+      showToast('Error saving changes.', 'error');
     }
   }
 

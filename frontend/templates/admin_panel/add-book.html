@@ -1,0 +1,261 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Add AI Book - EduAIQ Admin{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Add AI Book</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/books/">/ Books</a>
+      <span class="text-secondary-light">/ Add Book</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header border-bottom py-16 px-24">
+    <h5 class="card-title mb-0">Book Details Form</h5>
+    <p class="text-sm text-secondary-light mb-0 mt-4">
+      A "book" here is a Course filed under the <strong>AI Books &amp; Guides</strong> category — it will appear
+      on the public AI Books page the moment it's Published with a Published At date.
+    </p>
+  </div>
+  <div class="card-body p-24">
+    <form id="addBookForm" onsubmit="submitBook(event)" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row g-3">
+        <!-- Title -->
+        <div class="col-md-6">
+          <label class="form-label" for="title">Book Title <span class="text-danger">*</span></label>
+          <input type="text" id="title" name="title" class="form-control" placeholder="e.g. AI For Absolute Beginners" required oninput="generateSlug()"/>
+        </div>
+
+        <!-- Slug -->
+        <div class="col-md-6">
+          <label class="form-label" for="slug">Slug <span class="text-danger">*</span></label>
+          <input type="text" id="slug" name="slug" class="form-control" placeholder="e.g. ai-for-absolute-beginners" required/>
+        </div>
+
+        <!-- Hidden Category Input (auto-assigned to ai-books) -->
+        <input type="hidden" id="category" name="category" value=""/>
+
+        <!-- Format (maps to delivery_mode) -->
+        <div class="col-md-6">
+          <label class="form-label" for="delivery_mode">Format <span class="text-danger">*</span></label>
+          <select id="delivery_mode" name="delivery_mode" class="form-select" required>
+            <option value="content_based">Beginner Guide (reading-based)</option>
+            <option value="hybrid" selected>Project Workbook (hybrid)</option>
+            <option value="video_lecture">Career / Case Study (video-based)</option>
+          </select>
+        </div>
+
+        <!-- Price -->
+        <div class="col-md-4">
+          <label class="form-label" for="price">Price (INR) <span class="text-danger">*</span></label>
+          <input type="number" id="price" name="price" class="form-control" placeholder="e.g. 499" min="0" step="0.01" value="0" required/>
+        </div>
+
+        <!-- Status -->
+        <div class="col-md-4">
+          <label class="form-label" for="status">Status <span class="text-danger">*</span></label>
+          <select id="status" name="status" class="form-select" required onchange="togglePublishedAt()">
+            <option value="published" selected>Published (shows as "Live")</option>
+            <option value="approved">Approved (shows as "Coming Soon")</option>
+            <option value="draft">Draft</option>
+            <option value="in_review">In Review</option>
+            <option value="archived">Archived</option>
+          </select>
+        </div>
+
+        <!-- Version -->
+        <div class="col-md-4">
+          <label class="form-label" for="version">Version <span class="text-danger">*</span></label>
+          <input type="number" id="version" name="version" class="form-control" value="1" min="1" required/>
+        </div>
+
+        <!-- Published At -->
+        <div class="col-md-6">
+          <label class="form-label" for="published_at">
+            Published At
+            <span class="text-secondary-light text-sm">(required to actually show as Live on the site)</span>
+          </label>
+          <input type="datetime-local" id="published_at" name="published_at" class="form-control"/>
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="checkbox" id="publishNowCheckbox" checked onchange="handlePublishNowToggle()">
+            <label class="form-check-label text-sm" for="publishNowCheckbox">
+              Set to right now automatically when Status is "Published"
+            </label>
+          </div>
+        </div>
+
+        <!-- Author -->
+        <div class="col-md-6">
+          <label class="form-label" for="author">Author / Publisher Name</label>
+          <input type="text" id="author" name="author" class="form-control" placeholder="e.g. Dr. A. P. Sharma" value="EduAiQ Editorial Team"/>
+        </div>
+
+        <!-- PDF Document File -->
+        <div class="col-md-6">
+          <label class="form-label" for="pdf_file">
+            Book PDF Document <span class="text-primary-600 fw-semibold">(For Interactive Flipbook Reader)</span>
+          </label>
+          <input type="file" id="pdf_file" name="pdf_file" class="form-control" accept="application/pdf"/>
+          <small class="text-secondary-light">Upload ebook PDF file for Google Books-style online reader.</small>
+        </div>
+
+        <!-- Thumbnail -->
+        <div class="col-md-6">
+          <label class="form-label" for="thumbnail">Book Cover</label>
+          <input type="file" id="thumbnail" name="thumbnail" class="form-control" accept="image/*" onchange="previewSelectedImage(event)"/>
+          <div id="newThumbnailPreviewContainer" style="display: none; margin-top: 10px;">
+            <img id="newThumbnailPreview" src="" alt="Preview" style="width: 110px; height: 150px; object-fit: cover; border: 1px solid #ddd; border-radius: 4px;">
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="col-12">
+          <label class="form-label" for="description">Description</label>
+          <textarea id="description" name="description" class="form-control" rows="5" placeholder="What will readers learn from this book?"></textarea>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="col-12 mt-4 text-end">
+          <a class="btn btn-outline-secondary me-2" href="/admin-panel/books/">Cancel</a>
+          <button type="submit" class="btn btn-primary-600">Save Book</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+  const AI_BOOKS_CATEGORY_SLUG = 'ai-books';
+
+  function previewSelectedImage(event) {
+    const file = event.target.files[0];
+    const previewContainer = document.getElementById('newThumbnailPreviewContainer');
+    const previewImg = document.getElementById('newThumbnailPreview');
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        previewImg.src = e.target.result;
+        previewContainer.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    } else {
+      previewImg.src = '';
+      previewContainer.style.display = 'none';
+    }
+  }
+
+  function generateSlug() {
+    const titleVal = document.getElementById('title').value;
+    const slugVal = titleVal.toLowerCase()
+                            .replace(/[^a-z0-9\s-]/g, '')
+                            .replace(/\s+/g, '-')
+                            .replace(/-+/g, '-');
+    document.getElementById('slug').value = slugVal;
+  }
+
+  function toLocalDatetimeInputValue(date) {
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  }
+
+  function togglePublishedAt() {
+    handlePublishNowToggle();
+  }
+
+  function handlePublishNowToggle() {
+    const status = document.getElementById('status').value;
+    const checkbox = document.getElementById('publishNowCheckbox');
+    const input = document.getElementById('published_at');
+
+    if (status === 'published' && checkbox.checked) {
+      input.value = toLocalDatetimeInputValue(new Date());
+      input.readOnly = true;
+    } else {
+      input.readOnly = false;
+    }
+  }
+
+  async function loadAiBooksCategory() {
+    const input = document.getElementById('category');
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/categories/`);
+      const data = await response.json();
+      const results = data.results || [];
+      const aiCat = results.find(c => c.slug === AI_BOOKS_CATEGORY_SLUG);
+      if (aiCat) {
+        input.value = aiCat.id;
+      }
+    } catch (e) {
+      console.error('Error loading AI books category:', e);
+    }
+  }
+
+  async function submitBook(e) {
+    e.preventDefault();
+    const form = document.getElementById('addBookForm');
+    const formData = new FormData(form);
+
+    // Django expects an ISO-ish datetime; datetime-local gives "YYYY-MM-DDTHH:MM"
+    // which Django's DateTimeField parses fine as-is.
+
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(`${API_BASE_URL}/courses/courses/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrfToken
+        },
+        body: formData,
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (response.ok || data.success) {
+        showToast('Book saved successfully!', 'success');
+        setTimeout(() => {
+          window.location.href = '/admin-panel/books/';
+        }, 1500);
+      } else {
+        let errMsg = data.error || 'Validation failed.';
+        if (data.errors) {
+          errMsg += ' | ' + Object.entries(data.errors).map(([f, errs]) => `${f}: ${errs.join(', ')}`).join(' | ');
+        }
+        showToast(errMsg, 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Error saving book.', 'error');
+    }
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadAiBooksCategory();
+    handlePublishNowToggle();
+  });
+</script>
+{% endblock %}

@@ -5,7 +5,7 @@
   </button>
   <div class="">
     <div class="sidebar-logo d-flex align-items-center justify-content-between">
-      <a href="index" class="">
+      <a href="/" class="">
         <img src="{% static 'admin_assets/images/logo.png' %}" alt="site logo" class="light-logo">
         <img src="{% static 'admin_assets/images/logo-light.png' %}" alt="site logo" class="dark-logo">
         <img src="{% static 'admin_assets/images/logo-icon.png' %}" alt="site logo" class="logo-icon">
@@ -123,7 +123,7 @@
         </a>
         <ul class="sidebar-submenu">
           <li>
-            <a href="index">
+            <a href="/admin-panel/dashboard/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               School
             </a>
@@ -173,6 +173,32 @@
             <a href="/admin-panel/lessons/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Lessons
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-book-open-line"></i>
+          <span>AI Books</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/books/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              AI Books List
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/books/add/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add New AI Book
+            </a>
+          </li>
+          <li>
+            <a href="/ai-books/" target="_blank">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Public Reader View
             </a>
           </li>
         </ul>
@@ -328,31 +354,31 @@
         </a>
         <ul class="sidebar-submenu">
           <li>
-            <a href="add-new-teacher">
+            <a href="/admin-panel/add-new-teacher/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Add New Teacher
             </a>
           </li>
           <li>
-            <a href="teacher-list">
+            <a href="/admin-panel/teacher-list/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Teacher List
             </a>
           </li>
           <li>
-            <a href="edit-teacher">
+            <a href="/admin-panel/edit-teacher/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Edit Teacher
             </a>
           </li>
           <li>
-            <a href="teacher-details">
+            <a href="/admin-panel/teacher-details/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Teacher Details
             </a>
           </li>
           <li>
-            <a href="teacher-timetable">
+            <a href="/admin-panel/teacher-timetable/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Teacher Timetable
             </a>
@@ -366,25 +392,25 @@
         </a>
         <ul class="sidebar-submenu">
           <li>
-            <a href="add-new-guardian">
+            <a href="/admin-panel/add-new-guardian/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Add New Guardians
             </a>
           </li>
           <li>
-            <a href="guardian-list">
+            <a href="/admin-panel/guardian-list/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Guardians List
             </a>
           </li>
           <li>
-            <a href="edit-guardian">
+            <a href="/admin-panel/edit-guardian/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Edit Guardian
             </a>
           </li>
           <li>
-            <a href="guardian-details">
+            <a href="/admin-panel/guardian-details/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Guardian Details
             </a>
@@ -398,25 +424,25 @@
         </a>
         <ul class="sidebar-submenu">
           <li>
-            <a href="section-list">
+            <a href="/admin-panel/section-list/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Section
             </a>
           </li>
           <li>
-            <a href="subject-list">
+            <a href="/admin-panel/subject-list/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Subjects
             </a>
           </li>
           <li>
-            <a href="class-list">
+            <a href="/admin-panel/class-list/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Class List
             </a>
           </li>
           <li>
-            <a href="class-room-list">
+            <a href="/admin-panel/class-room-list/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Class Room
             </a>
@@ -430,19 +456,19 @@
         </a>
         <ul class="sidebar-submenu">
           <li>
-            <a href="exam">
+            <a href="/admin-panel/exam/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Exam
             </a>
           </li>
           <li>
-            <a href="exam-schedule">
+            <a href="/admin-panel/exam-schedule/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Exam Schedule
             </a>
           </li>
           <li>
-            <a href="exam-result">
+            <a href="/admin-panel/exam-result/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Exam Result
             </a>
@@ -456,25 +482,25 @@
         </a>
         <ul class="sidebar-submenu">
           <li>
-            <a href="fees-collect">
+            <a href="/admin-panel/fees-collect/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Fees Collect
             </a>
           </li>
           <li>
-            <a href="fees-type">
+            <a href="/admin-panel/fees-type/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Fees Type
             </a>
           </li>
           <li>
-            <a href="fees-group">
+            <a href="/admin-panel/fees-group/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Fees Group
             </a>
           </li>
           <li>
-            <a href="fees-discount">
+            <a href="/admin-panel/fees-discount/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Fees Discount
             </a>
@@ -488,19 +514,19 @@
         </a>
         <ul class="sidebar-submenu">
           <li>
-            <a href="student-attendance">
+            <a href="/admin-panel/student-attendance/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Student Attendance
             </a>
           </li>
           <li>
-            <a href="teacher-attendance">
+            <a href="/admin-panel/teacher-attendance/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Teacher Attendance
             </a>
           </li>
           <li>
-            <a href="employee-attendance">
+            <a href="/admin-panel/employee-attendance/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Employee Attendance
             </a>
@@ -514,13 +540,13 @@
         </a>
         <ul class="sidebar-submenu">
           <li>
-            <a href="leave-types">
+            <a href="/admin-panel/leave-types/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Leave Types
             </a>
           </li>
           <li>
-            <a href="leave-request">
+            <a href="/admin-panel/leave-request/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Leave Request
             </a>
@@ -528,7 +554,7 @@
         </ul>
       </li>
       <li>
-        <a href="certificate">
+        <a href="/admin-panel/certificate/">
           <i class="ri-home-4-line"></i>
           <span>Certificate </span>
         </a>
@@ -540,25 +566,31 @@
         </a>
         <ul class="sidebar-submenu">
           <li>
-            <a href="books-list">
+            <a href="/admin-panel/books/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Books List
             </a>
           </li>
           <li>
-            <a href="members-list">
+            <a href="/admin-panel/books/add/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Book
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/members-list/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Members List
             </a>
           </li>
           <li>
-            <a href="member-details">
+            <a href="/admin-panel/member-details/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Members Details
             </a>
           </li>
           <li>
-            <a href="issue-return">
+            <a href="/admin-panel/issue-return/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Issue Return
             </a>
@@ -572,31 +604,31 @@
         </a>
         <ul class="sidebar-submenu">
           <li>
-            <a href="income-head">
+            <a href="/admin-panel/income-head/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Income Head
             </a>
           </li>
           <li>
-            <a href="income-list">
+            <a href="/admin-panel/income-list/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Income List
             </a>
           </li>
           <li>
-            <a href="expense-head">
+            <a href="/admin-panel/expense-head/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Expense Head
             </a>
           </li>
           <li>
-            <a href="expense-list">
+            <a href="/admin-panel/expense-list/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Expense List
             </a>
           </li>
           <li>
-            <a href="transaction">
+            <a href="/admin-panel/transaction/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Transaction
             </a>
@@ -610,36 +642,37 @@
         </a>
         <ul class="sidebar-submenu">
           <li>
-            <a href="employee-list">
+            <a href="/admin-panel/employee-list/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Employee List
             </a>
           </li>
           <li>
-            <a href="employee-details">
+            <a href="/admin-panel/employee-details/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Employee Details
             </a>
           </li>
           <li>
-            <a href="add-new-employee">
+            <a href="/admin-panel/add-new-employee/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Add New Employee
             </a>
           </li>
           <li>
-            <a href="payroll">
+            <a href="/admin-panel/payroll/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Payroll
             </a>
           </li>
           <li>
-            <a href="designation">
+            <a href="/admin-panel/designation/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Designation
             </a>
+          </li>
           <li>
-            <a href="department">
+            <a href="/admin-panel/department/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Department
             </a>
@@ -647,31 +680,31 @@
         </ul>
       </li>
       <li>
-        <a href="notice-board">
+        <a href="/admin-panel/notice-board/">
           <i class="ri-booklet-line"></i>
           <span>Notice Board </span>
         </a>
       </li>
       <li>
-        <a href="event">
+        <a href="/admin-panel/event/">
           <i class="ri-calendar-event-line"></i>
           <span>Event </span>
         </a>
       </li>
       <li>
-        <a href="message">
+        <a href="/admin-panel/message/">
           <i class="ri-message-2-line"></i>
           <span>Message </span>
         </a>
       </li>
       <li>
-        <a href="subscription-plan">
+        <a href="/admin-panel/subscription-plan/">
           <i class="ri-price-tag-3-line"></i>
           <span>Subscription Plan </span>
         </a>
       </li>
       <li>
-        <a href="role-access">
+        <a href="/admin-panel/role-access/">
           <i class="ri-macbook-line"></i>
           <span>Role & Access</span>
         </a>
@@ -683,15 +716,15 @@
         </a>
         <ul class="sidebar-submenu">
           <li>
-            <a href="login"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Login</a>
+            <a href="/admin-panel/login/"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Login</a>
           </li>
           <li>
-            <a href="register"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Register</a>
+            <a href="/register/"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Register</a>
           </li>
         </ul>
       </li>
       <li>
-        <a href="assign-role-plan">
+        <a href="/admin-panel/assign-role-plan/">
           <i class="ri-user-follow-line"></i>
           <span>Assign Role</span>
         </a>
@@ -703,25 +736,25 @@
         </a>
         <ul class="sidebar-submenu">
           <li>
-            <a href="general">
+            <a href="/admin-panel/general/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               General
             </a>
           </li>
           <li>
-            <a href="notification">
+            <a href="/admin-panel/notification/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Notification
             </a>
           </li>
           <li>
-            <a href="currencies">
+            <a href="/admin-panel/currencies/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Currencies
             </a>
           </li>
           <li>
-            <a href="languages">
+            <a href="/admin-panel/languages/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Languages
             </a>

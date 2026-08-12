@@ -1,377 +1,492 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}AI Books - EduAiQ | Practical AI & Skill-Building E-Books{% endblock %}
+{% block title %}AI Books — EduAiQ | Interactive AI Books & Guides{% endblock %}
 
-{% block description %}Browse EduAiQ's AI Books — practical, project-based e-books on AI, machine learning, and job-ready skills, written for beginners through working professionals.{% endblock %}
+{% block description %}Browse EduAiQ's AI Books — practical, project-based e-books on AI, machine learning, and job-ready skills with interactive online flipbook reading.{% endblock %}
 
 {% block content %}
-<section class="inner-banner-wrap">
-<div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
-<div class="container">
-<div class="inner-banner-content">
-<h1 class="inner-title">AI Books</h1>
-<div class="breadcrumb-content">
-<ul class="breadcrumb">
+<style>
+    /* AI Books Modern Page Styles */
+    :root {
+        --book-card-bg: #ffffff;
+        --book-card-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        --book-card-hover-shadow: 0 20px 40px rgba(124, 58, 237, 0.18);
+        --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        --accent-gradient: linear-gradient(135deg, #f73859 0%, #ec4899 100%);
+    }
 
+    .ai-books-hero {
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        color: #ffffff;
+        padding: 70px 0 60px;
+        position: relative;
+        overflow: hidden;
+    }
 
-</ul>
-</div>
-</div>
-</div>
-</div>
+    .ai-books-hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .hero-title-main {
+        font-size: 2.75rem;
+        font-weight: 800;
+        background: linear-gradient(90deg, #ffffff 0%, #cbd5e1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -0.02em;
+        margin-bottom: 16px;
+    }
+
+    .hero-subtitle {
+        font-size: 1.15rem;
+        color: #94a3b8;
+        max-width: 680px;
+        line-height: 1.6;
+    }
+
+    /* Stats Grid */
+    .stat-card-box {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        padding: 22px 18px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card-box:hover {
+        transform: translateY(-4px);
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #c084fc;
+        margin-bottom: 4px;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        color: #cbd5e1;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* Section Headers */
+    .section-heading-block {
+        text-align: center;
+        margin-bottom: 45px;
+    }
+
+    .section-title-gradient {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 10px;
+    }
+
+    .section-desc-muted {
+        font-size: 1rem;
+        color: #64748b;
+    }
+
+    /* Book Cards Grid */
+    .book-card-item {
+        background: var(--book-card-bg);
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        box-shadow: var(--book-card-shadow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .book-card-item:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--book-card-hover-shadow);
+        border-color: #c084fc;
+    }
+
+    .book-cover-wrap {
+        position: relative;
+        height: 240px;
+        background: #f1f5f9;
+        overflow: hidden;
+    }
+
+    .book-cover-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .book-card-item:hover .book-cover-img {
+        transform: scale(1.05);
+    }
+
+    .book-category-badge {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(8px);
+        color: #ffffff;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .book-card-body {
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .book-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 8px;
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .book-title a {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .book-title a:hover {
+        color: #7c3aed;
+    }
+
+    .book-author-text {
+        font-size: 0.88rem;
+        color: #64748b;
+        margin-bottom: 14px;
+        font-weight: 500;
+    }
+
+    .book-rating-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+        font-size: 0.82rem;
+        color: #64748b;
+    }
+
+    .rating-stars {
+        color: #f59e0b;
+        font-weight: 700;
+    }
+
+    .downloads-badge {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+    }
+
+    .book-actions-group {
+        margin-top: auto;
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-read-online {
+        flex: 1;
+        background: var(--primary-gradient);
+        color: #ffffff !important;
+        border: none;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 700;
+        text-align: center;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+        transition: all 0.2s ease;
+    }
+
+    .btn-read-online:hover {
+        opacity: 0.95;
+        box-shadow: 0 6px 18px rgba(99, 102, 241, 0.4);
+        transform: translateY(-1px);
+    }
+
+    .btn-book-details {
+        background: #ffffff;
+        color: #475569 !important;
+        border: 1px solid #cbd5e1;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .btn-book-details:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+        color: #0f172a !important;
+    }
+
+    /* Library Access Banner */
+    .library-banner-card {
+        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+        border-radius: 20px;
+        padding: 45px 35px;
+        color: #ffffff;
+        margin-top: 50px;
+        box-shadow: 0 20px 40px rgba(30, 27, 75, 0.2);
+    }
+
+    .btn-library-access {
+        background: linear-gradient(135deg, #f73859 0%, #ec4899 100%);
+        color: #ffffff !important;
+        padding: 14px 32px;
+        border-radius: 30px;
+        font-size: 1rem;
+        font-weight: 800;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 8px 20px rgba(247, 56, 89, 0.35);
+        transition: all 0.3s ease;
+    }
+
+    .btn-library-access:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(247, 56, 89, 0.5);
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="ai-books-hero">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <h1 class="hero-title-main">Practical AI Books & Interactive Guides</h1>
+                <p class="hero-subtitle mb-4">
+                    Explore project-based e-books written by leading AI educators. Every book pairs with hands-on exercises from the AI Lab and opens in our full-screen Google Books interactive reader.
+                </p>
+            </div>
+            <div class="col-lg-5">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="stat-card-box">
+                            <div class="stat-number">30+</div>
+                            <div class="stat-label">AI Books</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-card-box">
+                            <div class="stat-number">8k+</div>
+                            <div class="stat-label">Downloads</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-card-box">
+                            <div class="stat-number">4.9 ★</div>
+                            <div class="stat-label">User Rating</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-card-box">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Project Based</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
+<!-- Featured Books Grid Section -->
+<section class="py-5" id="featured-books-section" style="background-color: #f8fafc;">
+    <div class="container py-4">
+        <div class="section-heading-block">
+            <h2 class="section-title-gradient">Most Downloaded AI Books</h2>
+            <p class="section-desc-muted">Read practical guides and hands-on e-books directly online in the browser viewer.</p>
+        </div>
 
-<section class="about-section">
-<div class="container">
-<div class="title-divider-center"></div>
-<h2 class="about-title text-center">Learn AI, One Book At A Time</h2>
-<div class="row">
-<div class="col-md-6">
-<p class="about-describe info-left">
-                                EduAiQ's AI Books are practical, project-based e-books — not dense textbooks. Each title walks you through real concepts with worked examples, so you actually build something by the last page instead of just reading about it.
-                            </p>
-</div>
-<div class="col-md-6">
-<p class="about-describe info-right">
-                                Written for a range of starting points — students taking their first steps in AI, working professionals reskilling, and institutions looking for ready-made study material — every book pairs with hands-on exercises from the AI Lab.
-                            </p>
-</div>
-</div>
-<div class="counter-inner">
-<div class="counter-item-wrap row">
-<div class="col-lg-3 col-sm-6 counter-item">
-<div class="counter-no">
-<span class="counter">30</span>+
-                                </div>
-<div class="Completed">
-                                    AI Books Published
-                                </div>
-</div>
-<div class="col-lg-3 col-sm-6 counter-item">
-<div class="counter-no">
-<span class="counter">8</span>k+
-                                </div>
-<div class="Completed">
-                                    Copies Downloaded
-                                </div>
-</div>
-<div class="col-lg-3 col-sm-6 counter-item">
-<div class="counter-no">
-<span class="counter">4.7</span>
-</div>
-<div class="Completed">
-                                    Average Reader Rating
-                                </div>
-</div>
-<div class="col-lg-3 col-sm-6 counter-item">
-<div class="counter-no">
-<span class="counter">100</span>%
-                                </div>
-<span class="Completed">
-                                    Practical, Project-Based
-                                </span>
-</div>
-</div>
-</div>
-</div>
+        <div class="row g-4">
+            {% for course in featured_books %}
+            <div class="col-md-6 col-lg-4">
+                <div class="book-card-item">
+                    <div class="book-cover-wrap">
+                        {% if course.thumbnail %}
+                        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="book-cover-img">
+                        {% else %}
+                        <img src="{% static 'assets/img/educator-img30.jpg' %}" alt="{{ course.title }}" class="book-cover-img">
+                        {% endif %}
+                        <span class="book-category-badge">{{ course.category.name|default:"AI Book" }}</span>
+                    </div>
+
+                    <div class="book-card-body">
+                        <h3 class="book-title">
+                            <a href="{% url 'course_detail' %}?slug={{ course.slug }}">{{ course.title }}</a>
+                        </h3>
+                        <div class="book-author-text">
+                            By {{ course.author|default:"EduAiQ Editorial Team" }}
+                        </div>
+
+                        <div class="book-rating-row">
+                            <span class="rating-stars">
+                                <i class="fas fa-star"></i> 4.9 ({{ course.student_count|add:18 }} reviews)
+                            </span>
+                            <span class="downloads-badge">
+                                <i class="fas fa-arrow-down me-1"></i> {{ course.student_count }}+ readers
+                            </span>
+                        </div>
+
+                        <div class="book-actions-group">
+                            <a href="/book-reader/{{ course.slug }}/" class="btn-read-online" title="Open Google Books style interactive reader">
+                                <i class="fas fa-book-open"></i> Read Online
+                            </a>
+                            <a href="{% url 'course_detail' %}?slug={{ course.slug }}" class="btn-book-details" title="View Book Details & Syllabus">
+                                Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="p-5 bg-white rounded-4 shadow-sm border">
+                    <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                    <h4>No Books Available Yet</h4>
+                    <p class="text-secondary">Books added from the admin dashboard will automatically appear here.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Full Library Access Banner -->
+        <div class="library-banner-card text-center">
+            <h3 class="fw-bold mb-2">Unlock Full Digital Book Library</h3>
+            <p class="text-slate-300 mb-4 max-w-xl mx-auto" style="color: #cbd5e1; font-size: 1.05rem;">
+                Get complete access to read all AI Books, practical workbooks, and downloadable resources with your institution or student login.
+            </p>
+            {% if featured_books.first %}
+            <a href="/book-reader/{{ featured_books.first.slug }}/" class="btn-library-access">
+                <i class="fas fa-book-reader"></i> READ ALL BOOKS NOW
+            </a>
+            {% else %}
+            <a href="#featured-books-section" class="btn-library-access">
+                <i class="fas fa-book-reader"></i> ACCESS LIBRARY
+            </a>
+            {% endif %}
+        </div>
+    </div>
 </section>
 
-<section class="home-service">
-<div class="pattern-overlay"></div>
-<div class="container">
-<div class="service-wrapper">
-<div class="pattern-circle overlay"></div>
-<div class="service-content">
-<div class="section-head">
-<div class="title-divider"></div>
-<h2>Browse By Format</h2>
-<div class="service-btn">
-<a class="button-round-primary" href="/checkout/">GET FULL LIBRARY ACCESS</a>
-</div>
-</div>
-<div class="course-type">
-<div class="course-icon">
-<i aria-hidden="true" class="fas fa-book-open"></i>
-</div>
-<h4 class="course-title">
-<a href="/page/ai-books/">
-                                        Beginner Guides
-                                    </a>
-</h4>
-<p class="course-durations">No coding needed</p>
-</div>
-<div class="course-type">
-<div class="course-icon">
-<i aria-hidden="true" class="fas fa-laptop-code"></i>
-</div>
-<h4 class="course-title">
-<a href="/page/ai-books/">
-                                        Project Workbooks
-                                    </a>
-</h4>
-<p class="course-durations">Step-by-step builds</p>
-</div>
-<div class="course-type">
-<div class="course-icon">
-<i aria-hidden="true" class="fas fa-briefcase"></i>
-</div>
-<h4 class="course-title">
-<a href="/page/ai-books/">
-                                        Career &amp; Case Studies
-                                    </a>
-</h4>
-<p class="course-durations">Interview-ready</p>
-</div>
-</div>
-<div class="service-content">
-<div class="course-type">
-<div class="course-icon">
-<i aria-hidden="true" class="fas fa-robot"></i>
-</div>
-<h4 class="course-title">
-<a href="/page/ai-lab/">
-                                        AI &amp; Machine Learning
-                                    </a>
-</h4>
-<p class="course-durations">Core concepts</p>
-</div>
-<div class="course-type">
-<div class="course-icon">
-<i aria-hidden="true" class="fas fa-chart-line"></i>
-</div>
-<h4 class="course-title">
-<a href="/page/skill-development/">
-                                        Data Science
-                                    </a>
-</h4>
-<p class="course-durations">Applied practice</p>
-</div>
-<div class="course-form">
-<h3>Get A Free Sample Chapter</h3>
-<div class="course-field">
-<div class="row">
-<div class="col-sm-6">
-<input name="name" placeholder="Your Name.." type="text"/>
-</div>
-<div class="col-sm-6">
-<input name="name" placeholder="Your Email.." type="email"/>
-</div>
-<div class="col-sm-7">
-<input name="name" placeholder="Which Book Interests You.." type="text"/>
-</div>
-<div class="col-sm-5">
-<button class="button-round-secondary" type="submit">SEND SAMPLE</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
+<!-- Coming Soon Section -->
+{% if coming_soon_books %}
+<section class="py-5 bg-white">
+    <div class="container py-3">
+        <div class="section-heading-block">
+            <h2 class="section-title-gradient">Upcoming AI Books</h2>
+            <p class="section-desc-muted">New titles in the pipeline — get ready for upcoming practical releases.</p>
+        </div>
 
-<section class="home-feature-section">
-<div class="container">
-<div class="row">
-<div class="col-lg-6 offset-lg-3">
-<div class="title-divider"></div>
-<h2 class="feature-section-title text-center">Browse By Level</h2>
-<p class="feature-section-info text-center">
-                                Start wherever you are — every book builds on the last, so you can follow the whole path or jump straight to what you need.
-                            </p>
-</div>
-</div>
-<div class="feature-wrapper">
-<div class="feature-type">
-<div class="feature-icon">
-<h5 class="meta-no">1</h5>
-<i aria-hidden="true" class="fas fa-book"></i>
-</div>
-<h4 class="feature-heading">Beginner Guides</h4>
-<p class="feature-info">Plain-language introductions to AI and machine learning — no coding background assumed.</p>
-<a class="right-arrow-link" href="/page/ai-lab/">
-<i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
-</a>
-</div>
-<div class="feature-type">
-<div class="feature-icon">
-<h5 class="meta-no">2</h5>
-<i aria-hidden="true" class="fas fa-certificate"></i>
-</div>
-<h4 class="feature-heading">Project Workbooks</h4>
-<p class="feature-info">Step-by-step builds — chatbots, prediction models, data dashboards — with code you can follow along with.</p>
-<a class="right-arrow-link" href="/page/skill-development/">
-<i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
-</a>
-</div>
-<div class="feature-type">
-<div class="feature-icon">
-<h5 class="meta-no">3</h5>
-<i aria-hidden="true" class="fas fa-laptop-code"></i>
-</div>
-<h4 class="feature-heading">Career &amp; Case Studies</h4>
-<p class="feature-info">Industry case studies and interview prep for professionals moving into AI-focused roles.</p>
-<a class="right-arrow-link" href="/checkout/">
-<i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
-</a>
-</div>
-</div>
-</div>
+        <div class="row g-4">
+            {% for course in coming_soon_books %}
+            <div class="col-md-6 col-lg-4">
+                <div class="book-card-item">
+                    <div class="book-cover-wrap">
+                        {% if course.thumbnail %}
+                        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="book-cover-img">
+                        {% else %}
+                        <img src="{% static 'assets/img/educator-img30.jpg' %}" alt="{{ course.title }}" class="book-cover-img">
+                        {% endif %}
+                        <span class="book-category-badge" style="background: #64748b;">Coming Soon</span>
+                    </div>
+                    <div class="book-card-body">
+                        <h3 class="book-title">{{ course.title }}</h3>
+                        <div class="book-author-text">By {{ course.author|default:"EduAiQ Editorial Team" }}</div>
+                        <div class="mt-auto">
+                            <span class="badge bg-light text-dark border p-2 w-100 text-center fw-semibold">
+                                <i class="fas fa-clock me-1"></i> Releasing Soon
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </section>
+{% endif %}
 
-<section class="home-course-section">
-<div class="container">
-<div class="overlay-wrapper">
-<div class="row">
-<div class="col-lg-6 offset-lg-3">
-<div class="title-divider"></div>
-<h2 class="section-title">Most Downloaded AI Books</h2>
-<p class="course-section-info">A few reader favorites to start with, across every level.</p>
-</div>
-</div>
-<div class="inner-course-wrap">
-<div class="row d-flex justify-content-center justify-content-xl-start">
-<div class="col-sm-6 col-lg-4 pe-3 ps-3 pt-4 pt-lg-0 inner-course">
-<article class="post">
-<figure class="feature-image">
-<img alt="AI for Absolute Beginners e-book cover" src="{% static 'assets/img/educator-img30.jpg' %}"/>
-<span class="cat-meta">
-<a href="/page/ai-books/">Beginner</a>
-</span>
-</figure>
-<div class="entry-content">
-<h4>
-<a href="/page/ai-books/">AI For Absolute Beginners</a>
-</h4>
-<div class="rating-content">
-<span class="rating-info">(4.6 ratings)</span>
-<div class="rating-start-wrap">
-<div class="rating-start">
-<span style="width: 90%"></span>
-</div>
-</div>
-</div>
-<div class="entry-meta">
-<span class="student-number">
-<i aria-hidden="true" class="fas fa-download"></i>
-                                                    2,400+ downloads
-                                                </span>
-<a href="/page/ai-books/">
-                                                    READ MORE
-                                                    <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
-</a>
-</div>
-</div>
-</article>
-</div>
-<div class="col-sm-6 col-lg-4 pe-3 ps-3 pt-4 pt-lg-0 inner-course">
-<article class="post">
-<figure class="feature-image">
-<img alt="Build Your First Chatbot e-book cover" src="{% static 'assets/img/educator-img29.jpg' %}"/>
-<span class="cat-meta">
-<a href="/page/ai-books/">Project</a>
-</span>
-</figure>
-<div class="entry-content">
-<h4>
-<a href="/page/ai-books/">Build Your First Chatbot</a>
-</h4>
-<div class="rating-content">
-<span class="rating-info">(4.8 ratings)</span>
-<div class="rating-start-wrap">
-<div class="rating-start">
-<span style="width: 95%"></span>
-</div>
-</div>
-</div>
-<div class="entry-meta">
-<span class="student-number">
-<i aria-hidden="true" class="fas fa-download"></i>
-                                                    1,900+ downloads
-                                                </span>
-<a href="/page/ai-books/">
-                                                    READ MORE
-                                                    <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
-</a>
-</div>
-</div>
-</article>
-</div>
-<div class="col-sm-6 col-lg-4 pe-3 ps-3 pt-4 pt-lg-0 inner-course">
-<article class="post">
-<figure class="feature-image">
-<img alt="AI Careers Playbook e-book cover" src="{% static 'assets/img/educator-img31.jpg' %}"/>
-<span class="cat-meta">
-<a href="/page/ai-books/">Career</a>
-</span>
-</figure>
-<div class="entry-content">
-<h4>
-<a href="/page/ai-books/">The AI Careers Playbook</a>
-</h4>
-<div class="rating-content">
-<span class="rating-info">(4.5 ratings)</span>
-<div class="rating-start-wrap">
-<div class="rating-start">
-<span style="width: 88%"></span>
-</div>
-</div>
-</div>
-<div class="entry-meta">
-<span class="student-number">
-<i aria-hidden="true" class="fas fa-download"></i>
-                                                    1,500+ downloads
-                                                </span>
-<a href="/page/ai-books/">
-                                                    READ MORE
-                                                    <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
-</a>
-</div>
-</div>
-</article>
-</div>
-</div>
-</div>
-<div class="course-bhn">
-<a class="button-round-primary" href="/checkout/">GET FULL LIBRARY ACCESS</a>
-</div>
-<div class="overlay overlay-circle"></div>
-<div class="pattern-overlay"></div>
-</div>
-</div>
-</section>
-
-<section class="home-fact-section">
-<div class="overlay"></div>
-<div class="container">
-<div class="row align-items-center">
-<div class="col-lg-7">
-<div class="fact-section-head">
-<div class="title-divider"></div>
-<h2 class="fact-section-title">Get The Full AI Books Library</h2>
-<p class="fact-section-info">
-                                    One subscription unlocks every current and upcoming title — beginner guides, project workbooks, and career case studies — all with downloadable PDFs.
-                                </p>
-<div class="fact-list">
-<ul>
-<li>New titles added regularly at no extra cost.</li>
-<li>Companion exercises available in the AI Lab.</li>
-<li>Institution licensing available for classroom sets.</li>
-</ul>
-</div>
-<div class="service-btn">
-<a class="button-round-secondary" href="https://rzp.io/rzp/azhKQ22i">REGISTER TO JOIN US</a>
-</div>
-</div>
-</div>
-<div class="col-lg-5">
-<figure class="figure-round-border">
-<img alt="Stack of EduAiQ AI Books" src="{% static 'assets/img/educator-img14.jpg' %}"/>
-</figure>
-</div>
-</div>
-</div>
+<!-- Full Library Feature Section -->
+<section class="py-5" style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); color: #ffffff;">
+    <div class="container py-4">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <h2 class="fw-bold text-white mb-3" style="font-size: 2.2rem;">Get The Full AI Books Library</h2>
+                <p style="color: #cbd5e1; font-size: 1.1rem; line-height: 1.7;" class="mb-4">
+                    Every book unlocks complete interactive reading in browser with instant page navigation, dark/sepia reading themes, chapter outlines, and companion exercises.
+                </p>
+                <div class="mb-4">
+                    <div class="d-flex align-items-center mb-3" style="color: #e2e8f0; font-size: 1.05rem;">
+                        <i class="fas fa-check-circle text-purple-400 me-3" style="color: #c084fc; font-size: 1.25rem;"></i>
+                        <span>High-quality interactive PDF.js online book reader</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3" style="color: #e2e8f0; font-size: 1.05rem;">
+                        <i class="fas fa-check-circle text-purple-400 me-3" style="color: #c084fc; font-size: 1.25rem;"></i>
+                        <span>Reading themes: Light, Sepia & Dark Night reading modes</span>
+                    </div>
+                    <div class="d-flex align-items-center" style="color: #e2e8f0; font-size: 1.05rem;">
+                        <i class="fas fa-check-circle text-purple-400 me-3" style="color: #c084fc; font-size: 1.25rem;"></i>
+                        <span>Institution licensing for classroom and student sets</span>
+                    </div>
+                </div>
+                <div>
+                    <a class="btn-library-access" href="https://rzp.io/rzp/azhKQ22i" target="_blank">
+                        REGISTER FOR LIBRARY ACCESS
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center">
+                <img src="{% static 'assets/img/educator-img14.jpg' %}" alt="EduAiQ AI Books Stack" class="img-fluid rounded-4 shadow-lg border border-slate-700" style="max-height: 380px; object-fit: cover;">
+            </div>
+        </div>
+    </div>
 </section>
 {% endblock %}

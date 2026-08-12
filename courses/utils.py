@@ -20,51 +20,57 @@ def get_user_institution(user):
     return inst
 
 
-def get_allowed_courses_for_user(user):
+def get_allowed_courses_for_user(user, exclude_books=True):
     """
     Returns QuerySet of Course objects for the given user:
-    - Guests (Logged-out users): All published courses (for public catalog display).
-    - Superusers/Global Admins: All published courses.
+    - Guests (Logged-out users): All published courses (excluding books by default).
+    - Superusers/Global Admins: All published courses (excluding books by default).
     - Authenticated users with an Institution (Institution Admins & Students): Only courses assigned to that institution directly or via category.
     - Authenticated users without an Institution: None (Course.objects.none()).
     """
     if not user or not user.is_authenticated:
-        return Course.objects.filter(status='published')
+        qs = Course.objects.filter(status='published')
+        return qs.exclude(category__slug='ai-books') if exclude_books else qs
 
     if user.is_superuser or getattr(user, 'role', '') == 'admin':
-        return Course.objects.filter(status='published')
+        qs = Course.objects.filter(status='published')
+        return qs.exclude(category__slug='ai-books') if exclude_books else qs
 
     inst = get_user_institution(user)
     if inst:
         allowed_course_ids = inst.allowed_courses.values_list('id', flat=True)
         allowed_category_ids = inst.allowed_categories.values_list('id', flat=True)
 
-        return Course.objects.filter(
+        qs = Course.objects.filter(
             models.Q(id__in=allowed_course_ids) |
             models.Q(category_id__in=allowed_category_ids),
             status='published'
         ).distinct()
+        return qs.exclude(category__slug='ai-books') if exclude_books else qs
 
     return Course.objects.none()
 
 
-def get_allowed_categories_for_user(user):
+def get_allowed_categories_for_user(user, exclude_books=True):
     """
     Returns QuerySet of CourseCategory objects for the given user:
-    - Guests: All active categories.
-    - Superusers/Global Admins: All active categories.
-    - Authenticated users with an Institution: Only categories assigned to that institution.
+    - Guests: All active categories (excluding 'ai-books' by default).
+    - Superusers/Global Admins: All active categories (excluding 'ai-books' by default).
+    - Authenticated users with an Institution: Only categories assigned to that institution (excluding 'ai-books' by default).
     """
     if not user or not user.is_authenticated:
-        return CourseCategory.objects.filter(is_active=True).order_by('order', 'id')
+        qs = CourseCategory.objects.filter(is_active=True).order_by('order', 'id')
+        return qs.exclude(slug='ai-books') if exclude_books else qs
 
     if user.is_superuser or getattr(user, 'role', '') == 'admin':
-        return CourseCategory.objects.filter(is_active=True).order_by('order', 'id')
+        qs = CourseCategory.objects.filter(is_active=True).order_by('order', 'id')
+        return qs.exclude(slug='ai-books') if exclude_books else qs
 
     inst = get_user_institution(user)
     if inst:
         allowed_category_ids = inst.allowed_categories.values_list('id', flat=True)
-        return CourseCategory.objects.filter(id__in=allowed_category_ids, is_active=True).order_by('order', 'id')
+        qs = CourseCategory.objects.filter(id__in=allowed_category_ids, is_active=True).order_by('order', 'id')
+        return qs.exclude(slug='ai-books') if exclude_books else qs
 
     return CourseCategory.objects.none()
 
