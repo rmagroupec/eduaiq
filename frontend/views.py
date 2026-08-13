@@ -1158,7 +1158,7 @@ def olympiad_entrance_result(request, pk):
     else:
         award_title = "Certificate of Participation"
         medal_badge = "📜 Participant"
-        medal_class = "badge bg-info text-dark fs-6"
+        medal_class = "badge bg-warning text-dark fs-6"
 
     # Detailed Question Review Breakdown
     review_questions = []

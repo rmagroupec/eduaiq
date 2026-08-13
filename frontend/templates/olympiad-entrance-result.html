@@ -8,40 +8,27 @@
     /* Main Hero Card */
     .result-hero-card {
         border: 1px solid rgba(226, 232, 240, 0.9);
-        border-radius: 1.75rem;
+        border-radius: 1.25rem;
         overflow: hidden;
-        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.12), 0 10px 15px -3px rgba(0, 0, 0, 0.04);
+        box-shadow: 0 15px 35px -8px rgba(15, 23, 42, 0.08);
         background: #ffffff;
         transition: box-shadow 0.4s ease, transform 0.4s ease;
     }
 
     .result-hero-card:hover {
-        box-shadow: 0 35px 65px -15px rgba(15, 23, 42, 0.16);
+        box-shadow: 0 25px 50px -10px rgba(249, 115, 22, 0.15);
     }
     
-    /* Dynamic Headers */
-    .result-header-passed {
-        background: linear-gradient(135deg, #059669 0%, #10b981 50%, #047857 100%);
-        color: #ffffff;
-        position: relative;
-        padding: 2.25rem 1.5rem 1.75rem 1.5rem;
-        overflow: hidden;
-    }
-    
-    .result-header-completed {
-        background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 50%, #1e40af 100%);
-        color: #ffffff;
-        position: relative;
-        padding: 2.25rem 1.5rem 1.75rem 1.5rem;
-        overflow: hidden;
-    }
-
+    /* Dynamic Headers - EduAiQ Single Cohesive Tone Header */
+    .result-header-passed,
+    .result-header-completed,
     .result-header-locked {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        background: linear-gradient(135deg, #0b0f19 0%, #0f172a 50%, #1e293b 100%);
         color: #ffffff;
         position: relative;
-        padding: 2.25rem 1.5rem 1.75rem 1.5rem;
+        padding: 1.25rem 1.25rem 1rem 1.25rem;
         overflow: hidden;
+        border-top: 3px solid #ea580c;
     }
 
     .result-header-passed::before,
@@ -53,32 +40,30 @@
         left: -20%;
         width: 140%;
         height: 200%;
-        background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0) 65%);
+        background: radial-gradient(circle at 50% 30%, rgba(249, 115, 22, 0.12) 0%, rgba(255, 255, 255, 0) 65%);
         pointer-events: none;
     }
 
-    /* Animated Glassmorphic Trophy/Badge Glow */
+    /* Compact Animated Glassmorphic Trophy/Badge Glow */
     .trophy-glow {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 72px;
-        height: 72px;
+        width: 54px;
+        height: 54px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.22);
+        background: linear-gradient(135deg, rgba(249, 115, 22, 0.25), rgba(234, 88, 12, 0.15));
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18), inset 0 0 12px rgba(255, 255, 255, 0.35);
-        margin-bottom: 0.75rem;
-        border: 2px solid rgba(255, 255, 255, 0.4);
-        animation: pulseGlow 3s infinite ease-in-out;
-        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+        margin-bottom: 0.35rem;
+        border: 1.5px solid rgba(249, 115, 22, 0.4);
+        transition: transform 0.4s ease;
         cursor: pointer;
     }
 
     .trophy-glow:hover {
-        transform: scale(1.12) rotate(6deg);
-        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25), inset 0 0 20px rgba(255, 255, 255, 0.5);
+        transform: scale(1.1) rotate(6deg);
     }
 
     .trophy-glow i {
@@ -86,154 +71,138 @@
     }
 
     .trophy-glow:hover i {
-        transform: scale(1.12);
-    }
-
-    @keyframes pulseGlow {
-        0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
-        50% { transform: scale(1.05); box-shadow: 0 0 0 14px rgba(255, 255, 255, 0); }
+        transform: scale(1.1);
     }
 
     .submission-time-badge {
         display: inline-flex;
         align-items: center;
-        background: rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.15);
         backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        padding: 0.35rem 1.15rem;
+        padding: 0.25rem 0.85rem;
         border-radius: 50rem;
-        border: 1px solid rgba(255, 255, 255, 0.28);
-        font-size: 0.85rem;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        font-size: 0.78rem;
         color: rgba(255, 255, 255, 0.95);
         transition: all 0.3s ease;
     }
 
     .submission-time-badge:hover {
-        background: rgba(255, 255, 255, 0.28);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-1px);
     }
 
-    /* Stat Cards with Custom Gradients & Dynamic Hover */
+    /* Stat Cards - Compact Height & EduAiQ Styling */
     .stat-box {
-        border-radius: 1.25rem;
-        padding: 1.75rem 1.25rem;
-        transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        border-radius: 1rem;
+        padding: 0.9rem 0.85rem;
+        transition: all 0.35s ease;
         position: relative;
         overflow: hidden;
     }
 
     .stat-box-score {
-        background: linear-gradient(145deg, #ffffff 0%, #f0f7ff 100%);
-        border: 1.5px solid #dbeafe;
+        background: #fff7ed;
+        border: 1.5px solid #ffedd5;
     }
 
     .stat-box-pct {
-        background: linear-gradient(145deg, #ffffff 0%, #ecfdf5 100%);
+        background: #ecfdf5;
         border: 1.5px solid #a7f3d0;
     }
 
     .stat-box-status {
-        background: linear-gradient(145deg, #ffffff 0%, #f5f3ff 100%);
-        border: 1.5px solid #ddd6fe;
+        background: #faf5ff;
+        border: 1.5px solid #e9d5ff;
     }
 
     .stat-box:hover {
-        transform: translateY(-8px) scale(1.02);
+        transform: translateY(-4px);
     }
 
     .stat-box-score:hover {
-        box-shadow: 0 20px 35px -10px rgba(37, 99, 235, 0.2);
-        border-color: #93c5fd;
+        box-shadow: 0 15px 30px -8px rgba(249, 115, 22, 0.2);
+        border-color: #fdba74;
     }
 
     .stat-box-pct:hover {
-        box-shadow: 0 20px 35px -10px rgba(16, 185, 129, 0.2);
+        box-shadow: 0 15px 30px -8px rgba(16, 185, 129, 0.2);
         border-color: #6ee7b7;
     }
 
     .stat-box-status:hover {
-        box-shadow: 0 20px 35px -10px rgba(124, 58, 237, 0.18);
-        border-color: #c4b5fd;
+        box-shadow: 0 15px 30px -8px rgba(147, 51, 234, 0.18);
+        border-color: #c084fc;
     }
 
     .stat-icon-wrap {
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
         border-radius: 50%;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        margin-right: 0.5rem;
-        font-size: 0.875rem;
+        margin-right: 0.35rem;
+        font-size: 0.8rem;
         transition: transform 0.3s ease;
     }
 
     .stat-box:hover .stat-icon-wrap {
-        transform: scale(1.2) rotate(-8deg);
+        transform: scale(1.15) rotate(-6deg);
     }
 
-    .stat-icon-score { background: #dbeafe; color: #2563eb; }
+    .stat-icon-score { background: #ffedd5; color: #ea580c; }
     .stat-icon-pct { background: #d1fae5; color: #059669; }
-    .stat-icon-status { background: #ede9fe; color: #7c3aed; }
+    .stat-icon-status { background: #f3e8ff; color: #9333ea; }
 
     .stat-label {
-        font-size: 0.825rem;
+        font-size: 0.75rem;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.05em;
         color: #64748b;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.35rem;
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
     .stat-val-score {
-        font-size: 2.6rem;
+        font-size: 1.85rem;
         font-weight: 800;
-        color: #1d4ed8;
+        color: #ea580c;
         line-height: 1.1;
-        letter-spacing: -0.02em;
     }
 
     .stat-val-pct {
-        font-size: 2.6rem;
+        font-size: 1.85rem;
         font-weight: 800;
         color: #059669;
         line-height: 1.1;
-        letter-spacing: -0.02em;
     }
 
     /* Dynamic Status Badge */
     .status-badge-passed {
         background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
         color: #047857;
-        font-size: 1.1rem;
+        font-size: 0.88rem;
         font-weight: 800;
-        padding: 0.6rem 1.6rem;
+        padding: 0.4rem 1.25rem;
         border-radius: 50rem;
         display: inline-flex;
         align-items: center;
         border: 1.5px solid #34d399;
-        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
-        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
         letter-spacing: 0.04em;
     }
 
-    .status-badge-passed:hover {
-        transform: scale(1.06);
-        box-shadow: 0 8px 22px rgba(16, 185, 129, 0.35);
-        background: linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 100%);
-    }
-
     .pulse-dot {
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
         background-color: #059669;
         display: inline-block;
-        margin-right: 8px;
+        margin-right: 6px;
         box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.7);
         animation: blinkDot 1.6s infinite;
     }
@@ -248,150 +217,436 @@
     .accuracy-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
-        border-left: 5px solid #10b981;
-        border-radius: 1.25rem;
-        padding: 1.5rem;
+        border-left: 4px solid #f97316;
+        border-radius: 1rem;
+        padding: 0.95rem 1.15rem;
         transition: all 0.3s ease;
     }
 
     .accuracy-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 24px -6px rgba(16, 185, 129, 0.15);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px -5px rgba(249, 115, 22, 0.15);
         border-color: #cbd5e1;
-        border-left-color: #059669;
     }
 
     .custom-progress-bar {
-        height: 12px;
+        height: 10px;
         border-radius: 50rem;
         background-color: #f1f5f9;
         overflow: hidden;
         position: relative;
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
     }
 
     .custom-progress-fill {
         height: 100%;
         border-radius: 50rem;
-        background: linear-gradient(90deg, #10b981 0%, #059669 50%, #047857 100%);
+        background: linear-gradient(90deg, #f97316 0%, #ea580c 100%);
         position: relative;
         transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .custom-progress-fill::after {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
-        animation: shimmerFill 2.5s infinite;
-    }
-
-    @keyframes shimmerFill {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100%); }
-    }
-
     /* Enhanced Note Card */
     .note-card {
-        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-        border: 1px solid #bae6fd;
-        border-left: 5px solid #0284c7;
-        border-radius: 1.25rem;
-        padding: 1.5rem;
+        background: #fff7ed;
+        border: 1px solid #ffedd5;
+        border-left: 4px solid #ea580c;
+        border-radius: 1rem;
+        padding: 0.95rem 1.15rem;
         transition: all 0.3s ease;
     }
 
     .note-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 24px -6px rgba(2, 132, 199, 0.15);
-        border-left-color: #0369a1;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px -5px rgba(234, 88, 12, 0.15);
     }
 
     .note-card .info-icon {
+        color: #ea580c;
         transition: transform 0.3s ease;
     }
 
-    .note-card:hover .info-icon {
-        transform: scale(1.15) rotate(10deg);
-    }
-
-    /* Action Buttons with Spring & Hover Slide Effects */
-    .btn-action-primary {
-        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    /* Uniform Action Buttons Design & Height */
+    .btn-result-action-primary {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
         color: #ffffff !important;
         border: none;
         border-radius: 50rem;
-        padding: 0.95rem 2.25rem;
+        padding: 0.65rem 1.5rem;
+        font-size: 0.88rem;
         font-weight: 700;
-        box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
-        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35);
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        position: relative;
-        overflow: hidden;
+        height: 44px;
     }
 
-    .btn-action-primary i {
-        transition: transform 0.3s ease;
-    }
-
-    .btn-action-primary:hover {
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 16px 32px -5px rgba(37, 99, 235, 0.55);
+    .btn-result-action-primary:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 10px 24px rgba(234, 88, 12, 0.5);
         color: #ffffff !important;
     }
 
-    .btn-action-primary:hover i.fa-arrow-right {
-        transform: translateX(6px);
-    }
-
-    .btn-action-outline {
+    .btn-result-action-secondary {
         background: #ffffff;
-        color: #2563eb !important;
-        border: 2px solid #2563eb;
+        color: #334155 !important;
+        border: 1.5px solid #cbd5e1;
         border-radius: 50rem;
-        padding: 0.95rem 2.25rem;
+        padding: 0.65rem 1.5rem;
+        font-size: 0.88rem;
         font-weight: 700;
-        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        height: 44px;
     }
 
-    .btn-action-outline i {
+    .btn-result-action-secondary:hover {
+        background: #fff7ed;
+        border-color: #ea580c;
+        color: #ea580c !important;
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 6px 16px rgba(249, 115, 22, 0.18);
+    }
+
+    .btn-result-action-outline-orange {
+        background: #ffffff;
+        color: #ea580c !important;
+        border: 1.5px solid #ea580c;
+        border-radius: 50rem;
+        padding: 0.65rem 1.5rem;
+        font-size: 0.88rem;
+        font-weight: 700;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 44px;
+    }
+
+    .btn-result-action-outline-orange:hover {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        color: #ffffff !important;
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 8px 20px rgba(234, 88, 12, 0.4);
+    }
+
+    .btn-result-action-primary i,
+    .btn-result-action-secondary i,
+    .btn-result-action-outline-orange i {
         transition: transform 0.3s ease;
     }
 
-    .btn-action-outline:hover {
-        background: #eff6ff;
-        border-color: #1d4ed8;
-        color: #1d4ed8 !important;
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.2);
+    .btn-result-action-primary:hover i,
+    .btn-result-action-outline-orange:hover i {
+        transform: translateX(4px);
     }
 
-    .btn-action-outline:hover i.fa-list,
-    .btn-action-outline:hover i.fa-arrow-left {
-        transform: translateX(-5px);
+    .btn-result-action-secondary:hover i {
+        transform: translateX(-4px);
     }
 </style>
 
-<section class="inner-banner-wrap">
-    <div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
-        <div class="container">
-            <div class="inner-banner-content">
-                <span class="badge bg-warning text-dark px-3 py-1 rounded-pill text-uppercase fw-bold mb-2">{{ exam.level }}</span>
-                <h1 class="inner-title">Entrance Exam Scorecard</h1>
-                <p class="text-white opacity-75 mt-2 fs-5">{{ exam.name }} | Roll No: {{ registration.roll_number }}</p>
-            </div>
-        </div>
-    </div>
-</section>
+<style>
+    /* Main Hero Card */
+    .result-hero-card {
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-radius: 1.15rem;
+        overflow: hidden;
+        box-shadow: 0 12px 30px -8px rgba(15, 23, 42, 0.08);
+        background: #ffffff;
+        transition: box-shadow 0.4s ease;
+    }
 
-<section class="py-5" style="background: radial-gradient(circle at 50% 0%, #f1f5f9 0%, #f8fafc 100%);">
+    .result-hero-card:hover {
+        box-shadow: 0 20px 40px -10px rgba(249, 115, 22, 0.15);
+    }
+    
+    /* Dynamic Headers - Ultra Compact Single Tone Header */
+    .result-header-passed,
+    .result-header-completed,
+    .result-header-locked {
+        background: linear-gradient(135deg, #0b0f19 0%, #0f172a 50%, #1e293b 100%);
+        color: #ffffff;
+        position: relative;
+        padding: 0.85rem 1.25rem;
+        overflow: hidden;
+        border-top: 3px solid #ea580c;
+    }
+
+    .result-header-passed::before,
+    .result-header-completed::before,
+    .result-header-locked::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -20%;
+        width: 140%;
+        height: 200%;
+        background: radial-gradient(circle at 50% 30%, rgba(249, 115, 22, 0.12) 0%, rgba(255, 255, 255, 0) 65%);
+        pointer-events: none;
+    }
+
+    /* Compact Trophy Icon Glow */
+    .trophy-glow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(249, 115, 22, 0.25), rgba(234, 88, 12, 0.15));
+        backdrop-filter: blur(12px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border: 1.5px solid rgba(249, 115, 22, 0.4);
+        flex-shrink: 0;
+    }
+
+    .submission-time-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(8px);
+        padding: 0.2rem 0.75rem;
+        border-radius: 50rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Stat Cards - Ultra Compact Pill Height */
+    .stat-box {
+        border-radius: 0.75rem;
+        padding: 0.35rem 0.6rem;
+        transition: all 0.35s ease;
+        position: relative;
+    }
+
+    .stat-box-score { background: #fff7ed; border: 1.5px solid #ffedd5; }
+    .stat-box-pct { background: #ecfdf5; border: 1.5px solid #a7f3d0; }
+    .stat-box-status { background: #faf5ff; border: 1.5px solid #e9d5ff; }
+
+    .stat-box:hover {
+        transform: translateY(-1px);
+    }
+
+    .stat-icon-wrap {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0.2rem;
+        font-size: 0.68rem;
+    }
+
+    .stat-icon-score { background: #ffedd5; color: #ea580c; }
+    .stat-icon-pct { background: #d1fae5; color: #059669; }
+    .stat-icon-status { background: #f3e8ff; color: #9333ea; }
+
+    .stat-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #64748b;
+        margin-bottom: 0.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stat-val-score {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: #ea580c;
+        line-height: 1;
+    }
+
+    .stat-val-pct {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: #059669;
+        line-height: 1;
+    }
+
+    /* Status Badge */
+    .status-badge-passed {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #047857;
+        font-size: 0.78rem;
+        font-weight: 800;
+        padding: 0.25rem 0.95rem;
+        border-radius: 50rem;
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid #34d399;
+    }
+
+    .pulse-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: #059669;
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    /* Overall Accuracy Box & Progress Bar - Compact Size */
+    .accuracy-card {
+        background: #ffffff;
+        border: 1.5px solid #e2e8f0;
+        border-left: 3.5px solid #f97316;
+        border-radius: 0.75rem;
+        padding: 0.4rem 0.85rem;
+    }
+
+    .custom-progress-bar {
+        height: 6px;
+        border-radius: 50rem;
+        background-color: #f1f5f9;
+        overflow: hidden;
+    }
+
+    .custom-progress-fill {
+        height: 100%;
+        border-radius: 50rem;
+        background: linear-gradient(90deg, #f97316 0%, #ea580c 100%);
+    }
+
+    /* Question & Solution Accordion - EduAiQ Logo Theme, Rounded & Hover Effects */
+    .question-accordion-item {
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 0.85rem !important;
+        overflow: hidden;
+        margin-bottom: 0.6rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    .question-accordion-item:hover {
+        border-color: #ea580c !important;
+        box-shadow: 0 6px 18px rgba(234, 88, 12, 0.12);
+        transform: translateY(-2px);
+    }
+
+    .question-accordion-btn {
+        background: #ffffff !important;
+        color: #1e293b !important;
+        font-weight: 700 !important;
+        padding: 0.65rem 1rem !important;
+        font-size: 0.88rem !important;
+        border: none !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .question-accordion-btn:hover {
+        background: #fff7ed !important;
+        color: #ea580c !important;
+    }
+
+    .question-accordion-btn:not(.collapsed) {
+        background: #fff7ed !important;
+        color: #ea580c !important;
+        box-shadow: none !important;
+        border-bottom: 1.5px solid #ffedd5 !important;
+    }
+
+    .question-accordion-btn::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ea580c'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
+        transition: transform 0.3s ease;
+    }
+
+    .badge-correct {
+        background: #d1fae5;
+        color: #047857;
+        border: 1px solid #6ee7b7;
+        font-weight: 700;
+        border-radius: 50rem;
+        padding: 0.2rem 0.7rem;
+        font-size: 0.75rem;
+    }
+
+    .badge-incorrect {
+        background: #fee2e2;
+        color: #b91c1c;
+        border: 1px solid #fca5a5;
+        font-weight: 700;
+        border-radius: 50rem;
+        padding: 0.2rem 0.7rem;
+        font-size: 0.75rem;
+    }
+
+    /* Action Buttons - Compact & Micro-Animated */
+    .btn-result-action-primary {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        color: #ffffff !important;
+        border: none;
+        border-radius: 50rem;
+        padding: 0.38rem 1.1rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 34px;
+        cursor: pointer;
+    }
+
+    .btn-result-action-primary:hover {
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: 0 8px 20px rgba(234, 88, 12, 0.5);
+        color: #ffffff !important;
+    }
+
+    .btn-result-action-secondary {
+        background: #ffffff;
+        color: #334155 !important;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 50rem;
+        padding: 0.38rem 1.1rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 34px;
+    }
+
+    .btn-result-action-secondary:hover {
+        background: #fff7ed;
+        border-color: #ea580c;
+        color: #ea580c !important;
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: 0 6px 16px rgba(249, 115, 22, 0.18);
+    }
+
+    .btn-result-action-primary i,
+    .btn-result-action-secondary i {
+        transition: transform 0.3s ease;
+    }
+
+    .btn-result-action-primary:hover i {
+        transform: translateX(3px);
+    }
+
+    .btn-result-action-secondary:hover i {
+        transform: translateX(-3px);
+    }
+</style>
+
+<section class="py-3" style="background: radial-gradient(circle at 50% 0%, #f1f5f9 0%, #f8fafc 100%);">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-9 col-xl-8">
@@ -399,29 +654,40 @@
                 {% if is_published %}
                     <!-- PUBLISHED RESULT CARD -->
                     <div class="card result-hero-card">
-                        <div class="text-center {% if attempt.passed %}result-header-passed{% else %}result-header-completed{% endif %}">
-                            <div class="trophy-glow" title="Score Achievement">
-                                <i class="fas {% if attempt.passed %}fa-trophy{% else %}fa-award{% endif %} fa-2x text-white"></i>
+                        <div class="d-flex align-items-center justify-content-between {% if attempt.passed %}result-header-passed{% else %}result-header-completed{% endif %}">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="trophy-glow" title="Score Achievement">
+                                    <i class="fas {% if attempt.passed %}fa-trophy{% else %}fa-award{% endif %} text-white"></i>
+                                </div>
+                                <div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <h3 class="text-white fw-bold mb-0 fs-5">
+                                            {% if attempt.passed %}Qualifying Score Achieved!{% else %}Exam Attempt Submitted{% endif %}
+                                        </h3>
+                                        <span class="badge bg-warning text-dark rounded-pill fs-7">{{ exam.level }}</span>
+                                    </div>
+                                    <div class="text-white-50 small fs-7 mt-0.5">
+                                        {{ exam.name }} &bull; Roll No: <strong>{{ registration.roll_number }}</strong>
+                                    </div>
+                                </div>
                             </div>
-                            <h1 class="text-white fw-bold mb-1 fs-3">
-                                {% if attempt.passed %}Qualifying Score Achieved!{% else %}Exam Attempt Submitted{% endif %}
-                            </h1>
-                            <div class="submission-time-badge mt-1">
-                                <i class="far fa-clock me-2"></i> Submitted on {{ attempt.submitted_at|date:"d M Y, h:i A" }}
+                            
+                            <div class="submission-time-badge d-none d-md-inline-flex">
+                                <i class="far fa-clock me-1.5"></i> {{ attempt.submitted_at|date:"d M Y, h:i A" }}
                             </div>
                         </div>
 
-                        <div class="card-body p-4 p-md-5">
+                        <div class="card-body p-3">
                             
-                            <!-- Stats Grid -->
-                            <div class="row g-4 text-center mb-4">
+                            <!-- Stats Grid - Ultra Compact Height -->
+                            <div class="row g-2 text-center mb-2.5">
                                 <div class="col-md-4">
                                     <div class="stat-box stat-box-score">
                                         <div class="stat-label">
                                             <span class="stat-icon-wrap stat-icon-score"><i class="fas fa-bullseye"></i></span> Obtained Score
                                         </div>
                                         <div class="stat-val-score">
-                                            {{ attempt.raw_score|floatformat:0 }} <span class="fs-4 text-muted fw-normal">/ {{ attempt.total_marks|floatformat:0 }}</span>
+                                            {{ attempt.raw_score|floatformat:0 }} <span class="fs-7 text-muted fw-normal">/ {{ attempt.total_marks|floatformat:0 }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -438,95 +704,66 @@
                                         <div class="stat-label">
                                             <span class="stat-icon-wrap stat-icon-status"><i class="fas fa-check-double"></i></span> Status
                                         </div>
-                                        <div class="mt-1">
+                                        <div class="mt-0.5">
                                             {% if attempt.passed %}
                                                 <div class="status-badge-passed">
                                                     <span class="pulse-dot"></span> PASSED
                                                 </div>
                                             {% else %}
-                                                <span class="badge bg-secondary fs-6 rounded-pill px-4 py-2">COMPLETED</span>
+                                                <span class="badge bg-secondary fs-7 rounded-pill px-2.5 py-0.5 fw-bold">COMPLETED</span>
                                             {% endif %}
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Medal Award Banner -->
-                            <div class="p-3 bg-light rounded-4 border mb-4 text-center shadow-xs">
-                                <span class="{{ medal_class }} me-2 mb-1">{{ medal_badge }}</span>
-                                <h5 class="fw-bold text-dark mt-2 mb-1"><i class="fas fa-award text-warning me-2"></i> {{ award_title }}</h5>
-                                <p class="text-muted small mb-0">Official Merit & Scholarship Band Recognition</p>
-                            </div>
-
-                            <!-- Performance Progress Bar -->
-                            <div class="accuracy-card mb-4">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="fw-bold text-dark"><i class="fas fa-tasks text-primary me-2"></i> Overall Accuracy Score</span>
-                                    <span class="fw-bold text-success fs-5">{{ attempt.score_pct|floatformat:1 }}%</span>
+                            <!-- Overall Accuracy Progress Bar - Compact Size -->
+                            <div class="accuracy-card mb-2.5">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-bold text-dark fs-7"><i class="fas fa-tasks text-warning me-1"></i> Overall Accuracy Score</span>
+                                    <span class="fw-bold text-success fs-7">{{ attempt.score_pct|floatformat:1 }}%</span>
                                 </div>
                                 <div class="custom-progress-bar">
                                     <div class="custom-progress-fill" style="width: {{ attempt.score_pct|floatformat:0 }}%;"></div>
                                 </div>
-                                <div class="d-flex justify-content-between mt-2 text-muted small">
-                                    <span><i class="fas fa-flag-checkered me-1"></i> Passing Threshold: 40%</span>
-                                    <span><i class="fas fa-star me-1 text-warning"></i> Achieved: {{ attempt.raw_score|floatformat:0 }} Marks</span>
-                                </div>
                             </div>
 
-                            <!-- Note Callout -->
-                            <div class="note-card mb-4">
-                                <div class="d-flex align-items-start">
-                                    <div class="info-icon text-info me-3 mt-1">
-                                        <i class="fas fa-info-circle fa-2x"></i>
-                                    </div>
-                                    <div>
-                                        <h6 class="fw-bold text-dark mb-1">Entrance Evaluation & Certificate Note</h6>
-                                        <div class="text-secondary small">
-                                            Your attempt has been officially verified and recorded under Candidate Roll No: <strong>{{ registration.roll_number }}</strong>. Official rank certificates and scholarship bands are auto-verified.
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Action Buttons -->
-                            <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 pt-2">
-                                <a href="{% url 'olympiad_entrance_list' %}" class="btn-action-outline">
-                                    <i class="fas fa-list me-2"></i> Back to Catalog
+                            <!-- Uniform Action Buttons (Syllabus button removed, only 2 buttons) -->
+                            <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-2.5 pt-0.5">
+                                <a href="{% url 'olympiad_entrance_list' %}" class="btn-result-action-secondary">
+                                    <i class="fas fa-list me-1.5"></i> Back to Catalog
                                 </a>
-                                <a href="{% url 'olympiad_entrance_certificate' exam.id %}" class="btn btn-warning rounded-pill px-4 py-2 fw-bold text-dark shadow-sm d-inline-flex align-items-center justify-content-center">
-                                    <i class="fas fa-award me-2"></i> View & Print Certificate
-                                </a>
-                                <a href="{% url 'olympiad_curriculum' %}" class="btn-action-primary">
-                                    Syllabus <i class="fas fa-arrow-right ms-2"></i>
+                                <a href="{% url 'olympiad_entrance_certificate' exam.id %}" class="btn-result-action-primary">
+                                    <i class="fas fa-award me-1.5"></i> View & Print Certificate
                                 </a>
                             </div>
 
-                            <!-- Detailed Question & Solution Analysis Accordion -->
+                            <!-- Detailed Question & Solution Analysis Accordion (EduAiQ Logo Theme, Rounded with Hover Effects) -->
                             {% if review_questions %}
-                                <div class="mt-5 pt-4 border-top text-start">
-                                    <h5 class="fw-bold text-dark mb-3"><i class="fas fa-list-check text-primary me-2"></i> Question & Solution Analysis</h5>
+                                <div class="mt-4 pt-3 border-top text-start">
+                                    <h6 class="fw-bold text-dark mb-2.5"><i class="fas fa-list-check text-warning me-1.5"></i> Question & Solution Analysis</h6>
                                     <div class="accordion" id="questionReviewAccordion">
                                         {% for q in review_questions %}
-                                            <div class="accordion-item border rounded-3 mb-2 overflow-hidden shadow-xs">
+                                            <div class="accordion-item question-accordion-item">
                                                 <h2 class="accordion-header" id="heading{{ forloop.counter }}">
-                                                    <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}">
+                                                    <button class="accordion-button collapsed question-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}">
                                                         {% if q.is_correct %}
-                                                            <span class="badge bg-success me-2">✓ Correct</span>
+                                                            <span class="badge badge-correct me-2">✓ Correct</span>
                                                         {% else %}
-                                                            <span class="badge bg-danger me-2">✗ Incorrect</span>
+                                                            <span class="badge badge-incorrect me-2">✗ Incorrect</span>
                                                         {% endif %}
                                                         Q{{ forloop.counter }}: {{ q.text|truncatechars:60 }}
                                                     </button>
                                                 </h2>
                                                 <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#questionReviewAccordion">
                                                     <div class="accordion-body bg-light">
-                                                        <p class="fw-bold text-dark mb-2">{{ q.text }}</p>
-                                                        <div class="d-flex flex-wrap gap-3 small mb-2">
+                                                        <p class="fw-bold text-dark mb-2 fs-7">{{ q.text }}</p>
+                                                        <div class="d-flex flex-wrap gap-3 fs-7 mb-2">
                                                             <span>Your Answer: <strong class="{% if q.is_correct %}text-success{% else %}text-danger{% endif %}">{{ q.user_ans }}</strong></span>
                                                             <span>Correct Answer: <strong class="text-success">{{ q.correct_ans }}</strong></span>
                                                             <span>Marks: <strong>{{ q.marks }}</strong></span>
                                                         </div>
-                                                        <div class="p-3 bg-white border rounded-3 text-secondary small">
+                                                        <div class="p-2.5 bg-white border rounded-3 text-secondary fs-7">
                                                             <strong><i class="fas fa-lightbulb text-warning me-1"></i> Detailed Solution:</strong><br>
                                                             {{ q.explanation }}
                                                         </div>

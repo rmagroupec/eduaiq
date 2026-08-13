@@ -1,138 +1,126 @@
 {% extends 'admin_panel/base.html' %}
 {% load static %}
 
-{% block title %}Dashboard | EduAiQ Admin Panel{% endblock %}
+{% block title %}Dashboard | EduAiQ Management Dashboard{% endblock %}
 
 {% block description %}EduAiQ Platform Administration Dashboard - Real-time metrics for Institutions, Courses, Students, and Olympiad Exams.{% endblock %}
 
 {% block content %}
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
   <div>
-    <h5 class="fw-bold text-primary-900 mb-1">
-      <i class="ri-dashboard-3-line text-primary-600 me-2"></i>EduAiQ Management Dashboard
+    <h5 class="fw-bold text-dark mb-1">
+      <i class="ri-dashboard-3-line text-warning me-2"></i>EduAiQ Management Dashboard
     </h5>
     <p class="text-neutral-600 text-sm mb-0">Overview of active institutions, courses, user registrations, and entrance examinations.</p>
   </div>
   <div class="d-flex align-items-center gap-2">
-    <span class="badge bg-success-100 text-success-700 px-12 py-8 radius-8 font-weight-bold text-sm">
+    <span class="badge-orange-single px-12 py-8 font-weight-bold text-sm">
       <i class="ri-checkbox-circle-fill me-1"></i> System Active
     </span>
   </div>
 </div>
 
-<!-- STAT CARDS OVERVIEW -->
+<!-- STAT CARDS OVERVIEW (Single-Tone EduAiQ Theme & Micro-Hover Effects) -->
 <div class="row gy-4 mb-24">
   <div class="col-xxl-2 col-xl-4 col-sm-6">
-    <div class="card shadow-1 radius-8 border border-neutral-200 h-100 bg-base">
-      <div class="card-body p-20">
-        <div class="d-flex align-items-center justify-content-between mb-16">
-          <span class="w-44-px h-44-px bg-primary-100 text-primary-600 radius-8 d-flex justify-content-center align-items-center fs-4">
-            <i class="ri-building-line"></i>
-          </span>
-          <span class="text-xs text-primary-600 fw-bold bg-primary-50 px-8 py-4 radius-4">Live</span>
-        </div>
-        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Institutions</span>
-        <h3 class="mb-0 fw-bold text-primary-900">{{ total_institutions|default:0 }}</h3>
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq">
+          <i class="ri-building-line"></i>
+        </span>
+        <span class="badge-orange-single">Live</span>
       </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Institutions</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ total_institutions|default:0 }}</h3>
     </div>
   </div>
 
   <div class="col-xxl-2 col-xl-4 col-sm-6">
-    <div class="card shadow-1 radius-8 border border-neutral-200 h-100 bg-base">
-      <div class="card-body p-20">
-        <div class="d-flex align-items-center justify-content-between mb-16">
-          <span class="w-44-px h-44-px bg-purple-100 text-purple-600 radius-8 d-flex justify-content-center align-items-center fs-4">
-            <i class="ri-book-open-line"></i>
-          </span>
-          <span class="text-xs text-purple-600 fw-bold bg-purple-50 px-8 py-4 radius-4">Live</span>
-        </div>
-        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Courses</span>
-        <h3 class="mb-0 fw-bold text-primary-900">{{ total_courses|default:0 }}</h3>
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq">
+          <i class="ri-book-open-line"></i>
+        </span>
+        <span class="badge-orange-single">Live</span>
       </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Courses</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ total_courses|default:0 }}</h3>
     </div>
   </div>
 
   <div class="col-xxl-2 col-xl-4 col-sm-6">
-    <div class="card shadow-1 radius-8 border border-neutral-200 h-100 bg-base">
-      <div class="card-body p-20">
-        <div class="d-flex align-items-center justify-content-between mb-16">
-          <span class="w-44-px h-44-px bg-success-100 text-success-600 radius-8 d-flex justify-content-center align-items-center fs-4">
-            <i class="ri-graduation-cap-line"></i>
-          </span>
-          <span class="text-xs text-success-600 fw-bold bg-success-50 px-8 py-4 radius-4">Registered</span>
-        </div>
-        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Students</span>
-        <h3 class="mb-0 fw-bold text-primary-900">{{ total_students|default:0 }}</h3>
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq">
+          <i class="ri-graduation-cap-line"></i>
+        </span>
+        <span class="badge-orange-single">Registered</span>
       </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Students</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ total_students|default:0 }}</h3>
     </div>
   </div>
 
   <div class="col-xxl-2 col-xl-4 col-sm-6">
-    <div class="card shadow-1 radius-8 border border-neutral-200 h-100 bg-base">
-      <div class="card-body p-20">
-        <div class="d-flex align-items-center justify-content-between mb-16">
-          <span class="w-44-px h-44-px bg-info-100 text-info-600 radius-8 d-flex justify-content-center align-items-center fs-4">
-            <i class="ri-user-follow-line"></i>
-          </span>
-          <span class="text-xs text-info-600 fw-bold bg-info-50 px-8 py-4 radius-4">Active</span>
-        </div>
-        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Teachers</span>
-        <h3 class="mb-0 fw-bold text-primary-900">{{ total_teachers|default:0 }}</h3>
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq">
+          <i class="ri-user-follow-line"></i>
+        </span>
+        <span class="badge-orange-single">Active</span>
       </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Teachers</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ total_teachers|default:0 }}</h3>
     </div>
   </div>
 
   <div class="col-xxl-2 col-xl-4 col-sm-6">
-    <div class="card shadow-1 radius-8 border border-neutral-200 h-100 bg-base">
-      <div class="card-body p-20">
-        <div class="d-flex align-items-center justify-content-between mb-16">
-          <span class="w-44-px h-44-px bg-warning-100 text-warning-600 radius-8 d-flex justify-content-center align-items-center fs-4">
-            <i class="ri-trophy-line"></i>
-          </span>
-          <span class="text-xs text-warning-600 fw-bold bg-warning-50 px-8 py-4 radius-4">Active</span>
-        </div>
-        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Olympiad Exams</span>
-        <h3 class="mb-0 fw-bold text-primary-900">{{ total_olympiads|default:0 }}</h3>
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq">
+          <i class="ri-trophy-line"></i>
+        </span>
+        <span class="badge-orange-single">Active</span>
       </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Olympiad Exams</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ total_olympiads|default:0 }}</h3>
     </div>
   </div>
 
   <div class="col-xxl-2 col-xl-4 col-sm-6">
-    <div class="card shadow-1 radius-8 border border-neutral-200 h-100 bg-base">
-      <div class="card-body p-20">
-        <div class="d-flex align-items-center justify-content-between mb-16">
-          <span class="w-44-px h-44-px bg-danger-100 text-danger-600 radius-8 d-flex justify-content-center align-items-center fs-4">
-            <i class="ri-award-line"></i>
-          </span>
-          <span class="text-xs text-danger-600 fw-bold bg-danger-50 px-8 py-4 radius-4">Attempts</span>
-        </div>
-        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Exam Attempts</span>
-        <h3 class="mb-0 fw-bold text-primary-900">{{ total_attempts|default:0 }}</h3>
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq">
+          <i class="ri-award-line"></i>
+        </span>
+        <span class="badge-orange-single">Attempts</span>
       </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Exam Attempts</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ total_attempts|default:0 }}</h3>
     </div>
   </div>
 </div>
 
-<!-- QUICK ACTIONS -->
-<div class="card radius-12 border border-neutral-200 p-20 mb-24 bg-base">
-  <h6 class="fw-bold text-primary-900 mb-16">Quick Management Shortcuts</h6>
+<!-- QUICK ACTIONS (Single-Tone EduAiQ Orange Styling & Micro-Hover) -->
+<div class="card radius-12 border border-neutral-200 p-20 mb-24 bg-base shadow-sm">
+  <h6 class="fw-bold text-dark mb-16"><i class="ri-flashlight-line text-warning me-2"></i>Quick Management Shortcuts</h6>
   <div class="d-flex flex-wrap gap-3">
     {% if request.user.role != 'institution' %}
-    <a href="/admin-panel/add-new-institution/" class="btn btn-primary radius-8 font-weight-bold d-flex align-items-center gap-2">
-      <i class="ri-building-line"></i> + Add Institution
+    <a href="/admin-panel/add-new-institution/" class="btn-eduaiq-primary">
+      <i class="ri-building-line me-1.5"></i> + Add Institution
     </a>
-    <a href="/admin-panel/add-new-course/" class="btn btn-outline-primary radius-8 font-weight-bold d-flex align-items-center gap-2">
-      <i class="ri-add-circle-line"></i> + Add New Course
+    <a href="/admin-panel/add-new-course/" class="btn-eduaiq-outline">
+      <i class="ri-add-circle-line me-1.5"></i> + Add New Course
     </a>
-    <a href="/admin-panel/books/add/" class="btn btn-outline-secondary radius-8 font-weight-bold d-flex align-items-center gap-2">
-      <i class="ri-file-pdf-line"></i> + Add AI Book
+    <a href="/admin-panel/books/add/" class="btn-eduaiq-outline">
+      <i class="ri-file-pdf-line me-1.5"></i> + Add AI Book
     </a>
-    <a href="/admin-panel/olympiad-entrance/" class="btn btn-outline-warning radius-8 font-weight-bold d-flex align-items-center gap-2">
-      <i class="ri-trophy-line"></i> Olympiad Entrance
+    <a href="/admin-panel/olympiad-entrance/" class="btn-eduaiq-outline">
+      <i class="ri-trophy-line me-1.5"></i> Olympiad Entrance
     </a>
     {% endif %}
-    <a href="/admin-panel/add-new-student/" class="btn btn-outline-success radius-8 font-weight-bold d-flex align-items-center gap-2">
-      <i class="ri-user-add-line"></i> + Add New Student
+    <a href="/admin-panel/add-new-student/" class="btn-eduaiq-outline">
+      <i class="ri-user-add-line me-1.5"></i> + Add New Student
     </a>
   </div>
 </div>
@@ -142,12 +130,12 @@
   <!-- RECENT INSTITUTIONS -->
   {% if request.user.role != 'institution' %}
   <div class="col-xxl-6 col-lg-12">
-    <div class="card radius-12 border border-neutral-200 h-100 bg-base">
+    <div class="card radius-12 border border-neutral-200 h-100 bg-base shadow-xs">
       <div class="card-header border-bottom border-neutral-200 p-20 d-flex align-items-center justify-content-between">
-        <h6 class="fw-bold mb-0 text-primary-900">
-          <i class="ri-building-4-line me-2 text-primary-600"></i>Recent Institutions
+        <h6 class="fw-bold mb-0 text-dark">
+          <i class="ri-building-4-line me-2 text-warning"></i>Recent Institutions
         </h6>
-        <a href="/admin-panel/institution-list/" class="text-sm font-weight-bold text-primary-600 hover-text-primary-800">
+        <a href="/admin-panel/institution-list/" class="text-sm font-weight-bold" style="color: #ea580c; text-decoration: none;">
           View All <i class="ri-arrow-right-line"></i>
         </a>
       </div>
@@ -165,14 +153,14 @@
             <tbody>
               {% for inst in recent_institutions %}
               <tr>
-                <td class="ps-20 fw-semibold text-primary-900">{{ inst.name }}</td>
+                <td class="ps-20 fw-semibold text-dark">{{ inst.name }}</td>
                 <td><span class="badge bg-neutral-200 text-neutral-800 text-capitalize">{{ inst.get_type_display }}</span></td>
                 <td class="text-secondary-light text-sm">{{ inst.city }}, {{ inst.state }}</td>
                 <td>
                   {% if inst.status == 'active' %}
-                    <span class="badge bg-success-100 text-success-700">Active</span>
+                    <span class="badge-orange-single">Active</span>
                   {% else %}
-                    <span class="badge bg-warning-100 text-warning-700 text-capitalize">{{ inst.status }}</span>
+                    <span class="badge bg-neutral-200 text-neutral-700 text-capitalize">{{ inst.status }}</span>
                   {% endif %}
                 </td>
               </tr>
@@ -191,12 +179,12 @@
 
   <!-- RECENT COURSES -->
   <div class="{% if request.user.role != 'institution' %}col-xxl-6 col-lg-12{% else %}col-12{% endif %}">
-    <div class="card radius-12 border border-neutral-200 h-100 bg-base">
+    <div class="card radius-12 border border-neutral-200 h-100 bg-base shadow-xs">
       <div class="card-header border-bottom border-neutral-200 p-20 d-flex align-items-center justify-content-between">
-        <h6 class="fw-bold mb-0 text-primary-900">
-          <i class="ri-book-3-line me-2 text-purple-600"></i>Recent Courses
+        <h6 class="fw-bold mb-0 text-dark">
+          <i class="ri-book-3-line me-2 text-warning"></i>Recent Courses
         </h6>
-        <a href="/admin-panel/courses/" class="text-sm font-weight-bold text-primary-600 hover-text-primary-800">
+        <a href="/admin-panel/courses/" class="text-sm font-weight-bold" style="color: #ea580c; text-decoration: none;">
           View All <i class="ri-arrow-right-line"></i>
         </a>
       </div>
@@ -213,13 +201,13 @@
             <tbody>
               {% for course in recent_courses %}
               <tr>
-                <td class="ps-20 fw-semibold text-primary-900">{{ course.title }}</td>
+                <td class="ps-20 fw-semibold text-dark">{{ course.title }}</td>
                 <td class="text-secondary-light text-sm">{{ course.category.name|default:"General" }}</td>
                 <td>
                   {% if course.status == 'published' or course.is_live %}
-                    <span class="badge bg-success-100 text-success-700">Published</span>
+                    <span class="badge-orange-single">Published</span>
                   {% else %}
-                    <span class="badge bg-secondary-100 text-secondary-700">Draft</span>
+                    <span class="badge bg-neutral-200 text-neutral-700">Draft</span>
                   {% endif %}
                 </td>
               </tr>
@@ -237,12 +225,12 @@
 
   <!-- RECENT OLYMPIAD ENTRANCE REGISTRATIONS -->
   <div class="col-12">
-    <div class="card radius-12 border border-neutral-200 bg-base">
+    <div class="card radius-12 border border-neutral-200 bg-base shadow-xs">
       <div class="card-header border-bottom border-neutral-200 p-20 d-flex align-items-center justify-content-between">
-        <h6 class="fw-bold mb-0 text-primary-900">
-          <i class="ri-trophy-line me-2 text-warning-600"></i>Recent Olympiad Entrance Registrations
+        <h6 class="fw-bold mb-0 text-dark">
+          <i class="ri-trophy-line me-2 text-warning"></i>Recent Olympiad Entrance Registrations
         </h6>
-        <a href="/admin-panel/olympiad-entrance/" class="text-sm font-weight-bold text-primary-600 hover-text-primary-800">
+        <a href="/admin-panel/olympiad-entrance/" class="text-sm font-weight-bold" style="color: #ea580c; text-decoration: none;">
           Manage Exams <i class="ri-arrow-right-line"></i>
         </a>
       </div>
@@ -260,9 +248,9 @@
             <tbody>
               {% for reg in recent_registrations %}
               <tr>
-                <td class="ps-20 fw-semibold text-primary-900">{{ reg.student.get_full_name|default:reg.student.username }}</td>
+                <td class="ps-20 fw-semibold text-dark">{{ reg.student.get_full_name|default:reg.student.username }}</td>
                 <td class="text-secondary-light text-sm">{{ reg.student.email }}</td>
-                <td class="fw-semibold text-primary-800">{{ reg.olympiad.title }}</td>
+                <td class="fw-semibold text-dark">{{ reg.olympiad.title }}</td>
                 <td class="text-secondary-light text-sm">{{ reg.registered_at|date:"d M Y, h:i A" }}</td>
               </tr>
               {% empty %}

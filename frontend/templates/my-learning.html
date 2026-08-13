@@ -7,37 +7,42 @@
 
 <style>
   .dashboard-hero-wrap {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #2563eb 100%);
+    background: radial-gradient(circle at 88% 50%, rgba(249, 115, 22, 0.22) 0%, rgba(234, 88, 12, 0.06) 40%, rgba(15, 23, 42, 0) 70%), 
+                linear-gradient(135deg, #0b0f19 0%, #0f172a 45%, #1e293b 100%);
     color: #ffffff;
-    padding: 3.5rem 0 3rem 0;
+    padding: 3.25rem 0 2.75rem 0;
     position: relative;
     overflow: hidden;
+    border-top: 3px solid #f97316;
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
   }
 
   .dashboard-hero-wrap::before {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -20%;
-    width: 140%;
-    height: 200%;
-    background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 65%);
+    top: -40%;
+    right: -10%;
+    width: 450px;
+    height: 450px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, rgba(249, 115, 22, 0) 70%);
     pointer-events: none;
+    filter: blur(40px);
   }
 
   .user-avatar-glow {
-    width: 72px;
-    height: 72px;
+    width: 68px;
+    height: 68px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.4);
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.1));
+    backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(249, 115, 22, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.8rem;
-    color: #ffffff;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    font-size: 1.65rem;
+    color: #f97316;
+    box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.3);
   }
 
   .my-learning-section {
@@ -61,7 +66,7 @@
 
   .stat-card-v2:hover {
     transform: translateY(-6px);
-    box-shadow: 0 20px 35px -10px rgba(37, 99, 235, 0.15);
+    box-shadow: 0 20px 35px -10px rgba(249, 115, 22, 0.18);
     border-color: #cbd5e1;
   }
 
@@ -82,7 +87,7 @@
     transform: scale(1.12) rotate(-6deg);
   }
 
-  .icon-blue { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+  .icon-blue { background: linear-gradient(135deg, #f97316, #ea580c); }
   .icon-emerald { background: linear-gradient(135deg, #10b981, #059669); }
   .icon-purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
   .icon-amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
@@ -119,8 +124,8 @@
 
   .exam-card-v2:hover {
     transform: translateY(-8px);
-    box-shadow: 0 25px 45px -10px rgba(37, 99, 235, 0.18);
-    border-color: #93c5fd;
+    box-shadow: 0 25px 45px -10px rgba(249, 115, 22, 0.2);
+    border-color: #fdba74;
   }
 
   .exam-card-v2 .badge {
@@ -130,7 +135,7 @@
     border-radius: 50rem;
   }
 
-  /* Navigation Filter Tabs */
+  /* Navigation Filter Tabs & Learning Pills */
   .filter-tabs {
     border-bottom: 2px solid #e2e8f0;
   }
@@ -147,17 +152,37 @@
   }
 
   .filter-tabs .nav-link:hover {
-    color: #2563eb;
+    color: #ea580c;
   }
 
   .filter-tabs .nav-link.active {
-    color: #2563eb;
-    border-bottom-color: #2563eb;
+    color: #ea580c;
+    border-bottom-color: #ea580c;
     background: transparent;
   }
 
-  /* Course Cards */
-  .enrollment-card {
+  #learningTabs .nav-link {
+    color: #475569;
+    transition: all 0.3s ease;
+  }
+
+  #learningTabs .nav-link:hover:not(.active) {
+    color: #ea580c;
+    background: #fff7ed;
+  }
+
+  #learningTabs .nav-link.active {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 18px rgba(234, 88, 12, 0.35) !important;
+  }
+
+  #learningTabs .nav-link.active i {
+    color: #ffffff !important;
+  }
+
+  /* Course & Exam Cards Logo Color Theme Styling */
+  .enrollment-card, .exam-card-v2 {
     background: #ffffff;
     border-radius: 1.25rem;
     border: 1px solid #e2e8f0;
@@ -169,10 +194,99 @@
     height: 100%;
   }
 
-  .enrollment-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.14);
-    border-color: #cbd5e1;
+  .enrollment-card:hover, .exam-card-v2:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px -10px rgba(249, 115, 22, 0.2) !important;
+    border-color: #fdba74 !important;
+  }
+
+  /* Hero Banner Buttons Hover Effects */
+  .btn-hero-catalog {
+    background: #ffffff;
+    color: #ea580c;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.25);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn-hero-catalog:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 28px rgba(249, 115, 22, 0.45);
+    color: #c2410c;
+    background: #ffffff;
+  }
+
+  .btn-hero-catalog i {
+    transition: transform 0.3s ease;
+  }
+
+  .btn-hero-catalog:hover i {
+    transform: scale(1.2) rotate(10deg);
+  }
+
+  .btn-hero-syllabus {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn-hero-syllabus:hover {
+    transform: translateY(-3px) scale(1.03);
+    background: rgba(249, 115, 22, 0.25);
+    border-color: rgba(249, 115, 22, 0.6);
+    box-shadow: 0 10px 25px rgba(249, 115, 22, 0.35);
+    color: #ffffff;
+  }
+
+  .btn-hero-syllabus i {
+    transition: transform 0.3s ease;
+  }
+
+  .btn-hero-syllabus:hover i {
+    transform: translateY(-2px);
+  }
+
+  /* All Card Buttons Hover Effects */
+  .my-learning-section .btn-primary,
+  .my-learning-section .btn-success,
+  .my-learning-section .btn-warning,
+  .my-learning-section .btn-outline-primary {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35) !important;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  .my-learning-section .btn-primary:hover,
+  .my-learning-section .btn-success:hover,
+  .my-learning-section .btn-warning:hover,
+  .my-learning-section .btn-outline-primary:hover {
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 22px rgba(234, 88, 12, 0.55) !important;
+    transform: translateY(-3px) scale(1.03) !important;
+  }
+
+  .my-learning-section .btn i {
+    transition: transform 0.3s ease;
+  }
+
+  .my-learning-section .btn:hover i {
+    transform: translateX(4px);
+  }
+
+  /* Card Text & Icon Colors */
+  .my-learning-section .text-primary,
+  .my-learning-section .text-success,
+  .my-learning-section .text-warning {
+    color: #ea580c !important;
   }
 
   .enrollment-image {
@@ -232,7 +346,7 @@
 
   .progress-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    background: linear-gradient(90deg, #f97316, #ea580c);
     border-radius: 50rem;
     transition: width 0.4s ease;
   }
@@ -253,9 +367,9 @@
 
   .shortcut-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.15);
-    border-color: #93c5fd;
-    color: #2563eb;
+    box-shadow: 0 15px 30px -5px rgba(249, 115, 22, 0.18);
+    border-color: #fdba74;
+    color: #ea580c;
   }
 </style>
 
@@ -268,18 +382,18 @@
           <i class="fas fa-user-graduate"></i>
         </div>
         <div>
-          <span class="badge bg-warning text-dark px-3 py-1 rounded-pill text-uppercase fw-bold mb-1">Student Portal</span>
-          <h2 class="text-white fw-bold mb-1">Welcome back, {{ request.user.first_name|default:request.user.username }}! 👋</h2>
-          <p class="text-white-50 mb-0 fs-6">Manage your Olympiad Entrance Exams, active courses, and learning achievements.</p>
+          <span class="badge px-3 py-1 rounded-pill text-uppercase fw-bold mb-1 shadow-sm" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #ffffff; font-size: 0.72rem; letter-spacing: 0.06em;">Student Portal</span>
+          <h2 class="text-white fw-bold mb-1" style="font-size: 1.85rem;">Welcome back, {{ request.user.first_name|default:request.user.username }}! 👋</h2>
+          <p class="mb-0 fs-6" style="color: #94a3b8;">Manage your Olympiad Entrance Exams, active courses, and learning achievements.</p>
         </div>
       </div>
 
       <div class="d-flex flex-wrap gap-2 justify-content-center">
-        <a href="/olympiad-entrance/" class="btn btn-light rounded-pill px-4 py-2 fw-bold text-primary shadow-sm">
-          <i class="fas fa-trophy me-2"></i> Entrance Catalog
+        <a href="/olympiad-entrance/" class="btn btn-hero-catalog rounded-pill px-4 py-2.5 fw-bold shadow-sm">
+          <i class="fas fa-trophy me-2 text-warning"></i> Entrance Catalog
         </a>
-        <a href="/olympiad-curriculum/" class="btn btn-outline-light rounded-pill px-4 py-2 fw-bold">
-          <i class="fas fa-file-pdf me-2"></i> Olympiad Syllabus
+        <a href="/olympiad-curriculum/" class="btn btn-hero-syllabus rounded-pill px-4 py-2.5 fw-bold">
+          <i class="fas fa-file-pdf me-2 opacity-75"></i> Olympiad Syllabus
         </a>
       </div>
     </div>

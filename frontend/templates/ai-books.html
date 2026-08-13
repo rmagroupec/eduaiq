@@ -293,6 +293,101 @@
         transform: translateY(-2px);
         box-shadow: 0 12px 28px rgba(247, 56, 89, 0.5);
     }
+
+    /* Access Restricted Modal Styling */
+    .access-icon-wrapper {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 16px auto;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(234, 88, 12, 0.08) 100%);
+        border: 1.5px solid rgba(249, 115, 22, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 20px rgba(249, 115, 22, 0.15);
+        transition: transform 0.3s ease;
+    }
+
+    .access-icon-wrapper i {
+        font-size: 26px;
+        color: #ea580c;
+        margin: 0;
+    }
+
+    .access-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 8px;
+        letter-spacing: -0.4px;
+    }
+
+    .access-desc {
+        font-size: 13.5px;
+        color: #64748b;
+        line-height: 1.55;
+        margin-bottom: 22px;
+        max-width: 380px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .btn-access-login-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #ffffff !important;
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        border: none !important;
+        padding: 10px 22px !important;
+        border-radius: 50px !important;
+        box-shadow: 0 4px 14px rgba(234, 88, 12, 0.3) !important;
+        cursor: pointer;
+        transition: all 0.25s ease !important;
+        text-decoration: none !important;
+    }
+
+    .btn-access-login-pill:hover {
+        background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+        color: #ffffff !important;
+        box-shadow: 0 6px 18px rgba(234, 88, 12, 0.4) !important;
+        transform: translateY(-1px) scale(1.01) !important;
+    }
+
+    .btn-access-browse-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #334155 !important;
+        background: #ffffff !important;
+        border: 1.5px solid #cbd5e1 !important;
+        padding: 10px 22px !important;
+        border-radius: 50px !important;
+        cursor: pointer;
+        transition: all 0.25s ease !important;
+        text-decoration: none !important;
+    }
+
+    .btn-access-browse-pill:hover {
+        background: #f8fafc !important;
+        color: #0f172a !important;
+        border-color: #94a3b8 !important;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08) !important;
+        transform: translateY(-1px) scale(1.01) !important;
+    }
+
+    .access-badge-footer {
+        font-size: 12px;
+        font-weight: 500;
+        color: #94a3b8;
+    }
 </style>
 
 <!-- Hero Section -->
@@ -376,9 +471,9 @@
                         </div>
 
                         <div class="book-actions-group">
-                            <a href="/book-reader/{{ course.slug }}/" class="btn-read-online" title="Open Google Books style interactive reader">
+                            <button type="button" class="btn-read-online border-0" data-bs-toggle="modal" data-bs-target="#institutionAccessModal" onclick="openInstitutionModal(event)" title="Read Online AI Book">
                                 <i class="fas fa-book-open"></i> Read Online
-                            </a>
+                            </button>
                             <a href="{% url 'course_detail' %}?slug={{ course.slug }}" class="btn-book-details" title="View Book Details & Syllabus">
                                 Details
                             </a>
@@ -403,15 +498,9 @@
             <p class="text-slate-300 mb-4 max-w-xl mx-auto" style="color: #cbd5e1; font-size: 1.05rem;">
                 Get complete access to read all AI Books, practical workbooks, and downloadable resources with your institution or student login.
             </p>
-            {% if featured_books.first %}
-            <a href="/book-reader/{{ featured_books.first.slug }}/" class="btn-library-access">
+            <button type="button" class="btn-library-access border-0" data-bs-toggle="modal" data-bs-target="#institutionAccessModal" onclick="openInstitutionModal(event)">
                 <i class="fas fa-book-reader"></i> READ ALL BOOKS NOW
-            </a>
-            {% else %}
-            <a href="#featured-books-section" class="btn-library-access">
-                <i class="fas fa-book-reader"></i> ACCESS LIBRARY
-            </a>
-            {% endif %}
+            </button>
         </div>
     </div>
 </section>
@@ -424,7 +513,6 @@
             <h2 class="section-title-gradient">Upcoming AI Books</h2>
             <p class="section-desc-muted">New titles in the pipeline — get ready for upcoming practical releases.</p>
         </div>
-
         <div class="row g-4">
             {% for course in coming_soon_books %}
             <div class="col-md-6 col-lg-4">
@@ -489,4 +577,57 @@
         </div>
     </div>
 </section>
+
+<!-- Institution Access Required Modal Popup -->
+<div class="modal fade" id="institutionAccessModal" tabindex="-1" aria-labelledby="institutionAccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
+        <div class="modal-content" style="border-radius: 20px; border: 1px solid rgba(226, 232, 240, 0.8); overflow: hidden; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18); position: relative; background: #ffffff;">
+            
+            <!-- Top Accent Line -->
+            <div style="height: 4px; background: linear-gradient(90deg, #f97316 0%, #fb923c 50%, #6366f1 100%);"></div>
+
+            <!-- Close Button -->
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-3 shadow-none" data-bs-dismiss="modal" aria-label="Close" style="z-index: 10; font-size: 11px;"></button>
+
+            <div class="modal-body text-center p-4">
+                <div class="access-icon-wrapper">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3 class="access-title">Institution Access Required</h3>
+                <p class="access-desc">
+                    This AI Book is assigned to authorized partner institutions and enrolled students. 
+                    Please log in with your institution account or enroll to read the complete book.
+                </p>
+                <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 mb-3">
+                    <a href="{% url 'institution_login' %}" class="btn-access-login-pill">
+                        <i class="fas fa-unlock-alt me-1"></i> Log In to Read
+                    </a>
+                    <button type="button" class="btn-access-browse-pill" data-bs-dismiss="modal">
+                        <i class="fas fa-book me-1"></i> Browse All Books
+                    </button>
+                </div>
+                <div class="pt-2 border-top" style="border-color: #f1f5f9 !important;">
+                    <div class="access-badge-footer">
+                        <i class="fas fa-shield-alt text-warning me-1"></i> Institution Verified Content &bull; Encrypted Reader
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openInstitutionModal(e) {
+        if (e) e.preventDefault();
+        var modalEl = document.getElementById('institutionAccessModal');
+        if (modalEl) {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                modal.show();
+            } else if (typeof $ !== 'undefined' && $.fn.modal) {
+                $(modalEl).modal('show');
+            }
+        }
+    }
+</script>
 {% endblock %}

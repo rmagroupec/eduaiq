@@ -30,6 +30,155 @@
 
     {% block css %}{% endblock %}
     <style>
+      /* EduAiQ Management Dashboard - Single-Tone Logo Color System & Micro Hover Effects */
+      :root {
+          --eduaiq-orange: #ea580c;
+          --eduaiq-orange-light: #f97316;
+          --eduaiq-orange-tint: #fff7ed;
+          --eduaiq-orange-border: #ffedd5;
+          --eduaiq-navy: #0f172a;
+          --eduaiq-navy-slate: #1e293b;
+      }
+
+      /* Sidebar & Navigation Single-Tone Theme */
+      .sidebar {
+          background: #ffffff !important;
+          border-right: 1px solid #e2e8f0 !important;
+      }
+
+      .sidebar-menu li a {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          border-radius: 0.75rem !important;
+          font-weight: 600 !important;
+      }
+
+      .sidebar-menu li a:hover {
+          background: #fff7ed !important;
+          color: #ea580c !important;
+          transform: translateX(4px) !important;
+      }
+
+      .sidebar-menu li.active > a,
+      .sidebar-menu li a.active {
+          background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+          color: #ffffff !important;
+          box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35) !important;
+      }
+
+      .sidebar-menu li.active > a i,
+      .sidebar-menu li a.active i {
+          color: #ffffff !important;
+      }
+
+      /* Stat Cards Overrides - Single-Tone EduAiQ Orange Style & Elevate Hover */
+      .stat-card-eduaiq {
+          background: #ffffff !important;
+          border: 1.5px solid #ffedd5 !important;
+          border-radius: 1rem !important;
+          transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          position: relative;
+          overflow: hidden;
+      }
+
+      .stat-card-eduaiq:hover {
+          transform: translateY(-4px) scale(1.02) !important;
+          box-shadow: 0 14px 30px rgba(234, 88, 12, 0.18) !important;
+          border-color: #f97316 !important;
+      }
+
+      .stat-card-eduaiq .icon-box-eduaiq {
+          width: 44px;
+          height: 44px;
+          border-radius: 0.75rem;
+          background: #fff7ed;
+          color: #ea580c;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.3rem;
+          transition: transform 0.35s ease;
+      }
+
+      .stat-card-eduaiq:hover .icon-box-eduaiq {
+          transform: scale(1.18) rotate(6deg);
+          background: #ffedd5;
+      }
+
+      .stat-card-eduaiq .stat-num {
+          color: #0f172a !important;
+          font-weight: 800 !important;
+      }
+
+      .badge-orange-single {
+          background: #fff7ed !important;
+          color: #ea580c !important;
+          border: 1px solid #ffedd5 !important;
+          font-weight: 700 !important;
+          border-radius: 50rem !important;
+          padding: 0.25rem 0.75rem !important;
+          font-size: 0.75rem !important;
+      }
+
+      /* Buttons Single-Tone EduAiQ Styling & Micro-Hover Effects */
+      .btn-eduaiq-primary {
+          background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+          color: #ffffff !important;
+          border: none !important;
+          border-radius: 50rem !important;
+          padding: 0.5rem 1.25rem !important;
+          font-size: 0.85rem !important;
+          font-weight: 700 !important;
+          box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35) !important;
+          transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          text-decoration: none !important;
+          display: inline-flex !important;
+          align-items: center !important;
+      }
+
+      .btn-eduaiq-primary:hover {
+          transform: translateY(-2px) scale(1.03) !important;
+          box-shadow: 0 8px 20px rgba(234, 88, 12, 0.5) !important;
+          color: #ffffff !important;
+      }
+
+      .btn-eduaiq-outline {
+          background: #ffffff !important;
+          color: #ea580c !important;
+          border: 1.5px solid #ea580c !important;
+          border-radius: 50rem !important;
+          padding: 0.5rem 1.25rem !important;
+          font-size: 0.85rem !important;
+          font-weight: 700 !important;
+          transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          text-decoration: none !important;
+          display: inline-flex !important;
+          align-items: center !important;
+      }
+
+      .btn-eduaiq-outline:hover {
+          background: #fff7ed !important;
+          color: #ea580c !important;
+          transform: translateY(-2px) scale(1.03) !important;
+          box-shadow: 0 6px 16px rgba(249, 115, 22, 0.2) !important;
+      }
+
+      .btn-eduaiq-primary i,
+      .btn-eduaiq-outline i {
+          transition: transform 0.3s ease;
+      }
+
+      .btn-eduaiq-primary:hover i,
+      .btn-eduaiq-outline:hover i {
+          transform: translateX(3px);
+      }
+
+      /* Table Rows Single-Tone Hover Effect */
+      .table hover tbody tr:hover,
+      table tbody tr:hover {
+          background-color: #fff7ed !important;
+          transition: background-color 0.25s ease;
+      }
+
       /* Global Toast Style */
       .toast-container {
         position: fixed;
