@@ -3,8 +3,121 @@
 
 {% block title %}Contact Us - EduAiQ{% endblock %}
 
-{% block description %}Get in touch with EduAiQ — questions about courses, the AI Lab, Olympiads, fee payments, or
-franchise opportunities. Call, message, or send us a note directly.{% endblock %}
+{% block description %}Get in touch with EduAiQ — questions about courses, the AI Lab, Olympiads, fee payments, or franchise opportunities. Call, message, or send us a note directly.{% endblock %}
+
+{% block css %}
+<style>
+    /* EduAiQ Contact Us Page - Logo Theme Alignment */
+    .inner-baner-container:before {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.88) 60%, rgba(234, 88, 12, 0.82) 100%) !important;
+    }
+    .inner-baner-container .inner-title {
+        font-weight: 800 !important;
+        letter-spacing: 0.5px;
+        text-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+    }
+    .iconbox-border {
+        border: 1.5px solid #ffedd5 !important;
+        background: #ffffff !important;
+        border-radius: 20px !important;
+        box-shadow: 0 6px 20px rgba(234, 88, 12, 0.06) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .iconbox-border:hover {
+        transform: translateY(-4px) !important;
+        border-color: #f97316 !important;
+        box-shadow: 0 12px 30px rgba(234, 88, 12, 0.18) !important;
+    }
+    .iconbox-border .iconbox-icon {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        border-radius: 16px !important;
+        box-shadow: 0 6px 16px rgba(249, 115, 22, 0.35) !important;
+        transition: transform 0.3s ease !important;
+    }
+    .iconbox-border:hover .iconbox-icon {
+        transform: scale(1.08) rotate(4deg) !important;
+    }
+    .iconbox-border .iconbox-content h5 {
+        color: #0f172a !important;
+        font-weight: 700 !important;
+    }
+    .contact-page-section .contact-form-inner .contact-detail-container .title-divider {
+        background-color: #ea580c !important;
+    }
+    .contact-page-section .contact-form-inner .contact-detail-container .contact-details-list ul li {
+        background-color: #fff7ed !important;
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .contact-page-section .contact-form-inner .contact-detail-container .contact-details-list ul li:hover {
+        transform: translateX(6px) !important;
+        border-color: #f97316 !important;
+        box-shadow: 0 8px 24px rgba(234, 88, 12, 0.12) !important;
+    }
+    .contact-page-section .contact-form-inner .contact-detail-container .contact-details-list ul li .icon i {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35) !important;
+    }
+    .contact-page-section .contact-form-inner .contact-detail-container .contact-details-list ul li .details-content h5 {
+        color: #0f172a !important;
+        font-weight: 700 !important;
+    }
+    .contact-page-section .contact-form-inner .contact-detail-container .contact-details-list a {
+        color: #ea580c !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease !important;
+    }
+    .contact-page-section .contact-form-inner .contact-detail-container .contact-details-list a:hover {
+        color: #c2410c !important;
+        text-decoration: underline !important;
+    }
+    .contact-page-section .contact-form-inner .contact-from-wrap {
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 24px !important;
+        box-shadow: 0 12px 35px rgba(15, 23, 42, 0.07) !important;
+        background-color: #ffffff !important;
+    }
+    .contact-page-section .contact-form-inner .contact-from-wrap .contact-from p input,
+    .contact-page-section .contact-form-inner .contact-from-wrap .contact-from p textarea {
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        background-color: #f8fafc !important;
+        padding: 14px 20px !important;
+        font-size: 0.95rem !important;
+        transition: all 0.25s ease !important;
+    }
+    .contact-page-section .contact-form-inner .contact-from-wrap .contact-from p input:focus,
+    .contact-page-section .contact-form-inner .contact-from-wrap .contact-from p textarea:focus {
+        border-color: #f97316 !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15) !important;
+        outline: none !important;
+    }
+    .contact-page-section .contact-form-inner .contact-from-wrap .contact-from p .input-icon {
+        color: #ea580c !important;
+    }
+    .contact-page-section .contact-form-inner .contact-from-wrap .contact-from p input[type=submit] {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        border-radius: 50rem !important;
+        padding: 16px 36px !important;
+        box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        cursor: pointer !important;
+        border: none !important;
+    }
+    .contact-page-section .contact-form-inner .contact-from-wrap .contact-from p input[type=submit]:hover {
+        transform: translateY(-2px) scale(1.02) !important;
+        box-shadow: 0 10px 28px rgba(234, 88, 12, 0.55) !important;
+        color: #ffffff !important;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <section class="inner-banner-wrap">
@@ -39,7 +152,7 @@ franchise opportunities. Call, message, or send us a note directly.{% endblock %
             </div>
             <div class="col-md-4">
                 <div class="iconbox-border d-flex align-items-center">
-                    <div class="iconbox-icon" style="background-color: #41246D;">
+                    <div class="iconbox-icon">
                         <i aria-hidden="true" class="fas fa-calendar-check"></i>
                     </div>
                     <div class="iconbox-content">
@@ -89,7 +202,7 @@ franchise opportunities. Call, message, or send us a note directly.{% endblock %
                                         <h5>Phone Number :</h5>
                                         <span><a href="tel:+918052350041">+91 8052350041</a> //</span>
                                         <span><a href="tel:+917985267620">+91 7985267620</a></span>
-                                        <p style="margin: 6px 0 0; font-size: 13px; color: #a7a7a7;">Best
+                                        <p style="margin: 6px 0 0; font-size: 13px; color: #64748b;">Best
                                             for urgent questions during support hours</p>
                                     </div>
                                 </li>
@@ -101,7 +214,7 @@ franchise opportunities. Call, message, or send us a note directly.{% endblock %
                                         <h5>Email Address :</h5>
                                         <span><a href="mailto:info@eduaiq.co.in">info@eduaiq.co.in</a> //</span>
                                         <span><a href="mailto:contact@eduaiq.co.in">contact@eduaiq.co.in</a></span>
-                                        <p style="margin: 6px 0 0; font-size: 13px; color: #a7a7a7;">
+                                        <p style="margin: 6px 0 0; font-size: 13px; color: #64748b;">
                                             Send us an email anytime for general or business inquiries</p>
                                     </div>
                                 </li>
@@ -113,7 +226,7 @@ franchise opportunities. Call, message, or send us a note directly.{% endblock %
                                         <h5>WhatsApp :</h5>
                                         <span><a href="https://whatsapp.com/channel/0029VbDa70SHltY9CSw9IP2B"
                                                 target="_blank">Join our WhatsApp channel</a></span>
-                                        <p style="margin: 6px 0 0; font-size: 13px; color: #a7a7a7;">
+                                        <p style="margin: 6px 0 0; font-size: 13px; color: #64748b;">
                                             Fastest way to get updates and quick answers</p>
                                     </div>
                                 </li>
@@ -125,7 +238,7 @@ franchise opportunities. Call, message, or send us a note directly.{% endblock %
                                         <h5>Instagram :</h5>
                                         <span><a href="https://www.instagram.com/eduaiq_2026?utm_source=qr&amp;igsh=MTY2bXJuZXZyZTliag=="
                                                 target="_blank">@eduaiq_2026</a></span>
-                                        <p style="margin: 6px 0 0; font-size: 13px; color: #a7a7a7;">
+                                        <p style="margin: 6px 0 0; font-size: 13px; color: #64748b;">
                                             Course updates, Olympiad announcements, and student stories
                                         </p>
                                     </div>

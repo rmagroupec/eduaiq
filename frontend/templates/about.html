@@ -5,6 +5,180 @@
 
 {% block description %}EduAiQ is India's AI-powered Education ERP platform offering LMS, Admission CRM, AI Lab, Student Information System, Digital Classroom, Examination Management, and Campus Automation solutions for schools, colleges, universities, and coaching institutes.{% endblock %}
 
+{% block css %}
+<style>
+    /* EduAiQ About Us - Logo Theme Alignment */
+    .title-divider, .title-divider-center {
+        background-color: #ea580c !important;
+    }
+
+    .about-section .about-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+        margin-bottom: 24px !important;
+    }
+
+    /* Counter Cards */
+    .counter-inner {
+        margin-top: 40px !important;
+    }
+    .counter-item {
+        background: #ffffff !important;
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 24px 16px !important;
+        box-shadow: 0 6px 20px rgba(234, 88, 12, 0.05) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-align: center;
+    }
+    .counter-item:hover {
+        transform: translateY(-4px) !important;
+        border-color: #f97316 !important;
+        box-shadow: 0 12px 28px rgba(234, 88, 12, 0.15) !important;
+    }
+    .counter-no {
+        color: #ea580c !important;
+        font-weight: 800 !important;
+        font-size: 2.2rem !important;
+        line-height: 1 !important;
+        margin-bottom: 8px !important;
+    }
+    .Completed {
+        color: #334155 !important;
+        font-weight: 700 !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Experience Banner Overlay */
+    .about-left-banner {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 28px rgba(234, 88, 12, 0.35) !important;
+    }
+    .about-left-banner h3 {
+        color: #ffffff !important;
+        font-weight: 800 !important;
+    }
+    .about-left-banner .banner-icon i {
+        color: #ffffff !important;
+    }
+
+    /* Feature Cards */
+    .home-feature-section {
+        padding: 70px 0 !important;
+        background-color: #f8fafc !important;
+    }
+    .feature-section-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+    }
+    .feature-wrapper {
+        margin-top: 40px !important;
+    }
+    .feature-type {
+        background: #ffffff !important;
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 32px 24px !important;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative;
+    }
+    .feature-type:hover {
+        transform: translateY(-5px) !important;
+        border-color: #f97316 !important;
+        box-shadow: 0 14px 32px rgba(234, 88, 12, 0.18) !important;
+    }
+    .feature-icon {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        width: 64px !important;
+        height: 64px !important;
+        line-height: 64px !important;
+        border-radius: 18px !important;
+        box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35) !important;
+        margin-bottom: 20px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.5rem !important;
+    }
+    .feature-icon .meta-no {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+    }
+    .feature-heading {
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        margin-bottom: 12px !important;
+    }
+    .right-arrow-link {
+        color: #ea580c !important;
+        font-weight: 700 !important;
+        transition: transform 0.3s ease !important;
+    }
+    .feature-type:hover .right-arrow-link {
+        transform: translateX(6px) !important;
+        color: #c2410c !important;
+    }
+
+    /* Team Section */
+    .home-team-section {
+        padding: 80px 0 !important;
+        background-color: #ffffff !important;
+    }
+    .team-section-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+    }
+    .team-content h4 a {
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        transition: color 0.2s ease !important;
+    }
+    .team-content h4 a:hover {
+        color: #ea580c !important;
+    }
+    .team-social-link a {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 10px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3) !important;
+        transition: all 0.3s ease !important;
+    }
+    .team-social-link a:hover {
+        transform: translateY(-3px) scale(1.08) !important;
+        box-shadow: 0 8px 18px rgba(234, 88, 12, 0.5) !important;
+    }
+
+    /* Buttons */
+    .button-round-secondary {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        border-radius: 50rem !important;
+        padding: 12px 28px !important;
+        box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-transform: uppercase !important;
+        border: none !important;
+        text-decoration: none !important;
+        display: inline-block !important;
+    }
+    .button-round-secondary:hover {
+        transform: translateY(-2px) scale(1.02) !important;
+        box-shadow: 0 10px 28px rgba(234, 88, 12, 0.55) !important;
+        color: #ffffff !important;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <section class="inner-banner-wrap">
 <div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
@@ -45,8 +219,9 @@
 </div>
 </div>
 <div class="counter-inner">
-<div class="counter-item-wrap row">
-<div class="col-lg-3 col-sm-6 counter-item">
+<div class="counter-item-wrap row g-3">
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
 <div class="counter-no">
 <span class="counter">45</span>k+
                                 </div>
@@ -54,7 +229,9 @@
                                     Active Students
                                 </div>
 </div>
-<div class="col-lg-3 col-sm-6 counter-item">
+</div>
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
 <div class="counter-no">
 <span class="counter">72</span>+
                                 </div>
@@ -62,7 +239,9 @@
                                     AI-Powered Courses
                                 </div>
 </div>
-<div class="col-lg-3 col-sm-6 counter-item">
+</div>
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
 <div class="counter-no">
 <span class="counter">90</span>+
                                 </div>
@@ -70,13 +249,16 @@
                                     Expert Mentors
                                 </div>
 </div>
-<div class="col-lg-3 col-sm-6 counter-item">
+</div>
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
 <div class="counter-no">
 <span class="counter">35</span>
 </div>
 <span class="Completed">
                                     Partner Institutions
                                 </span>
+</div>
 </div>
 </div>
 </div>
@@ -88,19 +270,18 @@
 <div class="banner-icon">
 <i aria-hidden="true" class="fas fa-trophy"></i>
 </div>
-<h3>25+ YEARS OF EXPERIENCE</h3>
+<h3>EXCELLENCE IN EDUCATION</h3>
 </div>
 <div class="about-right-banner">
-<h5>College Tour</h5>
+<h5>Platform Overview</h5>
 <div class="video-button">
 <a data-video-id="IUN664s7N-c" id="video-container">
 <i class="fas fa-play"></i>
 </a>
 </div>
-<h4>Intro College Video</h4>
+<h4>Empowering Future Leaders</h4>
 <p>
-                                Accusantium nunc labore, voluptas, justo, netus diam eros varius mattis maxime ratione
-                                aliquet sollicitudin.
+                                EduAiQ provides AI-driven learning tools and institution ERP systems designed to bridge the gap between classroom education and industry demands.
                             </p>
 </div>
 </div>
@@ -128,7 +309,7 @@
 <h4 class="feature-heading">AI-Driven Learning</h4>
 <p class="feature-info">Hands-on AI Lab projects and adaptive assessments — not just
                                 video lectures.</p>
-<a class="right-arrow-link" href="/page/ai-lab/">
+<a class="right-arrow-link" href="/ai-lab/">
 <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -140,7 +321,7 @@
 <h4 class="feature-heading">Expert Mentors</h4>
 <p class="feature-info">90+ mentors guiding learners through real projects and career
                                 paths, not just grading assignments.</p>
-<a class="right-arrow-link" href="/page/skill-development/">
+<a class="right-arrow-link" href="/skill-development/">
 <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -152,7 +333,7 @@
 <h4 class="feature-heading">Built For Institutions</h4>
 <p class="feature-info">LMS, admission CRM, and campus automation for schools, colleges,
                                 and coaching institutes.</p>
-<a class="right-arrow-link" href="/page/eduaiq-ecosystem/">
+<a class="right-arrow-link" href="/about/">
 <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -203,10 +384,10 @@
 <div class="row align-items-end">
 <div class="col-md-6 text-md-start text-center">
 <div class="title-divider"></div>
-<h2 class="team-section-title">Meet Our Best Teachers</h2>
+<h2 class="team-section-title">Meet Our Mentors</h2>
 </div>
 <div class="col-md-6 text-md-end text-center">
-<a class="button-round-secondary" href="/team/">ALL TEAM MEMBER</a>
+<a class="button-round-secondary" href="/team/">ALL TEAM MEMBERS</a>
 </div>
 </div>
 <div class="group-member">
@@ -217,25 +398,25 @@
 </figure>
 <div class="team-content text-center">
 <h4>
-<a href="/team/sample-member/">William Smith</a>
+<a href="/team/">William Smith</a>
 </h4>
-<p>Science Professor</p>
+<p>AI &amp; Data Science Lead</p>
 </div>
 <div class="d-flex justify-content-center align-items-center">
 <div class="social-links team-social-link">
 <ul>
 <li>
-<a href="https://www.facebook.com/">
-<i class="fab fa-facebook"></i>
+<a href="https://www.facebook.com/" target="_blank">
+<i class="fab fa-facebook-f"></i>
 </a>
 </li>
 <li>
-<a href="https://twitter.com/?lang=en">
+<a href="https://twitter.com/" target="_blank">
 <i class="fab fa-twitter"></i>
 </a>
 </li>
 <li>
-<a href="https://www.whatsapp.com/">
+<a href="https://www.whatsapp.com/" target="_blank">
 <i class="fab fa-whatsapp"></i>
 </a>
 </li>
@@ -249,25 +430,25 @@
 </figure>
 <div class="team-content text-center">
 <h4>
-<a href="/team/sample-member/">Jenny White</a>
+<a href="/team/">Jenny White</a>
 </h4>
-<p>Art Professor</p>
+<p>Skill Development Head</p>
 </div>
 <div class="d-flex justify-content-center align-items-center">
 <div class="social-links team-social-link">
 <ul>
 <li>
-<a href="https://www.facebook.com/">
-<i class="fab fa-facebook"></i>
+<a href="https://www.facebook.com/" target="_blank">
+<i class="fab fa-facebook-f"></i>
 </a>
 </li>
 <li>
-<a href="https://twitter.com/?lang=en">
+<a href="https://twitter.com/" target="_blank">
 <i class="fab fa-twitter"></i>
 </a>
 </li>
 <li>
-<a href="https://www.whatsapp.com/">
+<a href="https://www.whatsapp.com/" target="_blank">
 <i class="fab fa-whatsapp"></i>
 </a>
 </li>
@@ -281,25 +462,25 @@
 </figure>
 <div class="team-content text-center">
 <h4>
-<a href="/team/sample-member/">George Hobbs</a>
+<a href="/team/">George Hobbs</a>
 </h4>
-<p>Economics Professor</p>
+<p>Olympiad Curriculum Lead</p>
 </div>
 <div class="d-flex justify-content-center align-items-center">
 <div class="social-links team-social-link">
 <ul>
 <li>
-<a href="https://www.facebook.com/">
-<i class="fab fa-facebook"></i>
+<a href="https://www.facebook.com/" target="_blank">
+<i class="fab fa-facebook-f"></i>
 </a>
 </li>
 <li>
-<a href="https://twitter.com/?lang=en">
+<a href="https://twitter.com/" target="_blank">
 <i class="fab fa-twitter"></i>
 </a>
 </li>
 <li>
-<a href="https://www.whatsapp.com/">
+<a href="https://www.whatsapp.com/" target="_blank">
 <i class="fab fa-whatsapp"></i>
 </a>
 </li>
@@ -313,25 +494,25 @@
 </figure>
 <div class="team-content text-center">
 <h4>
-<a href="/team/sample-member/">Alice Heard</a>
+<a href="/team/">Alice Heard</a>
 </h4>
-<p>Statistics Professor</p>
+<p>Campus ERP Specialist</p>
 </div>
 <div class="d-flex justify-content-center align-items-center">
 <div class="social-links team-social-link">
 <ul>
 <li>
-<a href="https://www.facebook.com/">
-<i class="fab fa-facebook"></i>
+<a href="https://www.facebook.com/" target="_blank">
+<i class="fab fa-facebook-f"></i>
 </a>
 </li>
 <li>
-<a href="https://twitter.com/?lang=en">
+<a href="https://twitter.com/" target="_blank">
 <i class="fab fa-twitter"></i>
 </a>
 </li>
 <li>
-<a href="https://www.whatsapp.com/">
+<a href="https://www.whatsapp.com/" target="_blank">
 <i class="fab fa-whatsapp"></i>
 </a>
 </li>

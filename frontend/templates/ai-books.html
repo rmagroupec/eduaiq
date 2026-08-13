@@ -17,9 +17,9 @@
     }
 
     .ai-books-hero {
-        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #ea580c 100%);
         color: #ffffff;
-        padding: 70px 0 60px;
+        padding: 38px 0 34px;
         position: relative;
         overflow: hidden;
     }
@@ -31,52 +31,53 @@
         right: -20%;
         width: 600px;
         height: 600px;
-        background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(249, 115, 22, 0.18) 0%, transparent 70%);
         pointer-events: none;
     }
 
     .hero-title-main {
-        font-size: 2.75rem;
+        font-size: 2.2rem;
         font-weight: 800;
-        background: linear-gradient(90deg, #ffffff 0%, #cbd5e1 100%);
+        background: linear-gradient(90deg, #ffffff 0%, #fed7aa 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         letter-spacing: -0.02em;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
     }
 
     .hero-subtitle {
-        font-size: 1.15rem;
-        color: #94a3b8;
+        font-size: 1.05rem;
+        color: #cbd5e1;
         max-width: 680px;
-        line-height: 1.6;
+        line-height: 1.5;
     }
 
     /* Stats Grid */
     .stat-card-box {
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.06);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 14px;
-        padding: 22px 18px;
+        padding: 14px 12px;
         text-align: center;
-        transition: transform 0.3s ease;
+        transition: all 0.3s ease;
     }
 
     .stat-card-box:hover {
-        transform: translateY(-4px);
-        background: rgba(255, 255, 255, 0.08);
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(249, 115, 22, 0.4);
     }
 
     .stat-number {
-        font-size: 2rem;
+        font-size: 1.75rem;
         font-weight: 800;
-        color: #c084fc;
-        margin-bottom: 4px;
+        color: #f97316;
+        margin-bottom: 2px;
     }
 
     .stat-label {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         color: #cbd5e1;
         font-weight: 600;
         text-transform: uppercase;
@@ -275,23 +276,24 @@
     }
 
     .btn-library-access {
-        background: linear-gradient(135deg, #f73859 0%, #ec4899 100%);
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
         color: #ffffff !important;
-        padding: 14px 32px;
-        border-radius: 30px;
-        font-size: 1rem;
+        padding: 12px 28px;
+        border-radius: 50rem;
+        font-size: 0.95rem;
         font-weight: 800;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 10px;
-        box-shadow: 0 8px 20px rgba(247, 56, 89, 0.35);
-        transition: all 0.3s ease;
+        box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .btn-library-access:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 28px rgba(247, 56, 89, 0.5);
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 10px 26px rgba(234, 88, 12, 0.55);
+        color: #ffffff !important;
     }
 
     /* Access Restricted Modal Styling */
@@ -492,16 +494,7 @@
             {% endfor %}
         </div>
 
-        <!-- Full Library Access Banner -->
-        <div class="library-banner-card text-center">
-            <h3 class="fw-bold mb-2">Unlock Full Digital Book Library</h3>
-            <p class="text-slate-300 mb-4 max-w-xl mx-auto" style="color: #cbd5e1; font-size: 1.05rem;">
-                Get complete access to read all AI Books, practical workbooks, and downloadable resources with your institution or student login.
-            </p>
-            <button type="button" class="btn-library-access border-0" data-bs-toggle="modal" data-bs-target="#institutionAccessModal" onclick="openInstitutionModal(event)">
-                <i class="fas fa-book-reader"></i> READ ALL BOOKS NOW
-            </button>
-        </div>
+
     </div>
 </section>
 
@@ -543,36 +536,36 @@
 {% endif %}
 
 <!-- Full Library Feature Section -->
-<section class="py-5" style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); color: #ffffff;">
-    <div class="container py-4">
+<section style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #ea580c 100%); color: #ffffff; padding: 36px 0;">
+    <div class="container">
         <div class="row align-items-center g-4">
             <div class="col-lg-7">
-                <h2 class="fw-bold text-white mb-3" style="font-size: 2.2rem;">Get The Full AI Books Library</h2>
-                <p style="color: #cbd5e1; font-size: 1.1rem; line-height: 1.7;" class="mb-4">
+                <h2 class="fw-bold text-white mb-2" style="font-size: 1.75rem;">Get The Full AI Books Library</h2>
+                <p style="color: #cbd5e1; font-size: 0.98rem; line-height: 1.5;" class="mb-3">
                     Every book unlocks complete interactive reading in browser with instant page navigation, dark/sepia reading themes, chapter outlines, and companion exercises.
                 </p>
-                <div class="mb-4">
-                    <div class="d-flex align-items-center mb-3" style="color: #e2e8f0; font-size: 1.05rem;">
-                        <i class="fas fa-check-circle text-purple-400 me-3" style="color: #c084fc; font-size: 1.25rem;"></i>
+                <div class="mb-3">
+                    <div class="d-flex align-items-center mb-2" style="color: #f1f5f9; font-size: 0.95rem;">
+                        <i class="fas fa-check-circle me-2" style="color: #f97316; font-size: 1.1rem;"></i>
                         <span>High-quality interactive PDF.js online book reader</span>
                     </div>
-                    <div class="d-flex align-items-center mb-3" style="color: #e2e8f0; font-size: 1.05rem;">
-                        <i class="fas fa-check-circle text-purple-400 me-3" style="color: #c084fc; font-size: 1.25rem;"></i>
+                    <div class="d-flex align-items-center mb-2" style="color: #f1f5f9; font-size: 0.95rem;">
+                        <i class="fas fa-check-circle me-2" style="color: #f97316; font-size: 1.1rem;"></i>
                         <span>Reading themes: Light, Sepia & Dark Night reading modes</span>
                     </div>
-                    <div class="d-flex align-items-center" style="color: #e2e8f0; font-size: 1.05rem;">
-                        <i class="fas fa-check-circle text-purple-400 me-3" style="color: #c084fc; font-size: 1.25rem;"></i>
+                    <div class="d-flex align-items-center" style="color: #f1f5f9; font-size: 0.95rem;">
+                        <i class="fas fa-check-circle me-2" style="color: #f97316; font-size: 1.1rem;"></i>
                         <span>Institution licensing for classroom and student sets</span>
                     </div>
                 </div>
-                <div>
+                <div class="mt-3">
                     <a class="btn-library-access" href="https://rzp.io/rzp/azhKQ22i" target="_blank">
                         REGISTER FOR LIBRARY ACCESS
                     </a>
                 </div>
             </div>
             <div class="col-lg-5 text-center">
-                <img src="{% static 'assets/img/educator-img14.jpg' %}" alt="EduAiQ AI Books Stack" class="img-fluid rounded-4 shadow-lg border border-slate-700" style="max-height: 380px; object-fit: cover;">
+                <img src="{% static 'assets/img/educator-img14.jpg' %}" alt="EduAiQ AI Books Stack" class="img-fluid rounded-4 shadow-lg border border-slate-700" style="max-height: 250px; object-fit: cover;">
             </div>
         </div>
     </div>

@@ -3520,14 +3520,14 @@ input[type=submit]:focus {
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
-  padding: 300px 15px 100px 15px;
+  padding: 240px 15px 70px 15px;
   position: relative;
   z-index: 1;
 }
 
 .home-progress-section .overlay {
-  background-color: #41246D;
-  opacity: 0.92;
+  background-color: #0a1128 !important;
+  opacity: 0.98 !important;
 }
 
 .home-progress-section .counter-inner .counter-item-wrap .counter-item {
@@ -3580,7 +3580,7 @@ input[type=submit]:focus {
 
 .home-progress-section .counter-inner .counter-item-wrap .counter-item .counter-no {
   color: #ffffff;
-  font-size: 60px;
+  font-size: 54px;
   font-weight: 900;
   font-family: "Mulish", sans-serif;
   line-height: 1.1;
@@ -3588,9 +3588,9 @@ input[type=submit]:focus {
 
 .home-progress-section .counter-inner .counter-item-wrap .counter-item .Completed {
   font-family: "Mulish", sans-serif;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
-  color: #F24080;
+  color: #f97316 !important;
   line-height: 1.1;
 }
 
@@ -3930,37 +3930,37 @@ input[type=submit]:focus {
 >>> Home fact section  
 ----------------------------------------------------------------*/
 .home-fact-section {
-  margin-bottom: 130px;
+  margin-bottom: 50px !important;
   background-image: url(assets/img/educator-img12.jpg);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
   position: relative;
   z-index: 1;
-  padding: 30px 0;
+  padding: 24px 0 !important;
 }
 
 @media screen and (max-width: 1199px) {
   .home-fact-section {
-    padding: 0;
+    padding: 20px 0 !important;
   }
 }
 
 @media screen and (max-width: 767px) {
   .home-fact-section {
-    margin-bottom: 80px;
+    margin-bottom: 40px !important;
   }
 }
 
 @media screen and (max-width: 991px) {
   .home-fact-section {
-    padding: 50px 0;
+    padding: 30px 0 !important;
   }
 }
 
 .home-fact-section .overlay {
-  background-color: #41246D;
-  opacity: 0.94;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #ea580c 100%) !important;
+  opacity: 0.96;
   z-index: -1;
 }
 
@@ -3976,38 +3976,42 @@ input[type=submit]:focus {
 
 .home-fact-section .fact-section-head .fact-section-title {
   color: #ffffff;
+  margin-bottom: 12px;
+  font-size: 2.1rem;
+  font-weight: 800;
 }
 
 .home-fact-section .fact-section-head .fact-section-info {
-  color: #d9d9d9;
+  color: #e2e8f0;
+  margin-bottom: 16px;
+  font-size: 1.05rem;
 }
 
 .home-fact-section .fact-section-head .fact-list {
-  margin-bottom: 35px;
+  margin-bottom: 20px;
 }
 
 .home-fact-section .fact-section-head .fact-list ul {
-  margin: 0;
-  padding: 0;
+  padding-left: 0;
 }
 
 .home-fact-section .fact-section-head .fact-list ul li {
   list-style: none;
   color: #ffffff;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   display: flex;
   font-weight: 700;
   font-family: "Mulish", sans-serif;
-  line-height: 1.2;
+  line-height: 1.3;
 }
 
 .home-fact-section .fact-section-head .fact-list ul li:before {
-  color: #F24080;
+  color: #f97316 !important;
   content: "\f00c";
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
   font-size: 14px;
-  margin-right: 5px;
+  margin-right: 8px;
 }
 
 .home-fact-section .fact-section-head .fact-list ul li:last-child {
@@ -4869,18 +4873,17 @@ input[type=submit]:focus {
 >>> Main Footer  
 ----------------------------------------------------------------*/
 .site-footer {
-  background-image: url(assets/img/educator-img12.jpg);
-  background-repeat: no-repeat;
-  background-position: center center;
+  background-color: #0a1128 !important;
+  background-image: none !important;
   position: relative;
   z-index: 1;
-  padding-top: 100px;
-  background-size: cover;
+  padding-top: 35px !important;
 }
 
 .site-footer .footer-overlay {
-  background-color: #41246D;
-  opacity: 0.98;
+  background-color: #0a1128 !important;
+  background-image: none !important;
+  opacity: 1 !important;
   top: 0;
   left: 0;
   width: 100%;
@@ -5178,12 +5181,12 @@ input[type=submit]:focus {
 >>> Inner Banner  
 ----------------------------------------------------------------*/
 .inner-banner-wrap {
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 
 @media screen and (max-width: 767px) {
   .inner-banner-wrap {
-    margin-bottom: 80px;
+    margin-bottom: 24px;
   }
 }
 
@@ -5193,11 +5196,11 @@ input[type=submit]:focus {
   background-position: center center;
   text-align: center;
   position: relative;
-  padding: 60px 0;
+  padding: 32px 0;
 }
 
 .inner-baner-container:before {
-  background-image: linear-gradient(180deg, #41246D 0%, #41246DE0 15%);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.90) 65%, rgba(234, 88, 12, 0.85) 100%) !important;
   content: "";
   display: block;
   opacity: 1;
@@ -5221,8 +5224,11 @@ input[type=submit]:focus {
 
 .inner-baner-container .inner-title {
   color: #ffffff;
-  line-height: 1.1;
+  font-weight: 800;
+  font-size: 2.2rem;
+  line-height: 1.2;
   margin-bottom: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .inner-baner-container .breadcrumb {

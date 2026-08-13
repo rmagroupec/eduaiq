@@ -159,10 +159,11 @@
 
 <style>
   /* ==========================================================================
-     EduAiQ Compact Brand Palette Footer Styling (Midnight Navy & Golden Yellow)
+     EduAiQ Harmonized Brand Palette Footer Styling (Midnight Navy & Logo Orange)
      ========================================================================== */
   .site-footer {
-    background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #0F172A 100%) !important;
+    background-color: #0a1128 !important;
+    background-image: none !important;
     position: relative;
     color: #cbd5e1;
     overflow: hidden;
@@ -170,9 +171,10 @@
   }
 
   .text-gold-icon {
-    color: hsl(30, 92%, 50%) !important;
+    color: #f97316 !important;
     font-size: 11px;
     opacity: 0.9;
+    transition: transform 0.3s ease, color 0.3s ease;
   }
 
   .site-footer .subscribe-section {
@@ -183,13 +185,19 @@
   }
 
   .site-footer .subscribe-content {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+    background: #112046 !important;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1.5px solid rgba(249, 115, 22, 0.28);
     border-radius: 20px !important;
     padding: 22px 32px !important;
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+    transition: all 0.35s ease;
+  }
+
+  .site-footer .subscribe-content:hover {
+    border-color: rgba(249, 115, 22, 0.45);
+    box-shadow: 0 20px 40px rgba(234, 88, 12, 0.12);
   }
 
   .subscribe-title {
@@ -209,17 +217,17 @@
   .form-content-pro {
     display: flex;
     align-items: center;
-    background: rgba(15, 23, 42, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(15, 23, 42, 0.8);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
     border-radius: 40px;
     padding: 4px 5px 4px 18px !important;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
-    transition: border-color 0.3s ease;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
   }
 
   .form-content-pro:focus-within {
-    border-color: #fd7e14 !important;
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+    border-color: #f97316 !important;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.25);
   }
 
   .form-content-pro input[type="email"] {
@@ -238,25 +246,25 @@
 
   /* SUBSCRIBE Button */
   .btn-subscribe-pro {
-    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
-    color: #0F172A !important;
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
     border: none;
     border-radius: 30px;
-    padding: 9px 22px !important;
+    padding: 10px 24px !important;
     font-size: 12.5px !important;
     font-weight: 800;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
     cursor: pointer;
     white-space: nowrap;
     transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .btn-subscribe-pro:hover {
-    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
     color: #ffffff !important;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.4);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(234, 88, 12, 0.55);
+    transform: translateY(-2px) scale(1.02);
   }
 
   /* Top Footer Columns */
@@ -270,6 +278,11 @@
     width: auto !important;
     margin-bottom: 14px !important;
     filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s ease;
+  }
+
+  .footer-logo img:hover {
+    transform: scale(1.03);
   }
 
   .textwidget.widget-text {
@@ -282,34 +295,33 @@
   /* Social Icons */
   .footer-social-links ul {
     display: flex;
-    gap: 10px !important;
+    gap: 12px !important;
     list-style: none;
     padding: 0;
     margin: 0;
   }
 
   .footer-social-links a {
-    width: 38px !important;
-    height: 38px !important;
+    width: 40px !important;
+    height: 40px !important;
     border-radius: 12px !important;
-    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
     border: none !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #0F172A !important;
-    font-size: 17px !important;
+    color: #ffffff !important;
+    font-size: 18px !important;
     text-decoration: none;
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35) !important;
+    box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35) !important;
     transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .footer-social-links a:hover {
-    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
     color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    transform: translateY(-3px) scale(1.08) !important;
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.5) !important;
+    transform: translateY(-4px) scale(1.1) rotate(5deg) !important;
+    box-shadow: 0 10px 24px rgba(234, 88, 12, 0.55) !important;
   }
 
   /* Footer Widget Titles */
@@ -322,7 +334,7 @@
     padding-bottom: 6px !important;
   }
 
-  /* Golden Yellow Accent Line under Footer Headers */
+  /* Orange Accent Line under Footer Headers */
   .site-footer .widget-title::after {
     content: '';
     position: absolute;
@@ -330,7 +342,7 @@
     left: 0;
     width: 32px;
     height: 3px;
-    background: linear-gradient(90deg, #fd7e14 0%, #fd7e14 100%) !important;
+    background: linear-gradient(90deg, #f97316 0%, #ea580c 100%) !important;
     border-radius: 2px;
   }
 
@@ -341,7 +353,7 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px !important;
+    gap: 9px !important;
   }
 
   .site-footer .widget ul li a {
@@ -355,8 +367,13 @@
   }
 
   .site-footer .widget ul li a:hover {
-    color: #fd7e14 !important;
-    transform: translateX(5px);
+    color: #f97316 !important;
+    transform: translateX(6px);
+  }
+
+  .site-footer .widget ul li a:hover .text-gold-icon {
+    color: #ea580c !important;
+    transform: translateX(2px);
   }
 
   /* Contact Items */
@@ -365,21 +382,33 @@
     color: #e2e8f0;
     display: flex;
     align-items: center;
-    gap: 8px !important;
-    margin-bottom: 8px !important;
+    gap: 10px !important;
+    margin-bottom: 10px !important;
+    transition: transform 0.25s ease;
+  }
+
+  .contact-info-item-pro:hover {
+    transform: translateX(4px);
   }
 
   .contact-info-item-pro i {
-    width: 28px !important;
-    height: 28px !important;
-    min-width: 28px !important;
-    border-radius: 7px !important;
-    background: rgba(245, 158, 11, 0.15) !important;
-    color: #fd7e14 !important;
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    border-radius: 8px !important;
+    background: rgba(249, 115, 22, 0.15) !important;
+    color: #f97316 !important;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 13px !important;
+    transition: all 0.3s ease;
+  }
+
+  .contact-info-item-pro:hover i {
+    background: #f97316 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
   }
 
   .contact-info-item-pro a {
@@ -389,7 +418,7 @@
   }
 
   .contact-info-item-pro a:hover {
-    color: #fd7e14 !important;
+    color: #f97316 !important;
   }
 
   /* JOIN US NOW Footer Button */
@@ -398,28 +427,29 @@
     align-items: center;
     justify-content: center;
     gap: 7px;
-    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
-    color: #0F172A !important;
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
     font-size: 12.5px !important;
     font-weight: 800;
-    padding: 9px 22px !important;
+    padding: 10px 24px !important;
     border-radius: 30px;
-    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35) !important;
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4) !important;
     text-decoration: none !important;
-    margin-top: 8px !important;
+    margin-top: 10px !important;
     transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .btn-join-now-footer:hover {
-    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
     color: #ffffff !important;
-    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.4) !important;
-    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(234, 88, 12, 0.55) !important;
+    transform: translateY(-2px) scale(1.02);
   }
 
   /* Bottom Footer Bar */
   .site-footer .bottom-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: #060b1b !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     padding: 16px 0 !important;
   }
 
@@ -443,11 +473,11 @@
     font-weight: 700;
     letter-spacing: 0.5px;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   .legal-list a:hover {
-    color: #fd7e14 !important;
+    color: #f97316 !important;
   }
 
   /* Mobile Responsive Tweaks */

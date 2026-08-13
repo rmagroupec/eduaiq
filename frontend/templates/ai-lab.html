@@ -5,6 +5,206 @@
 
 {% block description %}Explore the EduAiQ AI Lab — hands-on AI-powered learning tools, adaptive assessments, and practical projects that help students and institutions build real, job-ready AI skills.{% endblock %}
 
+{% block css %}
+<style>
+    /* EduAiQ AI Lab Page - Logo Theme Alignment */
+    .title-divider, .title-divider-center {
+        background-color: #ea580c !important;
+    }
+
+    .about-section .about-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+        margin-bottom: 24px !important;
+    }
+
+    /* Counter Cards */
+    .counter-inner {
+        margin-top: 40px !important;
+    }
+    .counter-item {
+        background: #ffffff !important;
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 24px 16px !important;
+        box-shadow: 0 6px 20px rgba(234, 88, 12, 0.05) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-align: center;
+    }
+    .counter-item:hover {
+        transform: translateY(-4px) !important;
+        border-color: #f97316 !important;
+        box-shadow: 0 12px 28px rgba(234, 88, 12, 0.15) !important;
+    }
+    .counter-no {
+        color: #ea580c !important;
+        font-weight: 800 !important;
+        font-size: 2.2rem !important;
+        line-height: 1 !important;
+        margin-bottom: 8px !important;
+    }
+    .Completed {
+        color: #334155 !important;
+        font-weight: 700 !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Feature Cards */
+    .home-feature-section {
+        padding: 70px 0 !important;
+        background-color: #f8fafc !important;
+    }
+    .feature-section-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+    }
+    .feature-wrapper {
+        margin-top: 40px !important;
+    }
+    .feature-type {
+        background: #ffffff !important;
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 32px 24px !important;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative;
+    }
+    .feature-type:hover {
+        transform: translateY(-5px) !important;
+        border-color: #f97316 !important;
+        box-shadow: 0 14px 32px rgba(234, 88, 12, 0.18) !important;
+    }
+    .feature-icon {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        width: 64px !important;
+        height: 64px !important;
+        line-height: 64px !important;
+        border-radius: 18px !important;
+        box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35) !important;
+        margin-bottom: 20px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.5rem !important;
+    }
+    .feature-icon .meta-no {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+    }
+    .feature-heading {
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        margin-bottom: 12px !important;
+    }
+    .right-arrow-link {
+        color: #ea580c !important;
+        font-weight: 700 !important;
+        transition: transform 0.3s ease !important;
+    }
+    .feature-type:hover .right-arrow-link {
+        transform: translateX(6px) !important;
+        color: #c2410c !important;
+    }
+
+    /* Why Choose AI Lab Section */
+    .home-service {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+        color: #ffffff !important;
+        padding: 80px 0 !important;
+    }
+    .home-service h2 {
+        color: #ffffff !important;
+        font-weight: 800 !important;
+    }
+    .course-type {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 18px !important;
+        padding: 20px !important;
+        transition: all 0.3s ease !important;
+    }
+    .course-type:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: rgba(249, 115, 22, 0.4) !important;
+        transform: translateY(-3px) !important;
+    }
+    .course-icon i {
+        color: #f97316 !important;
+    }
+    .course-title a {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        transition: color 0.2s ease !important;
+    }
+    .course-title a:hover {
+        color: #fed7aa !important;
+    }
+    .course-form {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 20px !important;
+        padding: 24px !important;
+    }
+    .course-form h3 {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 1.15rem !important;
+        margin-bottom: 16px !important;
+    }
+    .course-field input {
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 12px !important;
+        background: rgba(15, 23, 42, 0.7) !important;
+        color: #ffffff !important;
+        padding: 10px 16px !important;
+    }
+    .course-field input:focus {
+        border-color: #f97316 !important;
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.25) !important;
+        outline: none !important;
+    }
+
+    /* Buttons */
+    .button-round-primary, .button-round-secondary {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        border-radius: 50rem !important;
+        padding: 12px 28px !important;
+        box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-transform: uppercase !important;
+        border: none !important;
+        text-decoration: none !important;
+        display: inline-block !important;
+    }
+    .button-round-primary:hover, .button-round-secondary:hover {
+        transform: translateY(-2px) scale(1.02) !important;
+        box-shadow: 0 10px 28px rgba(234, 88, 12, 0.55) !important;
+        color: #ffffff !important;
+    }
+
+    /* Fact Section / Call to Action */
+    .home-fact-section {
+        padding: 80px 0 !important;
+        background-color: #ffffff !important;
+    }
+    .fact-section-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+    }
+    .fact-list ul li {
+        color: #334155 !important;
+        font-weight: 600 !important;
+    }
+    .fact-list ul li::before {
+        color: #ea580c !important;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <section class="inner-banner-wrap">
 <div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
@@ -43,8 +243,9 @@
 </div>
 </div>
 <div class="counter-inner">
-<div class="counter-item-wrap row">
-<div class="col-lg-3 col-sm-6 counter-item">
+<div class="counter-item-wrap row g-3">
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
 <div class="counter-no">
 <span class="counter">20</span>+
                                 </div>
@@ -52,7 +253,9 @@
                                     AI Lab Modules
                                 </div>
 </div>
-<div class="col-lg-3 col-sm-6 counter-item">
+</div>
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
 <div class="counter-no">
 <span class="counter">12</span>k+
                                 </div>
@@ -60,7 +263,9 @@
                                     Learners Trained
                                 </div>
 </div>
-<div class="col-lg-3 col-sm-6 counter-item">
+</div>
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
 <div class="counter-no">
 <span class="counter">98</span>%
                                 </div>
@@ -68,13 +273,16 @@
                                     Hands-On Projects
                                 </div>
 </div>
-<div class="col-lg-3 col-sm-6 counter-item">
+</div>
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
 <div class="counter-no">
 <span class="counter">24</span>/7
                                 </div>
 <span class="Completed">
                                     AI Mentor Support
                                 </span>
+</div>
 </div>
 </div>
 </div>
@@ -102,7 +310,7 @@
 <h4 class="feature-heading">AI Fundamentals</h4>
 <p class="feature-info">Core concepts in machine learning and generative AI, taught
                                 through interactive lessons instead of dense theory.</p>
-<a class="right-arrow-link" href="/page/ai-books/">
+<a class="right-arrow-link" href="/ai-books/">
 <i class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -114,7 +322,7 @@
 <h4 class="feature-heading">Hands-On Projects</h4>
 <p class="feature-info">Build chatbots, prediction models, and automation tools using
                                 real datasets — every module ends with a working project.</p>
-<a class="right-arrow-link" href="/page/skill-development/">
+<a class="right-arrow-link" href="/skill-development/">
 <i class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -152,7 +360,7 @@
 <i aria-hidden="true" class="fas fa-hard-hat"></i>
 </div>
 <h4 class="course-title">
-<a href="/page/ai-lab/">Industry-Aligned Curriculum</a>
+<a href="/ai-lab/">Industry-Aligned Curriculum</a>
 </h4>
 <p class="course-durations">Updated every semester</p>
 </div>
@@ -161,7 +369,7 @@
 <i aria-hidden="true" class="fas fa-palette"></i>
 </div>
 <h4 class="course-title">
-<a href="/page/ai-lab/">Cloud-Based Lab Access</a>
+<a href="/ai-lab/">Cloud-Based Lab Access</a>
 </h4>
 <p class="course-durations">Learn from any device</p>
 </div>
@@ -170,7 +378,7 @@
 <i aria-hidden="true" class="fas fa-microscope"></i>
 </div>
 <h4 class="course-title">
-<a href="/page/ai-lab/">Real Datasets &amp; Tools</a>
+<a href="/ai-lab/">Real Datasets &amp; Tools</a>
 </h4>
 <p class="course-durations">Not simulations</p>
 </div>
@@ -181,7 +389,7 @@
 <i aria-hidden="true" class="fas fa-comments"></i>
 </div>
 <h4 class="course-title">
-<a href="/page/ai-lab/">Mentor-Led Sessions</a>
+<a href="/ai-lab/">Mentor-Led Sessions</a>
 </h4>
 <p class="course-durations">Live doubt-clearing</p>
 </div>
@@ -190,25 +398,25 @@
 <i aria-hidden="true" class="fas fa-certificate"></i>
 </div>
 <h4 class="course-title">
-<a href="/page/ai-lab/">Certification On Completion</a>
+<a href="/ai-lab/">Certification On Completion</a>
 </h4>
 <p class="course-durations">Shareable credentials</p>
 </div>
 <div class="course-form">
 <h3>Get Free Access! Book Your AI Lab Seat Now.</h3>
 <div class="course-field">
-<div class="row">
+<div class="row g-2">
 <div class="col-sm-6">
 <input name="name" placeholder="Your Name.." type="text"/>
 </div>
 <div class="col-sm-6">
-<input name="name" placeholder="Your Email.." type="email"/>
+<input name="email" placeholder="Your Email.." type="email"/>
 </div>
 <div class="col-sm-7">
-<input name="name" placeholder="Your Subject.." type="text"/>
+<input name="subject" placeholder="Your Subject / Interest.." type="text"/>
 </div>
 <div class="col-sm-5">
-<button class="button-round-secondary" type="submit">BOOK SEAT</button>
+<button class="button-round-secondary w-100" type="submit">BOOK SEAT</button>
 </div>
 </div>
 </div>
@@ -238,8 +446,7 @@
 </ul>
 </div>
 <div class="service-btn">
-<a class="button-round-secondary" href="https://rzp.io/rzp/azhKQ22i">REGISTER TO
-                                        JOIN US</a>
+<a class="button-round-secondary" href="https://rzp.io/rzp/azhKQ22i" target="_blank">REGISTER TO JOIN US</a>
 </div>
 </div>
 </div>
@@ -251,11 +458,4 @@
 </div>
 </div>
 </section>
-{% endblock %}
-
-{% block js %}
-    <script src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-    <script>
-(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'a1f05cf79cf09787',t:'MTc4NDcwMTQ3NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();
-    </script>
 {% endblock %}

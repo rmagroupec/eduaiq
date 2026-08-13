@@ -5,6 +5,184 @@
 
 {% block description %}Pay your EduAiQ course fee, Olympiad fee, or franchise application fee securely online via Razorpay — UPI, cards, and net banking supported.{% endblock %}
 
+{% block css %}
+<style>
+    /* EduAiQ Pay Fee Page - Logo Theme Alignment */
+    .inner-baner-container:before {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.88) 60%, rgba(234, 88, 12, 0.82) 100%) !important;
+    }
+    .inner-baner-container .inner-title {
+        font-weight: 800 !important;
+        letter-spacing: 0.5px;
+        text-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .checkout-section {
+        padding-top: 60px;
+        padding-bottom: 90px;
+    }
+
+    .cheakout-title, .Information-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+        font-size: 1.25rem !important;
+        position: relative;
+        padding-bottom: 12px;
+        margin-bottom: 24px !important;
+        border-bottom: 2px solid #ffedd5 !important;
+    }
+
+    .cheakout-title::after, .Information-title::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 50px;
+        height: 2px;
+        background-color: #ea580c !important;
+    }
+
+    .checkout-field-wrap, .special-notes-wrap {
+        background: #ffffff !important;
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 30px !important;
+        box-shadow: 0 8px 30px rgba(15, 23, 42, 0.05) !important;
+        margin-bottom: 24px !important;
+    }
+
+    .form-group label {
+        color: #1e293b !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+        margin-bottom: 8px !important;
+    }
+
+    .form-group .label-star {
+        color: #ea580c !important;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        background-color: #f8fafc !important;
+        padding: 12px 18px !important;
+        font-size: 0.95rem !important;
+        color: #0f172a !important;
+        transition: all 0.25s ease !important;
+        width: 100% !important;
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        border-color: #f97316 !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15) !important;
+        outline: none !important;
+    }
+
+    .widget-bg {
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 24px !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05) !important;
+        margin-bottom: 24px !important;
+    }
+
+    .widget-table-summary th {
+        color: #ea580c !important;
+        font-weight: 700 !important;
+        padding-bottom: 12px;
+        border-bottom: 1.5px solid #ffedd5;
+    }
+
+    .widget-table-summary td {
+        padding: 12px 0;
+        color: #334155;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .custom-radio-field label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        color: #0f172a;
+        cursor: pointer;
+    }
+
+    .custom-radio-field input[type="radio"] {
+        accent-color: #ea580c !important;
+        width: 18px !important;
+        height: 18px !important;
+    }
+
+    .button-round-secondary, .btn-pay-fee-submit {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        font-size: 1rem !important;
+        letter-spacing: 0.5px;
+        border-radius: 50rem !important;
+        padding: 16px 28px !important;
+        box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-transform: uppercase !important;
+        border: none !important;
+        text-decoration: none !important;
+    }
+
+    .button-round-secondary:hover, .btn-pay-fee-submit:hover {
+        transform: translateY(-2px) scale(1.02) !important;
+        box-shadow: 0 10px 28px rgba(234, 88, 12, 0.55) !important;
+        color: #ffffff !important;
+    }
+
+    .need-help-widget {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+        border: 1.5px solid #334155 !important;
+        border-radius: 20px !important;
+        padding: 24px !important;
+        color: #ffffff !important;
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.15) !important;
+        margin-top: 24px;
+    }
+
+    .need-help-widget .bg-title {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        padding: 6px 16px !important;
+        border-radius: 50rem !important;
+        display: inline-block !important;
+        font-weight: 700 !important;
+        font-size: 0.85rem !important;
+        margin-bottom: 16px !important;
+    }
+
+    .need-help-widget ul {
+        list-style: none !important;
+        padding-left: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    .need-help-widget ul li {
+        margin-bottom: 10px;
+    }
+
+    .need-help-widget ul li a {
+        color: #fed7aa !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease !important;
+        text-decoration: none !important;
+    }
+
+    .need-help-widget ul li a:hover {
+        color: #ffffff !important;
+        padding-left: 4px;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <section class="inner-banner-wrap">
 <div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
@@ -89,37 +267,24 @@
 <table>
 <thead>
 <tr>
-<th>
-                                                    Item
-                                                </th>
-<th class="text-right">
-                                                    Amount
-                                                </th>
+<th>Item</th>
+<th class="text-right">Amount</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>
-                                                    Selected category
-                                                </td>
-<td class="text-right">
-                                                    As applicable
-                                                </td>
+<td>Selected category</td>
+<td class="text-right">As applicable</td>
 </tr>
 <tr>
-<td>
-<strong>Total Payable</strong>
-</td>
-<td class="text-right">
-<strong>Confirmed on payment screen</strong>
-</td>
+<td><strong>Total Payable</strong></td>
+<td class="text-right"><strong style="color: #ea580c;">Confirmed on payment screen</strong></td>
 </tr>
 </tbody>
 </table>
-<p style="font-size: 13px; color: #787878; margin-top: 15px; margin-bottom: 0;">
-                                        Exact fee amounts vary by course, olympiad level, or program. The final
-                                        amount is confirmed on the secure payment screen before you pay.
-                                    </p>
+<p style="font-size: 13px; color: #64748b; margin-top: 15px; margin-bottom: 0;">
+    Exact fee amounts vary by course, olympiad level, or program. The final amount is confirmed on the secure payment screen before you pay.
+</p>
 </div>
 <div class="widget-bg widget-paymet-bank">
 <div class="payment-wrap">
@@ -129,28 +294,27 @@
 <label>
 <input checked="" name="pay_method" type="radio" value="razorpay"/>
 <span class="radio-field"></span>
-                                                    UPI / Cards / Net Banking (via Razorpay)
-                                                </label>
+UPI / Cards / Net Banking (via Razorpay)
+</label>
 </div>
-<div class="desc">
-                                                Secure payment processed by Razorpay. You'll receive a payment
-                                                confirmation by email and SMS once your transaction is complete.
-                                            </div>
+<div class="desc" style="font-size: 13px; color: #64748b; margin-top: 8px; margin-bottom: 20px;">
+    Secure payment processed by Razorpay. You'll receive a payment confirmation by email and SMS once your transaction is complete.
+</div>
 </div>
 </div>
 <a class="button-round-secondary" href="https://rzp.io/rzp/azhKQ22i" style="display:block; text-align:center;">PROCEED TO PAY</a>
 </div>
-<div class="icon-list-content widget-bg" style="background-color:#41246D; margin-top: 30px;">
-<h5 class="bg-title" style="background-color:#ffffff;color:#111111;">Need Help?</h5>
+<div class="need-help-widget">
+<h5 class="bg-title">Need Help?</h5>
 <ul>
 <li>
-<a href="/page/support/">Visit the Support page</a>
+<a href="/page/support/"><i class="fas fa-chevron-right me-2 text-warning"></i> Visit the Support page</a>
 </li>
 <li>
-<a href="/contact/">Contact Us directly</a>
+<a href="/contact/"><i class="fas fa-chevron-right me-2 text-warning"></i> Contact Us directly</a>
 </li>
 <li>
-<a href="tel:+918052350041">Call +91 8052350041</a>
+<a href="tel:+918052350041"><i class="fas fa-phone-alt me-2 text-warning"></i> Call +91 8052350041</a>
 </li>
 </ul>
 </div>

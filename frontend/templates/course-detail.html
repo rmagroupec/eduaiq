@@ -218,7 +218,7 @@
           <div class="sidebar-card-pro">
             <div class="price-display-wrap">
               <span id="sidebarPrice" class="price-main">₹-</span>
-              <span class="badge bg-success-subtle text-success font-weight-bold px-3 py-1 rounded-pill ms-auto" style="font-size: 12px;">BEST VALUE</span>
+              <span class="badge-best-value ms-auto">BEST VALUE</span>
             </div>
             
             <button id="enrollBtn" class="btn-enroll-pro-cta">
@@ -714,11 +714,16 @@
     margin-bottom: 20px;
   }
 
-  .price-main {
-    font-size: 36px;
-    font-weight: 900;
-    color: #1e293b;
-    letter-spacing: -1px;
+  .badge-best-value {
+    background: rgba(249, 115, 22, 0.12);
+    color: #ea580c !important;
+    border: 1px solid rgba(249, 115, 22, 0.35);
+    font-weight: 800;
+    padding: 5px 14px;
+    border-radius: 30px;
+    font-size: 11.5px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
   }
 
   .btn-enroll-pro-cta {
@@ -727,26 +732,27 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    font-size: 15px;
+    font-size: 14.5px;
     font-weight: 800;
     color: #ffffff !important;
-    background: linear-gradient(135deg, #f6a055 0%, #f97316 100%);
-    padding: 14px 28px;
-    border-radius: 50px;
-    box-shadow: 0 8px 25px rgba(249, 115, 22, 0.35);
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    padding: 14px 24px;
+    border-radius: 50rem;
+    box-shadow: 0 8px 24px rgba(249, 115, 22, 0.38);
     border: none;
     cursor: pointer;
     transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    margin-bottom: 24px;
+    margin-bottom: 14px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     text-decoration: none !important;
   }
 
   .btn-enroll-pro-cta:hover {
-    background: linear-gradient(135deg, #ea580c 0%, #d97706 100%);
-    box-shadow: 0 12px 30px rgba(249, 115, 22, 0.55);
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+    box-shadow: 0 12px 30px rgba(234, 88, 12, 0.55);
     transform: translateY(-3px) scale(1.01);
+    color: #ffffff !important;
   }
 
   .btn-login-access-pill {
@@ -755,28 +761,40 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    font-size: 15.5px;
-    font-weight: 800;
-    color: #1e293b !important;
-    background: linear-gradient(135deg, #f6a055 0%, #f97316 100%) !important;
-    border: 2px solid #1e293b !important;
-    padding: 13px 26px !important;
-    border-radius: 50px !important;
-    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.35) !important;
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+    border: 1.5px solid rgba(249, 115, 22, 0.4) !important;
+    padding: 13px 22px !important;
+    border-radius: 50rem !important;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.22) !important;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    margin-bottom: 16px;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    margin-bottom: 12px;
     text-transform: none;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
     text-decoration: none !important;
   }
 
   .btn-login-access-pill:hover {
-    background: #1e293b !important;
-    color: #f6a055 !important;
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
     border-color: #f97316 !important;
-    box-shadow: 0 10px 25px rgba(30, 41, 59, 0.4) !important;
+    box-shadow: 0 12px 28px rgba(234, 88, 12, 0.45) !important;
     transform: translateY(-3px) scale(1.01) !important;
+  }
+
+  .alert-access-info {
+    background: #fff7ed;
+    border: 1px dashed rgba(249, 115, 22, 0.35);
+    color: #c2410c;
+    border-radius: 14px;
+    padding: 10px 16px;
+    font-size: 12.5px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 18px;
   }
 
   .btn-enroll-pro-cta i {
@@ -1348,27 +1366,27 @@
         `;
       } else {
         if (!isLoggedIn) {
-          enrollBtn.innerHTML = `💳 Pay & Buy Course (₹${course.price})`;
+          enrollBtn.innerHTML = `<i class="fas fa-credit-card me-1.5"></i> Pay & Buy Course (₹${course.price})`;
           enrollBtn.className = 'btn-enroll-pro-cta w-100 mb-2';
           enrollBtn.onclick = () => openPaymentModal(course);
           
           document.getElementById('enrollmentStatus').innerHTML = `
             <button class="btn-login-access-pill w-100 mb-2" onclick="window.location.href='/login/?next=/course/?slug=${course.slug}'">
-              🔒 Login with Institution Account
+              <i class="fas fa-university me-1.5" style="color: #f97316;"></i> Login with Institution Account
             </button>
-            <div class="alert alert-warning py-2 text-center mt-2" style="font-size: 12px; border-radius: 12px; background: #fff7ed; border-color: #ffedd5; color: #9a3412;">
-              LogIn or Pay to unlock complete course access.
+            <div class="alert-access-info py-2 text-center mt-2">
+              <i class="fas fa-lock me-1"></i> Login or Pay to unlock complete course access.
             </div>
           `;
         } else {
-          enrollBtn.innerHTML = `💳 Pay & Enroll Now (₹${course.price})`;
+          enrollBtn.innerHTML = `<i class="fas fa-credit-card me-1.5"></i> Pay & Enroll Now (₹${course.price})`;
           enrollBtn.className = 'btn-enroll-pro-cta w-100 mb-2';
           enrollBtn.disabled = false;
           enrollBtn.onclick = () => openPaymentModal(course);
 
           document.getElementById('enrollmentStatus').innerHTML = `
-            <div class="alert alert-info py-2 text-center" style="font-size: 12px; border-radius: 12px;">
-              Course not yet unlocked. Click above to Pay ₹${course.price} & Enroll.
+            <div class="alert-access-info py-2 text-center mt-2">
+              <i class="fas fa-info-circle me-1"></i> Course not yet unlocked. Click above to Pay ₹${course.price} & Enroll.
             </div>
           `;
         }

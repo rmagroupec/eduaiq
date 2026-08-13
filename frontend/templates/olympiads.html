@@ -5,6 +5,206 @@
 
 {% block description %}EduAiQ Olympiads test and reward student skill in Math, Science, and AI through structured competitions, certificates, and prizes — open to schools across India.{% endblock %}
 
+{% block css %}
+<style>
+    /* EduAiQ Olympiads Page - Logo Theme Alignment */
+    .title-divider, .title-divider-center {
+        background-color: #ea580c !important;
+    }
+
+    .about-section .about-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+        margin-bottom: 24px !important;
+    }
+
+    /* Counter Cards */
+    .counter-inner {
+        margin-top: 40px !important;
+    }
+    .counter-item {
+        background: #ffffff !important;
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 24px 16px !important;
+        box-shadow: 0 6px 20px rgba(234, 88, 12, 0.05) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-align: center;
+    }
+    .counter-item:hover {
+        transform: translateY(-4px) !important;
+        border-color: #f97316 !important;
+        box-shadow: 0 12px 28px rgba(234, 88, 12, 0.15) !important;
+    }
+    .counter-no {
+        color: #ea580c !important;
+        font-weight: 800 !important;
+        font-size: 2.2rem !important;
+        line-height: 1 !important;
+        margin-bottom: 8px !important;
+    }
+    .Completed {
+        color: #334155 !important;
+        font-weight: 700 !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Subject Feature Cards */
+    .home-feature-section {
+        padding: 70px 0 !important;
+        background-color: #f8fafc !important;
+    }
+    .feature-section-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+    }
+    .feature-wrapper {
+        margin-top: 40px !important;
+    }
+    .feature-type {
+        background: #ffffff !important;
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 32px 24px !important;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative;
+    }
+    .feature-type:hover {
+        transform: translateY(-5px) !important;
+        border-color: #f97316 !important;
+        box-shadow: 0 14px 32px rgba(234, 88, 12, 0.18) !important;
+    }
+    .feature-icon {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        width: 64px !important;
+        height: 64px !important;
+        line-height: 64px !important;
+        border-radius: 18px !important;
+        box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35) !important;
+        margin-bottom: 20px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.5rem !important;
+    }
+    .feature-icon .meta-no {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+    }
+    .feature-heading {
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        margin-bottom: 12px !important;
+    }
+    .right-arrow-link {
+        color: #ea580c !important;
+        font-weight: 700 !important;
+        transition: transform 0.3s ease !important;
+    }
+    .feature-type:hover .right-arrow-link {
+        transform: translateX(6px) !important;
+        color: #c2410c !important;
+    }
+
+    /* How to Take Part Section */
+    .home-service {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+        color: #ffffff !important;
+        padding: 80px 0 !important;
+    }
+    .home-service h2 {
+        color: #ffffff !important;
+        font-weight: 800 !important;
+    }
+    .course-type {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 18px !important;
+        padding: 20px !important;
+        transition: all 0.3s ease !important;
+    }
+    .course-type:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: rgba(249, 115, 22, 0.4) !important;
+        transform: translateY(-3px) !important;
+    }
+    .course-icon i {
+        color: #f97316 !important;
+    }
+    .course-title a {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        transition: color 0.2s ease !important;
+    }
+    .course-title a:hover {
+        color: #fed7aa !important;
+    }
+    .course-form {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 20px !important;
+        padding: 24px !important;
+    }
+    .course-form h3 {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 1.15rem !important;
+        margin-bottom: 16px !important;
+    }
+    .course-field input {
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 12px !important;
+        background: rgba(15, 23, 42, 0.7) !important;
+        color: #ffffff !important;
+        padding: 10px 16px !important;
+    }
+    .course-field input:focus {
+        border-color: #f97316 !important;
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.25) !important;
+        outline: none !important;
+    }
+
+    /* Buttons Styling */
+    .button-round-primary, .button-round-secondary {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        border-radius: 50rem !important;
+        padding: 12px 28px !important;
+        box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-transform: uppercase !important;
+        border: none !important;
+        text-decoration: none !important;
+        display: inline-block !important;
+    }
+    .button-round-primary:hover, .button-round-secondary:hover {
+        transform: translateY(-2px) scale(1.02) !important;
+        box-shadow: 0 10px 28px rgba(234, 88, 12, 0.55) !important;
+        color: #ffffff !important;
+    }
+
+    /* Fact Section / Call to Action */
+    .home-fact-section {
+        padding: 80px 0 !important;
+        background-color: #ffffff !important;
+    }
+    .fact-section-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+    }
+    .fact-list ul li {
+        color: #334155 !important;
+        font-weight: 600 !important;
+    }
+    .fact-list ul li::before {
+        color: #ea580c !important;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <section class="inner-banner-wrap">
 <div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
@@ -43,8 +243,9 @@
 </div>
 </div>
 <div class="counter-inner">
-<div class="counter-item-wrap row">
-<div class="col-lg-3 col-sm-6 counter-item">
+<div class="counter-item-wrap row g-3">
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
 <div class="counter-no">
 <span class="counter">3</span>
 </div>
@@ -52,7 +253,9 @@
                                     Olympiad Subjects
                                 </div>
 </div>
-<div class="col-lg-3 col-sm-6 counter-item">
+</div>
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
 <div class="counter-no">
 <span class="counter">22</span>k+
                                 </div>
@@ -60,7 +263,9 @@
                                     Students Registered
                                 </div>
 </div>
-<div class="col-lg-3 col-sm-6 counter-item">
+</div>
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
 <div class="counter-no">
 <span class="counter">400</span>+
                                 </div>
@@ -68,13 +273,16 @@
                                     Participating Schools
                                 </div>
 </div>
-<div class="col-lg-3 col-sm-6 counter-item">
+</div>
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
 <div class="counter-no">
 <span class="counter">2</span>
 </div>
 <span class="Completed">
                                     Olympiad Cycles Per Year
                                 </span>
+</div>
 </div>
 </div>
 </div>
@@ -102,7 +310,7 @@
 <h4 class="feature-heading">Math Olympiad</h4>
 <p class="feature-info">Logic, arithmetic, and problem-solving levels from primary
                                 school through senior secondary.</p>
-<a class="right-arrow-link" href="/page/olympiad-curriculum/">
+<a class="right-arrow-link" href="/olympiad-curriculum/">
 <i class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -114,7 +322,7 @@
 <h4 class="feature-heading">Science Olympiad</h4>
 <p class="feature-info">Physics, chemistry, and biology fundamentals with an emphasis
                                 on applied reasoning over rote recall.</p>
-<a class="right-arrow-link" href="/page/olympiad-curriculum/">
+<a class="right-arrow-link" href="/olympiad-curriculum/">
 <i class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -126,7 +334,7 @@
 <h4 class="feature-heading">AI Olympiad</h4>
 <p class="feature-info">Introductory AI concepts and logic puzzles — a first taste of
                                 the skills built out further in the AI Lab.</p>
-<a class="right-arrow-link" href="/page/ai-lab/">
+<a class="right-arrow-link" href="/ai-lab/">
 <i class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -144,7 +352,7 @@
 <div class="title-divider"></div>
 <h2>How To Take Part</h2>
 <div class="service-btn">
-<a class="button-round-primary" href="/page/olympiad-form/">OLYMPIAD FORM</a>
+<a class="button-round-primary" href="/olympiad-form/">OLYMPIAD FORM</a>
 </div>
 </div>
 <div class="course-type">
@@ -152,7 +360,7 @@
 <i aria-hidden="true" class="fas fa-certificate"></i>
 </div>
 <h4 class="course-title">
-<a href="/page/olympiad-form/">Register</a>
+<a href="/olympiad-form/">Register</a>
 </h4>
 <p class="course-durations">Individually or via school</p>
 </div>
@@ -161,7 +369,7 @@
 <i aria-hidden="true" class="fas fa-book"></i>
 </div>
 <h4 class="course-title">
-<a href="/page/olympiad-curriculum/">Prepare</a>
+<a href="/olympiad-curriculum/">Prepare</a>
 </h4>
 <p class="course-durations">Fixed curriculum, no surprises</p>
 </div>
@@ -170,7 +378,7 @@
 <i class="fas fa-laptop-code"></i>
 </div>
 <h4 class="course-title">
-<a href="/page/olympiads/">Take The Exam</a>
+<a href="/olympiads/">Take The Exam</a>
 </h4>
 <p class="course-durations">Online, at a scheduled time</p>
 </div>
@@ -181,7 +389,7 @@
 <i aria-hidden="true" class="fas fa-certificate"></i>
 </div>
 <h4 class="course-title">
-<a href="/page/olympiads/">Get Results &amp; Certificate</a>
+<a href="/olympiads/">Get Results &amp; Certificate</a>
 </h4>
 <p class="course-durations">Detailed performance report</p>
 </div>
@@ -190,25 +398,25 @@
 <i aria-hidden="true" class="fas fa-comments"></i>
 </div>
 <h4 class="course-title">
-<a href="/page/skill-development/">Continue Learning</a>
+<a href="/skill-development/">Continue Learning</a>
 </h4>
 <p class="course-durations">Top scorers earn scholarships</p>
 </div>
 <div class="course-form">
 <h3>Registering A School? Talk To Us First.</h3>
 <div class="course-field">
-<div class="row">
+<div class="row g-2">
 <div class="col-sm-6">
 <input name="name" placeholder="Your Name.." type="text"/>
 </div>
 <div class="col-sm-6">
-<input name="name" placeholder="Your Email.." type="email"/>
+<input name="email" placeholder="Your Email.." type="email"/>
 </div>
 <div class="col-sm-7">
-<input name="name" placeholder="School / Institution Name.." type="text"/>
+<input name="institution" placeholder="School / Institution Name.." type="text"/>
 </div>
 <div class="col-sm-5">
-<button class="button-round-secondary" type="submit">GET DETAILS</button>
+<button class="button-round-secondary w-100" type="submit">GET DETAILS</button>
 </div>
 </div>
 </div>
@@ -238,8 +446,7 @@
 </ul>
 </div>
 <div class="service-btn">
-<a class="button-round-secondary" href="/page/olympiad-form/">FILL OLYMPIAD
-                                        FORM</a>
+<a class="button-round-secondary" href="/olympiad-form/">FILL OLYMPIAD FORM</a>
 </div>
 </div>
 </div>

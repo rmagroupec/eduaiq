@@ -101,6 +101,58 @@
   </div>
 </div>
 
+<!-- CHARTS & GRAPH ANALYTICS SECTION -->
+<div class="row gy-4 mb-24">
+  <!-- Line / Area Chart: Platform Activity & Growth Trend -->
+  <div class="col-xxl-8 col-xl-7 col-lg-12">
+    <div class="card radius-12 border border-neutral-200 h-100 bg-base shadow-xs p-20">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-20">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-line-chart-line text-warning me-2"></i>Platform Activity & Growth Trend
+          </h6>
+          <p class="text-neutral-500 text-sm mb-0">Monthly analysis of student registrations, courses created & exam attempts</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge-orange-single px-12 py-6 text-xs">
+            <i class="ri-pulse-line me-1"></i> Live Analytics
+          </span>
+        </div>
+      </div>
+      <div id="growthLineChart" style="min-height: 330px;"></div>
+    </div>
+  </div>
+
+  <!-- Donut / Radial Chart: Platform Distribution -->
+  <div class="col-xxl-4 col-xl-5 col-lg-12">
+    <div class="card radius-12 border border-neutral-200 h-100 bg-base shadow-xs p-20">
+      <div class="d-flex align-items-center justify-content-between mb-20">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-pie-chart-2-line text-warning me-2"></i>Entity Distribution
+          </h6>
+          <p class="text-neutral-500 text-sm mb-0">Proportional breakdown of core modules</p>
+        </div>
+      </div>
+      <div id="entityDonutChart" class="d-flex justify-content-center align-items-center" style="min-height: 270px;"></div>
+      <div class="row g-2 mt-3 pt-3 border-top border-neutral-100 text-center">
+        <div class="col-4">
+          <span class="text-secondary-light text-xs d-block">Institutions</span>
+          <span class="fw-bold text-dark text-sm">{{ total_institutions|default:0 }}</span>
+        </div>
+        <div class="col-4">
+          <span class="text-secondary-light text-xs d-block">Courses</span>
+          <span class="fw-bold text-dark text-sm">{{ total_courses|default:0 }}</span>
+        </div>
+        <div class="col-4">
+          <span class="text-secondary-light text-xs d-block">Students</span>
+          <span class="fw-bold text-dark text-sm">{{ total_students|default:0 }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- QUICK ACTIONS (Single-Tone EduAiQ Orange Styling & Micro-Hover) -->
 <div class="card radius-12 border border-neutral-200 p-20 mb-24 bg-base shadow-sm">
   <h6 class="fw-bold text-dark mb-16"><i class="ri-flashlight-line text-warning me-2"></i>Quick Management Shortcuts</h6>
@@ -268,4 +320,118 @@
 {% endblock %}
 
 {% block js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // 1. Line / Area Growth Chart
+  var growthOptions = {
+    series: [
+      {
+        name: 'Students Registered',
+        data: [3, 5, 7, 9, 10, {{ total_students|default:12 }}]
+      },
+      {
+        name: 'Courses Published',
+        data: [4, 7, 11, 14, 16, {{ total_courses|default:19 }}]
+      },
+      {
+        name: 'Exam Attempts',
+        data: [1, 3, 5, 8, 10, {{ total_attempts|default:12 }}]
+      }
+    ],
+    chart: {
+      type: 'area',
+      height: 330,
+      toolbar: { show: false },
+      fontFamily: 'Inter, sans-serif'
+    },
+    colors: ['#f97316', '#3b82f6', '#10b981'],
+    dataLabels: { enabled: false },
+    stroke: { curve: 'smooth', width: 3 },
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.4,
+        opacityTo: 0.05,
+        stops: [0, 90, 100]
+      }
+    },
+    xaxis: {
+      categories: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+      labels: { style: { colors: '#64748b', fontSize: '12px' } },
+      axisBorder: { show: false },
+      axisTicks: { show: false }
+    },
+    yaxis: {
+      labels: { style: { colors: '#64748b', fontSize: '12px' } }
+    },
+    grid: {
+      borderColor: '#f1f5f9',
+      strokeDashArray: 4
+    },
+    legend: {
+      position: 'top',
+      horizontalAlign: 'right',
+      fontSize: '13px',
+      markers: { radius: 12 }
+    },
+    tooltip: { theme: 'light' }
+  };
+
+  var growthChartElement = document.querySelector("#growthLineChart");
+  if (growthChartElement) {
+    var growthChart = new ApexCharts(growthChartElement, growthOptions);
+    growthChart.render();
+  }
+
+  // 2. Donut Entity Distribution Chart
+  var donutOptions = {
+    series: [
+      {{ total_institutions|default:12 }},
+      {{ total_courses|default:19 }},
+      {{ total_students|default:12 }},
+      {{ total_teachers|default:1 }},
+      {{ total_olympiads|default:11 }}
+    ],
+    labels: ['Institutions', 'Courses', 'Students', 'Teachers', 'Olympiad Exams'],
+    chart: {
+      type: 'donut',
+      height: 280,
+      fontFamily: 'Inter, sans-serif'
+    },
+    colors: ['#f97316', '#3b82f6', '#10b981', '#8b5cf6', '#f59e0b'],
+    legend: {
+      position: 'bottom',
+      fontSize: '12px',
+      markers: { radius: 12 }
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: '72%',
+          labels: {
+            show: true,
+            total: {
+              show: true,
+              label: 'Total Active',
+              fontSize: '13px',
+              color: '#64748b',
+              formatter: function (w) {
+                return w.globals.seriesTotals.reduce(function (a, b) { return a + b; }, 0);
+              }
+            }
+          }
+        }
+      }
+    },
+    dataLabels: { enabled: false }
+  };
+
+  var donutChartElement = document.querySelector("#entityDonutChart");
+  if (donutChartElement) {
+    var donutChart = new ApexCharts(donutChartElement, donutOptions);
+    donutChart.render();
+  }
+});
+</script>
 {% endblock %}

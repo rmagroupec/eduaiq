@@ -25,6 +25,7 @@ from olympiad.models import (
     OlympiadAttempt,
     OlympiadResult,
 )
+from payments.models import Transaction
 
 User = get_user_model()
 
@@ -906,21 +907,40 @@ def olympiad_entrance_detail(request, pk):
 
 @login_required(login_url='/login/')
 def olympiad_entrance_enroll(request, pk):
-    """Handle student enrollment / registration for an entrance exam"""
+    """Handle student enrollment & payment transaction for an Olympiad entrance exam"""
     exam = get_object_or_404(Olympiad, pk=pk, is_active=True)
     
-    registration, created = OlympiadRegistration.objects.get_or_create(
+    registration = OlympiadRegistration.objects.filter(olympiad=exam, student=request.user).first()
+    if registration:
+        messages.info(request, f"You are already registered for {exam.name}. Roll Number: {registration.roll_number}.")
+        return redirect('olympiad_entrance_detail', pk=pk)
+
+    # Create Payment Transaction if exam fee > 0
+    txn = None
+    if exam.fee > 0:
+        gateway_txn_id = request.POST.get('gateway_txn_id', f"TXN-OLY-{exam.id}-{int(timezone.now().timestamp())}")
+        txn = Transaction.objects.create(
+            source_type='olympiad',
+            reference_id=exam.id,
+            amount=exam.fee,
+            payer=request.user,
+            gateway_txn_id=gateway_txn_id,
+            status='success'
+        )
+
+    roll_no = f"ENT-{exam.id}-{request.user.id}-{int(timezone.now().timestamp()) % 10000}"
+    registration = OlympiadRegistration.objects.create(
         olympiad=exam,
         student=request.user,
-        defaults={
-            'roll_number': f"ENT-{exam.id}-{request.user.id}-{int(timezone.now().timestamp()) % 10000}",
-            'status': 'registered',
-        }
+        roll_number=roll_no,
+        transaction=txn,
+        status='registered'
     )
-    if created:
-        messages.success(request, f"Successfully enrolled in {exam.name}! Your Roll Number is {registration.roll_number}.")
+
+    if exam.fee > 0:
+        messages.success(request, f"🎉 Payment of ₹{exam.fee} Successful! Successfully registered for {exam.name}. Your Roll Number is {registration.roll_number}.")
     else:
-        messages.info(request, f"You are already enrolled in {exam.name}. Roll Number: {registration.roll_number}.")
+        messages.success(request, f"🎉 Successfully registered for {exam.name}! Your Roll Number is {registration.roll_number}.")
     
     return redirect('olympiad_entrance_detail', pk=pk)
 

@@ -3,8 +3,61 @@
 
 {% block title %}Olympiad Curriculum - EduAiQ | Full Syllabus & Exam Pattern{% endblock %}
 
-{% block description %}The full EduAiQ Olympiad Curriculum — syllabus breakdown by subject and grade level, exam
-pattern, marking scheme, and preparation resources for Math, Science, and AI Olympiads.{% endblock %}
+{% block description %}The full EduAiQ Olympiad Curriculum — syllabus breakdown by subject and grade level, exam pattern, marking scheme, and preparation resources for Math, Science, and AI Olympiads.{% endblock %}
+
+{% block css %}
+<style>
+    /* EduAiQ Olympiad Curriculum - Logo Theme Alignment */
+    .title-divider, .title-divider-center {
+        background-color: #ea580c !important;
+    }
+    .about-section .about-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+    }
+    .counter-item {
+        background: #ffffff !important;
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 24px 16px !important;
+        box-shadow: 0 6px 20px rgba(234, 88, 12, 0.05) !important;
+        transition: all 0.35s ease !important;
+        text-align: center;
+    }
+    .counter-item:hover {
+        transform: translateY(-4px) !important;
+        border-color: #f97316 !important;
+        box-shadow: 0 12px 28px rgba(234, 88, 12, 0.15) !important;
+    }
+    .counter-no {
+        color: #ea580c !important;
+        font-weight: 800 !important;
+        font-size: 2.2rem !important;
+    }
+    .need-help-widget {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+        border-radius: 20px !important;
+        padding: 24px !important;
+        color: #ffffff !important;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15) !important;
+    }
+    .need-help-widget .bg-title {
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        margin-bottom: 16px !important;
+    }
+    .need-help-widget ul li a {
+        color: #cbd5e1 !important;
+        font-weight: 600 !important;
+        text-decoration: none !important;
+        transition: all 0.25s ease !important;
+    }
+    .need-help-widget ul li a:hover {
+        color: #f97316 !important;
+        transform: translateX(4px) !important;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <section class="inner-banner-wrap">
@@ -185,17 +238,17 @@ pattern, marking scheme, and preparation resources for Math, Science, and AI Oly
                                     issued to every participant</span></li>
                         </ul>
                     </div>
-                    <div class="icon-list-content widget-bg" style="background-color:#41246D;">
-                        <h5 class="bg-title" style="background-color:#ffffff;color:#111111;">Get Ready</h5>
+                    <div class="need-help-widget">
+                        <h5 class="bg-title">Get Ready</h5>
                         <ul>
                             <li>
-                                <a href="/page/ai-books/">Prep with an AI Book</a>
+                                <a href="/ai-books/"><i class="fas fa-chevron-right me-2 text-warning"></i> Prep with an AI Book</a>
                             </li>
                             <li>
-                                <a href="/page/skill-development/">Build skills in Skill Development</a>
+                                <a href="/skill-development/"><i class="fas fa-chevron-right me-2 text-warning"></i> Build skills in Skill Development</a>
                             </li>
                             <li>
-                                <a href="/page/olympiad-form/">Fill the Olympiad Form</a>
+                                <a href="/olympiad-form/"><i class="fas fa-chevron-right me-2 text-warning"></i> Fill the Olympiad Form</a>
                             </li>
                         </ul>
                     </div>
