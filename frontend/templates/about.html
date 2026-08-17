@@ -91,21 +91,15 @@
         box-shadow: 0 14px 32px rgba(234, 88, 12, 0.18) !important;
     }
     .feature-icon {
-        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
-        color: #ffffff !important;
-        width: 64px !important;
-        height: 64px !important;
-        line-height: 64px !important;
-        border-radius: 18px !important;
-        box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35) !important;
-        margin-bottom: 20px !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        font-size: 1.5rem !important;
+        color: #ea580c !important;
     }
-    .feature-icon .meta-no {
-        background-color: #0f172a !important;
+    .feature-icon i,
+    .feature-type:nth-child(even) .feature-icon i {
+        color: #ea580c !important;
+    }
+    .feature-icon .meta-no,
+    .feature-type:nth-child(even) .feature-icon .meta-no {
+        background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
         color: #ffffff !important;
     }
     .feature-heading {
@@ -113,14 +107,40 @@
         font-weight: 700 !important;
         margin-bottom: 12px !important;
     }
-    .right-arrow-link {
-        color: #ea580c !important;
-        font-weight: 700 !important;
-        transition: transform 0.3s ease !important;
+    .right-arrow-link i {
+        width: 52px !important;
+        height: 52px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 50% !important;
+        background-color: #0F172A !important;
+        border: 2px solid #fd7e14 !important;
+        color: #fd7e14 !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
-    .feature-type:hover .right-arrow-link {
-        transform: translateX(6px) !important;
-        color: #c2410c !important;
+    .feature-type:hover .right-arrow-link i,
+    .right-arrow-link:hover i {
+        background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        border-color: #ea580c !important;
+        transform: scale(1.12) !important;
+        box-shadow: 0 8px 24px rgba(249, 115, 22, 0.45) !important;
+    }
+
+    /* Video Banner & Scroll Top Overrides */
+    .about-right-banner h5 {
+        color: #ea580c !important;
+        font-weight: 800 !important;
+    }
+    .video-button a {
+        background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        box-shadow: 0 8px 24px rgba(249, 115, 22, 0.45) !important;
+    }
+    .video-button a:before,
+    .video-button a:after {
+        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.6) !important;
     }
 
     /* Team Section */
@@ -306,7 +326,7 @@
 <h5 class="meta-no">1</h5>
 <i aria-hidden="true" class="fas fa-robot"></i>
 </div>
-<h4 class="feature-heading">AI-Driven Learning</h4>
+<h4 class="feature-heading"><a href="/ai-lab/" class="text-dark text-decoration-none">AI-Driven Learning</a></h4>
 <p class="feature-info">Hands-on AI Lab projects and adaptive assessments — not just
                                 video lectures.</p>
 <a class="right-arrow-link" href="/ai-lab/">
@@ -318,7 +338,7 @@
 <h5 class="meta-no">2</h5>
 <i aria-hidden="true" class="fas fa-user-graduate"></i>
 </div>
-<h4 class="feature-heading">Expert Mentors</h4>
+<h4 class="feature-heading"><a href="/skill-development/" class="text-dark text-decoration-none">Expert Mentors</a></h4>
 <p class="feature-info">90+ mentors guiding learners through real projects and career
                                 paths, not just grading assignments.</p>
 <a class="right-arrow-link" href="/skill-development/">
@@ -330,7 +350,7 @@
 <h5 class="meta-no">3</h5>
 <i aria-hidden="true" class="fas fa-school"></i>
 </div>
-<h4 class="feature-heading">Built For Institutions</h4>
+<h4 class="feature-heading"><a href="/about/" class="text-dark text-decoration-none">Built For Institutions</a></h4>
 <p class="feature-info">LMS, admission CRM, and campus automation for schools, colleges,
                                 and coaching institutes.</p>
 <a class="right-arrow-link" href="/about/">

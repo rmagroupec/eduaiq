@@ -302,8 +302,156 @@ UPI / Cards / Net Banking (via Razorpay)
 </div>
 </div>
 </div>
-<a class="button-round-secondary" href="https://rzp.io/rzp/azhKQ22i" style="display:block; text-align:center;">PROCEED TO PAY</a>
+<button type="button" class="button-round-secondary w-100" onclick="triggerProductRazorpayPayment()" style="display:block; text-align:center; border:none; width: 100%;">PROCEED TO PAY VIA RAZORPAY</button>
 </div>
+<script>
+function triggerProductRazorpayPayment() {
+  const modalHTML = `
+    <div class="modal fade show" id="rzpProductModal" tabindex="-1" style="display: block; background: rgba(15,23,42,0.85); backdrop-filter: blur(10px); z-index: 1060;">
+      <div class="modal-dialog modal-dialog-centered" style="max-width: 460px;">
+        <div class="modal-content" style="border-radius: 20px; border: 1px solid #0093e9; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.5);">
+          
+          <div style="background: linear-gradient(135deg, #0c2340 0%, #112d4e 100%); color: #fff; padding: 20px 24px; position: relative;">
+            <span class="badge" style="background: rgba(0,180,216,0.2); color: #00b4d8; border: 1px solid rgba(0,180,216,0.4); font-size: 11px; padding: 4px 10px; border-radius: 6px; font-weight: 700;">
+              ⚡ RAZORPAY TEST GATEWAY
+            </span>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <div>
+                <h5 class="fw-bold mb-0 text-white d-flex align-items-center gap-2">
+                  <i class="fas fa-shield-alt" style="color: #00b4d8;"></i>
+                  Razorpay Checkout
+                </h5>
+                <div class="text-white-50 text-xs mt-1">Fee Payment</div>
+              </div>
+              <div class="text-end">
+                <span class="text-white-50 text-xs d-block">Amount</span>
+                <span class="fw-extrabold text-warning fs-4">₹599.00</span>
+              </div>
+            </div>
+            <button type="button" class="btn-close btn-close-white" style="position: absolute; top: 16px; right: 16px;" onclick="document.getElementById('rzpProductModal').remove()"></button>
+          </div>
+
+          <div class="modal-body p-4" style="background: #ffffff;" id="rzpProductBody">
+            <div class="alert alert-info py-2 px-3 radius-10 d-flex align-items-center gap-2 mb-3" style="font-size: 12px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;">
+              <i class="fas fa-info-circle fs-6"></i>
+              <span><strong>Razorpay Test Mode:</strong> Click below to process dummy Razorpay fee payment.</span>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label text-xs fw-bold text-muted text-uppercase mb-2">Payment Method</label>
+              <div class="p-3 border rounded-12 bg-light d-flex align-items-center justify-content-between mb-2">
+                <div class="d-flex align-items-center gap-2">
+                  <input class="form-check-input" type="radio" checked id="simUpiProd">
+                  <label class="form-check-label fw-bold text-dark text-sm mb-0" for="simUpiProd">Razorpay Fast UPI (Test GPay / PhonePe)</label>
+                </div>
+                <span class="fs-5">📱</span>
+              </div>
+              <div class="p-3 border rounded-12 bg-light d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                  <input class="form-check-input" type="radio" id="simCardProd">
+                  <label class="form-check-label fw-bold text-dark text-sm mb-0" for="simCardProd">Razorpay Test Card (4111 •••• 1111)</label>
+                </div>
+                <span class="fs-5">💳</span>
+              </div>
+            </div>
+
+            <button class="btn btn-primary w-100 py-3 fw-bold radius-12 d-flex align-items-center justify-content-center gap-2" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border: none; font-size: 15px;" onclick="completeProductRazorpay()">
+              <i class="fas fa-lock me-1"></i> Pay ₹599.00 via Razorpay (Test)
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  `;
+
+  let existing = document.getElementById('rzpProductModal');
+  if (existing) existing.remove();
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function completeProductRazorpay() {
+  const bodyEl = document.getElementById('rzpProductBody');
+  if (bodyEl) {
+    bodyEl.innerHTML = `
+      <div class="text-center py-4">
+        <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+        <h6 class="fw-bold text-dark mb-1">Processing Razorpay Payment...</h6>
+        <p class="text-muted text-xs">Communicating securely with Razorpay Test Gateway</p>
+      </div>
+    `;
+  }
+
+  setTimeout(() => {
+    const modal = document.getElementById('rzpProductModal');
+    if (modal) modal.remove();
+    const txnId = 'pay_rzp_test_' + Math.random().toString(36).substring(2, 12);
+    
+    const successHTML = `
+      <div class="modal fade show" id="productSuccessModal" tabindex="-1" style="display: block; background: rgba(15,23,42,0.85); backdrop-filter: blur(10px); z-index: 1070;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+          <div class="modal-content text-center p-4" style="border-radius: 24px; border: 1px solid rgba(16,185,129,0.4); box-shadow: 0 25px 60px rgba(0,0,0,0.5); background: #ffffff;">
+            
+            <div class="d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 76px; height: 76px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; border-radius: 50%; box-shadow: 0 10px 25px rgba(16,185,129,0.4);">
+              <i class="fas fa-check" style="font-size: 38px;"></i>
+            </div>
+
+            <h3 class="fw-extrabold text-dark mb-1">🎉 Payment Successful!</h3>
+            <p class="text-muted text-sm mb-3">Your payment was verified and completed via <strong>Razorpay Test Gateway</strong>.</p>
+
+            <div class="card p-3 border-0 radius-16 text-start mb-3" style="background: #f8fafc; border: 1px solid #e2e8f0 !important;">
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted text-xs">Transaction ID:</span>
+                <strong class="text-dark text-xs font-monospace">${txnId}</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted text-xs">Payment Gateway:</span>
+                <span class="badge bg-success text-white text-xs fw-bold" style="background: #10b981 !important;">Razorpay Test Mode</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted text-xs">Amount Paid:</span>
+                <strong class="text-primary text-sm">₹599.00</strong>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted text-xs">Status:</span>
+                <span class="text-success text-xs fw-bold"><i class="fas fa-check-circle me-1"></i> VERIFIED & SUCCESSFUL</span>
+              </div>
+            </div>
+
+            <div class="alert alert-warning py-2 px-3 radius-12 text-xs mb-3 d-flex align-items-center justify-content-center gap-2" style="background: #fffbeb; color: #b45309; border: 1px solid #fde68a;">
+              <i class="fas fa-clock text-warning fs-6"></i>
+              <span>Redirecting to <strong>Login Page</strong> in <strong id="productRedirectSec">3</strong> seconds...</span>
+            </div>
+
+            <div class="d-flex gap-2">
+              <a href="/login/" class="btn btn-primary w-100 py-2.5 radius-12 fw-bold text-sm" style="background: #ea580c; border: none;">
+                <i class="fas fa-sign-in-alt me-1"></i> Go to Public Login
+              </a>
+              <a href="/institution/login/" class="btn btn-outline-dark w-100 py-2.5 radius-12 fw-bold text-sm">
+                <i class="fas fa-building me-1"></i> Institution Login
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', successHTML);
+
+    let timeLeft = 3;
+    const interval = setInterval(() => {
+      timeLeft--;
+      const el = document.getElementById('productRedirectSec');
+      if (el) el.innerText = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        window.location.href = '/login/';
+      }
+    }, 1000);
+  }, 1200);
+}
+</script>
 <div class="need-help-widget">
 <h5 class="bg-title">Need Help?</h5>
 <ul>
@@ -318,7 +466,6 @@ UPI / Cards / Net Banking (via Razorpay)
 </li>
 </ul>
 </div>
-</aside>
 </div>
 </div>
 </div>

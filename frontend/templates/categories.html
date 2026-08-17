@@ -162,14 +162,29 @@
 
   .categories-grid-pro {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 24px;
+  }
+  @media (max-width: 1199px) {
+    .categories-grid-pro {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (max-width: 991px) {
+    .categories-grid-pro {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 575px) {
+    .categories-grid-pro {
+      grid-template-columns: 1fr;
+    }
   }
 
   .category-card-item {
     background: #ffffff;
     border-radius: 20px;
-    border: 1px solid rgba(226, 232, 240, 0.9);
+    border: 1.5px solid #ffedd5;
     box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
     padding: 28px 24px;
     display: flex;
@@ -183,7 +198,7 @@
     cursor: pointer;
   }
 
-  /* Top Gradient Bar on Hover */
+  /* Top Gradient Bar on Hover -> Brand Golden Orange to Midnight Navy */
   .category-card-item::before {
     content: '';
     position: absolute;
@@ -192,7 +207,7 @@
     transform: translateX(-50%);
     width: 0%;
     height: 4px;
-    background: linear-gradient(90deg, #f73859 0%, #ec4899 50%, #41246d 100%);
+    background: linear-gradient(90deg, #fd7e14 0%, #ea580c 50%, #0F172A 100%);
     transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     border-radius: 20px 20px 0 0;
   }
@@ -201,37 +216,41 @@
     width: 64px;
     height: 64px;
     min-width: 64px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, var(--cat-color, #f73859) 0%, #d62846 100%);
+    border-radius: 18px;
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffffff;
     font-size: 26px;
     margin-bottom: 18px;
-    box-shadow: 0 8px 20px rgba(247, 56, 89, 0.28);
+    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.35);
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
   }
 
   .cat-card-title {
-    font-size: 19px;
+    font-size: 18px;
     font-weight: 800;
-    color: #1e293b;
-    margin-bottom: 10px;
+    color: #0f172a;
+    margin-bottom: 8px;
     line-height: 1.35;
     letter-spacing: -0.3px;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .cat-card-desc {
     font-size: 13px;
     color: #64748b;
     line-height: 1.5;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-grow: 1;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
   .btn-browse-cat {
@@ -240,13 +259,14 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font-size: 13px;
-    font-weight: 700;
+    font-size: 13.5px;
+    font-weight: 800;
     color: #ffffff !important;
-    background: linear-gradient(135deg, #f73859 0%, #ec4899 100%);
-    padding: 11px 22px;
-    border-radius: 30px;
-    box-shadow: 0 4px 15px rgba(247, 56, 89, 0.35);
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    padding: 12px 24px;
+    border-radius: 50rem;
+    border: none !important;
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35) !important;
     text-decoration: none !important;
     transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     margin-top: auto;
@@ -259,8 +279,8 @@
   /* Hover Animations */
   .category-card-item:hover {
     transform: translateY(-8px) scale(1.015);
-    border-color: rgba(247, 56, 89, 0.45);
-    box-shadow: 0 25px 50px -12px rgba(247, 56, 89, 0.22);
+    border-color: #fd7e14;
+    box-shadow: 0 22px 45px -10px rgba(249, 115, 22, 0.22);
   }
 
   .category-card-item:hover::before {
@@ -269,16 +289,59 @@
 
   .category-card-item:hover .cat-icon-box {
     transform: scale(1.12) rotate(4deg);
-    box-shadow: 0 12px 25px rgba(247, 56, 89, 0.45);
+    box-shadow: 0 12px 25px rgba(249, 115, 22, 0.45);
   }
 
   .category-card-item:hover .btn-browse-cat {
-    background: linear-gradient(135deg, #e02447 0%, #d62846 100%);
-    box-shadow: 0 8px 22px rgba(247, 56, 89, 0.55);
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 10px 25px rgba(234, 88, 12, 0.55) !important;
+    transform: translateY(-2px) !important;
   }
 
   .category-card-item:hover .btn-browse-cat i {
     transform: translateX(5px);
+  }
+
+  /* Goal Section & Button */
+  .categories-goal-section .title-divider {
+    background-color: #fd7e14 !important;
+  }
+  .categories-goal-section .button-round-secondary {
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 50rem !important;
+    font-weight: 800 !important;
+    box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4) !important;
+    transition: all 0.35s ease !important;
+  }
+  .categories-goal-section .button-round-secondary:hover {
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 28px rgba(234, 88, 12, 0.6) !important;
+  }
+
+  /* Counter & Progress Section Overrides */
+  .categories-progress-section {
+    background: #fff7ed !important;
+    border-top: 1px solid #ffedd5 !important;
+    border-bottom: 1px solid #ffedd5 !important;
+    padding: 35px 0 !important;
+  }
+  .counter-item .counter-no {
+    color: #0F172A !important;
+    font-weight: 800 !important;
+  }
+  .counter-item .Completed {
+    color: #ea580c !important;
+    font-weight: 800 !important;
+  }
+  .counter-item {
+    border-right: 1px solid #ffedd5 !important;
+  }
+  .counter-item:last-child {
+    border-right: none !important;
   }
 </style>
 
@@ -313,7 +376,7 @@
       const container = document.getElementById('categoriesContent');
       container.innerHTML = data.results.map((category) => {
         const iconClass = getCategoryIconClass(category.name);
-        const color = category.color_code && category.color_code !== '#0066cc' ? category.color_code : '#f73859';
+        const color = category.color_code && category.color_code !== '#0066cc' && category.color_code !== '#f73859' ? category.color_code : '#fd7e14';
         const desc = category.description || 'Professional course track for skill development.';
 
         return `

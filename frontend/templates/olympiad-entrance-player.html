@@ -7,18 +7,23 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background-color: #f4f6f9; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-        .exam-header { background: #0f172a; color: #fff; position: sticky; top: 0; z-index: 1000; }
-        .timer-badge { background: #1e293b; color: #38bdf8; font-size: 1.25rem; font-weight: 700; padding: 0.5rem 1.25rem; border-radius: 50rem; border: 1px solid #334155; }
-        .q-card { border-radius: 1rem; border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-        .option-btn { border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 0.85rem 1.25rem; text-align: left; background: #fff; transition: all 0.2s; cursor: pointer; display: flex; align-items: center; }
-        .option-btn:hover { border-color: #3b82f6; background-color: #eff6ff; }
-        .option-btn.selected { border-color: #2563eb; background-color: #dbeafe; font-weight: 600; }
-        .q-palette-btn { width: 40px; height: 40px; border-radius: 0.5rem; border: 1px solid #cbd5e1; background: #fff; font-weight: 600; font-size: 0.9rem; margin: 4px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
-        .q-palette-btn.answered { background: #22c55e; color: #fff; border-color: #16a34a; }
-        .q-palette-btn.active { border: 3px solid #2563eb; }
-        .nav-tabs .nav-link { font-weight: 600; color: #475569; border: none; border-bottom: 3px solid transparent; border-radius: 0; padding: 0.75rem 1.25rem; }
-        .nav-tabs .nav-link.active { color: #2563eb; border-bottom-color: #2563eb; background: transparent; }
+        body { background-color: #f8fafc; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        .exam-header { background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); color: #fff; position: sticky; top: 0; z-index: 1000; border-bottom: 3.5px solid #fd7e14; }
+        .timer-badge { background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); color: #ea580c; font-size: 1.2rem; font-weight: 800; padding: 0.45rem 1.25rem; border-radius: 50rem; border: 1.5px solid #fd7e14; font-family: monospace; }
+        .q-card { border-radius: 1.25rem; border: 1.5px solid #ffedd5; box-shadow: 0 10px 28px -10px rgba(15, 23, 42, 0.08); }
+        .option-btn { border: 2px solid #e2e8f0; border-radius: 0.85rem; padding: 0.9rem 1.35rem; text-align: left; background: #fff; transition: all 0.25s ease; cursor: pointer; display: flex; align-items: center; font-weight: 600; color: #0F172A; }
+        .option-btn:hover { border-color: #fd7e14; background-color: #fff7ed; transform: translateY(-1px); }
+        .option-btn.selected { border-color: #fd7e14 !important; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important; color: #ffffff !important; font-weight: 700; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.2); }
+        .q-palette-btn { width: 42px; height: 42px; border-radius: 0.6rem; border: 1.5px solid #cbd5e1; background: #fff; font-weight: 700; font-size: 0.9rem; margin: 4px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; }
+        .q-palette-btn.answered { background: #10b981; color: #fff; border-color: #059669; }
+        .q-palette-btn.active { border: 3px solid #fd7e14 !important; background: #fff7ed !important; color: #ea580c !important; font-weight: 800; }
+        .nav-tabs .nav-link { font-weight: 700; color: #475569; border: none; border-bottom: 3px solid transparent; border-radius: 0; padding: 0.85rem 1.35rem; transition: all 0.25s ease; }
+        .nav-tabs .nav-link:hover { color: #ea580c; }
+        .nav-tabs .nav-link.active { color: #ea580c !important; border-bottom-color: #fd7e14 !important; background: transparent; }
+        .btn-brand-orange-btn { background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important; color: #ffffff !important; border: none !important; font-weight: 800 !important; box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35) !important; transition: all 0.3s ease !important; }
+        .btn-brand-orange-btn:hover { background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important; transform: translateY(-2px) !important; box-shadow: 0 10px 24px rgba(234, 88, 12, 0.5) !important; }
+        .btn-brand-navy-btn { background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important; color: #ffffff !important; border: 1px solid #fd7e14 !important; font-weight: 700 !important; transition: all 0.3s ease !important; }
+        .btn-brand-navy-btn:hover { background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important; border-color: #ea580c !important; transform: translateY(-2px) !important; }
     </style>
 </head>
 <body>
@@ -27,17 +32,17 @@
     <header class="exam-header py-3 px-4 shadow-sm">
         <div class="container-fluid d-flex justify-content-between align-items-center">
             <div>
-                <h5 class="mb-0 text-white fw-bold"><i class="fas fa-file-signature text-primary me-2"></i> {{ exam.name }}</h5>
-                <small class="text-slate-400">Roll No: <strong>{{ registration.roll_number }}</strong> | Student: {{ registration.student.get_full_name|default:registration.student.username }}</small>
+                <h5 class="mb-0 text-white fw-bold"><i class="fas fa-file-signature me-2" style="color: #fd7e14;"></i> {{ exam.name }}</h5>
+                <small class="text-white-50">Roll No: <strong class="text-white">{{ registration.roll_number }}</strong> | Student: {{ registration.student.get_full_name|default:registration.student.username }}</small>
             </div>
             
             <div class="d-flex align-items-center gap-3">
                 <div class="timer-badge d-flex align-items-center">
-                    <i class="fas fa-stopwatch me-2 text-warning"></i> <span id="timerDisplay">--:--</span>
+                    <i class="fas fa-stopwatch me-2" style="color: #ea580c;"></i> <span id="timerDisplay">--:--</span>
                 </div>
 
-                <button type="button" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm" onclick="confirmSubmit()">
-                    <i class="fas fa-paper-plane me-1"></i> Submit Exam
+                <button type="button" class="btn btn-brand-orange-btn rounded-pill px-4 py-2 fw-extrabold" onclick="confirmSubmit()">
+                    <i class="fas fa-paper-plane me-1.5"></i> Submit Exam
                 </button>
             </div>
         </div>
@@ -50,28 +55,28 @@
             <!-- Questions Column -->
             <div class="col-lg-8">
                 <!-- Section Nav Tabs -->
-                <div class="bg-white rounded-3 shadow-sm mb-4 px-3 pt-2">
+                <div class="bg-white rounded-3 shadow-sm mb-4 px-3 pt-2" style="border: 1px solid #ffedd5;">
                     <ul class="nav nav-tabs" id="sectionTabs"></ul>
                 </div>
 
                 <!-- Active Question Container -->
                 <div class="card q-card p-4 bg-white" id="questionCard">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="badge bg-primary fs-6 rounded-pill" id="questionBadge">Question 1</span>
-                        <span class="badge bg-light text-dark border fs-6" id="marksBadge">1 Mark</span>
+                        <span class="badge rounded-pill px-3.5 py-2 fw-bold text-white shadow-xs" id="questionBadge" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border: 1px solid #fd7e14; font-size: 13px;">Question 1</span>
+                        <span class="badge rounded-pill px-3 py-1.5 fw-bold" id="marksBadge" style="background: #ffedd5; color: #ea580c; border: 1px solid #fd7e14; font-size: 12px;">2 Marks</span>
                     </div>
 
-                    <h4 class="fw-bold mb-4 text-dark" id="questionText">Loading question...</h4>
+                    <h4 class="fw-bold mb-4 text-dark fs-5" id="questionText" style="line-height: 1.6; color: #0F172A !important;">Loading question...</h4>
 
                     <!-- Dynamic Options Box -->
                     <div id="optionsContainer" class="d-flex flex-column gap-3 mb-4"></div>
 
                     <!-- Previous & Next Controls -->
                     <div class="d-flex justify-content-between align-items-center pt-3 border-top">
-                        <button class="btn btn-outline-secondary rounded-pill px-4" id="prevBtn" onclick="navigatePrev()">
+                        <button class="btn btn-brand-navy-btn rounded-pill px-4 py-2" id="prevBtn" onclick="navigatePrev()">
                             <i class="fas fa-chevron-left me-1"></i> Previous
                         </button>
-                        <button class="btn btn-primary rounded-pill px-4 fw-bold" id="nextBtn" onclick="navigateNext()">
+                        <button class="btn btn-brand-orange-btn rounded-pill px-4 py-2 fw-bold" id="nextBtn" onclick="navigateNext()">
                             Next <i class="fas fa-chevron-right ms-1"></i>
                         </button>
                     </div>
@@ -80,8 +85,8 @@
 
             <!-- Sidebar Column: Palette -->
             <div class="col-lg-4">
-                <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 90px;">
-                    <h5 class="fw-bold mb-3"><i class="fas fa-th me-2 text-primary"></i> Question Palette</h5>
+                <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 90px; border: 1.5px solid #ffedd5 !important;">
+                    <h5 class="fw-bold mb-3 text-dark"><i class="fas fa-th me-2" style="color: #ea580c;"></i> Question Palette</h5>
                     
                     <div class="d-flex align-items-center gap-3 mb-3 small">
                         <span class="d-flex align-items-center"><span class="q-palette-btn answered me-1" style="width:20px;height:20px;margin:0;"></span> Answered</span>
@@ -92,7 +97,7 @@
 
                     <hr>
 
-                    <button class="btn btn-outline-danger w-100 rounded-pill fw-bold py-2" onclick="confirmSubmit()">
+                    <button class="btn btn-outline-danger w-100 rounded-pill fw-bold py-2.5" style="border: 2px solid #fd7e14; color: #ea580c; font-weight: 800;" onclick="confirmSubmit()">
                         Finish & Submit Exam
                     </button>
                 </div>

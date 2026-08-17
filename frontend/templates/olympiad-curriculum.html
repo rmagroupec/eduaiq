@@ -15,25 +15,69 @@
         color: #0f172a !important;
         font-weight: 800 !important;
     }
+    .counter-inner {
+        background: #fff7ed !important;
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 30px 15px !important;
+        margin-top: 30px !important;
+    }
     .counter-item {
         background: #ffffff !important;
         border: 1.5px solid #ffedd5 !important;
-        border-radius: 20px !important;
-        padding: 24px 16px !important;
-        box-shadow: 0 6px 20px rgba(234, 88, 12, 0.05) !important;
+        border-radius: 16px !important;
+        padding: 20px 14px !important;
+        box-shadow: 0 6px 18px rgba(234, 88, 12, 0.06) !important;
         transition: all 0.35s ease !important;
         text-align: center;
     }
     .counter-item:hover {
         transform: translateY(-4px) !important;
-        border-color: #f97316 !important;
-        box-shadow: 0 12px 28px rgba(234, 88, 12, 0.15) !important;
+        border-color: #fd7e14 !important;
+        box-shadow: 0 12px 28px rgba(234, 88, 12, 0.18) !important;
     }
     .counter-no {
-        color: #ea580c !important;
+        color: #0F172A !important;
         font-weight: 800 !important;
         font-size: 2.2rem !important;
     }
+    .counter-item .Completed,
+    .counter-item span.Completed,
+    .counter-item div.Completed {
+        color: #ea580c !important;
+        font-weight: 800 !important;
+        font-size: 0.95rem !important;
+        margin-top: 4px !important;
+    }
+
+    /* Sidebar Widgets & "Exam Pattern" Header Button */
+    .sidebar .widget-bg {
+        background: #ffffff !important;
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 20px !important;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06) !important;
+        margin-bottom: 24px !important;
+    }
+    .widget-bg .bg-title {
+        background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        padding: 12px 24px !important;
+        margin: -20px -20px 20px -20px !important;
+        border-radius: 20px 20px 0 0 !important;
+        text-align: center !important;
+        font-size: 1.1rem !important;
+        box-shadow: 0 4px 14px rgba(249, 115, 22, 0.3) !important;
+    }
+    .widget-bg ul li i {
+        color: #ea580c !important;
+    }
+    .widget-bg ul li .list-txt {
+        color: #334155 !important;
+        font-weight: 600 !important;
+    }
+
     .need-help-widget {
         background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
         border-radius: 20px !important;
@@ -45,6 +89,9 @@
         color: #ffffff !important;
         font-weight: 800 !important;
         margin-bottom: 16px !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
     }
     .need-help-widget ul li a {
         color: #cbd5e1 !important;
@@ -55,6 +102,63 @@
     .need-help-widget ul li a:hover {
         color: #f97316 !important;
         transform: translateX(4px) !important;
+    }
+
+    /* Accordion Syllabus Breakdown Styling */
+    .accordion-content .card {
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 16px !important;
+        margin-bottom: 14px !important;
+        overflow: hidden !important;
+    }
+    .accordion-content .card-header {
+        background: #fff7ed !important;
+        padding: 0 !important;
+        border-bottom: none !important;
+    }
+    .accordion-content .card-header a {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+        display: block !important;
+        padding: 16px 20px !important;
+        text-decoration: none !important;
+        transition: all 0.3s ease !important;
+    }
+    .accordion-content .card-header a:not(.collapsed) {
+        color: #ffffff !important;
+        background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    }
+    .accordion-content .card-header a:hover {
+        color: #ea580c !important;
+    }
+    .accordion-content .card-header a:not(.collapsed):hover {
+        color: #fd7e14 !important;
+    }
+
+    /* Buttons: FILL OLYMPIAD FORM & Action Buttons */
+    .button-round-primary,
+    .button-round-secondary,
+    .service-btn a {
+        background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 50rem !important;
+        font-weight: 800 !important;
+        box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4) !important;
+        transition: all 0.35s ease !important;
+        padding: 12px 28px !important;
+        text-transform: uppercase !important;
+        text-decoration: none !important;
+        display: inline-block !important;
+    }
+
+    .button-round-primary:hover,
+    .button-round-secondary:hover,
+    .service-btn a:hover {
+        background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+        box-shadow: 0 12px 30px rgba(234, 88, 12, 0.6) !important;
+        transform: translateY(-2px) !important;
+        color: #ffffff !important;
     }
 </style>
 {% endblock %}
@@ -278,7 +382,7 @@
                         </ul>
                     </div>
                     <div class="service-btn">
-                        <a class="button-round-secondary" href="/page/olympiad-form/">FILL OLYMPIAD
+                        <a class="button-round-secondary" href="/olympiad-form/">FILL OLYMPIAD
                             FORM</a>
                     </div>
                 </div>

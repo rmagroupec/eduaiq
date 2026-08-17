@@ -22,6 +22,109 @@
 </section>
 
 
+<style>
+  /* EduAiQ Logo Brand Theme Override for Skill Development Page */
+
+  /* Dividers */
+  .title-divider,
+  .title-divider-center {
+      background-color: #fd7e14 !important;
+  }
+
+  /* Step Badges & Feature Icons */
+  .feature-icon .meta-no,
+  .feature-type:nth-child(even) .feature-icon .meta-no {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+  }
+  .feature-icon i,
+  .feature-type:nth-child(even) .feature-icon i {
+      color: #ea580c !important;
+  }
+  .right-arrow-link i {
+      width: 52px !important;
+      height: 52px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 50% !important;
+      background-color: #0F172A !important;
+      border: 2px solid #fd7e14 !important;
+      color: #fd7e14 !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  .feature-type:hover .right-arrow-link i,
+  .right-arrow-link:hover i {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+      border-color: #ea580c !important;
+      transform: scale(1.12) !important;
+      box-shadow: 0 8px 24px rgba(249, 115, 22, 0.45) !important;
+  }
+
+  /* Course / Track Cards */
+  .course-type .course-icon {
+      background: #fff7ed !important;
+      border: 2px solid #ffedd5 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+  }
+  .course-type .course-icon i {
+      color: #ea580c !important;
+      font-size: 24px !important;
+  }
+  .course-type .course-durations {
+      color: #ea580c !important;
+      font-weight: 700 !important;
+  }
+
+  /* Buttons: TALK TO US, GET GUIDANCE, REGISTER TO JOIN US */
+  .button-round-primary,
+  .button-round-secondary,
+  .service-btn a,
+  .course-field button[type="submit"] {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+      border: none !important;
+      border-radius: 50rem !important;
+      font-weight: 800 !important;
+      box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4) !important;
+      transition: all 0.35s ease !important;
+  }
+
+  .button-round-primary:hover,
+  .button-round-secondary:hover,
+  .service-btn a:hover,
+  .course-field button[type="submit"]:hover {
+      background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+      box-shadow: 0 12px 30px rgba(234, 88, 12, 0.6) !important;
+      transform: translateY(-2px) !important;
+      color: #ffffff !important;
+  }
+
+  /* Form Fields Styling */
+  .course-field input {
+      border: 1.5px solid #ffedd5 !important;
+      border-radius: 50rem !important;
+      color: #0F172A !important;
+      font-weight: 600 !important;
+      background: #ffffff !important;
+      padding: 12px 22px !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+      transition: all 0.3s ease !important;
+  }
+  .course-field input:focus {
+      border-color: #fd7e14 !important;
+      box-shadow: 0 0 0 3.5px rgba(253, 126, 20, 0.2) !important;
+      outline: none !important;
+  }
+  .course-field input::placeholder {
+      color: #64748b !important;
+      font-weight: 500 !important;
+  }
+</style>
+
 <section class="about-section">
 <div class="container">
 <div class="title-divider-center"></div>
@@ -94,39 +197,41 @@
 </div>
 </div>
 <div class="feature-wrapper">
-<div class="feature-type">
+<div class="feature-type" onclick="window.location.href='/courses/?category=ai-machine-learning'" style="cursor: pointer;">
 <div class="feature-icon">
 <h5 class="meta-no">1</h5>
 <i class="fas fa-brain"></i>
 </div>
-<h4 class="feature-heading">AI &amp; Data Skills</h4>
+<h4 class="feature-heading"><a href="/courses/?category=ai-machine-learning" style="color: inherit; text-decoration: none;">AI &amp; Data Skills</a></h4>
 <p class="feature-info">Machine learning, data analysis, and automation — build models
                                 and dashboards from real datasets.</p>
-<a class="right-arrow-link" href="/page/ai-lab/">
+<a class="right-arrow-link" href="/courses/?category=ai-machine-learning">
 <i class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
-<div class="feature-type">
+
+<div class="feature-type" onclick="window.location.href='/courses/?category=web-software-development'" style="cursor: pointer;">
 <div class="feature-icon">
 <h5 class="meta-no">2</h5>
-<i aria-hidden="true" class="fas fa-palette"></i>
+<i aria-hidden="true" class="fas fa-laptop-code"></i>
 </div>
-<h4 class="feature-heading">Software &amp; Web Development</h4>
+<h4 class="feature-heading"><a href="/courses/?category=web-software-development" style="color: inherit; text-decoration: none;">Software &amp; Web Development</a></h4>
 <p class="feature-info">Front-end, back-end, and full deployment — ship a working
                                 project, not just exercises.</p>
-<a class="right-arrow-link" href="/courses/">
+<a class="right-arrow-link" href="/courses/?category=web-software-development">
 <i class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
-<div class="feature-type">
+
+<div class="feature-type" onclick="window.location.href='/courses/?category=business-communication'" style="cursor: pointer;">
 <div class="feature-icon">
 <h5 class="meta-no">3</h5>
 <i aria-hidden="true" class="fas fa-comments"></i>
 </div>
-<h4 class="feature-heading">Business &amp; Communication</h4>
+<h4 class="feature-heading"><a href="/courses/?category=business-communication" style="color: inherit; text-decoration: none;">Business &amp; Communication</a></h4>
 <p class="feature-info">Workplace communication, project management, and client-facing
                                 skills for non-technical roles.</p>
-<a class="right-arrow-link" href="/contact/">
+<a class="right-arrow-link" href="/courses/?category=business-communication">
 <i class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -147,50 +252,50 @@
 <a class="button-round-primary" href="/contact/">TALK TO US</a>
 </div>
 </div>
-<div class="course-type">
+<div class="course-type" onclick="window.location.href='/courses/'" style="cursor: pointer;">
 <div class="course-icon">
 <i aria-hidden="true" class="fas fa-hard-hat"></i>
 </div>
 <h4 class="course-title">
-<a href="/page/skill-development/">Assess &amp; Assign</a>
+<a href="/courses/">Assess &amp; Assign</a>
 </h4>
 <p class="course-durations">Skill-gap check first</p>
 </div>
-<div class="course-type">
+<div class="course-type" onclick="window.location.href='/ai-lab/'" style="cursor: pointer;">
 <div class="course-icon">
 <i aria-hidden="true" class="fas fa-microscope"></i>
 </div>
 <h4 class="course-title">
-<a href="/page/skill-development/">Practice On Real Projects</a>
+<a href="/ai-lab/">Practice On Real Projects</a>
 </h4>
 <p class="course-durations">Not simulations</p>
 </div>
-<div class="course-type">
+<div class="course-type" onclick="window.location.href='/my-learning/'" style="cursor: pointer;">
 <div class="course-icon">
 <i class="fas fa-chart-line"></i>
 </div>
 <h4 class="course-title">
-<a href="/page/skill-development/">Mentor Review</a>
+<a href="/my-learning/">Mentor Review</a>
 </h4>
 <p class="course-durations">Feedback on every submission</p>
 </div>
 </div>
 <div class="service-content">
-<div class="course-type">
+<div class="course-type" onclick="window.location.href='/my-learning/'" style="cursor: pointer;">
 <div class="course-icon">
 <i aria-hidden="true" class="fas fa-certificate"></i>
 </div>
 <h4 class="course-title">
-<a href="/page/skill-development/">Certify &amp; Showcase</a>
+<a href="/my-learning/">Certify &amp; Showcase</a>
 </h4>
 <p class="course-durations">Shareable credential</p>
 </div>
-<div class="course-type">
+<div class="course-type" onclick="window.location.href='/contact/'" style="cursor: pointer;">
 <div class="course-icon">
 <i class="fas fa-laptop-code"></i>
 </div>
 <h4 class="course-title">
-<a href="/page/skill-development/">Get Matched To Hiring Partners</a>
+<a href="/contact/">Get Matched To Hiring Partners</a>
 </h4>
 <p class="course-durations">Where available</p>
 </div>
@@ -232,9 +337,9 @@
                                 </p>
 <div class="fact-list">
 <ul>
-<li>Flexible pacing for students and working professionals.</li>
-<li>Institution-ready programs with cohort dashboards.</li>
-<li>Certification recognized by our hiring partner network.</li>
+<li><i class="fas fa-check-circle me-2" style="color: #fd7e14;"></i> Flexible pacing for students and working professionals.</li>
+<li><i class="fas fa-check-circle me-2" style="color: #fd7e14;"></i> Institution-ready programs with cohort dashboards.</li>
+<li><i class="fas fa-check-circle me-2" style="color: #fd7e14;"></i> Certification recognized by our hiring partner network.</li>
 </ul>
 </div>
 <div class="service-btn">

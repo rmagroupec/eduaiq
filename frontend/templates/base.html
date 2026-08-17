@@ -44,6 +44,15 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="{% static 'style.css' %}">
 
+    <!-- PDF.js Library for DRM HTML5 Canvas PDF Viewing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <style>
+        video::-webkit-media-controls-enclosure {
+            overflow: hidden !important;
+        }
+    </style>
+
     {% block css %}
     {% endblock %}
 
@@ -285,6 +294,31 @@
             }, true);
         });
         {% endif %}
+    </script>
+
+    <!-- Course Media & PDF Download Protection Interceptor -->
+    <script>
+        (function() {
+            'use strict';
+
+            // Intercept direct file download links for PDF & MP4 on course pages
+            document.addEventListener('click', function(e) {
+                var link = e.target.closest('a');
+                if (link) {
+                    var href = (link.getAttribute('href') || '').toLowerCase();
+                    var hasDownload = link.hasAttribute('download');
+                    if (hasDownload || href.endsWith('.pdf') || href.endsWith('.mp4') || href.endsWith('.webm') || href.endsWith('.avi') || href.endsWith('.zip')) {
+                        var p = window.location.pathname.toLowerCase();
+                        if (p.indexOf('/lesson') !== -1 || p.indexOf('/course') !== -1 || p.indexOf('/book-reader') !== -1) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            alert('⚠️ DOWNLOADING PROHIBITED: Course video, text, and PDF materials cannot be downloaded.');
+                            return false;
+                        }
+                    }
+                }
+            }, true);
+        })();
     </script>
 
 </body>

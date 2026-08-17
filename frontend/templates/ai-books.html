@@ -11,9 +11,9 @@
     :root {
         --book-card-bg: #ffffff;
         --book-card-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-        --book-card-hover-shadow: 0 20px 40px rgba(124, 58, 237, 0.18);
-        --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-        --accent-gradient: linear-gradient(135deg, #f73859 0%, #ec4899 100%);
+        --book-card-hover-shadow: 0 20px 40px rgba(249, 115, 22, 0.18);
+        --primary-gradient: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%);
+        --accent-gradient: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%);
     }
 
     .ai-books-hero {
@@ -118,7 +118,7 @@
     .book-card-item:hover {
         transform: translateY(-8px);
         box-shadow: var(--book-card-hover-shadow);
-        border-color: #c084fc;
+        border-color: #fd7e14;
     }
 
     .book-cover-wrap {
@@ -143,7 +143,7 @@
         position: absolute;
         top: 14px;
         left: 14px;
-        background: rgba(15, 23, 42, 0.85);
+        background: rgba(15, 23, 42, 0.88);
         backdrop-filter: blur(8px);
         color: #ffffff;
         padding: 5px 12px;
@@ -152,7 +152,7 @@
         font-weight: 700;
         letter-spacing: 0.03em;
         text-transform: uppercase;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid #fd7e14;
     }
 
     .book-card-body {
@@ -181,7 +181,7 @@
     }
 
     .book-title a:hover {
-        color: #7c3aed;
+        color: #ea580c;
     }
 
     .book-author-text {
@@ -206,11 +206,12 @@
     }
 
     .downloads-badge {
-        background: #f1f5f9;
-        color: #475569;
+        background: #fff7ed;
+        color: #ea580c;
         padding: 4px 10px;
         border-radius: 6px;
         font-weight: 600;
+        border: 1px solid #ffedd5;
     }
 
     .book-actions-group {
@@ -221,48 +222,50 @@
 
     .btn-read-online {
         flex: 1;
-        background: var(--primary-gradient);
+        background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
         color: #ffffff !important;
         border: none;
         padding: 10px 14px;
         border-radius: 10px;
         font-size: 0.88rem;
-        font-weight: 700;
+        font-weight: 800;
         text-align: center;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 6px;
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
-        transition: all 0.2s ease;
+        box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35);
+        transition: all 0.25s ease;
     }
 
     .btn-read-online:hover {
-        opacity: 0.95;
-        box-shadow: 0 6px 18px rgba(99, 102, 241, 0.4);
-        transform: translateY(-1px);
+        background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+        color: #ffffff !important;
+        box-shadow: 0 10px 24px rgba(234, 88, 12, 0.55);
+        transform: translateY(-2px);
     }
 
     .btn-book-details {
-        background: #ffffff;
-        color: #475569 !important;
-        border: 1px solid #cbd5e1;
+        background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid #fd7e14 !important;
         padding: 10px 14px;
         border-radius: 10px;
         font-size: 0.88rem;
-        font-weight: 600;
+        font-weight: 700;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.2s ease;
+        transition: all 0.25s ease;
     }
 
     .btn-book-details:hover {
-        background: #f8fafc;
-        border-color: #94a3b8;
-        color: #0f172a !important;
+        background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+        border-color: #ea580c !important;
+        color: #ffffff !important;
+        transform: translateY(-2px);
     }
 
     /* Library Access Banner */

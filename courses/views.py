@@ -46,7 +46,7 @@ def _body(request):
 
 
 def _is_staff(user):
-    return user.is_authenticated
+    return bool(user and user.is_authenticated and (user.is_staff or user.is_superuser or getattr(user, 'role', '') in ['admin', 'institution']))
 
 
 def _client_ip(request):
@@ -396,7 +396,10 @@ def course_list(request):
                     dj_models.Q(status='published', published_at__gt=now)
                 )
             else:
-                qs = qs.filter(status='published', published_at__lte=now)
+                qs = qs.filter(
+                    dj_models.Q(status='published') &
+                    (dj_models.Q(published_at__isnull=True) | dj_models.Q(published_at__lte=now))
+                )
         else:
             status = request.GET.get('status')
             if status:

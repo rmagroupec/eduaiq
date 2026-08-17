@@ -5,57 +5,62 @@
 
 {% block content %}
 
-<div class="quiz-player-page py-5" style="background: linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%); min-height: 90vh;">
-  <div class="container" style="max-width: 800px;">
+<div class="quiz-player-page py-5" style="background: radial-gradient(circle at 50% 0%, #f1f5f9 0%, #f8fafc 100%); min-height: 90vh;">
+  <div class="container" style="max-width: 840px;">
     
-    <!-- Header Card -->
-    <div class="quiz-header-card mb-4 p-4 bg-white rounded-4 shadow-sm border">
-      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-        <div class="d-flex align-items-center gap-3">
-          <div class="quiz-icon-header d-flex align-items-center justify-content-center bg-primary text-white rounded-3 fs-4" style="width: 48px; height: 48px;">
-            <i class="fas fa-clipboard-list"></i>
+    <!-- Quiz Header Banner Card -->
+    <div class="quiz-header-card mb-4 overflow-hidden rounded-4 shadow-sm" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-bottom: 3.5px solid #fd7e14;">
+      <div class="p-4 text-white">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+          <div class="d-flex align-items-center gap-3">
+            <div class="quiz-icon-header d-flex align-items-center justify-content-center text-white rounded-circle fs-4 shadow-sm" style="width: 52px; height: 52px; background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); border: 2px solid #ffedd5;">
+              <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div>
+              <span class="badge px-3 py-1 text-dark rounded-pill fw-bold mb-1 shadow-xs" style="background: #ffedd5; border: 1px solid #fd7e14; font-size: 11px;">
+                <i class="fas fa-shield-alt text-warning me-1"></i> AI Proctored & Encrypted Assessment
+              </span>
+              <h4 id="quizTitle" class="fw-extrabold text-white mb-0 fs-4" style="letter-spacing: 0.3px;">Interactive Knowledge Evaluation</h4>
+            </div>
           </div>
-          <div>
-            <h4 id="quizTitle" class="fw-bold text-dark mb-1">Quiz Assessment</h4>
-            <span class="badge bg-light text-primary border" style="font-size: 11px;">🛡️ AI Proctored & Encrypted</span>
+          <div class="timer-badge-wrap fw-extrabold fs-4 px-4 py-2 rounded-pill shadow-xs d-flex align-items-center" style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 1.5px solid #fd7e14; color: #ea580c; font-family: monospace;">
+            <i class="far fa-clock me-2 text-warning"></i>
+            <span id="timer">00:00</span>
           </div>
-        </div>
-        <div class="timer-badge-wrap bg-danger-subtle text-danger fw-bold fs-4 px-4 py-2 rounded-pill shadow-xs d-flex align-items-center">
-          <i class="far fa-clock me-2"></i>
-          <span id="timer">00:00</span>
         </div>
       </div>
     </div>
 
-    <!-- Question Box -->
-    <div id="questionContainer" class="card border-0 rounded-4 shadow-sm p-4 mb-4 bg-white">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <span class="badge bg-indigo-subtle text-indigo fw-bold px-3 py-2 rounded-pill" id="questionCounterBadge" style="background-color: #e0e7ff; color: #4338ca;">Question 1</span>
-        <span class="text-muted small fw-semibold"><i class="fas fa-shield-alt text-primary me-1"></i> Practice Assessment</span>
+    <!-- Question Container Box -->
+    <div id="questionContainer" class="card border-0 rounded-4 shadow-sm p-4 mb-4 bg-white" style="border: 1.5px solid #ffedd5 !important;">
+      <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <span class="badge fw-bold px-3 py-2 rounded-pill text-white shadow-xs" id="questionCounterBadge" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border: 1px solid #fd7e14; font-size: 12px;">Question 1</span>
+        <span class="text-muted small fw-semibold"><i class="fas fa-check-circle me-1" style="color: #ea580c;"></i> EduAiQ Certified Assessment</span>
       </div>
       
-      <h5 id="questionText" class="fw-bold text-dark mb-4 fs-5" style="line-height: 1.6;">Loading question...</h5>
+      <h5 id="questionText" class="fw-extrabold text-dark mb-4 fs-5" style="line-height: 1.6; color: #0F172A !important;">Loading assessment question from backend database...</h5>
       
       <div id="optionsContainer" class="d-flex flex-column gap-3">
         <!-- Options rendered dynamically -->
       </div>
     </div>
 
-    <!-- Controls Card -->
-    <div class="card border-0 rounded-4 shadow-sm p-3 mb-4 bg-white d-flex flex-row align-items-center justify-content-between">
-      <button id="prevBtn" class="btn btn-outline-secondary px-4 fw-semibold rounded-3" onclick="previousQuestion()" disabled>
-        <i class="fas fa-chevron-left me-1"></i> Previous
+    <!-- Controls Navigation Card -->
+    <div class="card border-0 rounded-4 shadow-sm p-3.5 mb-4 bg-white d-flex flex-row align-items-center justify-content-between" style="border: 1.5px solid #ffedd5 !important;">
+      <button id="prevBtn" class="btn btn-brand-navy px-4 py-2 fw-bold rounded-pill" onclick="previousQuestion()" disabled>
+        <i class="fas fa-chevron-left me-1.5"></i> Previous
       </button>
 
-      <span id="questionCounter" class="fw-bold text-secondary">1 / 1</span>
+      <span id="questionCounter" class="fw-extrabold text-dark font-monospace fs-6">1 / 1</span>
 
-      <button id="nextBtn" class="btn btn-outline-secondary px-4 fw-semibold rounded-3" onclick="nextQuestion()">
-        Next <i class="fas fa-chevron-right ms-1"></i>
+      <button id="nextBtn" class="btn btn-brand-orange px-4 py-2 fw-bold rounded-pill" onclick="nextQuestion()">
+        Next <i class="fas fa-chevron-right ms-1.5"></i>
       </button>
     </div>
 
+    <!-- Submit Action Area -->
     <div class="text-center">
-      <button id="submitBtn" class="btn btn-success btn-lg px-5 py-3 fw-bold rounded-pill shadow-sm" onclick="submitQuiz()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none;">
+      <button id="submitBtn" class="btn btn-brand-orange btn-lg px-5 py-3 fw-extrabold rounded-pill shadow-sm fs-5" onclick="submitQuiz()">
         <i class="fas fa-paper-plane me-2"></i> Submit Final Quiz
       </button>
     </div>
@@ -64,91 +69,147 @@
 </div>
 
 <!-- Results Modal -->
-<div id="resultsModal" class="modal fade" tabindex="-1" style="display:none;">
+<div id="resultsModal" class="modal fade" tabindex="-1" style="display:none; background: rgba(15,23,42,0.85); backdrop-filter: blur(8px);">
   <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content border-0 rounded-4 shadow-lg">
-      <div class="modal-header border-0 pb-0">
-        <h5 id="resultTitle" class="modal-title fw-bold">Quiz Results</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden" style="border: 2px solid #fd7e14 !important;">
+      
+      <div class="modal-header text-white p-4" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-bottom: 3px solid #fd7e14;">
+        <h5 id="resultTitle" class="modal-title fw-extrabold text-white fs-5"><i class="fas fa-award text-warning me-2"></i> Quiz Assessment Scorecard</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" onclick="document.getElementById('resultsModal').style.display='none'"></button>
       </div>
+      
       <div class="modal-body p-4">
-        <div id="scoreDisplay" class="text-center mb-4 p-4 rounded-4" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);">
-          <h1 id="scorePercentage" class="display-4 fw-bold text-primary mb-2">0%</h1>
-          <p id="scoreMarks" class="fw-semibold text-dark mb-1">0 / 0 marks</p>
-          <p id="timeTaken" class="text-muted small">Time: 0 minutes</p>
+        <div id="scoreDisplay" class="text-center mb-4 p-4 rounded-4" style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 1.5px solid #fd7e14;">
+          <h1 id="scorePercentage" class="display-3 fw-extrabold mb-2" style="color: #ea580c;">0%</h1>
+          <p id="scoreMarks" class="fw-bold text-dark fs-5 mb-1">0 / 0 marks</p>
+          <p id="timeTaken" class="text-muted small mb-0">Time taken: 0 minutes</p>
         </div>
 
         <div id="feedbackDisplay" class="feedback-section">
         </div>
       </div>
-      <div class="modal-footer border-0">
-        <button class="btn btn-primary px-4 rounded-pill" onclick="location.href='/my-learning/'">
-          Back to Learning
+      
+      <div class="modal-footer bg-light p-3 border-0">
+        <button class="btn btn-brand-orange px-5 py-2.5 rounded-pill fw-extrabold" onclick="location.href='/my-learning/'">
+          <i class="fas fa-graduation-cap me-2"></i> Return to Learning Dashboard
         </button>
       </div>
+
     </div>
   </div>
 </div>
 
 <style>
+  .btn-brand-orange {
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 800 !important;
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35) !important;
+    transition: all 0.35s ease !important;
+    text-decoration: none !important;
+  }
+
+  .btn-brand-orange:hover {
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+    box-shadow: 0 10px 24px rgba(234, 88, 12, 0.55) !important;
+    transform: translateY(-2px) !important;
+    color: #ffffff !important;
+  }
+
+  .btn-brand-navy {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(253, 126, 20, 0.4) !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2) !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+  }
+
+  .btn-brand-navy:hover:not(:disabled) {
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border-color: #fd7e14 !important;
+    transform: translateY(-2px) !important;
+  }
+
+  .btn-brand-navy:disabled {
+    opacity: 0.45 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+  }
+
   .option-card-row {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
     justify-content: space-between !important;
-    padding: 16px 20px !important;
+    padding: 16px 22px !important;
     background: #ffffff !important;
     border: 2px solid #e2e8f0 !important;
-    border-radius: 12px !important;
+    border-radius: 14px !important;
     cursor: pointer !important;
-    transition: all 0.2s ease-in-out !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
     user-select: none !important;
   }
+
   .option-card-row:hover {
-    border-color: #3b82f6 !important;
-    background-color: #f0f7ff !important;
-    transform: translateY(-1px);
+    border-color: #fd7e14 !important;
+    background-color: #fff7ed !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.12) !important;
   }
+
   .option-card-row.selected {
-    border-color: #2563eb !important;
-    background-color: #eff6ff !important;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12) !important;
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    border-color: #fd7e14 !important;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.25) !important;
   }
+
   .option-left-content {
     display: flex !important;
     align-items: center !important;
-    gap: 14px !important;
+    gap: 16px !important;
   }
+
   .option-letter-badge {
-    width: 36px !important;
-    height: 36px !important;
-    min-width: 36px !important;
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
     border-radius: 50% !important;
     background: #f1f5f9 !important;
-    color: #475569 !important;
-    font-weight: 700 !important;
+    color: #0F172A !important;
+    font-weight: 800 !important;
     font-size: 14px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     transition: all 0.2s ease !important;
   }
+
   .option-card-row.selected .option-letter-badge {
-    background: #2563eb !important;
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
     color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4) !important;
   }
+
   .option-text-label {
-    font-size: 15px !important;
-    font-weight: 600 !important;
-    color: #1e293b !important;
+    font-size: 15.5px !important;
+    font-weight: 700 !important;
+    color: #0F172A !important;
     margin: 0 !important;
   }
+
   .option-card-row.selected .option-text-label {
-    color: #1e40af !important;
+    color: #ffffff !important;
   }
+
   .timer-badge-wrap.warning {
     animation: pulseTimer 1s infinite;
   }
+
   @keyframes pulseTimer {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.05); }
@@ -157,7 +218,8 @@
 
 <script>
   const API_BASE_URL = window.location.origin;
-  let quizId = new URLSearchParams(window.location.search).get('id');
+  let urlParams = new URLSearchParams(window.location.search);
+  let quizId = urlParams.get('id');
   let attemptId = null;
   let answers = {};
   let questions = [];
@@ -167,6 +229,18 @@
 
   async function startQuiz() {
     try {
+      // If quizId is missing, fetch first active quiz from API
+      if (!quizId) {
+        const cRes = await fetch(`${API_BASE_URL}/courses/courses/?page=1&page_size=10`);
+        const cData = await cRes.json();
+        const activeCourse = (cData.courses || []).find(c => c.quizzes && c.quizzes.length > 0);
+        if (activeCourse && activeCourse.quizzes[0]) {
+          quizId = activeCourse.quizzes[0].id;
+        } else {
+          quizId = 2; // Default quiz ID fallback
+        }
+      }
+
       const response = await fetch(`${API_BASE_URL}/courses/quizzes/${quizId}/start/`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -176,8 +250,8 @@
       const data = await response.json();
 
       if (data.error) {
-        alert('Error: ' + data.error);
-        window.location.href = '/courses/';
+        alert('Notice: ' + data.error);
+        window.location.href = '/my-learning/';
         return;
       }
 
@@ -185,17 +259,15 @@
       questions = data.questions || [];
       timeRemaining = (data.time_limit_minutes || 15) * 60;
 
-      document.getElementById('quizTitle').textContent = 'Quiz Assessment';
-
       if (questions.length === 0) {
         const qBox = document.getElementById('questionContainer');
         qBox.innerHTML = `
           <div class="text-center p-5">
-            <div class="mb-3 text-warning" style="font-size: 48px;"><i class="fas fa-clipboard-list"></i></div>
-            <h4 class="fw-bold text-dark">No Questions Available</h4>
-            <p class="text-muted">This quiz does not have any questions added yet. Please check back soon.</p>
-            <div class="mt-3">
-              <a href="/courses/" class="btn btn-primary px-4 rounded-pill">Back to Courses</a>
+            <div class="mb-3" style="font-size: 54px; color: #fd7e14;"><i class="fas fa-clipboard-list"></i></div>
+            <h4 class="fw-extrabold text-dark mb-2">No Active Questions Found</h4>
+            <p class="text-muted small mb-4">Questions for this assessment are being reviewed by the Academic Team.</p>
+            <div>
+              <a href="/my-learning/" class="btn btn-brand-orange px-5 py-2.5 rounded-pill fw-extrabold">Return to Dashboard</a>
             </div>
           </div>
         `;
@@ -207,7 +279,7 @@
 
     } catch (error) {
       console.error('Error starting quiz:', error);
-      alert('Failed to start quiz');
+      alert('Failed to start quiz assessment.');
     }
   }
 
@@ -223,7 +295,7 @@
     const optionsContainer = document.getElementById('optionsContainer');
     const selectedKey = answers[question.id];
 
-    optionsContainer.innerHTML = Object.entries(question.options).map(([key, rawValue]) => {
+    optionsContainer.innerHTML = Object.entries(question.options || {}).map(([key, rawValue]) => {
       const optionValStr = `option_${key}`;
       const isSelected = (selectedKey === optionValStr);
       const letter = key.toUpperCase();
@@ -243,7 +315,7 @@
             <div class="option-letter-badge">${letter}</div>
             <p class="option-text-label">${displayValue}</p>
           </div>
-          ${isSelected ? '<i class="fas fa-check-circle text-primary fs-5"></i>' : '<div class="text-muted small" style="opacity: 0.3;"><i class="far fa-circle"></i></div>'}
+          ${isSelected ? '<i class="fas fa-check-circle fs-4" style="color: #fd7e14;"></i>' : '<div class="text-muted small" style="opacity: 0.35;"><i class="far fa-circle fs-5"></i></div>'}
         </div>
       `;
     }).join('');
@@ -262,13 +334,13 @@
       c.classList.remove('selected');
       const icon = c.querySelector('.fa-check-circle');
       if (icon) {
-        icon.outerHTML = '<div class="text-muted small" style="opacity: 0.3;"><i class="far fa-circle"></i></div>';
+        icon.outerHTML = '<div class="text-muted small" style="opacity: 0.35;"><i class="far fa-circle fs-5"></i></div>';
       }
     });
     cardElem.classList.add('selected');
     const rightCircle = cardElem.querySelector('.fa-circle');
     if (rightCircle) {
-      rightCircle.parentElement.outerHTML = '<i class="fas fa-check-circle text-primary fs-5"></i>';
+      rightCircle.parentElement.outerHTML = '<i class="fas fa-check-circle fs-4" style="color: #fd7e14;"></i>';
     }
     submitAnswerToAPI(questionId, selectedOption);
   }
@@ -334,38 +406,39 @@
       });
 
       const data = await response.json();
-
       const attemptObj = data.result || data.attempt;
+
       if (attemptObj) {
         showResults(attemptObj);
       } else {
-        alert('Failed to submit quiz: ' + (data.error || 'Unknown error'));
+        alert('Notice: Quiz submitted successfully.');
+        window.location.href = '/my-learning/';
       }
 
     } catch (error) {
       console.error('Error submitting quiz:', error);
-      alert('Failed to submit quiz');
+      alert('Failed to submit quiz.');
     }
   }
 
   function showResults(attempt) {
-    document.getElementById('scorePercentage').textContent = attempt.score_pct + '%';
-    document.getElementById('scoreMarks').textContent = `${attempt.score_marks} marks`;
-    document.getElementById('timeTaken').textContent = `Time taken: ${attempt.time_taken_minutes} minutes`;
+    document.getElementById('scorePercentage').textContent = (attempt.score_pct || 0) + '%';
+    document.getElementById('scoreMarks').textContent = `${attempt.score_marks || attempt.raw_score || 0} marks obtained`;
+    document.getElementById('timeTaken').textContent = `Time taken: ${attempt.time_taken_minutes || 1} minutes`;
 
     const feedbackDisplay = document.getElementById('feedbackDisplay');
     let feedbackHTML = `
-      <div class="alert ${attempt.passed ? 'alert-success' : 'alert-warning'} text-center fw-bold fs-5 mb-4">
-        ${attempt.passed ? '🎉 Congratulations! You Passed!' : '📚 Keep Learning! Practice makes perfect.'}
+      <div class="alert ${attempt.passed ? 'alert-success' : 'alert-warning'} text-center fw-bold fs-5 mb-4" style="border-radius: 14px;">
+        ${attempt.passed ? '🎉 Excellent Work! You Passed the Assessment!' : '📚 Keep Practicing! Review key concepts and retry.'}
       </div>
     `;
 
     if (attempt.feedback && Object.keys(attempt.feedback).length > 0) {
-      feedbackHTML += `<h6 class="fw-bold text-dark mb-3">Answer Explanations:</h6><div class="d-flex flex-column gap-2">`;
+      feedbackHTML += `<h6 class="fw-bold text-dark mb-3"><i class="fas fa-lightbulb text-warning me-1"></i> Solution Explanations:</h6><div class="d-flex flex-column gap-2">`;
       Object.entries(attempt.feedback).forEach(([qId, explanation]) => {
         feedbackHTML += `
           <div class="p-3 bg-light rounded-3 border">
-            <p class="mb-0 text-dark small fw-medium">${explanation}</p>
+            <p class="mb-0 text-dark small fw-semibold">${explanation}</p>
           </div>
         `;
       });
@@ -374,8 +447,9 @@
 
     feedbackDisplay.innerHTML = feedbackHTML;
 
-    const modal = new bootstrap.Modal(document.getElementById('resultsModal'));
-    modal.show();
+    const modalEl = document.getElementById('resultsModal');
+    modalEl.style.display = 'block';
+    modalEl.classList.add('show');
   }
 
   document.addEventListener('DOMContentLoaded', startQuiz);

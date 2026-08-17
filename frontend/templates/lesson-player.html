@@ -204,22 +204,27 @@
 
       if (ytId) {
         viewer.innerHTML = `
-          <iframe 
-            src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=0&rel=0&modestbranding=1" 
-            title="Lesson Video"
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            referrerpolicy="strict-origin-when-cross-origin" 
-            allowfullscreen 
-            style="width: 100%; height: 450px; border-radius: 8px;">
-          </iframe>
+          <div class="position-relative w-100 bg-dark rounded overflow-hidden" style="height: 460px;" oncontextmenu="return false;">
+            <iframe id="lessonYtIframe"
+              src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=0&rel=0&modestbranding=1&controls=1" 
+              title="Lesson Video"
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              referrerpolicy="strict-origin-when-cross-origin" 
+              allowfullscreen 
+              style="width: 100%; height: 100%; border: none;"
+              oncontextmenu="return false;">
+            </iframe>
+          </div>
         `;
       } else if (fileUrl || url) {
         const videoSrc = fileUrl || url;
         viewer.innerHTML = `
-          <video controls style="width: 100%; height: 450px; border-radius: 8px;" src="${videoSrc}">
-            Your browser does not support video playback.
-          </video>
+          <div class="position-relative w-100 bg-dark rounded overflow-hidden" style="height: 460px;" oncontextmenu="return false;">
+            <video id="lessonHtmlVideo" controls controlsList="nodownload noopen noremoteplayback" disablePictureInPicture oncontextmenu="return false;" style="width: 100%; height: 100%; border-radius: 8px;" src="${videoSrc}">
+              Your browser does not support video playback.
+            </video>
+          </div>
         `;
       } else {
         viewer.innerHTML = `
@@ -235,26 +240,32 @@
       if (fileUrl) {
         const fullPdfUrl = fileUrl.startsWith('http') ? fileUrl : (window.location.origin + fileUrl);
         viewer.innerHTML = `
-          <div class="w-100 bg-white p-3 rounded shadow-sm text-center">
-            <div class="d-flex justify-content-between align-items-center mb-3 px-2">
+          <div class="w-100 bg-white p-3 rounded shadow-sm text-center position-relative" oncontextmenu="return false;">
+            <div class="d-flex justify-content-between align-items-center mb-3 px-2 flex-wrap gap-2">
               <span class="fw-bold text-dark"><i class="fas fa-file-pdf text-danger me-2"></i> PDF Document: ${currentLesson.title}</span>
-              <div class="gap-2 d-flex">
-                <a href="${fullPdfUrl}" target="_blank" class="btn btn-sm btn-outline-primary px-3 rounded-pill">
-                  <i class="fas fa-external-link-alt me-1"></i> Open Fullscreen
-                </a>
-                <a href="${fullPdfUrl}" target="_blank" download class="btn btn-sm btn-danger px-3 rounded-pill">
-                  <i class="fas fa-download me-1"></i> Download PDF
-                </a>
+              
+              <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-sm btn-outline-secondary px-3 radius-12" id="prevPdfPageBtn" onclick="changeLessonPdfPage(-1)">
+                  <i class="fas fa-chevron-left"></i> Prev
+                </button>
+                <span class="text-xs fw-bold text-dark">Page <span id="currentLessonPdfPage">1</span> of <span id="totalLessonPdfPages">1</span></span>
+                <button class="btn btn-sm btn-outline-secondary px-3 radius-12" id="nextPdfPageBtn" onclick="changeLessonPdfPage(1)">
+                  Next <i class="fas fa-chevron-right"></i>
+                </button>
               </div>
+
+              <span class="badge bg-danger-subtle text-danger px-3 py-2 radius-12 fw-bold" style="background: #fee2e2; color: #dc2626;">
+                <i class="fas fa-lock me-1"></i> DRM Protected Canvas (Download Disabled)
+              </span>
             </div>
-            <object data="${fullPdfUrl}#toolbar=1" type="application/pdf" style="width: 100%; height: 500px; border: 1px solid #e2e8f0; border-radius: 8px;">
-              <embed src="${fullPdfUrl}" type="application/pdf" style="width: 100%; height: 500px;" />
-              <iframe src="${fullPdfUrl}" style="width: 100%; height: 500px; border: none;">
-                <p>Your browser does not support embedded PDF viewing. <a href="${fullPdfUrl}" target="_blank">Click here to download PDF</a>.</p>
-              </iframe>
-            </object>
+
+            <div class="position-relative d-inline-block w-100 bg-dark rounded p-2" style="max-height: 550px; overflow-y: auto; user-select: none; -webkit-user-select: none;" oncontextmenu="return false;">
+              <div style="position: absolute; top:0; left:0; width:100%; height:100%; z-index: 10; background: rgba(0,0,0,0);" oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;"></div>
+              <canvas id="lessonPdfCanvas" style="max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); margin: 0 auto; display: block;" oncontextmenu="return false;"></canvas>
+            </div>
           </div>
         `;
+        setTimeout(() => { renderLessonPdfCanvas(fullPdfUrl); }, 100);
       } else {
         viewer.innerHTML = `
           <div class="p-5 text-center bg-white text-dark rounded w-100">
@@ -404,7 +415,249 @@
       }
     } catch (e) {
       console.error(e);
-      alert('Error updating progress.');
+      alert('Error saving lesson progress.');
+    }
+  }
+
+  let lessonPdfDoc = null;
+  let currentLessonPdfPageNum = 1;
+
+  function renderLessonPdfCanvas(url) {
+    if (typeof pdfjsLib === 'undefined') return;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
+      lessonPdfDoc = pdfDoc_;
+      currentLessonPdfPageNum = 1;
+      const totalEl = document.getElementById('totalLessonPdfPages');
+      if (totalEl) totalEl.textContent = lessonPdfDoc.numPages;
+      renderLessonPdfPage(currentLessonPdfPageNum);
+    }).catch(function(err) {
+      console.error("Lesson PDF render error:", err);
+    });
+  }
+
+  function renderLessonPdfPage(num) {
+    if (!lessonPdfDoc) return;
+    lessonPdfDoc.getPage(num).then(function(page) {
+      const canvas = document.getElementById('lessonPdfCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const viewport = page.getViewport({ scale: 1.25 });
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+              </div>
+
+              <span class="badge bg-danger-subtle text-danger px-3 py-2 radius-12 fw-bold" style="background: #fee2e2; color: #dc2626;">
+                <i class="fas fa-lock me-1"></i> DRM Protected Canvas (Download Disabled)
+              </span>
+            </div>
+
+            <div class="position-relative d-inline-block w-100 bg-dark rounded p-2" style="max-height: 550px; overflow-y: auto; user-select: none; -webkit-user-select: none;" oncontextmenu="return false;">
+              <div style="position: absolute; top:0; left:0; width:100%; height:100%; z-index: 10; background: rgba(0,0,0,0);" oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;"></div>
+              <canvas id="lessonPdfCanvas" style="max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); margin: 0 auto; display: block;" oncontextmenu="return false;"></canvas>
+            </div>
+          </div>
+        `;
+        setTimeout(() => { renderLessonPdfCanvas(fullPdfUrl); }, 100);
+      } else {
+        viewer.innerHTML = `
+          <div class="p-5 text-center bg-white text-dark rounded w-100">
+            <i class="fas fa-file-pdf fa-3x text-danger mb-3"></i>
+            <h5>No PDF File Uploaded</h5>
+            <p class="text-muted">This lesson is marked as PDF, but no PDF file or link has been uploaded yet.</p>
+          </div>
+        `;
+      }
+    } else if (currentLesson.content_type === 'text') {
+      viewer.innerHTML = `
+        <div class="p-4 text-dark bg-white w-100 h-100 rounded shadow-sm" style="overflow-y: auto; max-height: 480px; user-select: none; -webkit-user-select: none;" oncontextmenu="return false;">
+          <h4 class="fw-bold text-primary mb-3">${currentLesson.title}</h4>
+          <div class="lh-lg text-secondary" style="font-size: 15px; user-select: none; -webkit-user-select: none;" oncontextmenu="return false;">
+            ${currentLesson.description || 'No reading material text provided for this lesson.'}
+          </div>
+          ${currentLesson.content_url ? `
+            <div class="mt-4 pt-3 border-top">
+              <a href="${currentLesson.content_url}" target="_blank" class="btn btn-outline-primary btn-sm">
+                Read External Reference <i class="fas fa-external-link-alt ms-1"></i>
+              </a>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    } else if (currentLesson.content_type === 'quiz') {
+      viewer.innerHTML = `
+        <div class="text-center p-5 bg-white text-dark w-100 rounded shadow-sm">
+          <i class="fas fa-question-circle fa-4x mb-3 text-warning"></i>
+          <h4 class="fw-bold">Practice Quiz Ready</h4>
+          <p class="text-muted">Test your understanding of this module's topics.</p>
+          <button class="btn btn-warning btn-lg mt-3 px-4 fw-bold rounded-pill text-dark" onclick="goToQuiz()">
+            Start Quiz Attempt <i class="fas fa-arrow-right ms-2"></i>
+          </button>
+        </div>
+      `;
+    } else {
+      viewer.innerHTML = `
+        <div class="p-5 text-center bg-dark text-white rounded">
+          <p>No viewer available for content type (${currentLesson.content_type}).</p>
+        </div>
+      `;
+    }
+  }
+
+  async function goToQuiz() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/quiz/`);
+      const data = await response.json();
+      if (data.quiz) {
+        window.location.href = `/quiz/?id=${data.quiz.id}`;
+      } else {
+        alert('No quiz linked to this lesson!');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error fetching quiz details.');
+    }
+  }
+
+  function renderSidebarIndex(course) {
+    const list = document.getElementById('sidebarModulesList');
+    list.innerHTML = '';
+
+    course.modules.forEach(mod => {
+      // Module Header
+      const header = document.createElement('div');
+      header.className = 'list-group-item bg-light fw-bold py-3';
+      header.textContent = mod.title;
+      list.appendChild(header);
+
+      // Module Lessons
+      if (mod.lessons) {
+        mod.lessons.forEach(les => {
+          const item = document.createElement('a');
+          item.href = `/lesson/?id=${les.id}`;
+          item.className = `list-group-item list-group-item-action sidebar-lesson-item d-flex justify-content-between align-items-center py-2 ${les.id == lessonId ? 'active' : ''}`;
+          
+          let icon = '📖';
+          if (les.content_type === 'video') icon = '🎥';
+          if (les.content_type === 'quiz') icon = '❓';
+          if (les.content_type === 'pdf') icon = '📄';
+
+          item.innerHTML = `
+            <span>${icon} ${les.title}</span>
+            <small class="text-muted">${les.duration_minutes}m</small>
+          `;
+          list.appendChild(item);
+        });
+      }
+    });
+  }
+
+  function updateNavButtons() {
+    const currentIndex = allCourseLessons.findIndex(l => l.id == lessonId);
+    
+    const prevBtn = document.getElementById('prevLessonBtn');
+    const nextBtn = document.getElementById('nextLessonBtn');
+
+    if (currentIndex > 0) {
+      prevBtn.disabled = false;
+      prevBtn.onclick = () => window.location.href = `/lesson/?id=${allCourseLessons[currentIndex - 1].id}`;
+    } else {
+      prevBtn.disabled = true;
+    }
+
+    if (currentIndex >= 0 && currentIndex < allCourseLessons.length - 1) {
+      nextBtn.disabled = false;
+      nextBtn.onclick = () => window.location.href = `/lesson/?id=${allCourseLessons[currentIndex + 1].id}`;
+    } else {
+      nextBtn.disabled = true;
+    }
+  }
+
+  async function markAsComplete() {
+    if (!userEnrollment) {
+      alert('You must be enrolled in this course to track progress!');
+      return;
+    }
+
+    const currentIndex = allCourseLessons.findIndex(l => l.id == lessonId);
+    if (currentIndex === -1) return;
+
+    // Calculate progress percentage based on lesson position
+    const progress = Math.min(100, Math.round(((currentIndex + 1) / allCourseLessons.length) * 100));
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/enrollments/${userEnrollment.id}/progress/`, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify({progress_pct: progress})
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert('Lesson marked complete! Progress updated to ' + progress + '%');
+        if (progress >= 100) {
+          alert('🎉 Congratulations! You have completed the course!');
+          window.location.href = '/my-learning/';
+        } else if (currentIndex < allCourseLessons.length - 1) {
+          // Go to next lesson automatically
+          window.location.href = `/lesson/?id=${allCourseLessons[currentIndex + 1].id}`;
+        }
+      } else {
+        alert('Failed to update progress: ' + (data.error || 'Server error'));
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error saving lesson progress.');
+    }
+  }
+
+  let lessonPdfDoc = null;
+  let currentLessonPdfPageNum = 1;
+
+  function renderLessonPdfCanvas(url) {
+    if (typeof pdfjsLib === 'undefined') return;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
+      lessonPdfDoc = pdfDoc_;
+      currentLessonPdfPageNum = 1;
+      const totalEl = document.getElementById('totalLessonPdfPages');
+      if (totalEl) totalEl.textContent = lessonPdfDoc.numPages;
+      renderLessonPdfPage(currentLessonPdfPageNum);
+    }).catch(function(err) {
+      console.error("Lesson PDF render error:", err);
+    });
+  }
+
+  function renderLessonPdfPage(num) {
+    if (!lessonPdfDoc) return;
+    lessonPdfDoc.getPage(num).then(function(page) {
+      const canvas = document.getElementById('lessonPdfCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const viewport = page.getViewport({ scale: 1.25 });
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      page.render({
+        canvasContext: ctx,
+        viewport: viewport
+      });
+
+      const currEl = document.getElementById('currentLessonPdfPage');
+      if (currEl) currEl.textContent = num;
+    });
+  }
+
+  function changeLessonPdfPage(delta) {
+    if (!lessonPdfDoc) return;
+    const newNum = currentLessonPdfPageNum + delta;
+    if (newNum >= 1 && newNum <= lessonPdfDoc.numPages) {
+      currentLessonPdfPageNum = newNum;
+      renderLessonPdfPage(currentLessonPdfPageNum);
     }
   }
 

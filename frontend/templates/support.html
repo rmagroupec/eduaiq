@@ -22,6 +22,98 @@
 </section>
 
 
+<style>
+  /* EduAiQ Logo Brand Theme Override for Support Page */
+
+  /* Section Dividers */
+  .title-divider,
+  .title-divider-center {
+      background-color: #fd7e14 !important;
+  }
+
+  /* Step Badges & Feature Icons */
+  .feature-icon .meta-no,
+  .feature-type:nth-child(even) .feature-icon .meta-no {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+  }
+  .feature-icon i,
+  .feature-type:nth-child(even) .feature-icon i {
+      color: #ea580c !important;
+  }
+  .feature-type {
+      border: 1.5px solid #ffedd5 !important;
+      border-radius: 20px !important;
+      transition: all 0.35s ease !important;
+  }
+  .feature-type:hover {
+      border-color: #fd7e14 !important;
+      box-shadow: 0 12px 30px rgba(249, 115, 22, 0.18) !important;
+      transform: translateY(-4px) !important;
+  }
+  .right-arrow-link i {
+      width: 52px !important;
+      height: 52px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 50% !important;
+      background-color: #0F172A !important;
+      border: 2px solid #fd7e14 !important;
+      color: #fd7e14 !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  .feature-type:hover .right-arrow-link i,
+  .right-arrow-link:hover i {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+      border-color: #ea580c !important;
+      transform: scale(1.12) !important;
+      box-shadow: 0 8px 24px rgba(249, 115, 22, 0.45) !important;
+  }
+
+  /* Sidebar Widget Headers & Links */
+  .sidebar .widget-bg,
+  .sidebar .need-help-widget {
+      background: #ffffff !important;
+      border: 1.5px solid #ffedd5 !important;
+      border-radius: 20px !important;
+      padding: 24px !important;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05) !important;
+  }
+  .sidebar .bg-title {
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+      color: #ffffff !important;
+      border-bottom: 3px solid #fd7e14 !important;
+      padding: 12px 20px !important;
+      border-radius: 12px !important;
+      font-weight: 800 !important;
+      text-align: center !important;
+      margin-bottom: 20px !important;
+  }
+  .sidebar ul li i {
+      color: #ea580c !important;
+  }
+  .sidebar ul li a {
+      color: #ea580c !important;
+      font-weight: 700 !important;
+      text-decoration: none !important;
+  }
+  .sidebar ul li a:hover {
+      color: #fd7e14 !important;
+  }
+
+  /* Accordion Header Focus & Colors */
+  .accordion-content .card-header h5 a {
+      color: #0F172A !important;
+      font-weight: 700 !important;
+  }
+  .accordion-content .card-header h5 a:not(.collapsed) {
+      color: #ea580c !important;
+      font-weight: 800 !important;
+  }
+</style>
+
 <section class="home-feature-section" style="margin-top: 110px;">
 <div class="container">
 <div class="row">
@@ -40,7 +132,7 @@
 <h5 class="meta-no">1</h5>
 <i class="fas fa-chart-line"></i>
 </div>
-<h4 class="feature-heading">Fee &amp; Payment Issues</h4>
+<h4 class="feature-heading"><a href="/checkout/" class="text-dark text-decoration-none">Fee &amp; Payment Issues</a></h4>
 <p class="feature-info">Payment didn't go through, need a receipt, or want to confirm
                                 what you're being charged for.</p>
 <a class="right-arrow-link" href="/checkout/">
@@ -50,12 +142,12 @@
 <div class="feature-type">
 <div class="feature-icon">
 <h5 class="meta-no">2</h5>
-<i aria-hidden="true" class="fas fa-person"></i>
+<i aria-hidden="true" class="fas fa-trophy"></i>
 </div>
-<h4 class="feature-heading">Olympiad Registration</h4>
+<h4 class="feature-heading"><a href="/olympiad-form/" class="text-dark text-decoration-none">Olympiad Registration</a></h4>
 <p class="feature-info">Trouble with the registration form, curriculum questions, or
                                 confirming your exam details.</p>
-<a class="right-arrow-link" href="/page/olympiad-form/">
+<a class="right-arrow-link" href="/olympiad-form/">
 <i class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -64,10 +156,10 @@
 <h5 class="meta-no">3</h5>
 <i class="fas fa-brain"></i>
 </div>
-<h4 class="feature-heading">Course &amp; AI Lab Access</h4>
+<h4 class="feature-heading"><a href="/ai-lab/" class="text-dark text-decoration-none">Course &amp; AI Lab Access</a></h4>
 <p class="feature-info">Can't access a course, AI Lab module, or AI Book you've already
                                 registered for.</p>
-<a class="right-arrow-link" href="/page/ai-lab/">
+<a class="right-arrow-link" href="/ai-lab/">
 <i class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -167,9 +259,9 @@
 </div>
 <div aria-labelledby="sup-head-5" class="collapse" data-bs-parent="#accordion-support" id="sup-collapse-5" role="tabpanel">
 <div class="card-body">
-                                            Start with the <a href="/page/growth-partner-kit/">Growth Partner Kit</a>
+                                            Start with the <a href="/growth-partner-kit/">Growth Partner Kit</a>
                                             for a no-commitment overview, then move to the
-                                            <a href="/page/apply-for-franchise/">Apply For Franchise</a> page when
+                                            <a href="/apply-for-franchise/">Apply For Franchise</a> page when
                                             you're ready to move forward.
                                         </div>
 </div>
@@ -188,17 +280,17 @@
 <li><i aria-hidden="true" class="fas fa-clock"></i> <span class="list-txt">We usually respond within a business day</span></li>
 </ul>
 </div>
-<div class="need-help-widget">
+<div class="need-help-widget mt-4">
 <h5 class="bg-title">Still Stuck?</h5>
 <ul>
-<li>
-<a href="/contact/"><i class="fas fa-chevron-right me-2 text-warning"></i> Send us a message</a>
+<li class="mb-2">
+<a href="/contact/"><i class="fas fa-chevron-right me-2" style="color: #ea580c;"></i> Send us a message</a>
+</li>
+<li class="mb-2">
+<a href="/checkout/"><i class="fas fa-chevron-right me-2" style="color: #ea580c;"></i> Go to Pay Fee</a>
 </li>
 <li>
-<a href="/checkout/"><i class="fas fa-chevron-right me-2 text-warning"></i> Go to Pay Fee</a>
-</li>
-<li>
-<a href="/page/olympiad-form/"><i class="fas fa-chevron-right me-2 text-warning"></i> Go to Olympiad Form</a>
+<a href="/olympiad-form/"><i class="fas fa-chevron-right me-2" style="color: #ea580c;"></i> Go to Olympiad Form</a>
 </li>
 </ul>
 </div>

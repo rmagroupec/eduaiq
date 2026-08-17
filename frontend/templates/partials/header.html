@@ -59,12 +59,10 @@
         <!-- Header Left Group: Logo + Navigation side-by-side with tight gap -->
         <div class="header-left-group d-flex align-items-center">
           <!-- Site Identity / Logo -->
-          <div class="site-identity me-4 me-xl-5">
-            <p class="site-title">
-              <a href="/" class="site-logo-link">
-                <img
-                  src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop/RH5FCbrpj5oYZFFX/file_00000000cfc0720984e9245a8aa83486__2_-removebg-preview-I5iSFuXKpmUWVA3H.png"
-                  alt="EduAiQ logo" class="header-logo-img">
+          <div class="site-identity me-3 me-lg-4 me-xl-5">
+            <p class="site-title m-0">
+              <a href="/" class="site-logo-link d-inline-flex align-items-center text-decoration-none">
+                <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ logo" class="header-logo-img">
               </a>
             </p>
           </div>
@@ -74,6 +72,20 @@
             <ul>
               <li class="current-menu-item">
                 <a href="/">Home</a>
+              </li>
+              <li class="menu-item-has-children">
+                <a href="/courses/">Courses & Quizzes</a>
+                <ul class="sub-menu">
+                  <li>
+                    <a href="/courses/"><i class="fas fa-graduation-cap me-2 opacity-75"></i>All Courses</a>
+                  </li>
+                  <li>
+                    <a href="/categories/"><i class="fas fa-th-large me-2 opacity-75"></i>Categories</a>
+                  </li>
+                  <li>
+                    <a href="/my-learning/"><i class="fas fa-question-circle me-2 opacity-75"></i>Quizzes & Assessments</a>
+                  </li>
+                </ul>
               </li>
               <li class="menu-item-has-children">
                 <a href="/ai-lab/">AI Lab</a>
@@ -88,18 +100,24 @@
                 </ul>
               </li>
               <li class="menu-item-has-children">
-                <a href="/about/">About Us</a>
+                <a href="/olympiads/">Olympiads</a>
                 <ul class="sub-menu">
                   <li>
-                    <a href="/eduaiq-ecosystem/"><i class="fas fa-globe me-2 opacity-75"></i>EduAiQ Ecosystem</a>
+                    <a href="/olympiad-entrance/"><i class="fas fa-edit me-2 opacity-75"></i>Olympiad Entrance Exam</a>
+                  </li>
+                  <li>
+                    <a href="/olympiad-curriculum/"><i class="fas fa-award me-2 opacity-75"></i>Olympiad Curriculum</a>
+                  </li>
+                  <li>
+                    <a href="/olympiad-form/"><i class="fas fa-file-alt me-2 opacity-75"></i>Olympiad Registration Form</a>
                   </li>
                 </ul>
               </li>
               <li class="menu-item-has-children">
-                <a href="/olympiads/">Olympiads</a>
+                <a href="/about/">About Us</a>
                 <ul class="sub-menu">
                   <li>
-                    <a href="/olympiad-curriculum/"><i class="fas fa-award me-2 opacity-75"></i>Olympiad Curriculum</a>
+                    <a href="/eduaiq-ecosystem/"><i class="fas fa-globe me-2 opacity-75"></i>EduAiQ Ecosystem</a>
                   </li>
                 </ul>
               </li>
@@ -311,16 +329,27 @@
     background: #ffffff !important;
   }
 
+  .hb-group {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+  }
+
   .header-left-group {
     display: flex !important;
     align-items: center !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
   }
 
   .site-identity {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    align-items: center;
+    margin: 0 16px 0 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
   }
 
   .site-title {
@@ -330,13 +359,13 @@
 
   /* Logo Image Styling */
   .header-logo-img {
-    max-height: 95px !important;
-    height: 95px !important;
-    min-height: 70px !important;
+    max-height: 68px !important;
+    height: 68px !important;
+    min-height: 50px !important;
     width: auto !important;
     object-fit: contain !important;
     display: block !important;
-    filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.08));
+    filter: drop-shadow(0 2px 8px rgba(15, 23, 42, 0.08));
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -345,27 +374,34 @@
   }
 
   /* --- SYSTEMATIC NAVIGATION LINKS & ARROW REMOVAL --- */
+  .navigation {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
   .navigation>ul {
     display: flex !important;
     align-items: center !important;
-    gap: 30px !important;
+    gap: clamp(8px, 1.1vw, 20px) !important;
     margin: 0 !important;
     padding: 0 !important;
     list-style: none !important;
+    flex-wrap: nowrap !important;
   }
 
   .navigation>ul>li {
     position: relative;
     padding: 0 !important;
+    flex-shrink: 0 !important;
   }
 
   .navigation>ul>li>a {
-    font-size: 14.5px !important;
+    font-size: 13.5px !important;
     font-weight: 700 !important;
     color: var(--logo-navy) !important;
-    padding: 12px 0 !important;
+    padding: 10px 0 !important;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
     white-space: nowrap !important;
     position: relative;
     display: inline-block !important;
@@ -459,7 +495,9 @@
   .header-btn {
     display: flex !important;
     align-items: center !important;
-    gap: 12px !important;
+    gap: 10px !important;
+    flex-shrink: 0 !important;
+    margin-left: 12px !important;
   }
 
   /* Yellow Button (MY LEARNING / LOGIN) -> Bright Golden Yellow Gradient matching "AiQ" & Lightbulb */
@@ -468,10 +506,10 @@
     color: var(--logo-navy) !important;
     border: none !important;
     border-radius: 50px !important;
-    padding: 10px 24px !important;
-    font-size: 13px !important;
+    padding: 9px 20px !important;
+    font-size: 12.5px !important;
     font-weight: 800 !important;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     white-space: nowrap !important;
     text-decoration: none !important;
     box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35) !important;
@@ -490,10 +528,10 @@
     background: var(--brand-navy-gradient) !important;
     color: #ffffff !important;
     border-radius: 50px !important;
-    padding: 11px 26px !important;
-    font-size: 13px !important;
+    padding: 9.5px 22px !important;
+    font-size: 12.5px !important;
     font-weight: 800 !important;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     white-space: nowrap !important;
     text-decoration: none !important;
     box-shadow: 0 4px 15px rgba(15, 23, 42, 0.25) !important;
@@ -508,11 +546,43 @@
     color: #ffffff !important;
   }
 
+  /* Responsive Adjustments for Medium-Large Desktops */
+  @media screen and (max-width: 1399px) {
+    .navigation>ul {
+      gap: 12px !important;
+    }
+    .navigation>ul>li>a {
+      font-size: 12.5px !important;
+    }
+    .header-logo-img {
+      max-height: 58px !important;
+      height: 58px !important;
+    }
+  }
+
+  @media screen and (max-width: 1199px) {
+    .navigation>ul {
+      gap: 8px !important;
+    }
+    .navigation>ul>li>a {
+      font-size: 12px !important;
+      letter-spacing: 0px !important;
+    }
+    .btn-theme-yellow {
+      padding: 8px 16px !important;
+      font-size: 12px !important;
+    }
+    .btn-theme-navy {
+      padding: 8px 18px !important;
+      font-size: 12px !important;
+    }
+  }
+
   /* Mobile Responsive Logo Sizing */
   @media screen and (max-width: 991px) {
     .header-logo-img {
-      max-height: 52px !important;
-      height: 52px !important;
+      max-height: 50px !important;
+      height: 50px !important;
     }
   }
 </style>

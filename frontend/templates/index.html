@@ -170,8 +170,8 @@ courses in India with AI-driven online courses, e-books & practical training. St
   .category-card-pro {
     background: #ffffff;
     border-radius: 16px;
-    border: 1px solid rgba(226, 232, 240, 0.9);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    border: 1.5px solid #ffedd5;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04);
     transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
@@ -184,7 +184,7 @@ courses in India with AI-driven online courses, e-books & practical training. St
     left: 0;
     width: 4px;
     height: 100%;
-    background: var(--cat-color, #f73859);
+    background: linear-gradient(180deg, #fd7e14 0%, #ea580c 100%) !important;
     opacity: 0;
     transition: opacity 0.3s ease;
   }
@@ -208,13 +208,13 @@ courses in India with AI-driven online courses, e-books & practical training. St
     height: 44px;
     min-width: 44px;
     border-radius: 12px;
-    background: linear-gradient(135deg, var(--cat-color, #f73859) 0%, #d62846 100%);
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ffffff;
+    color: #ffffff !important;
     font-size: 20px;
-    box-shadow: 0 6px 16px rgba(247, 56, 89, 0.28);
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35) !important;
     transition: transform 0.35s ease, box-shadow 0.35s ease;
   }
 
@@ -224,8 +224,8 @@ courses in India with AI-driven online courses, e-books & practical training. St
 
   .category-card-title {
     font-size: 16px;
-    font-weight: 700;
-    color: #2d3748;
+    font-weight: 800;
+    color: #0f172a;
     margin-bottom: 4px;
     line-height: 1.3;
     transition: color 0.3s ease;
@@ -235,33 +235,35 @@ courses in India with AI-driven online courses, e-books & practical training. St
     display: inline-flex;
     align-items: center;
     font-size: 12px;
-    font-weight: 600;
-    color: #4a5568;
-    background: #f1f5f9;
+    font-weight: 700;
+    color: #ea580c !important;
+    background: #fff7ed !important;
+    border: 1px solid #ffedd5 !important;
     padding: 3px 10px;
     border-radius: 20px;
     transition: all 0.3s ease;
   }
 
   .category-arrow-btn {
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
     border-radius: 50%;
-    background: #f7fafc;
+    background: #0F172A !important;
+    border: 1.5px solid #fd7e14 !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #a0aec0;
+    color: #fd7e14 !important;
     font-size: 12px;
-    transition: all 0.3s ease;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* Hover Effects */
   .category-card-pro:hover {
     transform: translateY(-6px);
-    border-color: rgba(102, 126, 234, 0.4);
-    box-shadow: 0 14px 30px rgba(102, 126, 234, 0.15);
+    border-color: #fd7e14 !important;
+    box-shadow: 0 16px 36px rgba(249, 115, 22, 0.2) !important;
   }
 
   .category-card-pro:hover::before {
@@ -270,22 +272,25 @@ courses in India with AI-driven online courses, e-books & practical training. St
 
   .category-card-pro:hover .category-icon-wrapper {
     transform: scale(1.12) rotate(4deg);
-    box-shadow: 0 8px 22px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 10px 24px rgba(249, 115, 22, 0.5) !important;
   }
 
   .category-card-pro:hover .category-card-title {
-    color: #5a67d8;
+    color: #ea580c !important;
   }
 
   .category-card-pro:hover .category-badge-pill {
-    background: rgba(102, 126, 234, 0.12);
-    color: #4c51bf;
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border-color: #ea580c !important;
   }
 
   .category-card-pro:hover .category-arrow-btn {
-    background: #667eea;
-    color: #ffffff;
-    transform: translateX(3px);
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border-color: #ea580c !important;
+    transform: scale(1.12) translateX(2px) !important;
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.4) !important;
   }
 
   .course-form-pro {
@@ -1184,7 +1189,7 @@ courses in India with AI-driven online courses, e-books & practical training. St
       <div class="col-md-6">
         <div class="about-right-content">
           <div class="title-divider"></div>
-          <h2 class="about-title">Why Students Choose Us for Gaining Knowledge !</h2>
+          <h2 class="about-title">Why Institute Choose Us for Gaining Knowledge !</h2>
           <p class="about-desc">
             EduAiQ pairs every course with hands-on practice — AI Lab projects, real
             datasets, and mentor feedback — so learners build a portfolio, not just a
@@ -1382,6 +1387,92 @@ courses in India with AI-driven online courses, e-books & practical training. St
     <div class="text-center mt-5">
       <a class="button-round-primary hover-glow" href="{% url 'courses' %}">VIEW ALL COURSES <i
           class="fas fa-arrow-right ms-1"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     EduAiQ Olympiad Entrance Exams & Quizzes Homepage Showcase Section
+     ========================================================================== -->
+<section class="home-olympiad-quiz-section py-5" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); position: relative; overflow: hidden;">
+  <div class="container py-3" style="position: relative; z-index: 2;">
+    <div class="row mb-4">
+      <div class="col-lg-8 offset-lg-2 text-center">
+        <div class="title-divider-center" style="background-color: #fd7e14 !important; width: 60px; height: 3px; margin: 0 auto 15px auto;"></div>
+        <span class="badge px-3 py-2 rounded-pill fs-7 mb-2" style="background: rgba(253, 126, 20, 0.15); color: #fd7e14; border: 1px solid rgba(253, 126, 20, 0.3); font-weight: 700;">
+          <i class="fas fa-award me-1"></i> NATIONAL COMPETITIONS & ASSESSMENTS
+        </span>
+        <h2 class="text-white fw-bold display-6 mb-2">Olympiad Entrance Exams & Quizzes</h2>
+        <p style="color: #94a3b8; font-size: 1.05rem;" class="mb-0">
+          Measure your academic standing with official EduAiQ timed entrance exams and interactive course quizzes.
+        </p>
+      </div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      <!-- Card 1: Olympiad Entrance Exam -->
+      <div class="col-lg-6 col-md-12">
+        <div class="h-100 p-4 p-md-5 rounded-4 shadow-lg border text-white d-flex flex-column justify-content-between" 
+             style="background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(12px); border-color: rgba(253, 126, 20, 0.25) !important; transition: all 0.35s ease;">
+          <div>
+            <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+              <span class="badge px-3 py-2 rounded-pill fw-bold" style="background: #fd7e14; color: #0F172A; font-size: 0.78rem;">
+                <i class="fas fa-star me-1"></i> OFFICIAL ENTRANCE EXAMS
+              </span>
+              <span style="color: #cbd5e1; font-size: 0.85rem; font-weight: 600;">
+                <i class="fas fa-clock text-warning me-1"></i> Timed & Monitored
+              </span>
+            </div>
+            <h3 class="text-white fw-bold mb-3">Olympiad Entrance Examination</h3>
+            <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6;" class="mb-4">
+              Take national level entrance tests in Math, Science, and AI. Qualify for prestigious EduAiQ scholarship bands, medals, and official printable merit certificates.
+            </p>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+              <span class="badge bg-dark text-warning border border-secondary px-3 py-2 rounded-pill font-monospace">🥇 Gold, Silver & Bronze Medals</span>
+              <span class="badge bg-dark text-info border border-secondary px-3 py-2 rounded-pill font-monospace">📜 Merit & Participation Certs</span>
+              <span class="badge bg-dark text-success border border-secondary px-3 py-2 rounded-pill font-monospace">⚡ Auto Grading & Results</span>
+            </div>
+          </div>
+          <div>
+            <a href="/olympiad-entrance/" class="btn w-100 py-3 rounded-pill fw-bold text-dark d-flex align-items-center justify-content-center gap-2 shadow" 
+               style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); border: none; font-size: 0.95rem;">
+              <i class="fas fa-edit"></i> ACCESS OLYMPIAD ENTRANCE EXAMS <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Interactive Practice Quizzes -->
+      <div class="col-lg-6 col-md-12">
+        <div class="h-100 p-4 p-md-5 rounded-4 shadow-lg border text-white d-flex flex-column justify-content-between" 
+             style="background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(12px); border-color: rgba(253, 126, 20, 0.25) !important; transition: all 0.35s ease;">
+          <div>
+            <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+              <span class="badge px-3 py-2 rounded-pill fw-bold" style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); color: #ffffff; font-size: 0.78rem;">
+                <i class="fas fa-question-circle me-1"></i> INTERACTIVE QUIZZES
+              </span>
+              <span style="color: #cbd5e1; font-size: 0.85rem; font-weight: 600;">
+                <i class="fas fa-check-circle me-1" style="color: #fd7e14;"></i> Instant Feedback
+              </span>
+            </div>
+            <h3 class="text-white fw-bold mb-3">Course Quizzes & Assessments</h3>
+            <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6;" class="mb-4">
+              Test your mastery on lesson-by-lesson practice quizzes. Receive real-time score analytics, detailed answer breakdowns, and progress tracking on your student dashboard.
+            </p>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+              <span class="badge bg-dark text-white border px-3 py-2 rounded-pill font-monospace" style="border-color: rgba(253, 126, 20, 0.4) !important;">🎯 Lesson-Wise Quizzes</span>
+              <span class="badge bg-dark text-white border px-3 py-2 rounded-pill font-monospace" style="border-color: rgba(253, 126, 20, 0.4) !important;">📊 Score & Attempt History</span>
+              <span class="badge bg-dark text-white border px-3 py-2 rounded-pill font-monospace" style="border-color: rgba(253, 126, 20, 0.4) !important;">🏆 Student ID & Dashboard</span>
+            </div>
+          </div>
+          <div>
+            <a href="/my-learning/" class="btn w-100 py-3 rounded-pill fw-bold text-white d-flex align-items-center justify-content-center gap-2 shadow" 
+               style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); border: none; font-size: 0.95rem; box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4) !important;">
+              <i class="fas fa-list-check"></i> VIEW QUIZZES & ASSESSMENTS <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>

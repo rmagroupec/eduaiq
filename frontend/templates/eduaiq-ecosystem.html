@@ -22,6 +22,120 @@
 </section>
 
 
+<style>
+  /* EduAiQ Logo Brand Theme Override for Ecosystem Page */
+
+  /* Dividers */
+  .title-divider,
+  .title-divider-center {
+      background-color: #fd7e14 !important;
+  }
+
+  /* Step Badges & Feature Icons */
+  .feature-icon .meta-no,
+  .feature-type:nth-child(even) .feature-icon .meta-no {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+  }
+  .feature-icon i,
+  .feature-type:nth-child(even) .feature-icon i {
+      color: #ea580c !important;
+  }
+  .right-arrow-link i {
+      width: 52px !important;
+      height: 52px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 50% !important;
+      background-color: #0F172A !important;
+      border: 2px solid #fd7e14 !important;
+      color: #fd7e14 !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  .feature-type:hover .right-arrow-link i,
+  .right-arrow-link:hover i {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+      border-color: #ea580c !important;
+      transform: scale(1.12) !important;
+      box-shadow: 0 8px 24px rgba(249, 115, 22, 0.45) !important;
+  }
+
+  /* Course / Ecosystem Feature Cards */
+  .course-type .course-icon {
+      background: #fff7ed !important;
+      border: 2px solid #ffedd5 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+  }
+  .course-type .course-icon i {
+      color: #ea580c !important;
+      font-size: 24px !important;
+  }
+  .course-type .course-durations {
+      color: #ea580c !important;
+      font-weight: 700 !important;
+  }
+
+  /* Buttons: TALK TO US, REQUEST DEMO, REGISTER TO JOIN US */
+  .button-round-primary,
+  .button-round-secondary,
+  .service-btn a,
+  .course-field button[type="submit"] {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+      border: none !important;
+      border-radius: 50rem !important;
+      font-weight: 800 !important;
+      box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4) !important;
+      transition: all 0.35s ease !important;
+  }
+
+  .button-round-primary:hover,
+  .button-round-secondary:hover,
+  .service-btn a:hover,
+  .course-field button[type="submit"]:hover {
+      background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+      box-shadow: 0 12px 30px rgba(234, 88, 12, 0.6) !important;
+      transform: translateY(-2px) !important;
+      color: #ffffff !important;
+  }
+
+  /* Form Fields Focus */
+  .course-field input:focus {
+      border-color: #fd7e14 !important;
+      box-shadow: 0 0 0 3px rgba(253, 126, 20, 0.2) !important;
+      outline: none !important;
+  }
+
+  /* Counter Section Overrides */
+  .counter-inner {
+      background: #fff7ed !important;
+      border-top: 1px solid #ffedd5 !important;
+      border-bottom: 1px solid #ffedd5 !important;
+      padding: 35px 0 !important;
+      border-radius: 20px !important;
+      margin-top: 40px !important;
+  }
+  .counter-item .counter-no {
+      color: #0F172A !important;
+      font-weight: 800 !important;
+  }
+  .counter-item .Completed,
+  .counter-item span.Completed {
+      color: #ea580c !important;
+      font-weight: 800 !important;
+  }
+  .counter-item {
+      border-right: 1px solid #ffedd5 !important;
+  }
+  .counter-item:last-child {
+      border-right: none !important;
+  }
+</style>
+
 <section class="about-section">
 <div class="container">
 <div class="title-divider-center"></div>
@@ -100,10 +214,10 @@
 <h5 class="meta-no">1</h5>
 <i class="fas fa-brain"></i>
 </div>
-<h4 class="feature-heading">AI Lab</h4>
+<h4 class="feature-heading"><a href="/ai-lab/" class="text-dark text-decoration-none">AI Lab</a></h4>
 <p class="feature-info">Hands-on AI learning environment with real projects and
                                 adaptive assessments.</p>
-<a class="right-arrow-link" href="/page/ai-lab/">
+<a class="right-arrow-link" href="/ai-lab/">
 <i class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -112,10 +226,10 @@
 <h5 class="meta-no">2</h5>
 <i aria-hidden="true" class="fas fa-book"></i>
 </div>
-<h4 class="feature-heading">AI Books</h4>
+<h4 class="feature-heading"><a href="/ai-books/" class="text-dark text-decoration-none">AI Books</a></h4>
 <p class="feature-info">Practical, project-based e-books that pair directly with AI
                                 Lab exercises.</p>
-<a class="right-arrow-link" href="/page/ai-books/">
+<a class="right-arrow-link" href="/ai-books/">
 <i class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -124,10 +238,10 @@
 <h5 class="meta-no">3</h5>
 <i class="fas fa-laptop-code"></i>
 </div>
-<h4 class="feature-heading">Skill Development</h4>
+<h4 class="feature-heading"><a href="/skill-development/" class="text-dark text-decoration-none">Skill Development</a></h4>
 <p class="feature-info">Mentor-led tracks across AI, software, and business skills with
                                 certification and hiring partners.</p>
-<a class="right-arrow-link" href="/page/skill-development/">
+<a class="right-arrow-link" href="/skill-development/">
 <i class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -136,12 +250,12 @@
 <div class="feature-type">
 <div class="feature-icon">
 <h5 class="meta-no">4</h5>
-<i aria-hidden="true" class="fas fa-person"></i>
+<i aria-hidden="true" class="fas fa-trophy"></i>
 </div>
-<h4 class="feature-heading">Olympiads</h4>
+<h4 class="feature-heading"><a href="/olympiads/" class="text-dark text-decoration-none">Olympiads</a></h4>
 <p class="feature-info">Structured competitions and curriculum that measure and reward
                                 real progress.</p>
-<a class="right-arrow-link" href="/page/olympiads/">
+<a class="right-arrow-link" href="/olympiads/">
 <i class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -150,10 +264,10 @@
 <h5 class="meta-no">5</h5>
 <i aria-hidden="true" class="fas fa-comments"></i>
 </div>
-<h4 class="feature-heading">Campus Automation</h4>
+<h4 class="feature-heading"><a href="/apply-for-franchise/" class="text-dark text-decoration-none">Campus Automation</a></h4>
 <p class="feature-info">Admission CRM, LMS, digital classrooms, and examination
                                 management for partner institutions.</p>
-<a class="right-arrow-link" href="/page/apply-for-franchise/">
+<a class="right-arrow-link" href="/apply-for-franchise/">
 <i class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -162,10 +276,10 @@
 <h5 class="meta-no">6</h5>
 <i class="fas fa-chart-line"></i>
 </div>
-<h4 class="feature-heading">Growth Partnerships</h4>
+<h4 class="feature-heading"><a href="/growth-partner-kit/" class="text-dark text-decoration-none">Growth Partnerships</a></h4>
 <p class="feature-info">Franchise and growth-partner programs that bring the full
                                 ecosystem to new regions.</p>
-<a class="right-arrow-link" href="/page/growth-partner-kit/">
+<a class="right-arrow-link" href="/growth-partner-kit/">
 <i class="fas fa-long-arrow-alt-right"></i>
 </a>
 </div>
@@ -271,9 +385,9 @@
                                 </p>
 <div class="fact-list">
 <ul>
-<li>Free walkthrough for students and professionals.</li>
-<li>Live demo available for institutions and partners.</li>
-<li>Franchise and growth-partner kits available on request.</li>
+<li><i class="fas fa-check-circle me-2" style="color: #fd7e14;"></i> Free walkthrough for students and professionals.</li>
+<li><i class="fas fa-check-circle me-2" style="color: #fd7e14;"></i> Live demo available for institutions and partners.</li>
+<li><i class="fas fa-check-circle me-2" style="color: #fd7e14;"></i> Franchise and growth-partner kits available on request.</li>
 </ul>
 </div>
 <div class="service-btn">

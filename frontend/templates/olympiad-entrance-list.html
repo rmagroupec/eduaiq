@@ -22,45 +22,37 @@
     }
 
     .entrance-card-header {
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 60%, #ea580c 100%);
-        padding: 1.1rem 1.25rem 0.95rem 1.25rem;
+        background: #0f172a;
+        padding: 1.25rem 1.25rem 1.1rem 1.25rem;
         color: #ffffff;
         position: relative;
         overflow: hidden;
+        border-bottom: 3px solid #ea580c;
     }
 
     .entrance-card-header::after {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -30%;
-        width: 180px;
-        height: 180px;
-        border-radius: 50%;
-        background: rgba(249, 115, 22, 0.12);
-        pointer-events: none;
+        display: none;
     }
 
     .badge-glass-level {
-        background: rgba(255, 255, 255, 0.18);
-        backdrop-filter: blur(8px);
-        color: #ffffff;
-        font-weight: 800;
+        background: #1e293b;
+        color: #e2e8f0;
+        font-weight: 700;
         letter-spacing: 0.05em;
-        padding: 0.25rem 0.75rem;
+        padding: 0.3rem 0.8rem;
         font-size: 0.72rem;
         border-radius: 50rem;
-        border: 1px solid rgba(255, 255, 255, 0.25);
+        border: 1px solid #334155;
     }
 
     .badge-glass-time {
-        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        background: #ea580c;
         color: #ffffff;
-        font-weight: 800;
-        padding: 0.25rem 0.75rem;
+        font-weight: 700;
+        padding: 0.3rem 0.8rem;
         font-size: 0.72rem;
         border-radius: 50rem;
-        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        box-shadow: none;
     }
 
     .icon-shape-box {
@@ -85,15 +77,15 @@
     .icon-box-purple { background: #faf5ff; color: #9333ea; }
 
     .btn-action-enroll {
-        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        background: #ea580c;
         color: #ffffff !important;
         border: none;
         border-radius: 50rem;
-        padding: 0.6rem 1.25rem;
+        padding: 0.65rem 1.25rem;
         font-size: 0.88rem;
         font-weight: 700;
-        box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35);
-        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);
+        transition: all 0.25s ease;
         text-decoration: none;
         display: flex;
         align-items: center;
@@ -101,8 +93,9 @@
     }
 
     .btn-action-enroll:hover {
+        background: #c2410c;
         transform: translateY(-2px);
-        box-shadow: 0 10px 22px rgba(234, 88, 12, 0.45);
+        box-shadow: 0 6px 16px rgba(234, 88, 12, 0.3);
         color: #ffffff !important;
     }
 

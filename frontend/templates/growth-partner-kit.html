@@ -22,11 +22,87 @@
 </section>
 
 
+<style>
+  /* EduAiQ Logo Brand Theme Override for Growth Partner Kit */
+
+  /* Section Dividers & Highlights */
+  .title-divider,
+  .title-divider-center {
+      background-color: #fd7e14 !important;
+  }
+
+  /* Step Number Badges (1, 2, 3, 4, 5, 6) */
+  .feature-icon .meta-no {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+  }
+
+  /* Icons in Feature Cards */
+  .feature-icon i {
+      color: #ea580c !important;
+  }
+
+  /* Feature Type Hover State */
+  .feature-type:hover {
+      border-color: #fd7e14 !important;
+      box-shadow: 0 10px 30px rgba(249, 115, 22, 0.15) !important;
+  }
+
+  /* Course / Partner Item Cards */
+  .course-type .course-icon {
+      background: #fff7ed !important;
+      border: 2px solid #ffedd5 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+  }
+  .course-type .course-icon i {
+      color: #ea580c !important;
+      font-size: 24px !important;
+  }
+  .course-type .course-durations {
+      color: #ea580c !important;
+      font-weight: 700 !important;
+  }
+
+  /* Buttons: APPLY FOR FRANCHISE & SEND ME THE KIT */
+  .button-round-primary,
+  .button-round-secondary,
+  .service-btn a,
+  .course-field button[type="submit"] {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+      border: none !important;
+      border-radius: 50rem !important;
+      font-weight: 800 !important;
+      box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4) !important;
+      transition: all 0.35s ease !important;
+  }
+
+  .button-round-primary:hover,
+  .button-round-secondary:hover,
+  .service-btn a:hover,
+  .course-field button[type="submit"]:hover {
+      background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+      box-shadow: 0 12px 30px rgba(234, 88, 12, 0.6) !important;
+      transform: translateY(-2px) !important;
+      color: #ffffff !important;
+  }
+
+  /* Form Fields Focus */
+  .course-field input:focus {
+      border-color: #fd7e14 !important;
+      box-shadow: 0 0 0 3px rgba(253, 126, 20, 0.2) !important;
+      outline: none !important;
+  }
+</style>
+
 <section class="about-section">
-<div class="container">
+<div class="container text-center">
+<img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" style="height: 52px;" class="mb-3">
 <div class="title-divider-center"></div>
 <h2 class="about-title text-center">Bring EduAiQ To Your Region</h2>
-<div class="row">
+<div class="row text-start">
 <div class="col-md-6">
 <p class="about-describe info-left">
                                 The Growth Partner Kit is everything you need to evaluate becoming an EduAiQ
@@ -160,6 +236,7 @@
 <div class="pattern-circle overlay"></div>
 <div class="service-content">
 <div class="section-head">
+<img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" style="height: 38px;" class="mb-2">
 <div class="title-divider"></div>
 <h2>Why Partner With EduAiQ</h2>
 <div class="service-btn">
@@ -169,7 +246,7 @@
 </div>
 <div class="course-type">
 <div class="course-icon">
-<i aria-hidden="true" class="fas fa-person"></i>
+<i aria-hidden="true" class="fas fa-users"></i>
 </div>
 <h4 class="course-title">
 <a href="/page/growth-partner-kit/">Established Track Record</a>
@@ -178,7 +255,7 @@
 </div>
 <div class="course-type">
 <div class="course-icon">
-<i aria-hidden="true" class="fas fa-microscope"></i>
+<i aria-hidden="true" class="fas fa-layer-group"></i>
 </div>
 <h4 class="course-title">
 <a href="/page/growth-partner-kit/">Full Product Suite</a>
@@ -189,7 +266,7 @@
 <div class="service-content">
 <div class="course-type">
 <div class="course-icon">
-<i aria-hidden="true" class="icon icon-man"></i>
+<i aria-hidden="true" class="fas fa-headset"></i>
 </div>
 <h4 class="course-title">
 <a href="/page/growth-partner-kit/">Ongoing Support</a>
@@ -240,9 +317,9 @@
                                 </p>
 <div class="fact-list">
 <ul>
-<li>No cost or commitment to request the kit.</li>
-<li>Territory availability confirmed during the application step.</li>
-<li>Existing partners available to answer questions on request.</li>
+<li><i class="fas fa-check-circle me-2" style="color: #fd7e14;"></i> No cost or commitment to request the kit.</li>
+<li><i class="fas fa-check-circle me-2" style="color: #fd7e14;"></i> Territory availability confirmed during the application step.</li>
+<li><i class="fas fa-check-circle me-2" style="color: #fd7e14;"></i> Existing partners available to answer questions on request.</li>
 </ul>
 </div>
 <div class="service-btn">

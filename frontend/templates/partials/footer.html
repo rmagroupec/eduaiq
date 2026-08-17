@@ -1,3 +1,28 @@
+{% load static %}
+<style>
+  .footer-logo-card {
+      display: inline-block !important;
+      background: #ffffff !important;
+      padding: 10px 18px !important;
+      border-radius: 16px !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
+      border: 1.5px solid #ffedd5 !important;
+      transition: all 0.3s ease !important;
+      margin-bottom: 15px !important;
+  }
+  .footer-logo-card:hover {
+      transform: translateY(-3px) !important;
+      box-shadow: 0 10px 25px rgba(249, 115, 22, 0.35) !important;
+      border-color: #fd7e14 !important;
+  }
+  .footer-logo-card img {
+      max-height: 52px !important;
+      height: auto !important;
+      width: auto !important;
+      display: block !important;
+  }
+</style>
+
 <footer id="colophon" class="site-footer">
   <div class="footer-overlay"></div>
   <div class="subscribe-section">
@@ -29,8 +54,9 @@
         <div class="col-lg-3 col-md-6 col-sm-12">
           <aside class="widget widget_text img-textwidget">
             <div class="footer-logo">
-              <a href="/"><img
-                  src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop/RH5FCbrpj5oYZFFX/file_00000000cfc0720984e9245a8aa83486__2_-removebg-preview-I5iSFuXKpmUWVA3H.png"
+              <a href="/" class="footer-logo-card"><img
+                  src="{% static 'assets/img/eduaiq-logo.png' %}"
+                  onerror="this.onerror=null; this.src='https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop/RH5FCbrpj5oYZFFX/file_00000000cfc0720984e9245a8aa83486__2_-removebg-preview-I5iSFuXKpmUWVA3H.png';"
                   alt="EduAiQ logo"></a>
             </div>
             <div class="textwidget widget-text">
@@ -65,10 +91,16 @@
                 <a href="/about/"><i class="fas fa-chevron-right me-2 text-gold-icon"></i>About Us</a>
               </li>
               <li>
+                <a href="/olympiad-entrance/"><i class="fas fa-chevron-right me-2 text-gold-icon"></i>Olympiad Entrance Exam</a>
+              </li>
+              <li>
+                <a href="/olympiads/"><i class="fas fa-chevron-right me-2 text-gold-icon"></i>Olympiad Portal</a>
+              </li>
+              <li>
                 <a href="/ai-lab/"><i class="fas fa-chevron-right me-2 text-gold-icon"></i>AI Lab</a>
               </li>
               <li>
-                <a href="/olympiads/"><i class="fas fa-chevron-right me-2 text-gold-icon"></i>Olympiads</a>
+                <a href="/my-learning/"><i class="fas fa-chevron-right me-2 text-gold-icon"></i>Quizzes & Learning</a>
               </li>
               <li>
                 <a href="/legal-notice/"><i class="fas fa-chevron-right me-2 text-gold-icon"></i>Legal Notice</a>

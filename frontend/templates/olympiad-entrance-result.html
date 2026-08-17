@@ -583,53 +583,54 @@
         font-size: 0.75rem;
     }
 
-    /* Action Buttons - Compact & Micro-Animated */
+    /* Action Buttons - Clean & Brand-Matched */
     .btn-result-action-primary {
-        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
         color: #ffffff !important;
-        border: none;
-        border-radius: 50rem;
-        padding: 0.38rem 1.1rem;
-        font-size: 0.8rem;
-        font-weight: 700;
-        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
-        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        height: 34px;
-        cursor: pointer;
+        border: none !important;
+        border-radius: 50rem !important;
+        padding: 10px 24px !important;
+        font-size: 13.5px !important;
+        font-weight: 800 !important;
+        box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        cursor: pointer !important;
     }
 
     .btn-result-action-primary:hover {
-        transform: translateY(-2px) scale(1.03);
-        box-shadow: 0 8px 20px rgba(234, 88, 12, 0.5);
+        background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+        box-shadow: 0 10px 24px rgba(234, 88, 12, 0.5) !important;
+        transform: translateY(-2px) scale(1.02) !important;
         color: #ffffff !important;
     }
 
     .btn-result-action-secondary {
-        background: #ffffff;
-        color: #334155 !important;
-        border: 1.5px solid #cbd5e1;
-        border-radius: 50rem;
-        padding: 0.38rem 1.1rem;
-        font-size: 0.8rem;
-        font-weight: 700;
-        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        height: 34px;
+        background: #ffffff !important;
+        color: #0F172A !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 50rem !important;
+        padding: 9.5px 22px !important;
+        font-size: 13.5px !important;
+        font-weight: 700 !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
     }
 
     .btn-result-action-secondary:hover {
-        background: #fff7ed;
-        border-color: #ea580c;
+        background: #fff7ed !important;
+        border-color: #fd7e14 !important;
         color: #ea580c !important;
-        transform: translateY(-2px) scale(1.03);
-        box-shadow: 0 6px 16px rgba(249, 115, 22, 0.18);
+        transform: translateY(-2px) scale(1.02) !important;
+        box-shadow: 0 6px 16px rgba(249, 115, 22, 0.18) !important;
     }
 
     .btn-result-action-primary i,
@@ -664,7 +665,7 @@
                                         <h3 class="text-white fw-bold mb-0 fs-5">
                                             {% if attempt.passed %}Qualifying Score Achieved!{% else %}Exam Attempt Submitted{% endif %}
                                         </h3>
-                                        <span class="badge bg-warning text-dark rounded-pill fs-7">{{ exam.level }}</span>
+                                         <span class="badge rounded-pill px-3 py-1 fw-bold text-white shadow-xs" style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); border: 1px solid #ffedd5; font-size: 11px; letter-spacing: 0.5px;">{{ exam.level|upper|default:"NATIONAL LEVEL" }}</span>
                                     </div>
                                     <div class="text-white-50 small fs-7 mt-0.5">
                                         {{ exam.name }} &bull; Roll No: <strong>{{ registration.roll_number }}</strong>
@@ -728,13 +729,13 @@
                                 </div>
                             </div>
 
-                            <!-- Uniform Action Buttons (Syllabus button removed, only 2 buttons) -->
-                            <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-2.5 pt-0.5">
+                            <!-- Uniform Action Buttons -->
+                            <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 pt-2 pb-1">
                                 <a href="{% url 'olympiad_entrance_list' %}" class="btn-result-action-secondary">
-                                    <i class="fas fa-list me-1.5"></i> Back to Catalog
+                                    <i class="fas fa-th-large"></i> Back to Entrance Catalog
                                 </a>
                                 <a href="{% url 'olympiad_entrance_certificate' exam.id %}" class="btn-result-action-primary">
-                                    <i class="fas fa-award me-1.5"></i> View & Print Certificate
+                                    <i class="fas fa-certificate"></i> View & Print Certificate
                                 </a>
                             </div>
 
