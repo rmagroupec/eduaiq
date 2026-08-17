@@ -14850,14 +14850,14 @@ table.dataTable td.dt-type-date {
 
 .sidebar-submenu .circle-icon {
   color: #CED4DA;
-  box-shadow: 0px 0px 0px 10px var(--white);
+  box-shadow: none;
   z-index: 1;
   position: relative;
-  background: var(--white);
+  background: transparent;
 }
 
 .sidebar-menu .sidebar-submenu li.active-page a .circle-icon {
-  color: var(--primary-600);
+  color: #ea580c;
 }
 
 .sidebar.active .profile-dropdown__contents {

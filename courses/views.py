@@ -1098,14 +1098,20 @@ def quiz_list(request):
     if not _is_staff(request.user):
         return JsonResponse({'error': 'Forbidden'}, status=403)
     qs = Quiz.objects.select_related('lesson__module__course').all()
+    course_slug = request.GET.get('course')
+    if course_slug and course_slug != 'all':
+        qs = qs.filter(lesson__module__course__slug=course_slug)
     results = []
     for q in qs:
+        course_title = q.lesson.module.course.title if (q.lesson and q.lesson.module and q.lesson.module.course) else 'General'
+        course_slug_val = q.lesson.module.course.slug if (q.lesson and q.lesson.module and q.lesson.module.course) else ''
+        module_title = q.lesson.module.title if (q.lesson and q.lesson.module) else ''
         results.append({
             'id': q.id,
-            'title': q.lesson.title,
-            'course_title': q.lesson.module.course.title,
-            'course_slug': q.lesson.module.course.slug,
-            'module_title': q.lesson.module.title,
+            'title': q.lesson.title if q.lesson else f"Quiz #{q.id}",
+            'course_title': course_title,
+            'course_slug': course_slug_val,
+            'module_title': module_title,
             'total_questions': q.questions.count(),
             'time_limit_minutes': q.time_limit_minutes,
             'passing_score_pct': q.passing_score_pct,

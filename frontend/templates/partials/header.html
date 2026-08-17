@@ -332,7 +332,8 @@
   .hb-group {
     display: flex !important;
     align-items: center !important;
-    justify-content: space-between !important;
+    justify-content: flex-start !important;
+    gap: 24px !important;
     flex-wrap: nowrap !important;
     width: 100% !important;
   }
@@ -340,12 +341,12 @@
   .header-left-group {
     display: flex !important;
     align-items: center !important;
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
+    gap: 24px !important;
+    flex: 0 0 auto !important;
   }
 
   .site-identity {
-    margin: 0 16px 0 0 !important;
+    margin: 0 !important;
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
@@ -357,11 +358,11 @@
     line-height: 1 !important;
   }
 
-  /* Logo Image Styling */
+  /* Logo Image Styling - Large & Prominent */
   .header-logo-img {
-    max-height: 68px !important;
-    height: 68px !important;
-    min-height: 50px !important;
+    max-height: 85px !important;
+    height: 85px !important;
+    min-height: 60px !important;
     width: auto !important;
     object-fit: contain !important;
     display: block !important;
@@ -375,14 +376,13 @@
 
   /* --- SYSTEMATIC NAVIGATION LINKS & ARROW REMOVAL --- */
   .navigation {
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
+    flex: 0 0 auto !important;
   }
 
   .navigation>ul {
     display: flex !important;
     align-items: center !important;
-    gap: clamp(8px, 1.1vw, 20px) !important;
+    gap: 18px !important;
     margin: 0 !important;
     padding: 0 !important;
     list-style: none !important;
@@ -497,7 +497,7 @@
     align-items: center !important;
     gap: 10px !important;
     flex-shrink: 0 !important;
-    margin-left: 12px !important;
+    margin-left: auto !important;
   }
 
   /* Yellow Button (MY LEARNING / LOGIN) -> Bright Golden Yellow Gradient matching "AiQ" & Lightbulb */
@@ -555,8 +555,8 @@
       font-size: 12.5px !important;
     }
     .header-logo-img {
-      max-height: 58px !important;
-      height: 58px !important;
+      max-height: 72px !important;
+      height: 72px !important;
     }
   }
 
@@ -581,8 +581,8 @@
   /* Mobile Responsive Logo Sizing */
   @media screen and (max-width: 991px) {
     .header-logo-img {
-      max-height: 50px !important;
-      height: 50px !important;
+      max-height: 55px !important;
+      height: 55px !important;
     }
   }
 </style>

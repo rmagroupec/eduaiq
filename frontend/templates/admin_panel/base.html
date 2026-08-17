@@ -46,30 +46,102 @@
           border-right: 1px solid #e2e8f0 !important;
       }
 
-      .sidebar-menu li a {
+      /* Top-Level Main Sidebar Items */
+      .sidebar-menu > li > a {
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
           border-radius: 0.75rem !important;
           font-weight: 600 !important;
+          color: #475569 !important;
       }
 
-      .sidebar-menu li a:hover {
+      .sidebar-menu > li > a:hover {
           background: #fff7ed !important;
           color: #ea580c !important;
           transform: translateX(4px) !important;
       }
 
-      .sidebar-menu li.active > a,
-      .sidebar-menu li > a.active-page,
-      .sidebar-menu li a.active {
-          background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+      .sidebar-menu > li.active > a,
+      .sidebar-menu > li.dropdown.open > a,
+      .sidebar-menu > li > a.active-page,
+      .sidebar-menu > li.dropdown.active > a {
+          background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
           color: #ffffff !important;
           box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35) !important;
       }
 
-      .sidebar-menu li.active > a i,
-      .sidebar-menu li > a.active-page i,
-      .sidebar-menu li a.active i {
+      .sidebar-menu > li.active > a i,
+      .sidebar-menu > li.dropdown.open > a i,
+      .sidebar-menu > li > a.active-page i,
+      .sidebar-menu > li.dropdown.active > a i {
           color: #ffffff !important;
+      }
+
+      /* Submenu Fixes - Eliminate White Box Bug & Clean Alignment */
+      .sidebar-submenu {
+          position: relative !important;
+          margin-inline-start: 1.25rem !important;
+          padding-block-start: 0.4rem !important;
+      }
+
+      .sidebar-submenu::before {
+          border-color: rgba(249, 115, 22, 0.2) !important;
+          inset-inline-start: 4px !important;
+      }
+
+      .sidebar-submenu .circle-icon {
+          box-shadow: none !important;
+          background: transparent !important;
+          color: #cbd5e1 !important;
+          font-size: 0.45rem !important;
+          margin-right: 8px !important;
+          position: relative !important;
+          z-index: 2 !important;
+          transition: all 0.2s ease !important;
+      }
+
+      .sidebar-menu .sidebar-submenu li a {
+          background: transparent !important;
+          box-shadow: none !important;
+          color: #64748b !important;
+          font-size: 13.5px !important;
+          font-weight: 500 !important;
+          padding: 8px 12px !important;
+          border-radius: 8px !important;
+          display: flex !important;
+          align-items: center !important;
+          margin-bottom: 2px !important;
+          transform: none !important;
+          transition: all 0.2s ease !important;
+      }
+
+      .sidebar-menu .sidebar-submenu li a:hover {
+          background: #fff7ed !important;
+          color: #ea580c !important;
+          transform: translateX(3px) !important;
+      }
+
+      .sidebar-menu .sidebar-submenu li a:hover .circle-icon {
+          color: #ea580c !important;
+      }
+
+      /* Active Submenu Item -> Soft Orange Highlight with clean accent border */
+      .sidebar-menu .sidebar-submenu li.active-page a,
+      .sidebar-menu .sidebar-submenu li a.active-page {
+          background: #fff7ed !important;
+          color: #ea580c !important;
+          font-weight: 700 !important;
+          border-left: 3.5px solid #ea580c !important;
+          border-radius: 0 8px 8px 0 !important;
+          box-shadow: 0 2px 8px rgba(234, 88, 12, 0.08) !important;
+          transform: translateX(2px) !important;
+      }
+
+      .sidebar-menu .sidebar-submenu li.active-page a .circle-icon,
+      .sidebar-menu .sidebar-submenu li a.active-page .circle-icon {
+          color: #ea580c !important;
+          background: transparent !important;
+          box-shadow: none !important;
+          transform: scale(1.3) !important;
       }
 
       /* Stat Cards Overrides - Single-Tone EduAiQ Orange Style & Elevate Hover */

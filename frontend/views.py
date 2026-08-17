@@ -477,36 +477,74 @@ def lesson_player(request):
 @login_required(login_url='/admin-panel/login/')
 def dashboard(request):
     """
-    Real-World Admin Dashboard - Computes live counts and recent records across platform entities.
+    Real-World Admin Dashboard - Computes live counts, graphical metrics, and recent records across platform entities.
     """
     total_students = User.objects.filter(role='student').count() or User.objects.count()
+    colleges_count = 0
+    schools_count = 0
+    active_institutions = 0
+    pending_institutions = 0
     try:
         from institutions.models import Institution
         total_institutions = Institution.objects.count()
-        recent_institutions = Institution.objects.order_by('-created_at')[:5]
+        colleges_count = Institution.objects.filter(type='college').count()
+        schools_count = Institution.objects.filter(type='school').count()
+        active_institutions = Institution.objects.filter(status='active').count()
+        pending_institutions = Institution.objects.filter(status='pending').count()
+        recent_institutions = Institution.objects.order_by('-created_at')[:6]
     except Exception:
         total_institutions = 0
         recent_institutions = []
 
     total_courses = Course.objects.count()
-    recent_courses = Course.objects.order_by('-created_at')[:5] if total_courses else []
+    published_courses = Course.objects.filter(status='published').count()
+    draft_courses = max(0, total_courses - published_courses)
+    recent_courses = Course.objects.select_related('category').order_by('-created_at')[:6] if total_courses else []
+    
+    # Top Course Categories for Graph
+    cat_names = []
+    cat_counts = []
+    for cat in CourseCategory.objects.all()[:6]:
+        cnt = Course.objects.filter(category=cat).count()
+        if cnt > 0 or len(cat_names) < 4:
+            cat_names.append(cat.name[:18])
+            cat_counts.append(cnt)
+
     total_teachers = User.objects.filter(role='teacher').count()
     total_olympiads = Olympiad.objects.filter(is_active=True).count()
     total_registrations = OlympiadRegistration.objects.count()
     total_attempts = OlympiadAttempt.objects.count()
-    recent_registrations = OlympiadRegistration.objects.select_related('olympiad', 'student').order_by('-registered_at')[:5]
+    recent_registrations = OlympiadRegistration.objects.select_related('olympiad', 'student').order_by('-registered_at')[:6]
+
+    # Top registered exams for graph
+    exam_names = []
+    exam_reg_counts = []
+    for ex in Olympiad.objects.filter(is_active=True)[:5]:
+        cnt = OlympiadRegistration.objects.filter(olympiad=ex).count()
+        exam_names.append(ex.name[:18])
+        exam_reg_counts.append(cnt)
 
     return render(request, "admin_panel/index.html", {
         'total_students': total_students,
         'total_institutions': total_institutions,
+        'colleges_count': colleges_count,
+        'schools_count': schools_count,
+        'active_institutions': active_institutions,
+        'pending_institutions': pending_institutions,
         'recent_institutions': recent_institutions,
         'total_courses': total_courses,
+        'published_courses': published_courses,
+        'draft_courses': draft_courses,
         'recent_courses': recent_courses,
+        'cat_names_json': json.dumps(cat_names),
+        'cat_counts_json': json.dumps(cat_counts),
         'total_teachers': total_teachers,
         'total_olympiads': total_olympiads,
         'total_registrations': total_registrations,
         'total_attempts': total_attempts,
         'recent_registrations': recent_registrations,
+        'exam_names_json': json.dumps(exam_names),
+        'exam_reg_counts_json': json.dumps(exam_reg_counts),
     })
 
 
