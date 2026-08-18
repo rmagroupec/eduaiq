@@ -221,7 +221,9 @@
     <div class="certificate-corner corner-br"></div>
 
     <div class="cert-header">
-      <div class="cert-logo"><i class="fas fa-graduation-cap text-warning me-1.5"></i>Edu<span>AiQ</span></div>
+      <div class="cert-logo text-center mb-1">
+        <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" style="height: 58px; max-width: 220px; object-fit: contain;">
+      </div>
       <div class="cert-subtitle">National Olympiad & Entrance Examination Controller</div>
       
       <h1 class="cert-title">{{ cert_type }}</h1>
@@ -264,8 +266,10 @@
       </div>
       
       <div class="col-4 text-center">
-        <img src="{% static 'assets/img/qr-code-placeholder.png' %}" alt="QR Verification" style="width: 54px; opacity: 0.85;" onerror="this.style.display='none'">
-        <div class="small text-muted mt-1 fs-7">Scan to Verify</div>
+        <div class="d-inline-flex flex-column align-items-center justify-content-center p-1 bg-white rounded border" style="border-color: #cbd5e1 !important; width: 62px; height: 62px;">
+          <i class="fas fa-qrcode fs-2 text-dark"></i>
+        </div>
+        <div class="small text-muted mt-1 fs-7 font-monospace" style="font-size: 10.5px;">Scan to Verify</div>
       </div>
 
       <div class="col-4 text-end">

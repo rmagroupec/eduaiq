@@ -248,9 +248,12 @@ class Lesson(models.Model):
         if self.content_type in ['video', 'live']:
             if not self.content_url and not self.content_file:
                 raise ValidationError(f"'{self.get_content_type_display()}' lessons require either content_url or content_file")
-        if self.content_type in ['pdf', 'assignment']:
+        if self.content_type == 'pdf':
             if not self.content_url and not self.content_file:
                 raise ValidationError(f"'{self.get_content_type_display()}' lessons require either content_url or content_file")
+        if self.content_type == 'assignment':
+            if not self.content_url and not self.content_file and not self.description:
+                raise ValidationError("Assignment lessons require task instructions in description, content_url, or content_file")
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -608,3 +611,43 @@ class Enrollment(models.Model):
     def save(self, *args, **kwargs):
         # Remove queryset validation if it exists
         super().save(*args, **kwargs)
+
+
+# ============================================================================
+# ASSIGNMENT SUBMISSION
+# ============================================================================
+class AssignmentSubmission(models.Model):
+    """Tracks student submissions, skip status, and grades for assignment lessons."""
+    STATUS_CHOICES = [
+        ('submitted', 'Submitted'),
+        ('graded', 'Graded'),
+        ('skipped', 'Skipped for now'),
+    ]
+
+    lesson = models.ForeignKey(
+        Lesson, 
+        on_delete=models.CASCADE, 
+        related_name='assignment_submissions', 
+        limit_choices_to={'content_type': 'assignment'}
+    )
+    student = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='assignment_submissions'
+    )
+    submission_text = models.TextField(blank=True, default='', help_text="Student's typed response or notes")
+    submission_file = models.FileField(upload_to='assignment_submissions/', null=True, blank=True, help_text="Uploaded submission file")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='submitted')
+    grade = models.CharField(max_length=20, blank=True, default='')
+    feedback = models.TextField(blank=True, default='')
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Assignment Submission'
+        verbose_name_plural = 'Assignment Submissions'
+        unique_together = ('lesson', 'student')
+        ordering = ['-updated_at']
+
+    def __str__(self):
+        return f"{self.student.username} - {self.lesson.title} ({self.status})"

@@ -1,0 +1,474 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAIQ - Coaching Institutes Directory{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-bold mb-4 h5 text-primary-light">🎯 Coaching Institutes Directory</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-primary-light fw-medium">Coaching Institutes</span>
+    </div>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <a class="btn btn-outline-primary radius-8 d-flex align-items-center gap-6" href="/admin-panel/coaching-batches/">
+      <i class="ri-stack-line text-lg"></i>
+      <span>Batches Management</span>
+    </a>
+    <a class="btn btn-primary radius-8 d-flex align-items-center gap-6" href="/admin-panel/add-coaching/">
+      <i class="ri-add-line text-lg"></i>
+      <span>+ Add Coaching</span>
+    </a>
+  </div>
+</div>
+
+<!-- KPI Summary Cards -->
+<div class="row row-cols-xxxl-4 row-cols-lg-4 row-cols-sm-2 row-cols-1 gy-4 mb-24">
+  <div class="col">
+    <div class="card shadow-none border bg-gradient-start-1 h-100 radius-12 p-20">
+      <div class="card-body p-0">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+          <div>
+            <span class="text-secondary-light text-sm mb-4 fw-medium">Coaching Centers</span>
+            <h5 class="fw-bold mb-0 text-primary-light" id="kpiTotalCoachings">0</h5>
+          </div>
+          <div class="w-50-px h-50-px bg-primary-100 text-primary-600 rounded-circle d-flex justify-content-center align-items-center text-2xl">
+            <i class="ri-focus-2-line"></i>
+          </div>
+        </div>
+        <p class="text-xs text-secondary-light mb-0">Active competitive centers</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card shadow-none border bg-gradient-start-2 h-100 radius-12 p-20">
+      <div class="card-body p-0">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+          <div>
+            <span class="text-secondary-light text-sm mb-4 fw-medium">Active Batches</span>
+            <h5 class="fw-bold mb-0 text-primary-light" id="kpiTotalBatches">0</h5>
+          </div>
+          <div class="w-50-px h-50-px bg-warning-100 text-warning-600 rounded-circle d-flex justify-content-center align-items-center text-2xl">
+            <i class="ri-stack-line"></i>
+          </div>
+        </div>
+        <p class="text-xs text-secondary-light mb-0">Across all exams & streams</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card shadow-none border bg-gradient-start-3 h-100 radius-12 p-20">
+      <div class="card-body p-0">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+          <div>
+            <span class="text-secondary-light text-sm mb-4 fw-medium">Enrolled Aspirants</span>
+            <h5 class="fw-bold mb-0 text-primary-light" id="kpiTotalStudents">0</h5>
+          </div>
+          <div class="w-50-px h-50-px bg-info-100 text-info-600 rounded-circle d-flex justify-content-center align-items-center text-2xl">
+            <i class="ri-user-star-line"></i>
+          </div>
+        </div>
+        <p class="text-xs text-secondary-light mb-0">Active enrolled students</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card shadow-none border bg-gradient-start-4 h-100 radius-12 p-20">
+      <div class="card-body p-0">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+          <div>
+            <span class="text-secondary-light text-sm mb-4 fw-medium">Target Streams</span>
+            <h5 class="fw-bold mb-0 text-primary-light">NEET • JEE • CUET</h5>
+          </div>
+          <div class="w-50-px h-50-px bg-success-100 text-success-600 rounded-circle d-flex justify-content-center align-items-center text-2xl">
+            <i class="ri-book-read-line"></i>
+          </div>
+        </div>
+        <p class="text-xs text-secondary-light mb-0">Competitive exam categories</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card h-100">
+  <div class="card-body p-24">
+    <!-- Filters Control -->
+    <div class="row gy-3 mb-24 align-items-end">
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="examFilter">Target Exam Stream</label>
+        <select class="form-control form-select radius-8" id="examFilter">
+          <option value="">All Streams</option>
+          <option value="NEET">NEET-UG</option>
+          <option value="JEE">IIT-JEE (Main / Adv)</option>
+          <option value="Foundation">Foundation (Class 9-10)</option>
+          <option value="CUET">CUET</option>
+          <option value="UPSC">UPSC / State PSC</option>
+          <option value="SSC">SSC / Banking</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="statusFilter">Status</label>
+        <select class="form-control form-select radius-8" id="statusFilter">
+          <option value="">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="suspended">Suspended</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="cityFilter">City</label>
+        <input type="text" class="form-control radius-8" id="cityFilter" placeholder="e.g. Kota, Delhi, Jaipur">
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-outline-primary-600 w-100 radius-8" id="clearFiltersBtn">
+          <i class="ri-refresh-line me-1"></i> Clear Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Search & Page Size Bar -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 pb-20 border-bottom border-neutral-200">
+      <div class="d-flex align-items-center gap-8">
+        <span class="text-sm text-secondary-light">Show</span>
+        <select class="form-select form-select-sm w-auto radius-8" id="pageSizeSelect">
+          <option value="10">10</option>
+          <option value="20" selected>20</option>
+          <option value="50">50</option>
+        </select>
+        <span class="text-sm text-secondary-light">entries</span>
+      </div>
+      <div class="d-flex align-items-center gap-16">
+        <div class="position-relative">
+          <input type="text" class="form-control form-control-sm ps-32 radius-8" id="searchQuery" placeholder="Search coaching name...">
+          <i class="ri-search-line position-absolute start-12 top-50 translate-middle-y text-secondary-light"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Table -->
+    <div class="table-responsive mt-24">
+      <table class="table border-neutral-200 table-hover align-middle radius-8 overflow-hidden">
+        <thead class="bg-neutral-50">
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Coaching Name</th>
+            <th scope="col">Target Exam Streams</th>
+            <th scope="col">Location</th>
+            <th scope="col">Active Batches</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="text-center">Quick Actions</th>
+          </tr>
+        </thead>
+        <tbody id="coachingTableBody">
+          <tr>
+            <td colspan="7" class="text-center py-40">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination & Meta -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 mt-24">
+      <span class="text-sm text-secondary-light" id="tableInfoSpan">Showing 0 to 0 of 0 entries</span>
+      <nav aria-label="Page navigation" id="paginationNav" class="d-none">
+        <ul class="pagination pagination-primary mb-0 gap-8" id="paginationUl"></ul>
+      </nav>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+  let currentPage = 1;
+  let currentFilters = {
+    exam: '',
+    status: '',
+    city: '',
+    q: '',
+    page_size: 20
+  };
+
+  fetchCoachings();
+  fetchSummaryKPIs();
+
+  // Search input handler with debounce
+  let searchTimeout;
+  $('#searchQuery').on('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+      currentFilters.q = $('#searchQuery').val().trim();
+      currentPage = 1;
+      fetchCoachings();
+    }, 400);
+  });
+
+  $('#examFilter').on('change', function() {
+    currentFilters.exam = $(this).val();
+    currentPage = 1;
+    fetchCoachings();
+  });
+
+  $('#statusFilter').on('change', function() {
+    currentFilters.status = $(this).val();
+    currentPage = 1;
+    fetchCoachings();
+  });
+
+  let cityTimeout;
+  $('#cityFilter').on('input', function() {
+    clearTimeout(cityTimeout);
+    cityTimeout = setTimeout(function() {
+      currentFilters.city = $('#cityFilter').val().trim();
+      currentPage = 1;
+      fetchCoachings();
+    }, 400);
+  });
+
+  $('#pageSizeSelect').on('change', function() {
+    currentFilters.page_size = $(this).val();
+    currentPage = 1;
+    fetchCoachings();
+  });
+
+  $('#clearFiltersBtn').on('click', function() {
+    $('#examFilter').val('');
+    $('#statusFilter').val('');
+    $('#cityFilter').val('');
+    $('#searchQuery').val('');
+    currentFilters = {
+      exam: '',
+      status: '',
+      city: '',
+      q: '',
+      page_size: $('#pageSizeSelect').val()
+    };
+    currentPage = 1;
+    fetchCoachings();
+  });
+
+  function fetchSummaryKPIs() {
+    $.ajax({
+      url: '/api/institutions/?type=coaching&page_size=100',
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        const coachings = res.results || [];
+        $('#kpiTotalCoachings').text(res.count || coachings.length);
+      }
+    });
+
+    $.ajax({
+      url: '/api/batches/',
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        const batches = res.results || [];
+        $('#kpiTotalBatches').text(res.count || batches.length);
+        let totalStudents = 0;
+        batches.forEach(b => { totalStudents += (b.total_students || 0); });
+        $('#kpiTotalStudents').text(totalStudents);
+      }
+    });
+  }
+
+  function fetchCoachings() {
+    let params = {
+      type: 'coaching',
+      page: currentPage,
+      page_size: currentFilters.page_size
+    };
+    if (currentFilters.status) params.status = currentFilters.status;
+    if (currentFilters.city) params.city = currentFilters.city;
+    if (currentFilters.q) params.q = currentFilters.q;
+
+    $.ajax({
+      url: '/api/institutions/',
+      type: 'GET',
+      data: params,
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        renderTable(res);
+        renderPagination(res);
+      },
+      error: function(err) {
+        $('#coachingTableBody').html(`
+          <tr>
+            <td colspan="7" class="text-center py-40 text-danger-600">
+              <i class="ri-error-warning-line text-xxl d-block mb-8"></i>
+              Failed to load coaching institutes.
+            </td>
+          </tr>
+        `);
+      }
+    });
+  }
+
+  function renderTable(data) {
+    const tbody = $('#coachingTableBody');
+    tbody.empty();
+
+    let results = data.results || [];
+    if (currentFilters.exam) {
+      results = results.filter(c => (c.board_affiliation || '').toLowerCase().includes(currentFilters.exam.toLowerCase()));
+    }
+
+    if (results.length === 0) {
+      tbody.html(`
+        <tr>
+          <td colspan="7" class="text-center py-40 text-secondary-light">
+            <i class="ri-folder-open-line text-xxl d-block mb-8"></i>
+            No coaching institutes found.
+            <div class="mt-12">
+              <a href="/admin-panel/add-coaching/" class="btn btn-sm btn-primary">+ Add First Coaching Institute</a>
+            </div>
+          </td>
+        </tr>
+      `);
+      $('#tableInfoSpan').text('Showing 0 to 0 of 0 entries');
+      return;
+    }
+
+    results.forEach(inst => {
+      let badgeClass = 'bg-success-100 text-success-600';
+      if (inst.status === 'pending') badgeClass = 'bg-warning-100 text-warning-600';
+      else if (inst.status === 'suspended') badgeClass = 'bg-danger-100 text-danger-600';
+
+      tbody.append(`
+        <tr>
+          <td><span class="text-secondary-light fw-medium">#${inst.id}</span></td>
+          <td>
+            <div class="d-flex align-items-center gap-3">
+              <div class="w-40-px h-40-px bg-warning-50 text-warning-600 rounded-circle d-flex align-items-center justify-content-center text-lg fw-bold flex-shrink-0">
+                🎯
+              </div>
+              <div>
+                <h6 class="text-md mb-0 fw-semibold text-neutral-800">${inst.name}</h6>
+                <span class="text-xs text-secondary-light"><i class="ri-map-pin-line me-1"></i>${inst.city}, ${inst.state}</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="badge bg-warning-50 text-warning-700 text-xs px-10 py-6 radius-8 fw-semibold border border-warning-200">
+              <i class="ri-award-line me-1"></i>${inst.board_affiliation || 'General Coaching'}
+            </span>
+          </td>
+          <td><span class="text-sm fw-medium text-neutral-700">${inst.city}, ${inst.state}</span></td>
+          <td>
+            <a href="/admin-panel/institution-details/?id=${inst.id}#batches-pane" class="badge bg-primary-50 text-primary-600 text-xs px-10 py-6 radius-8 fw-bold hover-bg-primary-100 transition">
+              <i class="ri-stack-line me-1"></i> View Batches
+            </a>
+          </td>
+          <td><span class="px-12 py-4 radius-4 fw-medium text-xs ${badgeClass}">${inst.status.toUpperCase()}</span></td>
+          <td class="text-center">
+            <div class="d-flex align-items-center justify-content-center gap-8">
+              <a href="/admin-panel/institution-details/?id=${inst.id}" class="btn btn-sm btn-outline-primary px-8 py-4 radius-8" title="View Full Details & Batches">
+                <i class="ri-eye-line text-md"></i>
+              </a>
+              <a href="/admin-panel/coaching-batches/?institution_id=${inst.id}" class="btn btn-sm btn-outline-warning text-warning-700 px-8 py-4 radius-8" title="Manage Batches">
+                <i class="ri-stack-line text-md"></i>
+              </a>
+              <a href="/admin-panel/edit-institution/?id=${inst.id}" class="btn btn-sm btn-outline-secondary px-8 py-4 radius-8" title="Edit Profile">
+                <i class="ri-edit-2-line text-md"></i>
+              </a>
+              <button class="btn btn-sm btn-outline-danger px-8 py-4 radius-8 delete-inst-btn" data-id="${inst.id}" title="Delete">
+                <i class="ri-delete-bin-line text-md"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `);
+    });
+
+    const page = data.page || 1;
+    const pageSize = data.page_size || 20;
+    const count = data.count || results.length;
+    const startEntry = (page - 1) * pageSize + 1;
+    const endEntry = Math.min(page * pageSize, count);
+    $('#tableInfoSpan').text(`Showing ${startEntry} to ${endEntry} of ${count} entries`);
+  }
+
+  function renderPagination(data) {
+    const nav = $('#paginationNav');
+    const ul = $('#paginationUl');
+    ul.empty();
+
+    if (!data.total_pages || data.total_pages <= 1) {
+      nav.addClass('d-none');
+      return;
+    }
+    nav.removeClass('d-none');
+
+    const totalPages = data.total_pages;
+    const page = data.page;
+
+    ul.append(`
+      <li class="page-item ${!data.has_previous ? 'disabled' : ''}">
+        <a class="page-link" href="javascript:void(0)" data-page="${page - 1}"><i class="ri-arrow-left-s-line"></i></a>
+      </li>
+    `);
+
+    for (let i = 1; i <= totalPages; i++) {
+      if (i === 1 || i === totalPages || (i >= page - 2 && i <= page + 2)) {
+        ul.append(`
+          <li class="page-item ${i === page ? 'active' : ''}">
+            <a class="page-link" href="javascript:void(0)" data-page="${i}">${i}</a>
+          </li>
+        `);
+      }
+    }
+
+    ul.append(`
+      <li class="page-item ${!data.has_next ? 'disabled' : ''}">
+        <a class="page-link" href="javascript:void(0)" data-page="${page + 1}"><i class="ri-arrow-right-s-line"></i></a>
+      </li>
+    `);
+  }
+
+  $(document).on('click', '.pagination a', function(e) {
+    e.preventDefault();
+    const p = parseInt($(this).data('page'));
+    if (p && p !== currentPage) {
+      currentPage = p;
+      fetchCoachings();
+    }
+  });
+
+  // Delete handler
+  $(document).on('click', '.delete-inst-btn', function() {
+    const id = $(this).data('id');
+    if (!confirm("Are you sure you want to delete this coaching institute?")) return;
+
+    const match = document.cookie.match(/csrftoken=([^;]+)/);
+    const token = match ? match[1] : '';
+
+    $.ajax({
+      url: `/api/institutions/${id}/`,
+      type: 'DELETE',
+      headers: { 'X-CSRFToken': token },
+      xhrFields: { withCredentials: true },
+      success: function() {
+        if (typeof showToast === 'function') showToast("Coaching Institute deleted successfully.", "success");
+        fetchCoachings();
+        fetchSummaryKPIs();
+      },
+      error: function() {
+        if (typeof showToast === 'function') showToast("Failed to delete coaching institute.", "error");
+      }
+    });
+  });
+});
+</script>
+{% endblock %}

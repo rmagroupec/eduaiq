@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Institution, Student
+from .models import Institution, Student, Batch
 
 
 class InstitutionForm(forms.ModelForm):
@@ -12,11 +12,19 @@ class InstitutionForm(forms.ModelForm):
         ]
 
 
+class BatchForm(forms.ModelForm):
+    class Meta:
+        model = Batch
+        fields = [
+            'institution', 'name', 'code', 'target_exam', 'start_date', 'end_date', 'is_active'
+        ]
+
+
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
         fields = [
-            'user', 'institution', 'admission_no', 'roll_number', 'class_grade', 'section',
+            'user', 'institution', 'batch', 'admission_no', 'roll_number', 'class_grade', 'section',
             'academic_year', 'admission_date', 'date_of_birth', 'gender', 'blood_group',
             'category', 'father_name', 'mother_name', 'guardian_name', 'guardian_relation',
             'guardian_phone', 'guardian_email', 'parent_user', 'aadhar_or_id_proof',

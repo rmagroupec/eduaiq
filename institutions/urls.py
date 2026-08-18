@@ -16,6 +16,11 @@ urlpatterns = [
     path("students/<int:pk>/", views.student_detail, name="student-detail"),
     path("students/<int:pk>/status/", views.update_student_status, name="student-update-status"),
 
+    # Batches
+    path("institutions/<int:institution_pk>/batches/", views.batch_list_create, name="institution-batch-list"),
+    path("batches/", views.batch_list_create, name="batch-list-create"),
+    path("batches/<int:pk>/", views.batch_detail, name="batch-detail"),
+
     # "Me" endpoints
     path("me/student-profile/", views.my_student_profile, name="my-student-profile"),
     path("me/children/", views.my_children, name="my-children"),

@@ -23,7 +23,7 @@ from django.views.decorators.http import require_GET, require_http_methods
 from .forms import CourseCategoryForm, CourseForm, CourseModuleForm, LessonForm, QuizForm
 from .models import (
     Course, CourseCategory, CourseModule, Enrollment, Lesson,
-    Quiz, QuizAccessLog, QuizAttempt, QuizQuestion,
+    Quiz, QuizAccessLog, QuizAttempt, QuizQuestion, AssignmentSubmission,
 )
 from .utils import (
     get_allowed_courses_for_user,
@@ -1038,38 +1038,293 @@ def my_enrollments(request):
     })
 
 
+# ============================================================================
+# ASSIGNMENT STATUS & MANDATORY COMPLETION ENFORCEMENT
+# ============================================================================
+
+def check_course_assignments_status(course, student):
+    """
+    Checks all assignment lessons in a course for a given student.
+    Returns summary and list of pending/skipped assignments.
+    """
+    assignment_lessons = Lesson.objects.filter(
+        module__course=course,
+        content_type='assignment',
+        is_published=True
+    ).select_related('module').order_by('module__order', 'order')
+
+    total_count = assignment_lessons.count()
+    if total_count == 0:
+        return {
+            'total_assignments': 0,
+            'submitted_count': 0,
+            'pending_count': 0,
+            'all_assignments_completed': True,
+            'pending_assignments': []
+        }
+
+    submissions = {
+        sub.lesson_id: sub for sub in AssignmentSubmission.objects.filter(
+            lesson__in=assignment_lessons,
+            student=student
+        )
+    }
+
+    pending_list = []
+    submitted_count = 0
+
+    for les in assignment_lessons:
+        sub = submissions.get(les.id)
+        if sub and sub.status in ['submitted', 'graded']:
+            submitted_count += 1
+        else:
+            pending_list.append({
+                'id': les.id,
+                'title': les.title,
+                'module_id': les.module.id,
+                'module_title': les.module.title,
+                'status': sub.status if sub else 'not_started',
+                'description': les.description or '',
+                'duration_minutes': les.duration_minutes,
+            })
+
+    return {
+        'total_assignments': total_count,
+        'submitted_count': submitted_count,
+        'pending_count': len(pending_list),
+        'all_assignments_completed': len(pending_list) == 0,
+        'pending_assignments': pending_list
+    }
+
+
 @login_required
-@require_http_methods(['PATCH', 'PUT'])
+@require_http_methods(['PATCH', 'PUT', 'POST'])
 def update_progress(request, pk):
+    """
+    Updates student course progress.
+    ENFORCEMENT: When attempting to reach 100% / course completion,
+    verifies if all module assignments are submitted.
+    If assignments were skipped or are pending, blocks 100% completion
+    and alerts the student with pending assignment links.
+    """
     try:
-        enrollment = Enrollment.objects.get(pk=pk)
+        enrollment = Enrollment.objects.select_related('course').get(pk=pk)
     except ObjectDoesNotExist:
         return JsonResponse({'error': 'Enrollment not found'}, status=404)
+
     if enrollment.student_id != request.user.id and not _is_staff(request.user):
         return JsonResponse({'error': 'Forbidden'}, status=403)
 
     data = _body(request)
-    if 'progress_pct' in data:
-        enrollment.progress_pct = data['progress_pct']
+    new_progress = data.get('progress_pct')
+    if new_progress is not None:
+        try:
+            new_progress = float(new_progress)
+        except (ValueError, TypeError):
+            new_progress = float(enrollment.progress_pct)
+
+    # Check assignment completion status for the course
+    assignments_status = check_course_assignments_status(enrollment.course, request.user)
+
+    all_chapters_completed = (new_progress is not None and new_progress >= 100) or enrollment.progress_pct >= 100
+    has_pending_assignments = not assignments_status['all_assignments_completed']
+
+    if all_chapters_completed and has_pending_assignments:
+        # All chapters done, BUT assignments are pending!
+        # Cap progress at 90% and prevent is_completed = True until all assignments are submitted
+        enrollment.progress_pct = min(new_progress or 90.0, 90.0)
+        enrollment.is_completed = False
+        enrollment.last_accessed_at = timezone.now()
+        enrollment.save()
+
+        return JsonResponse({
+            'success': True,
+            'all_chapters_completed': True,
+            'all_assignments_completed': False,
+            'is_completed': False,
+            'pending_assignments_count': assignments_status['pending_count'],
+            'pending_assignments': assignments_status['pending_assignments'],
+            'message': f"All chapters are completed! However, {assignments_status['pending_count']} assignment(s) are mandatory to finish the course and unlock your Certificate.",
+            'enrollment': {
+                'id': enrollment.id,
+                'progress_pct': str(enrollment.progress_pct),
+                'is_completed': enrollment.is_completed,
+                'completion_date': None,
+            }
+        })
+
+    # All chapters and all assignments are completed (or intermediate progress update)
+    if new_progress is not None:
+        enrollment.progress_pct = new_progress
+
     enrollment.last_accessed_at = timezone.now()
-    if enrollment.progress_pct >= 100 and not enrollment.is_completed:
-        enrollment.is_completed = True
-        enrollment.completed_at = timezone.now()
+
+    if enrollment.progress_pct >= 100:
+        if assignments_status['all_assignments_completed']:
+            enrollment.is_completed = True
+            if not enrollment.completion_date:
+                enrollment.completion_date = timezone.now()
+        else:
+            enrollment.progress_pct = 90.0
+            enrollment.is_completed = False
 
     try:
         enrollment.save()
     except DjangoValidationError as e:
         return JsonResponse({'success': False, 'errors': e.message_dict}, status=400)
 
+    is_fully_done = enrollment.is_completed and enrollment.progress_pct >= 100
+
     return JsonResponse({
         'success': True,
+        'all_chapters_completed': enrollment.progress_pct >= 100,
+        'all_assignments_completed': assignments_status['all_assignments_completed'],
+        'is_completed': enrollment.is_completed,
+        'pending_assignments': assignments_status['pending_assignments'],
+        'message': "🎉 Congratulations! All chapters and assignments have been successfully completed! Course 100% Complete & Certificate Unlocked!" if is_fully_done else "Progress updated successfully.",
         'enrollment': {
             'id': enrollment.id,
             'progress_pct': str(enrollment.progress_pct),
             'is_completed': enrollment.is_completed,
-            'completion_date': enrollment.completion_date,
+            'completion_date': enrollment.completion_date.isoformat() if enrollment.completion_date else None,
         }
     })
+
+
+@login_required
+@require_GET
+def lesson_assignment_detail(request, pk):
+    """Returns assignment lesson details + student's submission status."""
+    try:
+        lesson = Lesson.objects.select_related('module__course').get(pk=pk, content_type='assignment')
+    except Lesson.DoesNotExist:
+        return JsonResponse({'error': 'Assignment lesson not found'}, status=404)
+
+    sub = AssignmentSubmission.objects.filter(lesson=lesson, student=request.user).first()
+    
+    file_url = None
+    if lesson.content_file:
+        file_url = request.build_absolute_uri(lesson.content_file.url)
+
+    sub_file_url = None
+    if sub and sub.submission_file:
+        sub_file_url = request.build_absolute_uri(sub.submission_file.url)
+
+    # Check overall course assignment status
+    course_status = check_course_assignments_status(lesson.module.course, request.user)
+
+    return JsonResponse({
+        'lesson': {
+            'id': lesson.id,
+            'title': lesson.title,
+            'description': lesson.description,
+            'content_url': lesson.content_url,
+            'content_file': file_url,
+            'duration_minutes': lesson.duration_minutes,
+            'module_id': lesson.module.id,
+            'module_title': lesson.module.title,
+            'course_id': lesson.module.course.id,
+            'course_slug': lesson.module.course.slug,
+        },
+        'submission': {
+            'exists': bool(sub),
+            'status': sub.status if sub else 'not_started',
+            'submission_text': sub.submission_text if sub else '',
+            'submission_file': sub_file_url,
+            'grade': sub.grade if sub else '',
+            'feedback': sub.feedback if sub else '',
+            'submitted_at': sub.submitted_at.isoformat() if sub else None,
+        } if sub else None,
+        'course_assignments': course_status
+    })
+
+
+@csrf_exempt
+@login_required
+@require_http_methods(['POST'])
+def submit_assignment(request, pk):
+    """Submits text or file for an assignment lesson."""
+    try:
+        lesson = Lesson.objects.select_related('module__course').get(pk=pk, content_type='assignment')
+    except Lesson.DoesNotExist:
+        return JsonResponse({'error': 'Assignment lesson not found'}, status=404)
+
+    submission_text = request.POST.get('submission_text', '')
+    submission_file = request.FILES.get('submission_file')
+
+    sub, created = AssignmentSubmission.objects.get_or_create(
+        lesson=lesson,
+        student=request.user,
+        defaults={
+            'submission_text': submission_text,
+            'status': 'submitted',
+        }
+    )
+
+    if not created:
+        sub.submission_text = submission_text
+        sub.status = 'submitted'
+
+    if submission_file:
+        sub.submission_file = submission_file
+
+    sub.save()
+
+    # Recalculate course assignment status
+    course_status = check_course_assignments_status(lesson.module.course, request.user)
+
+    return JsonResponse({
+        'success': True,
+        'message': 'Assignment submitted successfully! ✅',
+        'status': sub.status,
+        'course_assignments': course_status
+    })
+
+
+@csrf_exempt
+@login_required
+@require_http_methods(['POST'])
+def skip_assignment(request, pk):
+    """Marks an assignment lesson as skipped for now, allowing intermediate chapter progress."""
+    try:
+        lesson = Lesson.objects.select_related('module__course').get(pk=pk, content_type='assignment')
+    except Lesson.DoesNotExist:
+        return JsonResponse({'error': 'Assignment lesson not found'}, status=404)
+
+    sub, created = AssignmentSubmission.objects.get_or_create(
+        lesson=lesson,
+        student=request.user,
+        defaults={
+            'status': 'skipped',
+        }
+    )
+
+    if not created and sub.status != 'submitted':
+        sub.status = 'skipped'
+        sub.save()
+
+    # Recalculate course assignment status
+    course_status = check_course_assignments_status(lesson.module.course, request.user)
+
+    return JsonResponse({
+        'success': True,
+        'skipped': True,
+        'message': 'Assignment skipped for now. Note: You must submit all assignments once all chapters are completed to receive your Certificate.',
+        'status': 'skipped',
+        'course_assignments': course_status
+    })
+
+
+@login_required
+@require_GET
+def course_assignments_summary(request, slug):
+    """Returns assignment status summary for a student in a course."""
+    course = _get_course_or_404(slug)
+    if not course:
+        return JsonResponse({'error': 'Course not found'}, status=404)
+
+    status = check_course_assignments_status(course, request.user)
+    return JsonResponse({'course_id': course.id, 'course_title': course.title, 'assignments': status})
 
 
 # ============================================================================

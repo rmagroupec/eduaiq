@@ -4,12 +4,16 @@ from django.db import models
 
 
 class Institution(models.Model):
-    TYPE_CHOICES = [('school', 'School'), ('college', 'College')]
+    TYPE_CHOICES = [
+        ('school', 'School'),
+        ('college', 'College'),
+        ('coaching', 'Coaching Institute')
+    ]
     STATUS_CHOICES = [('active', 'Active'), ('pending', 'Pending'), ('suspended', 'Suspended')]
 
     name = models.CharField(max_length=255)
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
-    board_affiliation = models.CharField(max_length=100, blank=True)  # CBSE/ICSE/State/Univ
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    board_affiliation = models.CharField(max_length=100, blank=True)  # CBSE/ICSE/State/Univ/Exam Target
     address = models.TextField()
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
@@ -24,6 +28,29 @@ class Institution(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Batch(models.Model):
+    """
+    Batches for Coaching Institutes, Schools, or Colleges.
+    Allows grouping students into target batches (e.g. NEET Droppers, JEE Target 2027).
+    """
+    institution = models.ForeignKey(Institution, on_delete=models.CASCADE, related_name='batches')
+    name = models.CharField(max_length=255)
+    code = models.CharField(max_length=50, blank=True)
+    target_exam = models.CharField(max_length=100, blank=True)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Batch"
+        verbose_name_plural = "Batches"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.name} ({self.institution.name})"
 
 
 class Student(models.Model):
@@ -49,12 +76,14 @@ class Student(models.Model):
                                  limit_choices_to={'role': 'student'})
     institution = models.ForeignKey(Institution, on_delete=models.SET_NULL, null=True, blank=True,
                                      related_name='students')
+    batch = models.ForeignKey(Batch, on_delete=models.SET_NULL, null=True, blank=True,
+                             related_name='students')
 
     # Academic identity
     admission_no = models.CharField(max_length=50, unique=True)
     roll_number = models.CharField(max_length=20, blank=True)
-    class_grade = models.CharField(max_length=20)          # "Class 10", "B.Tech CSE 2nd Year"
-    section = models.CharField(max_length=10, blank=True)
+    class_grade = models.CharField(max_length=50)          # "Class 10", "NEET Batch", "B.Tech CSE"
+    section = models.CharField(max_length=20, blank=True)
     academic_year = models.CharField(max_length=9)          # "2026-27"
     admission_date = models.DateField(null=True, blank=True)
 
@@ -106,8 +135,8 @@ class Student(models.Model):
         return f"{self.user.get_full_name()} ({self.admission_no})"
 
     def clean(self):
-        if self.institution and self.institution.type not in ('school', 'college'):
-            raise ValidationError("Institution must be either School or College.")
+        if self.institution and self.institution.type not in ('school', 'college', 'coaching'):
+            raise ValidationError("Institution must be School, College, or Coaching Institute.")
 
     @property
     def age(self):

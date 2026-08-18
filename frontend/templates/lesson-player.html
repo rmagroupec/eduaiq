@@ -1,666 +1,863 @@
-{% extends 'base.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson Player - EduAiQ</title>
 
-{% block title %}Lesson Player - EduAiQ{% endblock %}
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'assets/img/favicon.png' %}" type="image/x-icon">
 
-{% block content %}
-<div class="lesson-player-container py-5 bg-light">
-  <div class="container">
-    <div class="row">
-      <!-- Back to Course Link -->
-      <div class="col-12 mb-4">
-        <a id="backToCourseBtn" href="/courses/" class="btn btn-outline-secondary">
-          <i class="fas fa-arrow-left"></i> Back to Course Overview
-        </a>
-      </div>
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/remixicon.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/lib/bootstrap.min.css' %}">
 
-      <!-- Main Player Area -->
-      <div class="col-lg-8">
-        <div class="card shadow-sm mb-4">
-          <div class="card-body p-0">
-            <!-- Dynamic Content Viewer -->
-            <div id="contentViewer" class="bg-dark text-white d-flex align-items-center justify-content-center" style="min-height: 450px; border-radius: 8px 8px 0 0; overflow: hidden;">
-              <div class="text-center p-5">
-                <i class="fas fa-spinner fa-spin fa-3x mb-3 text-primary"></i>
-                <p>Loading lesson content...</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-              <div>
-                <span id="lessonTypeBadge" class="badge bg-primary mb-2 text-uppercase">Video</span>
-                <h3 id="lessonTitle" class="card-title">Lesson Title</h3>
-              </div>
-              <div class="text-end">
-                <span class="text-muted"><i class="far fa-clock"></i> <span id="lessonDuration">-</span> mins</span>
-              </div>
-            </div>
-            
-            <p id="lessonDescription" class="card-text text-muted">Loading description...</p>
-            
-            <hr>
-            
-            <div class="d-flex justify-content-between align-items-center mt-4">
-              <button id="markCompleteBtn" class="btn btn-success btn-lg" onclick="markAsComplete()">
-                <i class="fas fa-check-circle"></i> Mark as Complete
-              </button>
-              <div class="navigation-buttons gap-2 d-flex">
-                <button id="prevLessonBtn" class="btn btn-outline-secondary" onclick="navigateLesson(-1)" disabled>
-                  <i class="fas fa-chevron-left"></i> Prev
-                </button>
-                <button id="nextLessonBtn" class="btn btn-outline-secondary" onclick="navigateLesson(1)" disabled>
-                  Next <i class="fas fa-chevron-right"></i>
-                </button>
-              </div>
-            </div>
-          </div>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- PDF.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <style>
+        :root {
+            --eduaiq-navy: #0F172A;
+            --eduaiq-navy-dark: #090D16;
+            --eduaiq-orange: #f97316;
+            --eduaiq-orange-dark: #ea580c;
+            --eduaiq-gradient: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .lesson-navbar {
+            background: var(--eduaiq-navy);
+            border-bottom: 1.5px solid rgba(249, 115, 22, 0.25);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #ffffff;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .lesson-player-container {
+            min-height: calc(100vh - 65px);
+            padding: 24px 0 60px 0;
+        }
+
+        .main-player-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        #contentViewer iframe, #contentViewer video {
+            width: 100%;
+            height: 480px;
+            border: none;
+        }
+
+        .sidebar-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            background: var(--eduaiq-navy);
+            color: #ffffff;
+            padding: 14px 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--eduaiq-orange);
+        }
+
+        .sidebar-lesson-item {
+            font-size: 13.5px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            text-decoration: none;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-lesson-item:hover {
+            background-color: #f8fafc;
+            color: var(--eduaiq-orange);
+        }
+
+        .sidebar-lesson-item.active {
+            background-color: #fff7ed;
+            color: var(--eduaiq-orange-dark);
+            font-weight: 700;
+            border-left: 4px solid var(--eduaiq-orange);
+        }
+
+        .assignment-banner-skip {
+            background: #fff7ed;
+            border: 1.5px dashed #f97316;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+        }
+
+        .badge-assignment {
+            background: #ffedd5;
+            color: #c2410c;
+            font-weight: 700;
+            border: 1px solid #fdba74;
+        }
+
+        .badge-skipped {
+            background: #fef3c7;
+            color: #b45309;
+            font-weight: 700;
+            border: 1px solid #fcd34d;
+        }
+
+        .badge-submitted {
+            background: #dcfce7;
+            color: #15803d;
+            font-weight: 700;
+            border: 1px solid #86efac;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Header -->
+    <header class="lesson-navbar">
+        <div class="d-flex align-items-center gap-3">
+            <a href="/" title="EduAiQ Home">
+                <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ logo" style="height: 32px; object-fit: contain;">
+            </a>
+            <a id="backToCourseBtn" href="/courses/" class="btn btn-sm btn-outline-light rounded-pill px-3">
+                <i class="fas fa-arrow-left me-1"></i> Course Overview
+            </a>
+            <h6 id="topCourseTitle" class="mb-0 text-white fw-bold d-none d-md-inline">EduAiQ Course</h6>
         </div>
-      </div>
 
-      <!-- Sidebar Module Navigation -->
-      <div class="col-lg-4">
-        <div class="card shadow-sm sticky-top" style="top: 100px;">
-          <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Course Content</h5>
-          </div>
-          <div class="list-group list-group-flush" id="sidebarModulesList" style="max-height: 500px; overflow-y: auto;">
-            <!-- Modules & Lessons navigation will load here -->
-            <p class="p-3 text-center text-muted">Loading course index...</p>
-          </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="text-xs text-secondary-light me-1 d-none d-sm-inline">Progress:</span>
+            <div class="progress" style="width: 120px; height: 8px; background: rgba(255,255,255,0.2);">
+                <div id="topProgressBar" class="progress-bar bg-warning" role="progressbar" style="width: 0%;"></div>
+            </div>
+            <span id="topProgressText" class="badge bg-warning text-dark fw-bold">0%</span>
         </div>
-      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="lesson-player-container">
+        <div class="container">
+            <div class="row g-4">
+                
+                <!-- Main Player & Lesson Area -->
+                <div class="col-lg-8">
+                    <div class="main-player-card">
+                        
+                        <!-- Content Display Window (Video / PDF / Text / Quiz / Assignment) -->
+                        <div id="contentViewer" class="bg-dark text-white d-flex align-items-center justify-content-center position-relative" style="min-height: 480px;">
+                            <div class="text-center p-5">
+                                <i class="fas fa-spinner fa-spin fa-3x mb-3 text-warning"></i>
+                                <p class="fw-bold">Loading chapter content...</p>
+                            </div>
+                        </div>
+
+                        <!-- Lesson Metadata & Bottom Action Dock -->
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <span id="lessonTypeBadge" class="badge bg-primary text-uppercase px-2.5 py-1.5 mb-2">Lesson</span>
+                                    <h4 id="lessonTitle" class="fw-bold mb-1">Lesson Title</h4>
+                                    <span id="lessonModuleTitle" class="text-xs text-muted fw-semibold">Module Name</span>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-light text-dark border px-2.5 py-1.5 fw-semibold">
+                                        <i class="far fa-clock text-warning me-1"></i> <span id="lessonDuration">-</span> mins
+                                    </span>
+                                </div>
+                            </div>
+
+                            <p id="lessonDescription" class="text-secondary mb-4" style="line-height: 1.7;">Loading description...</p>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                <button id="markCompleteBtn" class="btn btn-success px-4 py-2 fw-bold radius-8" onclick="markAsComplete()">
+                                    <i class="fas fa-check-circle me-1"></i> Mark as Complete
+                                </button>
+                                
+                                <div class="d-flex gap-2">
+                                    <button id="prevLessonBtn" class="btn btn-outline-secondary px-3 py-2 fw-bold" onclick="navigateLesson(-1)" disabled>
+                                        <i class="fas fa-chevron-left me-1"></i> Prev
+                                    </button>
+                                    <button id="nextLessonBtn" class="btn btn-outline-primary px-3 py-2 fw-bold" onclick="navigateLesson(1)" disabled>
+                                        Next <i class="fas fa-chevron-right ms-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Modules & Chapters Sidebar Strip -->
+                <div class="col-lg-4">
+                    <div class="sidebar-card sticky-top" style="top: 80px;">
+                        <div class="sidebar-header">
+                            <span><i class="fas fa-list-ul me-2 text-warning"></i> Course Curriculum</span>
+                            <span id="sidebarTotalLessons" class="badge bg-warning text-dark">0 Items</span>
+                        </div>
+                        <div class="list-group list-group-flush" id="sidebarModulesList" style="max-height: 580px; overflow-y: auto;">
+                            <p class="p-4 text-center text-muted">Loading curriculum...</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
-<style>
-  .lesson-player-container {
-    min-height: 90vh;
-  }
-  #contentViewer iframe, #contentViewer video {
-    width: 100%;
-    height: 450px;
-    border: none;
-  }
-  .sidebar-lesson-item {
-    font-size: 14px;
-    transition: all 0.2s;
-  }
-  .sidebar-lesson-item:hover {
-    background-color: #f8f9fa;
-  }
-  .sidebar-lesson-item.active {
-    background-color: #e3f2fd;
-    color: #0d6efd;
-    font-weight: bold;
-    border-left: 4px solid #0d6efd;
-  }
-</style>
+    <!-- Mandatory Assignment Alert Modal (When all chapters are done but assignments are pending) -->
+    <div class="modal fade" id="mandatoryAssignmentModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg radius-16 overflow-hidden">
+                <div class="modal-header bg-warning text-dark py-3 px-4">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fas fa-exclamation-triangle me-2"></i> Mandatory Module Assignments Pending
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="text-center mb-4">
+                        <div class="w-64-px h-64-px bg-warning-subtle text-warning-emphasis rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px; font-size: 28px;">
+                            📝
+                        </div>
+                        <h4 class="fw-bold text-dark mb-2">All Chapters Completed!</h4>
+                        <p class="text-secondary" style="max-width: 540px; margin: 0 auto;">
+                            Great job finishing the learning material! However, to receive your <strong>100% Course Completion</strong> and unlock your <strong>Official Certificate</strong>, all module assignments are mandatory.
+                        </p>
+                    </div>
 
-<script>
-  const API_BASE_URL = window.location.origin;
-  const lessonId = new URLSearchParams(window.location.search).get('id');
-  let currentLesson = null;
-  let allCourseLessons = [];
-  let userEnrollment = null;
+                    <div class="card border border-warning-subtle bg-light mb-4">
+                        <div class="card-header bg-warning-subtle text-dark fw-bold text-xs text-uppercase">
+                            <i class="fas fa-tasks me-1"></i> Pending Assignments to Complete (Mandatory)
+                        </div>
+                        <div class="list-group list-group-flush" id="pendingAssignmentsList">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
 
-  async function loadLessonPlayer() {
-    if (!lessonId) {
-      alert('No lesson specified!');
-      window.location.href = '/my-learning/';
-      return;
-    }
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-secondary px-4 fw-bold" data-bs-dismiss="modal">I'll Complete Later</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    try {
-      // 1. Fetch lesson detail
-      const response = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/`, { credentials: 'same-origin' });
-      const data = await response.json();
-      
-      if (data.error) {
-        alert(data.error);
-        return;
-      }
+    <!-- Course 100% Completed Celebration Modal -->
+    <div class="modal fade" id="courseCompletedModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg radius-16 text-center p-4">
+                <div class="modal-body">
+                    <div class="w-64-px h-64-px bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 70px; height: 70px; font-size: 32px; background: #dcfce7; color: #16a34a;">
+                        🏆
+                    </div>
+                    <h3 class="fw-bold text-dark mb-2">🎉 Congratulations!</h3>
+                    <p class="text-secondary mb-4">
+                        You have successfully completed <strong>all chapters and all module assignments</strong>! Your course is now <strong>100% Complete</strong> and your Certificate is ready.
+                    </p>
+                    <div class="d-grid gap-2">
+                        <a href="/my-learning/" class="btn btn-warning btn-lg fw-bold py-2.5 text-dark shadow-sm">
+                            <i class="fas fa-certificate me-2"></i> View My Certificate in Dashboard
+                        </a>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-      currentLesson = data.lesson;
+    <!-- Bootstrap JS -->
+    <script src="{% static 'admin_assets/js/lib/bootstrap.bundle.min.js' %}"></script>
 
-      if (document.getElementById('lessonTitle')) {
-        document.getElementById('lessonTitle').textContent = currentLesson.title;
-      }
-      document.title = `${currentLesson.title} - EduAiQ`;
-      if (document.getElementById('lessonDescription')) {
-        document.getElementById('lessonDescription').textContent = currentLesson.description || 'No description provided.';
-      }
-      if (document.getElementById('lessonDuration')) {
-        document.getElementById('lessonDuration').textContent = currentLesson.duration_minutes;
-      }
-      if (document.getElementById('lessonTypeBadge')) {
-        document.getElementById('lessonTypeBadge').textContent = currentLesson.content_type;
-      }
-      
-      // Update back button href
-      const courseId = currentLesson.module.course_id;
-      
-      // 2. Fetch course detailed data to map lessons and check enrollment
-      const courseResponse = await fetch(`${API_BASE_URL}/courses/courses/`, { credentials: 'same-origin' });
-      const courseData = await courseResponse.json();
-      // Find course slug
-      const matchedCourse = (courseData.results || []).find(c => c.id === courseId);
-      if (matchedCourse) {
-        document.getElementById('backToCourseBtn').href = `/course/?slug=${matchedCourse.slug}`;
-        
-        // Fetch detailed course view with modules
-        const detailResponse = await fetch(`${API_BASE_URL}/courses/courses/${matchedCourse.slug}/`, { credentials: 'same-origin' });
-        const detailData = await detailResponse.json();
-        const courseDetail = detailData.course;
-        
-        // Build flat array of lessons for navigation
-        allCourseLessons = [];
-        courseDetail.modules.forEach(mod => {
-          if (mod.lessons) {
-            mod.lessons.forEach(les => {
-              allCourseLessons.push(les);
+    <script>
+        const API_BASE_URL = window.location.origin;
+        const lessonId = new URLSearchParams(window.location.search).get('id');
+        let currentLesson = null;
+        let allCourseLessons = [];
+        let userEnrollment = null;
+        let courseSlug = null;
+        let assignmentData = null;
+
+        document.addEventListener('DOMContentLoaded', loadLessonPlayer);
+
+        async function loadLessonPlayer() {
+            if (!lessonId) {
+                alert('No lesson specified!');
+                window.location.href = '/my-learning/';
+                return;
+            }
+
+            try {
+                // 1. Fetch lesson detail
+                const response = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/`, { credentials: 'same-origin' });
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                currentLesson = data.lesson;
+
+                document.getElementById('lessonTitle').textContent = currentLesson.title;
+                document.title = `${currentLesson.title} - EduAiQ`;
+                document.getElementById('lessonDescription').textContent = currentLesson.description || 'No description provided.';
+                document.getElementById('lessonDuration').textContent = currentLesson.duration_minutes;
+                document.getElementById('lessonModuleTitle').textContent = currentLesson.module?.title || '';
+                
+                const typeBadge = document.getElementById('lessonTypeBadge');
+                typeBadge.textContent = currentLesson.content_type;
+                if (currentLesson.content_type === 'assignment') {
+                    typeBadge.className = 'badge badge-assignment text-uppercase px-2.5 py-1.5 mb-2';
+                }
+
+                const courseId = currentLesson.module.course_id;
+
+                // 2. Fetch course detailed data
+                const courseResponse = await fetch(`${API_BASE_URL}/courses/courses/`, { credentials: 'same-origin' });
+                const courseData = await courseResponse.json();
+                const matchedCourse = (courseData.results || []).find(c => c.id === courseId);
+                
+                if (matchedCourse) {
+                    courseSlug = matchedCourse.slug;
+                    document.getElementById('backToCourseBtn').href = `/course/?slug=${matchedCourse.slug}`;
+                    document.getElementById('topCourseTitle').textContent = matchedCourse.title;
+
+                    const detailResponse = await fetch(`${API_BASE_URL}/courses/courses/${matchedCourse.slug}/`, { credentials: 'same-origin' });
+                    const detailData = await detailResponse.json();
+                    const courseDetail = detailData.course;
+
+                    allCourseLessons = [];
+                    courseDetail.modules.forEach(mod => {
+                        if (mod.lessons) {
+                            mod.lessons.forEach(les => {
+                                allCourseLessons.push(les);
+                            });
+                        }
+                    });
+
+                    renderSidebarIndex(courseDetail);
+                    updateNavButtons();
+                }
+
+                // 3. Fetch user enrollment
+                const enrollResponse = await fetch(`${API_BASE_URL}/courses/my-enrollments/`, { credentials: 'include' });
+                const enrollData = await enrollResponse.json();
+                userEnrollment = enrollData.results?.find(e => e.course.id === courseId);
+
+                if (userEnrollment) {
+                    const pct = Math.round(userEnrollment.progress_pct || 0);
+                    document.getElementById('topProgressBar').style.width = `${pct}%`;
+                    document.getElementById('topProgressText').textContent = `${pct}%`;
+                }
+
+                // 4. Render Viewer Content
+                await renderContentViewer();
+
+            } catch (e) {
+                console.error('Error loading lesson player:', e);
+                alert('Failed to load lesson details. Please make sure you are logged in.');
+            }
+        }
+
+        function extractYouTubeId(url) {
+            if (!url) return '';
+            const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+            return (match && match[1]) ? match[1] : '';
+        }
+
+        async function renderContentViewer() {
+            const viewer = document.getElementById('contentViewer');
+
+            if (currentLesson.content_type === 'video') {
+                const url = currentLesson.content_url || '';
+                const fileUrl = currentLesson.content_file || '';
+                const ytId = extractYouTubeId(url);
+
+                if (ytId) {
+                    viewer.innerHTML = `
+                        <div class="position-relative w-100 bg-dark rounded overflow-hidden" style="height: 480px;">
+                            <iframe id="lessonYtIframe"
+                                src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=0&rel=0&modestbranding=1&controls=1" 
+                                title="Lesson Video"
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen 
+                                style="width: 100%; height: 100%; border: none;">
+                            </iframe>
+                        </div>
+                    `;
+                } else if (fileUrl || url) {
+                    const videoSrc = fileUrl || url;
+                    viewer.innerHTML = `
+                        <div class="position-relative w-100 bg-dark rounded overflow-hidden" style="height: 480px;">
+                            <video controls controlsList="nodownload" style="width: 100%; height: 100%; border-radius: 8px;" src="${videoSrc}">
+                                Your browser does not support video playback.
+                            </video>
+                        </div>
+                    `;
+                } else {
+                    viewer.innerHTML = `
+                        <div class="p-5 text-center bg-dark text-white rounded">
+                            <i class="fas fa-video fa-3x text-warning mb-3"></i>
+                            <h5>No Video Available</h5>
+                            <p class="text-muted">No video was uploaded for this lesson.</p>
+                        </div>
+                    `;
+                }
+            } else if (currentLesson.content_type === 'assignment') {
+                // Fetch assignment submission status
+                try {
+                    const res = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/assignment/`, { credentials: 'include' });
+                    assignmentData = await res.json();
+                } catch (err) {
+                    assignmentData = { submission: null };
+                }
+
+                const sub = assignmentData?.submission;
+                const isSubmitted = sub && (sub.status === 'submitted' || sub.status === 'graded');
+                const isSkipped = sub && sub.status === 'skipped';
+
+                viewer.innerHTML = `
+                    <div class="p-4 p-md-5 text-dark bg-white w-100 rounded" style="min-height: 480px; overflow-y: auto;">
+                        
+                        <!-- Header Banner -->
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                            <span class="badge bg-warning-subtle text-warning-emphasis px-3 py-2 rounded-pill fw-bold" style="background: #fff7ed; color: #ea580c; border: 1px solid #fdba74;">
+                                <i class="fas fa-tasks me-1"></i> Module Practical Assignment
+                            </span>
+
+                            ${isSubmitted ? `
+                                <span class="badge badge-submitted px-3 py-2 rounded-pill">
+                                    <i class="fas fa-check-circle me-1"></i> Assignment Submitted
+                                </span>
+                            ` : isSkipped ? `
+                                <span class="badge badge-skipped px-3 py-2 rounded-pill">
+                                    <i class="fas fa-clock me-1"></i> Skipped for now
+                                </span>
+                            ` : `
+                                <span class="badge bg-secondary-subtle text-secondary px-3 py-2 rounded-pill">
+                                    <i class="fas fa-hourglass-start me-1"></i> Not Submitted
+                                </span>
+                            `}
+                        </div>
+
+                        <!-- Assignment Description & Task Brief -->
+                        <h3 class="fw-bold text-dark mb-2">${currentLesson.title}</h3>
+                        <div class="text-secondary mb-4 lh-lg">
+                            ${currentLesson.description || 'Complete the following practical task and submit your answer or project file below.'}
+                        </div>
+
+                        ${currentLesson.content_file ? `
+                            <div class="p-3 bg-light rounded border d-flex align-items-center justify-content-between mb-4">
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="fas fa-file-pdf text-danger fa-2x"></i>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">Assignment Reference Brief</h6>
+                                        <small class="text-muted">Download guidelines and questions</small>
+                                    </div>
+                                </div>
+                                <a href="${currentLesson.content_file}" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">
+                                    <i class="fas fa-download me-1"></i> Download Brief
+                                </a>
+                            </div>
+                        ` : ''}
+
+                        <!-- Skip Info Alert -->
+                        <div class="assignment-banner-skip d-flex align-items-start gap-3">
+                            <i class="fas fa-info-circle text-warning fs-4 mt-1"></i>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-1">Need to proceed with the next chapter?</h6>
+                                <p class="text-muted small mb-0">
+                                    You can <strong>Skip for now</strong> to continue reading subsequent chapters. Note: <strong>All skipped assignments become strictly mandatory</strong> once all chapters are finished in order to unlock your Certificate.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Submission Form -->
+                        <div class="card border p-3 p-md-4 bg-light rounded-3 mb-3">
+                            <h6 class="fw-bold mb-3"><i class="fas fa-upload text-primary me-2"></i> Submit Your Solution</h6>
+                            
+                            <div class="mb-3">
+                                <label class="form-label text-xs fw-bold text-muted text-uppercase">Your Answer / Code / Notes</label>
+                                <textarea id="assignmentTextResponse" class="form-control" rows="4" placeholder="Type your answers, links, code, or observations here...">${sub?.submission_text || ''}</textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label text-xs fw-bold text-muted text-uppercase">Upload File (PDF / DOC / ZIP - Optional)</label>
+                                <input type="file" id="assignmentFileInput" class="form-control">
+                                ${sub?.submission_file ? `
+                                    <small class="text-success d-block mt-1">
+                                        <i class="fas fa-paperclip me-1"></i> Current file: <a href="${sub.submission_file}" target="_blank" class="fw-bold">View Uploaded File</a>
+                                    </small>
+                                ` : ''}
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2">
+                                <button type="button" class="btn btn-warning text-dark fw-bold px-4 py-2" onclick="submitAssignment()">
+                                    <i class="fas fa-paper-plane me-1"></i> ${isSubmitted ? 'Update Submission' : 'Submit Assignment'}
+                                </button>
+
+                                <button type="button" class="btn btn-outline-secondary fw-bold px-3 py-2" onclick="skipAssignment()">
+                                    <i class="fas fa-forward me-1"></i> Skip for Now & Next Chapter
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                `;
+            } else if (currentLesson.content_type === 'pdf') {
+                const fileUrl = currentLesson.content_file || currentLesson.content_url;
+                if (fileUrl) {
+                    const fullPdfUrl = fileUrl.startsWith('http') ? fileUrl : (window.location.origin + fileUrl);
+                    viewer.innerHTML = `
+                        <div class="w-100 bg-white p-3 rounded shadow-sm text-center position-relative">
+                            <div class="d-flex justify-content-between align-items-center mb-3 px-2 flex-wrap gap-2">
+                                <span class="fw-bold text-dark"><i class="fas fa-file-pdf text-danger me-2"></i> PDF Document: ${currentLesson.title}</span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <button class="btn btn-sm btn-outline-secondary px-3" onclick="changeLessonPdfPage(-1)"><i class="fas fa-chevron-left"></i> Prev</button>
+                                    <span class="text-xs fw-bold text-dark">Page <span id="currentLessonPdfPage">1</span> of <span id="totalLessonPdfPages">1</span></span>
+                                    <button class="btn btn-sm btn-outline-secondary px-3" onclick="changeLessonPdfPage(1)">Next <i class="fas fa-chevron-right"></i></button>
+                                </div>
+                            </div>
+                            <div class="position-relative d-inline-block w-100 bg-dark rounded p-2" style="max-height: 520px; overflow-y: auto;">
+                                <canvas id="lessonPdfCanvas" style="max-width: 100%; height: auto; margin: 0 auto; display: block;"></canvas>
+                            </div>
+                        </div>
+                    `;
+                    setTimeout(() => renderLessonPdfCanvas(fullPdfUrl), 100);
+                } else {
+                    viewer.innerHTML = `<div class="p-5 text-center bg-white text-dark rounded w-100"><h5>No PDF File Uploaded</h5></div>`;
+                }
+            } else if (currentLesson.content_type === 'text') {
+                viewer.innerHTML = `
+                    <div class="p-4 text-dark bg-white w-100 h-100 rounded" style="overflow-y: auto; max-height: 480px;">
+                        <h4 class="fw-bold text-primary mb-3">${currentLesson.title}</h4>
+                        <div class="lh-lg text-secondary" style="font-size: 15px;">
+                            ${currentLesson.description || 'No reading material text provided for this lesson.'}
+                        </div>
+                    </div>
+                `;
+            } else if (currentLesson.content_type === 'quiz') {
+                viewer.innerHTML = `
+                    <div class="text-center p-5 bg-white text-dark w-100 rounded shadow-sm">
+                        <i class="fas fa-question-circle fa-4x mb-3 text-warning"></i>
+                        <h4 class="fw-bold">Practice Quiz Ready</h4>
+                        <p class="text-muted">Test your understanding of this module's topics.</p>
+                        <button class="btn btn-warning btn-lg mt-3 px-4 fw-bold rounded-pill text-dark" onclick="goToQuiz()">
+                            Start Quiz Attempt <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                `;
+            } else {
+                viewer.innerHTML = `<div class="p-5 text-center bg-dark text-white rounded"><p>Lesson ready (${currentLesson.content_type}).</p></div>`;
+            }
+        }
+
+        async function submitAssignment() {
+            const textResponse = document.getElementById('assignmentTextResponse')?.value || '';
+            const fileInput = document.getElementById('assignmentFileInput');
+            
+            const formData = new FormData();
+            formData.append('submission_text', textResponse);
+            if (fileInput && fileInput.files[0]) {
+                formData.append('submission_file', fileInput.files[0]);
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/assignment/submit/`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('✅ Assignment submitted successfully!');
+                    // Also mark lesson progress
+                    await markAsComplete(true);
+                } else {
+                    alert('Failed to submit assignment: ' + (data.error || 'Unknown error'));
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Error submitting assignment.');
+            }
+        }
+
+        async function skipAssignment() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/assignment/skip/`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                // Move to next lesson immediately
+                const currentIndex = allCourseLessons.findIndex(l => l.id == lessonId);
+                if (currentIndex < allCourseLessons.length - 1) {
+                    window.location.href = `/lesson/?id=${allCourseLessons[currentIndex + 1].id}`;
+                } else {
+                    // Reached end of course
+                    checkCourseCompletion();
+                }
+            } catch (e) {
+                console.error(e);
+                const currentIndex = allCourseLessons.findIndex(l => l.id == lessonId);
+                if (currentIndex < allCourseLessons.length - 1) {
+                    window.location.href = `/lesson/?id=${allCourseLessons[currentIndex + 1].id}`;
+                }
+            }
+        }
+
+        async function goToQuiz() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/quiz/`);
+                const data = await response.json();
+                if (data.quiz) {
+                    window.location.href = `/quiz/?id=${data.quiz.id}`;
+                } else {
+                    alert('No quiz linked to this lesson!');
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Error fetching quiz details.');
+            }
+        }
+
+        function renderSidebarIndex(course) {
+            const list = document.getElementById('sidebarModulesList');
+            list.innerHTML = '';
+            let total = 0;
+
+            course.modules.forEach(mod => {
+                const header = document.createElement('div');
+                header.className = 'list-group-item bg-light fw-bold py-2.5 text-xs text-uppercase text-secondary';
+                header.textContent = mod.title;
+                list.appendChild(header);
+
+                if (mod.lessons) {
+                    mod.lessons.forEach(les => {
+                        total++;
+                        const item = document.createElement('a');
+                        item.href = `/lesson/?id=${les.id}`;
+                        item.className = `sidebar-lesson-item ${les.id == lessonId ? 'active' : ''}`;
+                        
+                        let icon = '📖';
+                        let typeTag = '';
+                        if (les.content_type === 'video') icon = '🎥';
+                        if (les.content_type === 'quiz') icon = '❓';
+                        if (les.content_type === 'pdf') icon = '📄';
+                        if (les.content_type === 'assignment') {
+                            icon = '📝';
+                            typeTag = '<span class="badge badge-assignment text-xxs ms-1">Assignment</span>';
+                        }
+
+                        item.innerHTML = `
+                            <div class="d-flex align-items-center gap-2 text-truncate" style="max-width: 80%;">
+                                <span>${icon}</span>
+                                <span class="text-truncate">${les.title}</span>
+                                ${typeTag}
+                            </div>
+                            <small class="text-muted">${les.duration_minutes}m</small>
+                        `;
+                        list.appendChild(item);
+                    });
+                }
             });
-          }
-        });
 
-        // Load Sidebar Index
-        renderSidebarIndex(courseDetail);
-        
-        // Update navigation buttons
-        updateNavButtons();
-      }
-
-      // 3. Fetch user enrollments to check progress update capability
-      const enrollResponse = await fetch(`${API_BASE_URL}/courses/my-enrollments/`, {
-        credentials: 'include'
-      });
-      const enrollData = await enrollResponse.json();
-      userEnrollment = enrollData.results?.find(e => e.course.id === courseId);
-
-      // Render Viewer Content
-      renderContentViewer();
-
-    } catch (e) {
-      console.error('Error loading lesson player:', e);
-      alert('Failed to load lesson details. Make sure you are logged in.');
-    }
-  }
-
-  function extractYouTubeId(url) {
-    if (!url) return '';
-    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-    return (match && match[1]) ? match[1] : '';
-  }
-
-  function renderContentViewer() {
-    const viewer = document.getElementById('contentViewer');
-    
-    if (currentLesson.content_type === 'video') {
-      const url = currentLesson.content_url || '';
-      const fileUrl = currentLesson.content_file || '';
-      const ytId = extractYouTubeId(url);
-
-      if (ytId) {
-        viewer.innerHTML = `
-          <div class="position-relative w-100 bg-dark rounded overflow-hidden" style="height: 460px;" oncontextmenu="return false;">
-            <iframe id="lessonYtIframe"
-              src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=0&rel=0&modestbranding=1&controls=1" 
-              title="Lesson Video"
-              frameborder="0" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-              referrerpolicy="strict-origin-when-cross-origin" 
-              allowfullscreen 
-              style="width: 100%; height: 100%; border: none;"
-              oncontextmenu="return false;">
-            </iframe>
-          </div>
-        `;
-      } else if (fileUrl || url) {
-        const videoSrc = fileUrl || url;
-        viewer.innerHTML = `
-          <div class="position-relative w-100 bg-dark rounded overflow-hidden" style="height: 460px;" oncontextmenu="return false;">
-            <video id="lessonHtmlVideo" controls controlsList="nodownload noopen noremoteplayback" disablePictureInPicture oncontextmenu="return false;" style="width: 100%; height: 100%; border-radius: 8px;" src="${videoSrc}">
-              Your browser does not support video playback.
-            </video>
-          </div>
-        `;
-      } else {
-        viewer.innerHTML = `
-          <div class="p-5 text-center bg-dark text-white rounded">
-            <i class="fas fa-video fa-3x text-primary mb-3"></i>
-            <h5>No Video Available</h5>
-            <p class="text-muted">No video URL or video file was provided for this lesson.</p>
-          </div>
-        `;
-      }
-    } else if (currentLesson.content_type === 'pdf') {
-      const fileUrl = currentLesson.content_file || currentLesson.content_url;
-      if (fileUrl) {
-        const fullPdfUrl = fileUrl.startsWith('http') ? fileUrl : (window.location.origin + fileUrl);
-        viewer.innerHTML = `
-          <div class="w-100 bg-white p-3 rounded shadow-sm text-center position-relative" oncontextmenu="return false;">
-            <div class="d-flex justify-content-between align-items-center mb-3 px-2 flex-wrap gap-2">
-              <span class="fw-bold text-dark"><i class="fas fa-file-pdf text-danger me-2"></i> PDF Document: ${currentLesson.title}</span>
-              
-              <div class="d-flex align-items-center gap-2">
-                <button class="btn btn-sm btn-outline-secondary px-3 radius-12" id="prevPdfPageBtn" onclick="changeLessonPdfPage(-1)">
-                  <i class="fas fa-chevron-left"></i> Prev
-                </button>
-                <span class="text-xs fw-bold text-dark">Page <span id="currentLessonPdfPage">1</span> of <span id="totalLessonPdfPages">1</span></span>
-                <button class="btn btn-sm btn-outline-secondary px-3 radius-12" id="nextPdfPageBtn" onclick="changeLessonPdfPage(1)">
-                  Next <i class="fas fa-chevron-right"></i>
-                </button>
-              </div>
-
-              <span class="badge bg-danger-subtle text-danger px-3 py-2 radius-12 fw-bold" style="background: #fee2e2; color: #dc2626;">
-                <i class="fas fa-lock me-1"></i> DRM Protected Canvas (Download Disabled)
-              </span>
-            </div>
-
-            <div class="position-relative d-inline-block w-100 bg-dark rounded p-2" style="max-height: 550px; overflow-y: auto; user-select: none; -webkit-user-select: none;" oncontextmenu="return false;">
-              <div style="position: absolute; top:0; left:0; width:100%; height:100%; z-index: 10; background: rgba(0,0,0,0);" oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;"></div>
-              <canvas id="lessonPdfCanvas" style="max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); margin: 0 auto; display: block;" oncontextmenu="return false;"></canvas>
-            </div>
-          </div>
-        `;
-        setTimeout(() => { renderLessonPdfCanvas(fullPdfUrl); }, 100);
-      } else {
-        viewer.innerHTML = `
-          <div class="p-5 text-center bg-white text-dark rounded w-100">
-            <i class="fas fa-file-pdf fa-3x text-danger mb-3"></i>
-            <h5>No PDF File Uploaded</h5>
-            <p class="text-muted">This lesson is marked as PDF, but no PDF file or link has been uploaded yet.</p>
-          </div>
-        `;
-      }
-    } else if (currentLesson.content_type === 'text') {
-      viewer.innerHTML = `
-        <div class="p-4 text-dark bg-white w-100 h-100 rounded shadow-sm" style="overflow-y: auto; max-height: 480px;">
-          <h4 class="fw-bold text-primary mb-3">${currentLesson.title}</h4>
-          <div class="lh-lg text-secondary" style="font-size: 15px;">
-            ${currentLesson.description || 'No reading material text provided for this lesson.'}
-          </div>
-          ${currentLesson.content_url ? `
-            <div class="mt-4 pt-3 border-top">
-              <a href="${currentLesson.content_url}" target="_blank" class="btn btn-outline-primary btn-sm">
-                Read External Reference <i class="fas fa-external-link-alt ms-1"></i>
-              </a>
-            </div>
-          ` : ''}
-        </div>
-      `;
-    } else if (currentLesson.content_type === 'quiz') {
-      viewer.innerHTML = `
-        <div class="text-center p-5 bg-white text-dark w-100 rounded shadow-sm">
-          <i class="fas fa-question-circle fa-4x mb-3 text-warning"></i>
-          <h4 class="fw-bold">Practice Quiz Ready</h4>
-          <p class="text-muted">Test your understanding of this module's topics.</p>
-          <button class="btn btn-warning btn-lg mt-3 px-4 fw-bold rounded-pill text-dark" onclick="goToQuiz()">
-            Start Quiz Attempt <i class="fas fa-arrow-right ms-2"></i>
-          </button>
-        </div>
-      `;
-    } else {
-      viewer.innerHTML = `
-        <div class="p-5 text-center bg-dark text-white rounded">
-          <p>No viewer available for content type (${currentLesson.content_type}).</p>
-        </div>
-      `;
-    }
-  }
-
-  async function goToQuiz() {
-    try {
-      const response = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/quiz/`);
-      const data = await response.json();
-      if (data.quiz) {
-        window.location.href = `/quiz/?id=${data.quiz.id}`;
-      } else {
-        alert('No quiz linked to this lesson!');
-      }
-    } catch (e) {
-      console.error(e);
-      alert('Error fetching quiz details.');
-    }
-  }
-
-  function renderSidebarIndex(course) {
-    const list = document.getElementById('sidebarModulesList');
-    list.innerHTML = '';
-
-    course.modules.forEach(mod => {
-      // Module Header
-      const header = document.createElement('div');
-      header.className = 'list-group-item bg-light fw-bold py-3';
-      header.textContent = mod.title;
-      list.appendChild(header);
-
-      // Module Lessons
-      if (mod.lessons) {
-        mod.lessons.forEach(les => {
-          const item = document.createElement('a');
-          item.href = `/lesson/?id=${les.id}`;
-          item.className = `list-group-item list-group-item-action sidebar-lesson-item d-flex justify-content-between align-items-center py-2 ${les.id == lessonId ? 'active' : ''}`;
-          
-          let icon = '📖';
-          if (les.content_type === 'video') icon = '🎥';
-          if (les.content_type === 'quiz') icon = '❓';
-          if (les.content_type === 'pdf') icon = '📄';
-
-          item.innerHTML = `
-            <span>${icon} ${les.title}</span>
-            <small class="text-muted">${les.duration_minutes}m</small>
-          `;
-          list.appendChild(item);
-        });
-      }
-    });
-  }
-
-  function updateNavButtons() {
-    const currentIndex = allCourseLessons.findIndex(l => l.id == lessonId);
-    
-    const prevBtn = document.getElementById('prevLessonBtn');
-    const nextBtn = document.getElementById('nextLessonBtn');
-
-    if (currentIndex > 0) {
-      prevBtn.disabled = false;
-      prevBtn.onclick = () => window.location.href = `/lesson/?id=${allCourseLessons[currentIndex - 1].id}`;
-    } else {
-      prevBtn.disabled = true;
-    }
-
-    if (currentIndex >= 0 && currentIndex < allCourseLessons.length - 1) {
-      nextBtn.disabled = false;
-      nextBtn.onclick = () => window.location.href = `/lesson/?id=${allCourseLessons[currentIndex + 1].id}`;
-    } else {
-      nextBtn.disabled = true;
-    }
-  }
-
-  async function markAsComplete() {
-    if (!userEnrollment) {
-      alert('You must be enrolled in this course to track progress!');
-      return;
-    }
-
-    const currentIndex = allCourseLessons.findIndex(l => l.id == lessonId);
-    if (currentIndex === -1) return;
-
-    // Calculate progress percentage based on lesson position
-    const progress = Math.min(100, Math.round(((currentIndex + 1) / allCourseLessons.length) * 100));
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/courses/enrollments/${userEnrollment.id}/progress/`, {
-        method: 'PATCH',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-        body: JSON.stringify({progress_pct: progress})
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        alert('Lesson marked complete! Progress updated to ' + progress + '%');
-        if (progress >= 100) {
-          alert('🎉 Congratulations! You have completed the course!');
-          window.location.href = '/my-learning/';
-        } else if (currentIndex < allCourseLessons.length - 1) {
-          // Go to next lesson automatically
-          window.location.href = `/lesson/?id=${allCourseLessons[currentIndex + 1].id}`;
+            document.getElementById('sidebarTotalLessons').textContent = `${total} Items`;
         }
-      } else {
-        alert('Failed to update progress: ' + (data.error || 'Server error'));
-      }
-    } catch (e) {
-      console.error(e);
-      alert('Error saving lesson progress.');
-    }
-  }
 
-  let lessonPdfDoc = null;
-  let currentLessonPdfPageNum = 1;
+        function updateNavButtons() {
+            const currentIndex = allCourseLessons.findIndex(l => l.id == lessonId);
+            const prevBtn = document.getElementById('prevLessonBtn');
+            const nextBtn = document.getElementById('nextLessonBtn');
 
-  function renderLessonPdfCanvas(url) {
-    if (typeof pdfjsLib === 'undefined') return;
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            if (currentIndex > 0) {
+                prevBtn.disabled = false;
+                prevBtn.onclick = () => window.location.href = `/lesson/?id=${allCourseLessons[currentIndex - 1].id}`;
+            } else {
+                prevBtn.disabled = true;
+            }
 
-    pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
-      lessonPdfDoc = pdfDoc_;
-      currentLessonPdfPageNum = 1;
-      const totalEl = document.getElementById('totalLessonPdfPages');
-      if (totalEl) totalEl.textContent = lessonPdfDoc.numPages;
-      renderLessonPdfPage(currentLessonPdfPageNum);
-    }).catch(function(err) {
-      console.error("Lesson PDF render error:", err);
-    });
-  }
-
-  function renderLessonPdfPage(num) {
-    if (!lessonPdfDoc) return;
-    lessonPdfDoc.getPage(num).then(function(page) {
-      const canvas = document.getElementById('lessonPdfCanvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const viewport = page.getViewport({ scale: 1.25 });
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
-
-              </div>
-
-              <span class="badge bg-danger-subtle text-danger px-3 py-2 radius-12 fw-bold" style="background: #fee2e2; color: #dc2626;">
-                <i class="fas fa-lock me-1"></i> DRM Protected Canvas (Download Disabled)
-              </span>
-            </div>
-
-            <div class="position-relative d-inline-block w-100 bg-dark rounded p-2" style="max-height: 550px; overflow-y: auto; user-select: none; -webkit-user-select: none;" oncontextmenu="return false;">
-              <div style="position: absolute; top:0; left:0; width:100%; height:100%; z-index: 10; background: rgba(0,0,0,0);" oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;"></div>
-              <canvas id="lessonPdfCanvas" style="max-width: 100%; height: auto; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); margin: 0 auto; display: block;" oncontextmenu="return false;"></canvas>
-            </div>
-          </div>
-        `;
-        setTimeout(() => { renderLessonPdfCanvas(fullPdfUrl); }, 100);
-      } else {
-        viewer.innerHTML = `
-          <div class="p-5 text-center bg-white text-dark rounded w-100">
-            <i class="fas fa-file-pdf fa-3x text-danger mb-3"></i>
-            <h5>No PDF File Uploaded</h5>
-            <p class="text-muted">This lesson is marked as PDF, but no PDF file or link has been uploaded yet.</p>
-          </div>
-        `;
-      }
-    } else if (currentLesson.content_type === 'text') {
-      viewer.innerHTML = `
-        <div class="p-4 text-dark bg-white w-100 h-100 rounded shadow-sm" style="overflow-y: auto; max-height: 480px; user-select: none; -webkit-user-select: none;" oncontextmenu="return false;">
-          <h4 class="fw-bold text-primary mb-3">${currentLesson.title}</h4>
-          <div class="lh-lg text-secondary" style="font-size: 15px; user-select: none; -webkit-user-select: none;" oncontextmenu="return false;">
-            ${currentLesson.description || 'No reading material text provided for this lesson.'}
-          </div>
-          ${currentLesson.content_url ? `
-            <div class="mt-4 pt-3 border-top">
-              <a href="${currentLesson.content_url}" target="_blank" class="btn btn-outline-primary btn-sm">
-                Read External Reference <i class="fas fa-external-link-alt ms-1"></i>
-              </a>
-            </div>
-          ` : ''}
-        </div>
-      `;
-    } else if (currentLesson.content_type === 'quiz') {
-      viewer.innerHTML = `
-        <div class="text-center p-5 bg-white text-dark w-100 rounded shadow-sm">
-          <i class="fas fa-question-circle fa-4x mb-3 text-warning"></i>
-          <h4 class="fw-bold">Practice Quiz Ready</h4>
-          <p class="text-muted">Test your understanding of this module's topics.</p>
-          <button class="btn btn-warning btn-lg mt-3 px-4 fw-bold rounded-pill text-dark" onclick="goToQuiz()">
-            Start Quiz Attempt <i class="fas fa-arrow-right ms-2"></i>
-          </button>
-        </div>
-      `;
-    } else {
-      viewer.innerHTML = `
-        <div class="p-5 text-center bg-dark text-white rounded">
-          <p>No viewer available for content type (${currentLesson.content_type}).</p>
-        </div>
-      `;
-    }
-  }
-
-  async function goToQuiz() {
-    try {
-      const response = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/quiz/`);
-      const data = await response.json();
-      if (data.quiz) {
-        window.location.href = `/quiz/?id=${data.quiz.id}`;
-      } else {
-        alert('No quiz linked to this lesson!');
-      }
-    } catch (e) {
-      console.error(e);
-      alert('Error fetching quiz details.');
-    }
-  }
-
-  function renderSidebarIndex(course) {
-    const list = document.getElementById('sidebarModulesList');
-    list.innerHTML = '';
-
-    course.modules.forEach(mod => {
-      // Module Header
-      const header = document.createElement('div');
-      header.className = 'list-group-item bg-light fw-bold py-3';
-      header.textContent = mod.title;
-      list.appendChild(header);
-
-      // Module Lessons
-      if (mod.lessons) {
-        mod.lessons.forEach(les => {
-          const item = document.createElement('a');
-          item.href = `/lesson/?id=${les.id}`;
-          item.className = `list-group-item list-group-item-action sidebar-lesson-item d-flex justify-content-between align-items-center py-2 ${les.id == lessonId ? 'active' : ''}`;
-          
-          let icon = '📖';
-          if (les.content_type === 'video') icon = '🎥';
-          if (les.content_type === 'quiz') icon = '❓';
-          if (les.content_type === 'pdf') icon = '📄';
-
-          item.innerHTML = `
-            <span>${icon} ${les.title}</span>
-            <small class="text-muted">${les.duration_minutes}m</small>
-          `;
-          list.appendChild(item);
-        });
-      }
-    });
-  }
-
-  function updateNavButtons() {
-    const currentIndex = allCourseLessons.findIndex(l => l.id == lessonId);
-    
-    const prevBtn = document.getElementById('prevLessonBtn');
-    const nextBtn = document.getElementById('nextLessonBtn');
-
-    if (currentIndex > 0) {
-      prevBtn.disabled = false;
-      prevBtn.onclick = () => window.location.href = `/lesson/?id=${allCourseLessons[currentIndex - 1].id}`;
-    } else {
-      prevBtn.disabled = true;
-    }
-
-    if (currentIndex >= 0 && currentIndex < allCourseLessons.length - 1) {
-      nextBtn.disabled = false;
-      nextBtn.onclick = () => window.location.href = `/lesson/?id=${allCourseLessons[currentIndex + 1].id}`;
-    } else {
-      nextBtn.disabled = true;
-    }
-  }
-
-  async function markAsComplete() {
-    if (!userEnrollment) {
-      alert('You must be enrolled in this course to track progress!');
-      return;
-    }
-
-    const currentIndex = allCourseLessons.findIndex(l => l.id == lessonId);
-    if (currentIndex === -1) return;
-
-    // Calculate progress percentage based on lesson position
-    const progress = Math.min(100, Math.round(((currentIndex + 1) / allCourseLessons.length) * 100));
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/courses/enrollments/${userEnrollment.id}/progress/`, {
-        method: 'PATCH',
-        headers: {'Content-Type': 'application/json'},
-        credentials: 'include',
-        body: JSON.stringify({progress_pct: progress})
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        alert('Lesson marked complete! Progress updated to ' + progress + '%');
-        if (progress >= 100) {
-          alert('🎉 Congratulations! You have completed the course!');
-          window.location.href = '/my-learning/';
-        } else if (currentIndex < allCourseLessons.length - 1) {
-          // Go to next lesson automatically
-          window.location.href = `/lesson/?id=${allCourseLessons[currentIndex + 1].id}`;
+            if (currentIndex >= 0 && currentIndex < allCourseLessons.length - 1) {
+                nextBtn.disabled = false;
+                nextBtn.onclick = () => window.location.href = `/lesson/?id=${allCourseLessons[currentIndex + 1].id}`;
+            } else {
+                nextBtn.disabled = true;
+            }
         }
-      } else {
-        alert('Failed to update progress: ' + (data.error || 'Server error'));
-      }
-    } catch (e) {
-      console.error(e);
-      alert('Error saving lesson progress.');
-    }
-  }
 
-  let lessonPdfDoc = null;
-  let currentLessonPdfPageNum = 1;
+        async function markAsComplete(fromAssignment = false) {
+            if (!userEnrollment) {
+                alert('You must be enrolled in this course to save progress!');
+                return;
+            }
 
-  function renderLessonPdfCanvas(url) {
-    if (typeof pdfjsLib === 'undefined') return;
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            const currentIndex = allCourseLessons.findIndex(l => l.id == lessonId);
+            if (currentIndex === -1) return;
 
-    pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
-      lessonPdfDoc = pdfDoc_;
-      currentLessonPdfPageNum = 1;
-      const totalEl = document.getElementById('totalLessonPdfPages');
-      if (totalEl) totalEl.textContent = lessonPdfDoc.numPages;
-      renderLessonPdfPage(currentLessonPdfPageNum);
-    }).catch(function(err) {
-      console.error("Lesson PDF render error:", err);
-    });
-  }
+            const progress = Math.min(100, Math.round(((currentIndex + 1) / allCourseLessons.length) * 100));
 
-  function renderLessonPdfPage(num) {
-    if (!lessonPdfDoc) return;
-    lessonPdfDoc.getPage(num).then(function(page) {
-      const canvas = document.getElementById('lessonPdfCanvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const viewport = page.getViewport({ scale: 1.25 });
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
+            try {
+                const response = await fetch(`${API_BASE_URL}/courses/enrollments/${userEnrollment.id}/progress/`, {
+                    method: 'PATCH',
+                    headers: {'Content-Type': 'application/json'},
+                    credentials: 'include',
+                    body: JSON.stringify({ progress_pct: progress })
+                });
 
-      page.render({
-        canvasContext: ctx,
-        viewport: viewport
-      });
+                const data = await response.json();
 
-      const currEl = document.getElementById('currentLessonPdfPage');
-      if (currEl) currEl.textContent = num;
-    });
-  }
+                // Update UI progress bar
+                if (data.enrollment) {
+                    const curPct = Math.round(parseFloat(data.enrollment.progress_pct || 0));
+                    document.getElementById('topProgressBar').style.width = `${curPct}%`;
+                    document.getElementById('topProgressText').textContent = `${curPct}%`;
+                }
 
-  function changeLessonPdfPage(delta) {
-    if (!lessonPdfDoc) return;
-    const newNum = currentLessonPdfPageNum + delta;
-    if (newNum >= 1 && newNum <= lessonPdfDoc.numPages) {
-      currentLessonPdfPageNum = newNum;
-      renderLessonPdfPage(currentLessonPdfPageNum);
-    }
-  }
+                // Check Mandatory Assignments Enforcement
+                if (data.all_chapters_completed && !data.all_assignments_completed) {
+                    // Show Mandatory Assignments Modal
+                    renderMandatoryAssignmentsModal(data.pending_assignments);
+                    return;
+                }
 
-  document.addEventListener('DOMContentLoaded', loadLessonPlayer);
-</script>
-{% endblock %}
+                if (data.is_completed && data.all_assignments_completed) {
+                    const completedModal = new bootstrap.Modal(document.getElementById('courseCompletedModal'));
+                    completedModal.show();
+                    return;
+                }
+
+                if (!fromAssignment && currentIndex < allCourseLessons.length - 1) {
+                    window.location.href = `/lesson/?id=${allCourseLessons[currentIndex + 1].id}`;
+                } else if (!fromAssignment) {
+                    alert('Chapter marked complete! Course progress updated to ' + progress + '%');
+                }
+
+            } catch (e) {
+                console.error(e);
+                alert('Error updating progress.');
+            }
+        }
+
+        function renderMandatoryAssignmentsModal(pendingList) {
+            const listEl = document.getElementById('pendingAssignmentsList');
+            listEl.innerHTML = '';
+
+            (pendingList || []).forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'list-group-item d-flex justify-content-between align-items-center p-3';
+                div.innerHTML = `
+                    <div>
+                        <span class="badge bg-danger-subtle text-danger mb-1 fw-bold">Pending Submission</span>
+                        <h6 class="mb-0 fw-bold text-dark">${item.title}</h6>
+                        <small class="text-muted">${item.module_title}</small>
+                    </div>
+                    <a href="/lesson/?id=${item.id}" class="btn btn-warning text-dark btn-sm fw-bold px-3 radius-8">
+                        Complete Assignment <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                `;
+                listEl.appendChild(div);
+            });
+
+            const modal = new bootstrap.Modal(document.getElementById('mandatoryAssignmentModal'));
+            modal.show();
+        }
+
+        async function checkCourseCompletion() {
+            if (!userEnrollment) return;
+            try {
+                const response = await fetch(`${API_BASE_URL}/courses/enrollments/${userEnrollment.id}/progress/`, {
+                    method: 'PATCH',
+                    headers: {'Content-Type': 'application/json'},
+                    credentials: 'include',
+                    body: JSON.stringify({ progress_pct: 100 })
+                });
+                const data = await response.json();
+                if (data.all_chapters_completed && !data.all_assignments_completed) {
+                    renderMandatoryAssignmentsModal(data.pending_assignments);
+                } else if (data.is_completed) {
+                    const completedModal = new bootstrap.Modal(document.getElementById('courseCompletedModal'));
+                    completedModal.show();
+                }
+            } catch (e) {}
+        }
+
+        let lessonPdfDoc = null;
+        let currentLessonPdfPageNum = 1;
+
+        function renderLessonPdfCanvas(url) {
+            if (typeof pdfjsLib === 'undefined') return;
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+            pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
+                lessonPdfDoc = pdfDoc_;
+                currentLessonPdfPageNum = 1;
+                const totalEl = document.getElementById('totalLessonPdfPages');
+                if (totalEl) totalEl.textContent = lessonPdfDoc.numPages;
+                renderLessonPdfPage(currentLessonPdfPageNum);
+            }).catch(console.error);
+        }
+
+        function renderLessonPdfPage(num) {
+            if (!lessonPdfDoc) return;
+            lessonPdfDoc.getPage(num).then(function(page) {
+                const canvas = document.getElementById('lessonPdfCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const viewport = page.getViewport({ scale: 1.35 });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                page.render({
+                    canvasContext: ctx,
+                    viewport: viewport
+                });
+
+                const curEl = document.getElementById('currentLessonPdfPage');
+                if (curEl) curEl.textContent = num;
+            });
+        }
+
+        function changeLessonPdfPage(delta) {
+            if (!lessonPdfDoc) return;
+            const newPage = currentLessonPdfPageNum + delta;
+            if (newPage >= 1 && newPage <= lessonPdfDoc.numPages) {
+                currentLessonPdfPageNum = newPage;
+                renderLessonPdfPage(newPage);
+            }
+        }
+    </script>
+</body>
+</html>

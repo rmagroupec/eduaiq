@@ -29,8 +29,9 @@
         <label class="text-sm fw-semibold text-primary-light mb-8" for="typeFilter">Type</label>
         <select class="form-control form-select radius-8" id="typeFilter">
           <option value="">All Types</option>
-          <option value="school">School</option>
-          <option value="college">College</option>
+          <option value="coaching">🎯 Coaching Institute</option>
+          <option value="school">🏫 School</option>
+          <option value="college">🎓 College</option>
         </select>
       </div>
       <div class="col-md-3">
@@ -81,7 +82,7 @@
             <th scope="col">ID</th>
             <th scope="col">Name</th>
             <th scope="col">Type</th>
-            <th scope="col">Board Affiliation</th>
+            <th scope="col">Board / Target Exams</th>
             <th scope="col">City</th>
             <th scope="col">State</th>
             <th scope="col">Status</th>
@@ -118,33 +119,90 @@
 <script>
 $(document).ready(function() {
   let currentPage = 1;
+  let currentFilters = {
+    type: '',
+    status: '',
+    city: '',
+    q: '',
+    page_size: 20
+  };
 
-  function getCsrfToken() {
-    const match = document.cookie.match(/csrftoken=([^;]+)/);
-    return match ? match[1] : null;
-  }
+  fetchInstitutions();
 
-  function loadInstitutions(page = 1) {
-    currentPage = page;
-    const type = $('#typeFilter').val();
-    const status = $('#statusFilter').val();
-    const city = $('#cityFilter').val();
-    const q = $('#searchQuery').val();
-    const pageSize = $('#pageSizeSelect').val();
+  // Search input handler with debounce
+  let searchTimeout;
+  $('#searchQuery').on('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+      currentFilters.q = $('#searchQuery').val().trim();
+      currentPage = 1;
+      fetchInstitutions();
+    }, 400);
+  });
 
-    let url = `/api/institutions/?page=${page}&page_size=${pageSize}`;
-    if (type) url += `&type=${type}`;
-    if (status) url += `&status=${status}`;
-    if (city) url += `&city=${encodeURIComponent(city)}`;
-    if (q) url += `&q=${encodeURIComponent(q)}`;
+  // Filter change handlers
+  $('#typeFilter').on('change', function() {
+    currentFilters.type = $(this).val();
+    currentPage = 1;
+    fetchInstitutions();
+  });
+
+  $('#statusFilter').on('change', function() {
+    currentFilters.status = $(this).val();
+    currentPage = 1;
+    fetchInstitutions();
+  });
+
+  let cityTimeout;
+  $('#cityFilter').on('input', function() {
+    clearTimeout(cityTimeout);
+    cityTimeout = setTimeout(function() {
+      currentFilters.city = $('#cityFilter').val().trim();
+      currentPage = 1;
+      fetchInstitutions();
+    }, 400);
+  });
+
+  $('#pageSizeSelect').on('change', function() {
+    currentFilters.page_size = $(this).val();
+    currentPage = 1;
+    fetchInstitutions();
+  });
+
+  $('#clearFiltersBtn').on('click', function() {
+    $('#typeFilter').val('');
+    $('#statusFilter').val('');
+    $('#cityFilter').val('');
+    $('#searchQuery').val('');
+    currentFilters = {
+      type: '',
+      status: '',
+      city: '',
+      q: '',
+      page_size: $('#pageSizeSelect').val()
+    };
+    currentPage = 1;
+    fetchInstitutions();
+  });
+
+  function fetchInstitutions() {
+    let params = {
+      page: currentPage,
+      page_size: currentFilters.page_size
+    };
+    if (currentFilters.type) params.type = currentFilters.type;
+    if (currentFilters.status) params.status = currentFilters.status;
+    if (currentFilters.city) params.city = currentFilters.city;
+    if (currentFilters.q) params.q = currentFilters.q;
 
     $.ajax({
-      url: url,
+      url: '/api/institutions/',
       type: 'GET',
+      data: params,
       xhrFields: { withCredentials: true },
-      success: function(response) {
-        renderTable(response);
-        renderPagination(response);
+      success: function(res) {
+        renderTable(res);
+        renderPagination(res);
       },
       error: function(err) {
         console.error('Error fetching institutions:', err);
@@ -182,12 +240,21 @@ $(document).ready(function() {
       if (inst.status === 'pending') badgeClass = 'bg-warning-100 text-warning-600';
       else if (inst.status === 'suspended') badgeClass = 'bg-danger-100 text-danger-600';
 
+      let typeBadge = `<span class="badge bg-primary-100 text-primary-600 text-xs px-8 py-4 radius-4 fw-bold text-uppercase">${inst.type}</span>`;
+      if (inst.type === 'coaching') {
+        typeBadge = `<span class="badge bg-warning-100 text-warning-700 text-xs px-8 py-4 radius-4 fw-bold"><i class="ri-focus-2-line me-1"></i>COACHING</span>`;
+      } else if (inst.type === 'school') {
+        typeBadge = `<span class="badge bg-info-100 text-info-700 text-xs px-8 py-4 radius-4 fw-bold"><i class="ri-building-line me-1"></i>SCHOOL</span>`;
+      } else if (inst.type === 'college') {
+        typeBadge = `<span class="badge bg-purple-100 text-purple-700 text-xs px-8 py-4 radius-4 fw-bold"><i class="ri-graduation-cap-line me-1"></i>COLLEGE</span>`;
+      }
+
       tbody.append(`
         <tr>
           <td><span class="text-secondary-light fw-medium">${inst.id}</span></td>
           <td><h6 class="text-md mb-0 fw-semibold text-neutral-800">${inst.name}</h6></td>
-          <td><span class="text-uppercase text-sm fw-medium">${inst.type}</span></td>
-          <td>${inst.board_affiliation || '-'}</td>
+          <td>${typeBadge}</td>
+          <td><span class="text-sm text-neutral-700">${inst.board_affiliation || '-'}</span></td>
           <td>${inst.city}</td>
           <td>${inst.state}</td>
           <td><span class="px-16 py-4 radius-4 fw-medium text-sm ${badgeClass}">${inst.status.toUpperCase()}</span></td>

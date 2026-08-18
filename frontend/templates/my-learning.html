@@ -802,26 +802,30 @@
     </div>
 
 
-    <!-- STUDENT ID CARD, ADMIT CARDS & CERTIFICATES HUB -->
+    <!-- STUDENT ID CARD, ADMIT CARDS & CERTIFICATES HUB (SINGLE CARDS - ZERO INNER SCROLLING) -->
     <div class="row g-4 mb-5 align-items-stretch">
       
-      <!-- STUDENT ID CARD SECTION -->
+      <!-- 1. STUDENT ID CARD SECTION -->
       <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
-        <div class="hub-card-pro">
+        <div class="hub-card-pro shadow-sm h-100 d-flex flex-column">
           <div class="hub-card-header">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-              <small style="color: #fd7e14 !important; font-weight: 700; font-size: 11px;">{{ id_card.institution_name }}</small>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div class="d-flex align-items-center gap-1.5">
+                <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" style="height: 24px; object-fit: contain; filter: brightness(0) invert(1);">
+                <small style="color: #fd7e14 !important; font-weight: 700; font-size: 11px;">{{ id_card.institution_name }}</small>
+              </div>
               <span class="badge fw-bold" style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); color: #ffffff; font-size: 9.5px; padding: 4px 9px; border-radius: 6px; letter-spacing: 0.5px;">OFFICIAL ID</span>
             </div>
-            <h6 class="text-center mb-0 mt-1"><i class="fas fa-id-card me-1.5" style="color: #fd7e14;"></i> Student Identity Card</h6>
+            <h6 class="text-center mb-0"><i class="fas fa-id-card me-1.5" style="color: #fd7e14;"></i> Student Identity Card</h6>
           </div>
-          <div class="hub-card-body">
+          <div class="hub-card-body p-4 d-flex flex-column justify-content-between flex-grow-1">
             <div>
               <div class="text-center mb-3">
-                <div class="w-80-px h-80-px text-white rounded-circle d-flex align-items-center justify-content-center mx-auto fs-2 fw-bold shadow-sm" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border: 2.5px solid #fd7e14;">
-                  <i class="fas fa-user-graduate" style="color: #fd7e14;"></i>
+                <div style="width: 80px; height: 80px; min-width: 80px; min-height: 80px; max-width: 80px; max-height: 80px; border-radius: 50% !important; aspect-ratio: 1 / 1; margin: 0 auto; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border: 3px solid #fd7e14; box-shadow: 0 4px 14px rgba(249, 115, 22, 0.3); flex-shrink: 0;">
+                  <i class="fas fa-user-graduate fs-2" style="color: #fd7e14;"></i>
                 </div>
               </div>
+
               <h5 class="fw-bold text-dark text-center mb-1">{{ id_card.full_name }}</h5>
               <p class="text-muted small text-center mb-3"><i class="fas fa-envelope me-1" style="color: #ea580c;"></i> {{ id_card.email }}</p>
 
@@ -834,6 +838,10 @@
                   <span class="text-muted">Role:</span>
                   <strong class="text-dark">{{ id_card.role }}</strong>
                 </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Status:</span>
+                  <span class="badge bg-success-subtle text-success fw-bold px-2 py-0.5 rounded">Active Student</span>
+                </div>
                 <div class="d-flex justify-content-between mb-0">
                   <span class="text-muted">Joined Date:</span>
                   <strong class="text-dark">{{ id_card.joined_date|date:"d M Y" }}</strong>
@@ -841,98 +849,161 @@
               </div>
             </div>
 
-            <!-- Bottom Anchored Action Button -->
-            <div class="mt-auto pt-3 border-top w-100">
-              <button class="btn btn-brand-orange w-100" onclick="window.print()">
-                <i class="fas fa-print me-1.5"></i> Print Student ID Card
+            <!-- Bottom Action Button -->
+            <div class="pt-2 w-100">
+              <button class="btn btn-brand-orange w-100 py-2.5 shadow-sm" onclick="showStudentIdCardModal()">
+                <i class="fas fa-id-card me-1.5"></i> Print / Download ID Card
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- EXAM ADMIT CARDS SECTION -->
+      <!-- 2. EXAM ADMIT CARD SECTION (SINGLE CARD VIEW - NO SCROLL) -->
       <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
-        <div class="hub-card-pro">
+        <div class="hub-card-pro shadow-sm h-100 d-flex flex-column">
           <div class="hub-card-header">
-            <h6><i class="fas fa-ticket-alt me-2" style="color: #fd7e14;"></i> Exam Admit Cards</h6>
-            <small>Entrance Examination Roll & Entry Pass</small>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <small style="color: #fd7e14 !important; font-weight: 700; font-size: 11px;">EXAM PASS</small>
+              <span class="badge fw-bold" style="background: rgba(255,255,255,0.15); color: #fdba74; font-size: 9.5px; padding: 4px 8px; border-radius: 6px;">CBT ENTRANCE</span>
+            </div>
+            <h6 class="text-center mb-0 mt-1"><i class="fas fa-ticket-alt me-1.5" style="color: #fd7e14;"></i> Exam Admit Card</h6>
           </div>
-          <div class="hub-card-body">
+          <div class="hub-card-body p-4 d-flex flex-column justify-content-between flex-grow-1">
             {% if admit_cards_list %}
-              <div class="d-flex flex-column gap-3">
-                {% for admit in admit_cards_list %}
-                  <div class="p-3 bg-light rounded-3 border">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                      <strong class="text-dark small">{{ admit.exam_name }}</strong>
-                      <span class="badge text-white font-monospace" style="background: #0F172A; border: 1px solid #fd7e14; font-size: 11px;">{{ admit.roll_number }}</span>
+              {% with admit=admit_cards_list.0 %}
+                <div>
+                  {% if admit_cards_list|length > 1 %}
+                    <!-- Selector if student has multiple active entrance exams -->
+                    <div class="mb-2">
+                      <select class="form-select form-select-sm border-warning-subtle text-xs fw-bold" onchange="switchAdmitCard(this.value)">
+                        {% for a in admit_cards_list %}
+                          <option value="{{ forloop.counter0 }}">Exam: {{ a.exam_name }}</option>
+                        {% endfor %}
+                      </select>
                     </div>
-                    <div class="d-flex justify-content-between text-muted extra-small mb-2">
-                      <span><i class="fas fa-layer-group me-1" style="color: #ea580c;"></i> Class: {{ admit.class_group }}</span>
-                      <span><i class="far fa-clock me-1" style="color: #ea580c;"></i> {{ admit.duration_minutes }} Mins</span>
+                  {% endif %}
+
+                  <div id="activeAdmitCardBox">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <h6 class="fw-bold text-dark mb-1" id="admitExamName" style="line-height: 1.4;">{{ admit.exam_name }}</h6>
                     </div>
-                    <div class="small text-success fw-bold mb-3">
-                      <i class="fas fa-check-circle me-1"></i> Mode: CBT Online Exam
-                    </div>
-                    <div class="d-flex gap-2 pt-2 border-top">
-                      <button class="btn btn-sm btn-brand-orange flex-grow-1" onclick="showAdmitCardModal('{{ admit.exam_name|escapejs }}', '{{ admit.roll_number|escapejs }}', '{{ id_card.full_name|escapejs }}', '{{ admit.class_group|escapejs }}', '{{ admit.duration_minutes }}')">
-                        <i class="fas fa-file-download me-1"></i> Admit Card
-                      </button>
-                      <a href="{% url 'olympiad_entrance_attempt' admit.exam_id %}" class="btn btn-sm btn-brand-navy flex-grow-1 text-center">
-                        <i class="fas fa-play me-1"></i> Start Exam
-                      </a>
+
+                    <div class="p-3 bg-light rounded-3 border mb-3">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted"><i class="fas fa-id-badge text-primary me-1"></i> Roll No:</span>
+                        <span class="badge text-white font-monospace fs-6" style="background: #0F172A; border: 1.5px solid #fd7e14;" id="admitRollNo">{{ admit.roll_number }}</span>
+                      </div>
+                      <div class="d-flex justify-content-between text-muted small mb-2">
+                        <span><i class="fas fa-layer-group text-primary me-1"></i> Class Target:</span>
+                        <strong class="text-dark" id="admitClassGroup">{{ admit.class_group }}</strong>
+                      </div>
+                      <div class="d-flex justify-content-between text-muted small mb-2">
+                        <span><i class="far fa-clock text-primary me-1"></i> Duration:</span>
+                        <strong class="text-dark" id="admitDuration">{{ admit.duration_minutes }} Mins</strong>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <span class="small text-muted"><i class="fas fa-laptop-code text-success me-1"></i> Exam Mode:</span>
+                        <span class="badge bg-success text-white fw-bold">CBT Online Exam</span>
+                      </div>
                     </div>
                   </div>
-                {% endfor %}
-              </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex gap-2 pt-2 w-100">
+                  <button class="btn btn-brand-orange flex-grow-1 py-2.5 shadow-sm" id="btnDownloadAdmitCard" onclick="showAdmitCardModal('{{ admit.exam_name|escapejs }}', '{{ admit.roll_number|escapejs }}', '{{ id_card.full_name|escapejs }}', '{{ admit.class_group|escapejs }}', '{{ admit.duration_minutes }}')">
+                    <i class="fas fa-file-download me-1"></i> Admit Card
+                  </button>
+                  <a href="{{ admit.action_url }}" id="btnStartExamLink" class="btn btn-brand-navy flex-grow-1 py-2.5 text-center shadow-sm">
+                    <i class="fas fa-play me-1"></i> <span id="btnStartExamText">{{ admit.action_label }}</span>
+                  </a>
+                </div>
+              {% endwith %}
             {% else %}
-              <div class="text-center py-4 text-muted my-auto">
-                <i class="fas fa-ticket-alt fa-3x mb-2" style="color: #fd7e14;"></i>
-                <p class="small mb-2">No active Admit Cards found.</p>
+              <div class="text-center py-4 my-auto">
+                <div class="w-64-px h-64-px rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                  <i class="fas fa-check-circle fa-2x text-success"></i>
+                </div>
+                <h6 class="fw-bold text-dark mb-1">No Pending Exams</h6>
+                <p class="text-muted small mb-0">All registered entrance exams are completed.</p>
               </div>
-              <div class="mt-auto pt-3 border-top w-100">
-                <a href="/olympiad-entrance/" class="btn btn-brand-orange w-100 text-center">Enroll in Entrance Exam</a>
+              <div class="pt-2 w-100">
+                <a href="/olympiad-entrance/" class="btn btn-brand-orange w-100 py-2.5 text-center shadow-sm">
+                  <i class="fas fa-trophy me-1"></i> Explore New Exams
+                </a>
               </div>
             {% endif %}
           </div>
         </div>
       </div>
 
-      <!-- MY CERTIFICATES SECTION -->
+      <!-- 3. MY CERTIFICATES SECTION (SINGLE CARD VIEW - NO SCROLL) -->
       <div class="col-lg-4 col-md-12 mb-4 mb-lg-0">
-        <div class="hub-card-pro">
+        <div class="hub-card-pro shadow-sm h-100 d-flex flex-column">
           <div class="hub-card-header">
-            <h6><i class="fas fa-award me-2" style="color: #fd7e14;"></i> My Certificates</h6>
-            <small>Verified Academic & Merit Certificates</small>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <small style="color: #fd7e14 !important; font-weight: 700; font-size: 11px;">ACADEMIC MERIT</small>
+              <span class="badge fw-bold" style="background: rgba(255,255,255,0.15); color: #fdba74; font-size: 9.5px; padding: 4px 8px; border-radius: 6px;">VERIFIED</span>
+            </div>
+            <h6 class="text-center mb-0 mt-1"><i class="fas fa-award me-1.5" style="color: #fd7e14;"></i> My Certificate</h6>
           </div>
-          <div class="hub-card-body">
+          <div class="hub-card-body p-4 d-flex flex-column justify-content-between flex-grow-1">
             {% if certificates_list %}
-              <div class="d-flex flex-column gap-3">
-                {% for cert in certificates_list %}
-                  <div class="p-3 bg-light rounded-3 border" style="border-color: #ffedd5 !important;">
+              {% with cert=certificates_list.0 %}
+                <div>
+                  {% if certificates_list|length > 1 %}
+                    <!-- Selector if student has multiple earned certificates -->
+                    <div class="mb-2">
+                      <select class="form-select form-select-sm border-warning-subtle text-xs fw-bold" onchange="switchCertificate(this.value)">
+                        {% for c in certificates_list %}
+                          <option value="{{ forloop.counter0 }}">Certificate: {{ c.title }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% endif %}
+
+                  <div id="activeCertificateBox">
                     <div class="d-flex justify-content-between align-items-start mb-2">
-                      <strong class="text-dark small mb-0">{{ cert.title }}</strong>
-                      <span class="badge text-white" style="background: #10b981;">Score: {{ cert.score_pct|floatformat:0 }}%</span>
+                      <h6 class="fw-bold text-dark mb-1" id="certTitle" style="line-height: 1.4;">{{ cert.title }}</h6>
+                      <span class="badge text-white px-2.5 py-1" style="background: #10b981;" id="certScore">Score: {{ cert.score_pct|floatformat:0 }}%</span>
                     </div>
-                    <p class="text-muted extra-small mb-2"><i class="fas fa-medal me-1" style="color: #ea580c;"></i> {{ cert.award }}</p>
-                    <div class="p-2 bg-white rounded border text-muted extra-small font-monospace text-break mb-3">
-                      <i class="fas fa-shield-alt text-warning me-1"></i> ID: {{ cert.serial_no }}
-                    </div>
-                    <div class="pt-2 border-top">
-                      <a href="{{ cert.cert_url }}" target="_blank" class="btn btn-sm btn-brand-orange w-100 text-center">
-                        <i class="fas fa-download me-1.5"></i> Download Certificate (PDF)
-                      </a>
+
+                    <div class="p-3 bg-light rounded-3 border mb-3" style="border-color: #ffedd5 !important;">
+                      <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="fas fa-medal fs-4" style="color: #ea580c;"></i>
+                        <div>
+                          <span class="small text-muted d-block" style="font-size: 11px;">Award Recognition</span>
+                          <strong class="text-dark small" id="certAward">{{ cert.award }}</strong>
+                        </div>
+                      </div>
+
+                      <div class="p-2 bg-white rounded border text-muted extra-small font-monospace text-break">
+                        <i class="fas fa-shield-alt text-warning me-1"></i> <span id="certSerialNo">ID: {{ cert.serial_no }}</span>
+                      </div>
                     </div>
                   </div>
-                {% endfor %}
-              </div>
+                </div>
+
+                <!-- Download Certificate Action Button -->
+                <div class="pt-2 w-100">
+                  <a href="{{ cert.cert_url }}" target="_blank" id="btnDownloadCertLink" class="btn btn-brand-orange w-100 py-2.5 text-center shadow-sm">
+                    <i class="fas fa-download me-1.5"></i> Download Certificate (PDF)
+                  </a>
+                </div>
+              {% endwith %}
             {% else %}
-              <div class="text-center py-4 text-muted my-auto">
-                <i class="fas fa-certificate fa-3x mb-2" style="color: #fd7e14;"></i>
-                <p class="small mb-0">Complete an Olympiad Entrance Exam or Course to unlock your official Certificate.</p>
+              <div class="text-center py-4 my-auto">
+                <div class="w-64-px h-64-px rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                  <i class="fas fa-award fa-2x text-warning"></i>
+                </div>
+                <h6 class="fw-bold text-dark mb-1">No Certificates Earned Yet</h6>
+                <p class="text-muted small mb-0">Complete an Olympiad Entrance Exam or Course to unlock your official Certificate.</p>
               </div>
-              <div class="mt-auto pt-3 border-top w-100">
-                <a href="/olympiad-entrance/" class="btn btn-brand-navy w-100 text-center">Explore Entrance Exams</a>
+              <div class="pt-2 w-100">
+                <a href="/olympiad-entrance/" class="btn btn-brand-navy w-100 py-2.5 text-center shadow-sm">
+                  <i class="fas fa-trophy me-1"></i> Explore Entrance Exams
+                </a>
               </div>
             {% endif %}
           </div>
@@ -940,6 +1011,40 @@
       </div>
 
     </div>
+
+    <!-- Client-side Switcher for Multiple Admit Cards & Certificates -->
+    <script>
+      window.admitCardsData = {{ admit_cards_json|default:"[]"|safe }};
+      window.certificatesData = {{ certificates_json|default:"[]"|safe }};
+
+      function switchAdmitCard(index) {
+        if (window.admitCardsData && window.admitCardsData[index]) {
+          const item = window.admitCardsData[index];
+          document.getElementById('admitExamName').textContent = item.exam_name;
+          document.getElementById('admitRollNo').textContent = item.roll_number;
+          document.getElementById('admitClassGroup').textContent = item.class_group;
+          document.getElementById('admitDuration').textContent = item.duration_minutes + ' Mins';
+          const linkBtn = document.getElementById('btnStartExamLink');
+          if (linkBtn) {
+            linkBtn.href = item.action_url;
+            const textSpan = document.getElementById('btnStartExamText');
+            if (textSpan) textSpan.textContent = item.action_label;
+          }
+          document.getElementById('btnDownloadAdmitCard').setAttribute('onclick', `showAdmitCardModal('${item.exam_name}', '${item.roll_number}', '{{ id_card.full_name|escapejs }}', '${item.class_group}', '${item.duration_minutes}')`);
+        }
+      }
+
+      function switchCertificate(index) {
+        if (window.certificatesData && window.certificatesData[index]) {
+          const item = window.certificatesData[index];
+          document.getElementById('certTitle').textContent = item.title;
+          document.getElementById('certScore').textContent = 'Score: ' + Math.round(item.score_pct || 0) + '%';
+          document.getElementById('certAward').textContent = item.award;
+          document.getElementById('certSerialNo').textContent = 'ID: ' + item.serial_no;
+          document.getElementById('btnDownloadCertLink').href = item.cert_url;
+        }
+      }
+    </script>
 
 
     <!-- QUICK SHORTCUT RESOURCES GRID -->
@@ -985,6 +1090,167 @@
     console.log("EduAiQ B2B Student Dashboard Initialized.");
   });
 
+  // Isolated Single Card Print Engine (Prints ONLY the target ID Card or Admit Card)
+  function printSingleCard(elementId, docTitle) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    const printWindow = window.open('', '_blank', 'width=750,height=800');
+    printWindow.document.open();
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>${docTitle}</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="/static/admin_assets/css/lib/bootstrap.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <style>
+          body {
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+            color: #1e293b;
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+          }
+          .printable-box {
+            width: 100%;
+            max-width: 480px;
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2.5px solid #0f172a;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+          }
+          @media print {
+            body {
+              padding: 0;
+              margin: 0;
+              min-height: auto;
+            }
+            .printable-box {
+              box-shadow: none !important;
+              border: 2.5px solid #0f172a !important;
+              max-width: 100% !important;
+              page-break-inside: avoid;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="printable-box">
+          ${el.innerHTML}
+        </div>
+        <script>
+          window.onload = function() {
+            window.focus();
+            window.print();
+            setTimeout(function() { window.close(); }, 1500);
+          };
+        <\/script>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  }
+
+  // Student Official Identity Card Modal
+  function showStudentIdCardModal() {
+    const modalHTML = `
+      <div class="modal fade show" id="studentIdModal" tabindex="-1" style="display: block; background: rgba(15,23,42,0.85); backdrop-filter: blur(8px); z-index: 1080;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+          <div class="modal-content" style="border-radius: 20px; border: 2px solid #fd7e14; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.4);">
+            
+            <!-- Modal Header -->
+            <div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); color: #fff; padding: 14px 20px; position: relative; border-bottom: 3px solid #fd7e14;">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                  <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" style="height: 28px; filter: brightness(0) invert(1);">
+                  <span class="badge fw-bold" style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); color: #fff; font-size: 10px;">STUDENT ID PASS</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white" onclick="document.getElementById('studentIdModal').remove()"></button>
+              </div>
+            </div>
+
+            <!-- Printable ID Card Body -->
+            <div class="modal-body p-3.5" style="background: #ffffff;" id="printableIdCardArea">
+              
+              <!-- Card Top Brand Banner -->
+              <div class="p-3 text-center text-white rounded-3 mb-3" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-bottom: 3px solid #fd7e14;">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <small style="color: #fd7e14 !important; font-weight: 700; font-size: 11px;">{{ id_card.institution_name }}</small>
+                  <span class="badge fw-bold" style="background: #fd7e14; color: #fff; font-size: 9px; padding: 3px 8px; border-radius: 4px;">OFFICIAL ID CARD</span>
+                </div>
+                <h6 class="fw-bold mb-0 text-white"><i class="fas fa-university text-warning me-1.5"></i> EduAiQ Academic Network</h6>
+              </div>
+
+              <!-- Student Profile -->
+              <div class="text-center mb-3">
+                <div style="width: 80px; height: 80px; min-width: 80px; min-height: 80px; border-radius: 50% !important; aspect-ratio: 1/1; margin: 0 auto 10px auto; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border: 3px solid #fd7e14; box-shadow: 0 4px 12px rgba(249,115,22,0.25);">
+                  <i class="fas fa-user-graduate fs-2" style="color: #fd7e14;"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-0">{{ id_card.full_name }}</h5>
+                <p class="text-muted small mb-2">{{ id_card.email }}</p>
+                <span class="badge bg-success-subtle text-success fw-bold px-2.5 py-1 rounded-pill" style="font-size: 11px;">
+                  <i class="fas fa-check-circle me-1"></i> Verified & Active Student
+                </span>
+              </div>
+
+              <!-- Student Metadata Grid -->
+              <div class="p-3 bg-light rounded-3 border mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-muted small fw-semibold">Candidate Roll No:</span>
+                  <span class="font-monospace fw-bold fs-6" style="color: #ea580c;">{{ id_card.roll_number }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-muted small fw-semibold">Academic Role:</span>
+                  <strong class="text-dark small">{{ id_card.role }}</strong>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-muted small fw-semibold">Institution / Academy:</span>
+                  <strong class="text-dark small text-truncate" style="max-width: 220px;">{{ id_card.institution_name }}</strong>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="text-muted small fw-semibold">Date of Joining:</span>
+                  <strong class="text-dark small">{{ id_card.joined_date|date:"d M Y" }}</strong>
+                </div>
+              </div>
+
+              <!-- Barcode / QR Security Stamp -->
+              <div class="d-flex justify-content-between align-items-center pt-2 border-top extra-small text-muted">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fas fa-qrcode fs-3 text-dark"></i>
+                  <span class="font-monospace" style="font-size: 10px;">ID-SEC: {{ id_card.roll_number }} &bull; VERIFIED</span>
+                </div>
+                <div class="text-end font-monospace" style="font-size: 10px;">
+                  EduAiQ Registrar
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer bg-light p-2.5 d-flex justify-content-between align-items-center">
+              <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" onclick="document.getElementById('studentIdModal').remove()">Close</button>
+              <button type="button" class="btn btn-sm btn-brand-orange rounded-pill px-4 py-2 fw-bold shadow-sm" onclick="printSingleCard('printableIdCardArea', 'EduAiQ Official Student Identity Card')">
+                <i class="fas fa-print me-1.5"></i> Print / Download ID Card (PDF)
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+
+    let existing = document.getElementById('studentIdModal');
+    if (existing) existing.remove();
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+  }
+
+  // Examination Admit Card Modal
   function showAdmitCardModal(examName, rollNo, studentName, classGroup, duration) {
     const modalHTML = `
       <div class="modal fade show" id="admitCardModal" tabindex="-1" style="display: block; background: rgba(15,23,42,0.85); backdrop-filter: blur(8px); z-index: 1080;">
@@ -1079,7 +1345,7 @@
             <!-- Compact Footer -->
             <div class="modal-footer bg-light p-2.5 d-flex justify-content-between align-items-center">
               <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" onclick="document.getElementById('admitCardModal').remove()">Close</button>
-              <button type="button" class="btn btn-sm btn-brand-orange rounded-pill px-4 py-2 fw-bold shadow-sm" onclick="window.print()">
+              <button type="button" class="btn btn-sm btn-brand-orange rounded-pill px-4 py-2 fw-bold shadow-sm" onclick="printSingleCard('printableAdmitCard', 'EduAiQ Examination Admit Card - ${rollNo}')">
                 <i class="fas fa-print me-1.5"></i> Print / Download Admit Card (PDF)
               </button>
             </div>

@@ -30,11 +30,16 @@ urlpatterns = [
     path('modules/<int:pk>/', views.module_detail, name='module-detail'),
 
     # ========================================================================
-    # LESSONS
+    # LESSONS & ASSIGNMENTS
     # ========================================================================
     path('modules/<int:pk>/lessons/', views.lesson_list, name='lesson-list'),
     path('lessons/<int:pk>/', views.lesson_detail, name='lesson-detail'),
     path('lessons/<int:pk>/quiz/', views.lesson_quiz, name='lesson-quiz'),
+    path('lessons/<int:pk>/assignment/', views.lesson_assignment_detail, name='lesson-assignment-detail'),
+    path('lessons/<int:pk>/assignment/submit/', views.submit_assignment, name='lesson-assignment-submit'),
+    path('lessons/<int:pk>/assignment/skip/', views.skip_assignment, name='lesson-assignment-skip'),
+    path('courses/<slug:slug>/assignments/', views.course_assignments_summary, name='course-assignments-summary'),
+
 
     # ========================================================================
     # QUIZZES & QUESTIONS

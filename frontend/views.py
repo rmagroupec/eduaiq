@@ -159,9 +159,17 @@ def ai_books(request):
         status="in_review"
     ).order_by("-created_at")
 
+    accessible_book_ids = set()
+    user = request.user
+    if user.is_authenticated:
+        for book in featured_books:
+            if is_course_accessible_by_user(user, book) or (not book.price or book.price <= 0):
+                accessible_book_ids.add(book.id)
+
     return render(request, "ai-books.html", {
         'featured_books': featured_books,
         'coming_soon_books': coming_soon_books,
+        'accessible_book_ids': accessible_book_ids,
     })
 
 
@@ -268,17 +276,8 @@ def my_learning(request):
     for reg in entrance_registrations:
         attempt = OlympiadAttempt.objects.filter(registration=reg).first()
         reg.active_attempt = attempt
-        
-        # Admit card payload
-        admit_cards_list.append({
-            'exam_name': reg.olympiad.name,
-            'roll_number': reg.roll_number,
-            'registered_at': reg.registered_at,
-            'class_group': reg.olympiad.class_group,
-            'duration_minutes': reg.olympiad.exam_duration_minutes,
-            'exam_id': reg.olympiad.id,
-            'is_completed': bool(attempt and attempt.submitted_at),
-        })
+
+        is_completed = bool(attempt and attempt.submitted_at)
 
         if not attempt:
             reg.status_label = 'Not Started'
@@ -286,20 +285,29 @@ def my_learning(request):
             reg.action_label = 'Start Entrance Exam'
             reg.is_completed = False
             not_started_count += 1
+            admit_status = 'Ready to Start'
+            action_label = 'Start Exam'
+            action_url = f"/olympiad-entrance/{reg.olympiad.id}/attempt/"
         elif not attempt.submitted_at:
             reg.status_label = 'In Progress'
             reg.status_badge_class = 'bg-warning text-dark'
             reg.action_label = 'Resume Exam'
             reg.is_completed = False
             in_progress_count += 1
+            admit_status = 'In Progress'
+            action_label = 'Resume Exam'
+            action_url = f"/olympiad-entrance/{reg.olympiad.id}/attempt/"
         else:
             reg.status_label = 'Completed'
             reg.status_badge_class = 'bg-success text-white'
             reg.action_label = 'View Result / Status'
             reg.is_completed = True
             completed_count += 1
+            admit_status = 'Completed'
+            action_label = 'View Result'
+            action_url = f"/olympiad-entrance/{reg.olympiad.id}/result/"
             
-            # Certificate payload
+            # Certificate payload (Only for submitted/completed exams)
             pct = float(attempt.score_pct or 0)
             if pct >= 85.0:
                 award = "Gold Medal & 100% Scholarship"
@@ -319,6 +327,20 @@ def my_learning(request):
                 'award': award,
                 'score_pct': attempt.score_pct,
             })
+
+        # ALWAYS include in admit_cards_list so student always has their Admit Card / Hall Ticket available!
+        admit_cards_list.append({
+            'exam_name': reg.olympiad.name,
+            'roll_number': reg.roll_number,
+            'registered_at': reg.registered_at,
+            'class_group': reg.olympiad.class_group,
+            'duration_minutes': reg.olympiad.exam_duration_minutes,
+            'exam_id': reg.olympiad.id,
+            'status': admit_status,
+            'action_label': action_label,
+            'action_url': action_url,
+            'is_completed': is_completed,
+        })
 
     # Student ID Card Data
     from institutions.models import Student
@@ -414,6 +436,29 @@ def my_learning(request):
             'time_limit': quiz.time_limit_minutes,
         })
 
+    import json
+    admit_cards_json = json.dumps([
+        {
+            'exam_name': a['exam_name'],
+            'roll_number': a['roll_number'],
+            'class_group': a['class_group'],
+            'duration_minutes': a['duration_minutes'],
+            'exam_id': a['exam_id'],
+            'action_label': a['action_label'],
+            'action_url': a['action_url'],
+            'status': a['status'],
+        } for a in admit_cards_list
+    ])
+    certificates_json = json.dumps([
+        {
+            'title': c['title'],
+            'award': c['award'],
+            'serial_no': c['serial_no'],
+            'score_pct': float(c['score_pct'] or 0),
+            'cert_url': c['cert_url'],
+        } for c in certificates_list
+    ])
+
     return render(request, "my-learning.html", {
         'entrance_registrations': entrance_registrations,
         'total_entrance_count': len(entrance_registrations),
@@ -423,6 +468,8 @@ def my_learning(request):
         'id_card': id_card_data,
         'certificates_list': certificates_list,
         'admit_cards_list': admit_cards_list,
+        'admit_cards_json': admit_cards_json,
+        'certificates_json': certificates_json,
         'assigned_courses_data': assigned_courses_data,
         'assigned_books_data': assigned_books_data,
         'assigned_quizzes_data': assigned_quizzes_data,
@@ -616,6 +663,7 @@ def admin_page_router(request, page_name):
     # Superadmin-only pages restricted for Institution Admins
     superadmin_only_pages = [
         'users', 'add-new-institution', 'institution-list', 'edit-institution',
+        'coaching-list', 'add-coaching', 'coaching-batches',
         'categories', 'role-permission', 'assign-role', 'general', 'company',
         'notification-alert', 'payment-gateway', 'currencies', 'languages'
     ]

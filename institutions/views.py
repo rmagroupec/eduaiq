@@ -29,8 +29,8 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 
-from .forms import InstitutionForm, StudentForm
-from .models import Institution, Student
+from .forms import InstitutionForm, StudentForm, BatchForm
+from .models import Institution, Student, Batch
 
 
 # ============================================================================
@@ -53,6 +53,8 @@ def _body(request):
             data['user'] = data['user_id']
         if 'parent_user_id' in data and 'parent_user' not in data:
             data['parent_user'] = data['parent_user_id']
+        if 'batch_id' in data and 'batch' not in data:
+            data['batch'] = data['batch_id']
     return data
 
 
@@ -74,22 +76,11 @@ def _form_errors(form):
 
 
 def _bind_form_for_update(form_class, instance, request, body):
-    """
-    PUT  -> caller must send the full payload; form binds directly to `body`
-            exactly as before (unchanged behaviour).
-    PATCH -> true partial update. We merge `body` on top of the instance's
-            current values (via model_to_dict) so any field the client didn't
-            send is treated as "keep the existing value", not "missing/required".
-            File fields are excluded from the merge — request.FILES is passed
-            through separately, and Django's ModelForm already preserves an
-            existing file when no new one is submitted for that field.
-    """
     files = request.FILES or None
 
     if request.method == 'PUT':
         return form_class(body, files, instance=instance)
 
-    # PATCH: merge existing non-file field values under whatever the client sent
     file_field_names = {
         f.name for f in instance._meta.get_fields()
         if getattr(f, 'concrete', False) and f.get_internal_type() in ('FileField', 'ImageField')
@@ -98,39 +89,43 @@ def _bind_form_for_update(form_class, instance, request, body):
     existing = model_to_dict(instance, fields=mergeable_fields)
 
     merged = dict(existing)
-    merged.update(body)
+    for k, v in body.items():
+        if k in mergeable_fields:
+            merged[k] = v
 
     return form_class(merged, files, instance=instance)
 
 
-def _paginate(req, qs, serializer_fn, default_page_size=20, **serializer_kwargs):
-    """
-    NOTE: the first parameter is named `req`, not `request`, on purpose.
-    Some callers (e.g. student_list) also need to pass request=request
-    through **serializer_kwargs so the serializer can build absolute file
-    URLs. If this parameter were also named `request`, Python would raise
-    "got multiple values for argument 'request'" the moment both were
-    supplied — one positionally, one via the kwargs dict. Renaming this
-    parameter avoids the collision entirely; every call site is unaffected
-    since it's passed positionally (_paginate(request, qs, ...)).
-    """
+def _paginate(request, queryset, serializer_fn, default_page_size=20, **serializer_kwargs):
     try:
-        page = max(int(req.GET.get('page', 1)), 1)
-        page_size = min(max(int(req.GET.get('page_size', default_page_size)), 1), 100)
-    except ValueError:
-        page, page_size = 1, default_page_size
+        page_num = max(int(request.GET.get('page', 1)), 1)
+    except (ValueError, TypeError):
+        page_num = 1
 
-    count = qs.count()
-    total_pages = math.ceil(count / page_size) if count else 0
-    start = (page - 1) * page_size
-    results = qs[start:start + page_size]
+    try:
+        page_size = max(int(request.GET.get('page_size', default_page_size)), 1)
+    except (ValueError, TypeError):
+        page_size = default_page_size
 
+    total_items = queryset.count()
+    total_pages = math.ceil(total_items / page_size) if total_items > 0 else 1
+
+    if page_num > total_pages and total_items > 0:
+        page_num = total_pages
+
+    start = (page_num - 1) * page_size
+    end = start + page_size
+    page_qs = queryset[start:end]
+
+    results = [serializer_fn(item, **serializer_kwargs) for item in page_qs]
     return {
-        'count': count,
-        'page': page,
+        'count': total_items,
+        'page': page_num,
         'page_size': page_size,
         'total_pages': total_pages,
-        'results': [serializer_fn(obj, **serializer_kwargs) for obj in results],
+        'has_next': page_num < total_pages,
+        'has_previous': page_num > 1,
+        'results': results,
     }
 
 
@@ -139,16 +134,16 @@ def _paginate(req, qs, serializer_fn, default_page_size=20, **serializer_kwargs)
 # ----------------------------------------------------------------------------
 
 def _can_manage_institution(user, institution):
-    """Staff, or the Institution's own admin_user — nobody else."""
     if not user.is_authenticated:
         return False
     if _is_staff(user):
         return True
-    return institution.admin_user_id == user.id
+    if institution.admin_user_id and institution.admin_user_id == user.id:
+        return True
+    return False
 
 
 def _can_view_student_sensitive(user, student):
-    """Staff, the student's own Institution Admin, the student, or the linked parent."""
     if not user.is_authenticated:
         return False
     if _is_staff(user):
@@ -163,13 +158,28 @@ def _can_view_student_sensitive(user, student):
 
 
 def _can_manage_student(user, student):
-    """Same rule as sensitive-view, minus the student themself editing admin fields freely."""
     return _can_view_student_sensitive(user, student)
 
 
 # ----------------------------------------------------------------------------
 # Serializers
 # ----------------------------------------------------------------------------
+
+def serialize_batch(b):
+    return {
+        'id': b.id,
+        'institution_id': b.institution_id,
+        'institution_name': b.institution.name if b.institution_id else None,
+        'name': b.name,
+        'code': b.code,
+        'target_exam': b.target_exam,
+        'start_date': b.start_date.isoformat() if b.start_date else None,
+        'end_date': b.end_date.isoformat() if b.end_date else None,
+        'is_active': b.is_active,
+        'total_students': b.students.count(),
+        'created_at': b.created_at.isoformat() if b.created_at else None,
+    }
+
 
 def serialize_institution(inst, detailed=False):
     data = {
@@ -191,6 +201,8 @@ def serialize_institution(inst, detailed=False):
             } if inst.admin_user else None,
             'onboarded_by_partner_id': inst.onboarded_by_partner_id,
             'total_students': inst.students.count(),
+            'total_batches': inst.batches.count(),
+            'batches': [serialize_batch(b) for b in inst.batches.all()],
             'created_at': inst.created_at.isoformat() if inst.created_at else None,
             'allotted_course_ids': list(inst.allowed_courses.values_list('id', flat=True)),
             'allotted_category_ids': list(inst.allowed_categories.values_list('id', flat=True)),
@@ -199,12 +211,13 @@ def serialize_institution(inst, detailed=False):
 
 
 def serialize_student_public(s):
-    """Safe view for anyone who is NOT staff/self/parent/owning-institution-admin."""
     return {
         'id': s.id,
         'student_name': s.user.get_full_name() if s.user_id else None,
         'institution_id': s.institution_id,
         'institution_name': s.institution.name if s.institution_id else None,
+        'batch_id': s.batch_id,
+        'batch_name': s.batch.name if s.batch_id else None,
         'class_grade': s.class_grade,
         'section': s.section,
         'academic_year': s.academic_year,
@@ -214,13 +227,14 @@ def serialize_student_public(s):
 
 
 def serialize_student_full(s, request=None):
-    """Full view including sensitive fields — only ever called after a permission check."""
     return {
         'id': s.id,
         'user_id': s.user_id,
         'student_name': s.user.get_full_name() if s.user_id else None,
         'institution_id': s.institution_id,
         'institution_name': s.institution.name if s.institution_id else None,
+        'batch_id': s.batch_id,
+        'batch_name': s.batch.name if s.batch_id else None,
         'admission_no': s.admission_no,
         'roll_number': s.roll_number,
         'class_grade': s.class_grade,
@@ -257,7 +271,6 @@ def serialize_student_full(s, request=None):
 
 
 def serialize_student(s, viewer=None, request=None):
-    """Picks full vs public serialization based on who's asking."""
     if viewer is not None and _can_view_student_sensitive(viewer, s):
         return serialize_student_full(s, request=request)
     return serialize_student_public(s)
@@ -579,8 +592,15 @@ def create_institution_student(request):
         if inst_id:
             inst = Institution.objects.filter(id=inst_id).first()
 
-    if not inst:
-        inst = Institution.objects.first()
+    batch_id = data.get('batch') or data.get('batch_id')
+    batch_obj = None
+    if batch_id:
+        try:
+            batch_obj = Batch.objects.get(id=int(batch_id))
+            if not inst:
+                inst = batch_obj.institution
+        except (ValueError, TypeError, ObjectDoesNotExist):
+            batch_obj = None
 
     try:
         # Create User
@@ -598,6 +618,7 @@ def create_institution_student(request):
         student = Student.objects.create(
             user=user,
             institution=inst,
+            batch=batch_obj,
             admission_no=admission_no,
             class_grade=class_grade,
             section=section,
@@ -624,7 +645,8 @@ def create_institution_student(request):
             'success': True,
             'message': 'Student account created and enrolled successfully!',
             'student_username': username,
-            'enrolled_courses': enrolled_courses
+            'enrolled_courses': enrolled_courses,
+            'batch_name': batch_obj.name if batch_obj else None
         })
 
     except Exception as e:
@@ -655,3 +677,76 @@ def institution_allot_courses(request, pk):
         'message': f'Updated allotted courses for {inst.name}',
         'allotted_course_ids': list(inst.allowed_courses.values_list('id', flat=True))
     })
+
+
+# ============================================================================
+# BATCHES (COACHING & INSTITUTION)
+# ============================================================================
+
+@csrf_exempt
+@require_http_methods(['GET', 'POST'])
+def batch_list_create(request, institution_pk=None):
+    if request.method == 'GET':
+        qs = Batch.objects.all().order_by('-created_at')
+        if institution_pk:
+            qs = qs.filter(institution_id=institution_pk)
+        elif request.GET.get('institution'):
+            qs = qs.filter(institution_id=request.GET.get('institution'))
+        
+        target = request.GET.get('target_exam')
+        if target:
+            qs = qs.filter(target_exam__icontains=target)
+        
+        payload = _paginate(request, qs, serialize_batch, default_page_size=50)
+        return JsonResponse(payload)
+
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Authentication required'}, status=401)
+
+    body = _body(request)
+    if institution_pk and 'institution' not in body:
+        body['institution'] = institution_pk
+
+    inst_id = body.get('institution')
+    if not inst_id:
+        return JsonResponse({'success': False, 'error': 'Institution is required.'}, status=400)
+
+    try:
+        inst = Institution.objects.get(pk=inst_id)
+    except ObjectDoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Institution not found.'}, status=404)
+
+    if not _can_manage_institution(request.user, inst):
+        return JsonResponse({'error': 'Forbidden'}, status=403)
+
+    form = BatchForm(body)
+    if form.is_valid():
+        batch = form.save()
+        return JsonResponse({'success': True, 'batch': serialize_batch(batch)}, status=201)
+    return JsonResponse({'success': False, 'errors': _form_errors(form)}, status=400)
+
+
+@csrf_exempt
+@require_http_methods(['GET', 'PUT', 'PATCH', 'DELETE'])
+def batch_detail(request, pk):
+    try:
+        batch = Batch.objects.get(pk=pk)
+    except ObjectDoesNotExist:
+        return JsonResponse({'error': 'Batch not found'}, status=404)
+
+    if request.method == 'GET':
+        return JsonResponse({'batch': serialize_batch(batch)})
+
+    if not _can_manage_institution(request.user, batch.institution):
+        return JsonResponse({'error': 'Forbidden'}, status=403)
+
+    if request.method == 'DELETE':
+        batch.delete()
+        return JsonResponse({'success': True})
+
+    body = _body(request)
+    form = _bind_form_for_update(BatchForm, batch, request, body)
+    if form.is_valid():
+        batch = form.save()
+        return JsonResponse({'success': True, 'batch': serialize_batch(batch)})
+    return JsonResponse({'success': False, 'errors': _form_errors(form)}, status=400)

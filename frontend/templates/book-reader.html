@@ -4,7 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ book.title }} — EduAiQ Interactive Reader</title>
+    <title>{{ book.title }} — EduAiQ 3D Interactive Reader</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'assets/img/favicon.png' %}" type="image/x-icon">
 
     <!-- FontAwesome & RemixIcons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,48 +15,51 @@
     <link rel="stylesheet" href="{% static 'admin_assets/css/lib/bootstrap.min.css' %}">
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- PDF.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
+    <!-- Page-Flip (StPageFlip) 3D Library CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
+
     <style>
         :root {
-            --bg-color: #f1f5f9;
-            --surface-bg: #ffffff;
-            --text-color: #0f172a;
-            --muted-text: #64748b;
-            --border-color: #e2e8f0;
-            --accent-color: #f97316;
-            --accent-gradient: linear-gradient(135deg, #f6a055 0%, #f97316 100%);
-            --toolbar-bg: #0f172a;
+            /* Brand EduAiQ Logo Colors */
+            --eduaiq-navy: #0F172A;
+            --eduaiq-navy-dark: #090D16;
+            --eduaiq-navy-light: #1E293B;
+            --eduaiq-orange: #f97316;
+            --eduaiq-orange-dark: #ea580c;
+            --eduaiq-orange-light: #fdba74;
+            --eduaiq-gradient: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            --eduaiq-navy-gradient: radial-gradient(circle at center, #1e293b 0%, #090d16 100%);
+            
+            --toolbar-bg: rgba(15, 23, 42, 0.96);
+            --toolbar-border: rgba(249, 115, 22, 0.2);
             --toolbar-text: #f8fafc;
-            --paper-bg: #ffffff;
-            --paper-shadow: 0 20px 50px rgba(15, 23, 42, 0.16);
-            --paper-border: #e2e8f0;
-        }
-
-        /* Reading Themes */
-        [data-theme="dark"] {
-            --bg-color: #090d16;
-            --surface-bg: #131b2e;
-            --text-color: #e2e8f0;
-            --muted-text: #94a3b8;
-            --border-color: #1e293b;
-            --paper-bg: #151d30;
-            --paper-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
-            --paper-border: #26334d;
+            
+            --book-page-bg: #ffffff;
+            --book-page-text: #0f172a;
+            --book-page-border: #e2e8f0;
+            --book-outer-border: rgba(249, 115, 22, 0.3);
+            --book-outer-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
         }
 
         [data-theme="sepia"] {
-            --bg-color: #f7eedb;
-            --surface-bg: #efe2c8;
-            --text-color: #3b2c1a;
-            --muted-text: #78644c;
-            --border-color: #e2d2b4;
-            --paper-bg: #fcf6ea;
-            --paper-shadow: 0 20px 40px rgba(59, 44, 26, 0.12);
-            --paper-border: #e6d7bc;
+            --eduaiq-navy-gradient: radial-gradient(circle at center, #3d3429 0%, #1f1a14 100%);
+            --book-page-bg: #fcf8f0;
+            --book-page-text: #3b2c1a;
+            --book-page-border: #e6d7bc;
+            --book-outer-border: rgba(234, 88, 12, 0.3);
+        }
+
+        [data-theme="dark"] {
+            --eduaiq-navy-gradient: radial-gradient(circle at center, #0f172a 0%, #030712 100%);
+            --book-page-bg: #1e293b;
+            --book-page-text: #f8fafc;
+            --book-page-border: #334155;
+            --book-outer-border: rgba(249, 115, 22, 0.4);
         }
 
         * {
@@ -64,93 +70,220 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background: var(--eduaiq-navy-gradient);
+            color: #f8fafc;
             height: 100vh;
+            width: 100vw;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        /* Reader Top Navigation Bar */
+        /* Top Bar - Styled in EduAiQ Navy & Orange */
         .reader-navbar {
             background: var(--toolbar-bg);
-            color: var(--toolbar-text);
-            height: 64px;
-            padding: 0 24px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1.5px solid var(--toolbar-border);
+            height: 62px;
+            padding: 0 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
             flex-shrink: 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .book-identity {
             display: flex;
             align-items: center;
-            gap: 16px;
-            max-width: 380px;
+            gap: 12px;
+        }
+
+        .header-logo-brand {
+            height: 32px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
 
         .back-btn {
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff !important;
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff !important;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 8px 16px;
-            border-radius: 10px;
+            padding: 6px 14px;
+            border-radius: 8px;
             font-size: 13px;
             font-weight: 700;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             transition: all 0.2s ease;
         }
 
         .back-btn:hover {
-            background: var(--accent-gradient);
+            background: var(--eduaiq-gradient);
             border-color: transparent;
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
             transform: translateY(-1px);
         }
 
-        .book-info-text h1 {
-            font-size: 15px;
+        .book-title-heading {
+            font-size: 14px;
             font-weight: 800;
-            margin: 0;
+            color: #ffffff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            color: #ffffff;
-            letter-spacing: -0.01em;
-            text-transform: capitalize;
+            margin: 0;
+            max-width: 220px;
         }
 
-        .book-info-text span {
+        .book-author-sub {
             font-size: 11px;
-            color: #a78bfa;
-            font-weight: 600;
+            color: #fdba74;
             display: block;
         }
 
-        /* Center Page Navigation */
-        .page-controls {
+        /* Top Center Controls & Voice Status (Zero Book Overlap!) */
+        .top-center-section {
             display: flex;
             align-items: center;
             gap: 10px;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-            padding: 5px 14px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
-        .nav-icon-btn {
-            background: transparent;
-            border: none;
+        .top-center-badge {
+            font-size: 13px;
+            font-weight: 700;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            padding: 5px 16px;
+            border-radius: 20px;
+        }
+
+        .top-center-badge input {
+            width: 44px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(249, 115, 22, 0.4);
+            color: #ffffff;
+            text-align: center;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 2px 4px;
+            outline: none;
+        }
+
+        /* Navbar Integrated Voice Status Badge */
+        .tts-nav-status {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            background: rgba(249, 115, 22, 0.18);
+            border: 1.5px solid #f97316;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #fdba74;
+        }
+
+        .tts-wave-anim {
+            display: inline-flex;
+            align-items: center;
+            gap: 2.5px;
+            height: 12px;
+        }
+
+        .tts-wave-bar {
+            width: 2.5px;
+            height: 100%;
+            background: #f97316;
+            border-radius: 2px;
+            animation: wave 1s infinite ease-in-out;
+        }
+
+        .tts-wave-bar:nth-child(2) { animation-delay: 0.2s; }
+        .tts-wave-bar:nth-child(3) { animation-delay: 0.4s; }
+        .tts-wave-bar:nth-child(4) { animation-delay: 0.6s; }
+
+        @keyframes wave {
+            0%, 100% { height: 3px; }
+            50% { height: 12px; }
+        }
+
+        /* Right Actions */
+        .right-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Crystal-Clear Female AI Voice Reader Button */
+        .voice-pill-btn {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            color: #ffffff !important;
+            padding: 7px 18px;
+            border-radius: 24px;
+            font-size: 12.5px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 14px rgba(249, 115, 22, 0.45);
+        }
+
+        .voice-pill-btn:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 6px 20px rgba(234, 88, 12, 0.65);
+        }
+
+        .voice-pill-btn.speaking {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+            border: 1.5px solid #f97316 !important;
+            color: #fdba74 !important;
+            box-shadow: 0 0 16px rgba(249, 115, 22, 0.7);
+            animation: pulse-orange 1.5s infinite;
+        }
+
+        .action-pill {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .action-pill:hover {
+            background: rgba(249, 115, 22, 0.2);
+            border-color: #f97316;
+            color: #fdba74;
+        }
+
+        .action-pill.active {
+            background: rgba(249, 115, 22, 0.25);
+            border-color: #f97316;
+            color: #fdba74;
+        }
+
+        .ctrl-icon-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: #ffffff;
             width: 34px;
             height: 34px;
@@ -160,664 +293,608 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-size: 14px;
-        }
-
-        .nav-icon-btn:hover:not(:disabled) {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
-        }
-
-        .nav-icon-btn:disabled {
-            opacity: 0.35;
-            cursor: not-allowed;
-        }
-
-        .page-counter-box {
             font-size: 13px;
-            font-weight: 600;
-            color: #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        .page-counter-box input {
-            width: 50px;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            font-size: 13px;
-            padding: 4px;
-            font-weight: 800;
-            outline: none;
+        .ctrl-icon-btn:hover {
+            background: var(--eduaiq-gradient);
+            border-color: transparent;
+            color: #ffffff;
         }
 
-        /* Right Actions Toolbar */
-        .toolbar-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .theme-select-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #fff;
-            padding: 7px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            transition: all 0.2s ease;
-        }
-
-        .theme-select-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Main Reader Stage */
-        .reader-body {
+        /* Main Workspace Layout */
+        .reader-workspace {
             flex-grow: 1;
             display: flex;
             position: relative;
             overflow: hidden;
         }
 
-        /* Sidebar Outline / Contents */
-        .reader-sidebar {
-            width: 320px;
-            background: var(--surface-bg);
-            border-right: 1px solid var(--border-color);
+        /* Left Side Pages Thumbnails Strip in Brand Navy */
+        .pages-sidebar {
+            width: 220px;
+            background: var(--eduaiq-navy);
+            border-right: 1.5px solid var(--toolbar-border);
             display: flex;
             flex-direction: column;
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 100;
+            z-index: 80;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             flex-shrink: 0;
-            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
         }
 
-        .reader-sidebar.collapsed {
-            transform: translateX(-100%);
-            margin-right: -320px;
+        .pages-sidebar.collapsed {
+            width: 0;
+            overflow: hidden;
+            border-right: none;
         }
 
-        .sidebar-header {
-            padding: 18px 22px;
-            border-bottom: 1px solid var(--border-color);
-            font-weight: 800;
-            font-size: 14px;
+        .pages-sidebar-header {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            color: var(--text-color);
+            font-size: 11.5px;
+            font-weight: 800;
+            color: #fdba74;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .sidebar-contents {
+        .pages-thumb-list {
             flex-grow: 1;
             overflow-y: auto;
-            padding: 16px;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            align-content: start;
         }
 
-        .toc-item {
-            padding: 12px 16px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 600;
+        .thumb-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 5px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 6px;
-            color: var(--text-color);
-            text-decoration: none;
-            border: 1px solid transparent;
             transition: all 0.2s ease;
+            text-align: center;
         }
 
-        .toc-item:hover, .toc-item.active {
-            background: rgba(124, 58, 237, 0.1);
-            border-color: rgba(124, 58, 237, 0.2);
-            color: var(--accent-color);
-            font-weight: 700;
+        .thumb-item:hover {
+            border-color: #f97316;
+            background: rgba(249, 115, 22, 0.15);
+            transform: translateY(-2px);
         }
 
-        /* Page Viewport Area */
-        .viewport-area {
-            flex-grow: 1;
-            overflow: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px 24px;
-            position: relative;
-            background-color: var(--bg-color);
+        .thumb-item.active {
+            border-color: #f97316;
+            background: rgba(249, 115, 22, 0.25);
+            box-shadow: 0 0 10px rgba(249, 115, 22, 0.4);
         }
 
-        /* Floating Page Turn Arrows */
-        .floating-page-arrow {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: var(--surface-bg);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        .thumb-preview-box {
+            width: 100%;
+            height: 90px;
+            background: #ffffff;
+            border-radius: 4px;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 4px;
+        }
+
+        .thumb-preview-box canvas, .thumb-preview-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .thumb-label {
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #cbd5e1;
+        }
+
+        /* Center Open Book 2-Page Spread Area (100% CLEAN - ZERO OVERLAY) */
+        .flipbook-stage {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 16px 20px 75px 20px;
+        }
+
+        /* Elegant Proportional Open Book Frame with Interactive 3D Hover Effect */
+        .flipbook-wrap {
+            position: relative;
+            border-radius: 8px;
+            background-color: transparent;
+            overflow: hidden;
+            border: 1px solid var(--book-outer-border);
+            box-shadow: var(--book-outer-shadow);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+        }
+
+        .flipbook-wrap:hover {
+            transform: translateY(-4px) scale(1.008);
+            box-shadow: 0 24px 55px rgba(0, 0, 0, 0.55), 0 0 20px rgba(249, 115, 22, 0.18);
+            border-color: rgba(249, 115, 22, 0.5);
+        }
+
+        /* EduAiQ Orange Ribbon Bookmark with Hover Animation */
+        .ribbon-bookmark {
+            position: absolute;
+            top: -10px;
+            right: 60px;
+            width: 22px;
+            height: 52px;
+            background: var(--eduaiq-gradient);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            z-index: 99;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
+            transition: transform 0.25s ease, filter 0.25s ease;
             cursor: pointer;
-            z-index: 90;
-            transition: all 0.2s ease;
+        }
+
+        .ribbon-bookmark:hover {
+            transform: translateY(4px);
+            filter: brightness(1.15);
+        }
+
+        #flipBook {
+            display: none;
+            background-color: transparent;
+        }
+
+        /* Pure Crisp High-Definition Pages */
+        .page {
+            background-color: var(--book-page-bg) !important;
+            color: var(--book-page-text) !important;
+            border: 1px solid var(--book-page-border) !important;
+            overflow: hidden !important;
+            box-shadow: none !important;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            cursor: grab;
+            transition: filter 0.2s ease;
+        }
+
+        .page:active {
+            cursor: grabbing;
+        }
+
+        .page::before, .page::after {
+            display: none !important;
+            box-shadow: none !important;
+            background: none !important;
+        }
+
+        .stf__wrapper {
+            box-shadow: none !important;
+            background: transparent !important;
+            overflow: hidden !important;
+        }
+
+        .stf__parent {
+            box-shadow: none !important;
+            overflow: hidden !important;
+        }
+
+        .page-content {
+            width: 100%;
+            height: 100%;
+            padding: 30px 26px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Crimson Pro', Georgia, serif;
             font-size: 16px;
+            line-height: 1.6;
+            background-color: var(--book-page-bg);
         }
 
-        .floating-page-arrow:hover:not(:disabled) {
-            background: var(--accent-color);
+        .page-canvas {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain;
+            display: block;
+            background-color: #ffffff;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+
+        /* Floating Nav Arrows in EduAiQ Colors */
+        .arrow-nav {
+            position: absolute;
+            top: 48%;
+            transform: translateY(-50%);
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--eduaiq-navy);
+            border: 1.5px solid rgba(249, 115, 22, 0.35);
             color: #ffffff;
-            transform: translateY(-50%) scale(1.1);
-            box-shadow: 0 12px 30px rgba(124, 58, 237, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 50;
+            backdrop-filter: blur(8px);
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
         }
 
-        .floating-page-arrow:disabled {
+        .arrow-nav:hover:not(:disabled) {
+            background: var(--eduaiq-gradient);
+            border-color: transparent;
+            transform: translateY(-50%) scale(1.1);
+            color: #ffffff;
+        }
+
+        .arrow-nav:disabled {
             opacity: 0.2;
             cursor: not-allowed;
         }
 
-        .arrow-left { left: 24px; }
-        .arrow-right { right: 24px; }
+        .arrow-left { left: 16px; }
+        .arrow-right { right: 16px; }
 
-        /* Digital Book Canvas Container */
-        .paper-container {
-            background-color: var(--paper-bg);
-            box-shadow: var(--paper-shadow);
-            border: 1px solid var(--paper-border);
-            border-radius: 8px;
-            position: relative;
-            margin: 0 auto;
-            transition: all 0.2s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 500px;
-        }
-
-        #pdfCanvas {
-            display: block;
-            max-width: 100%;
-            height: auto;
-            border-radius: 6px;
-        }
-
-        /* Digital Ebook Book Showcase & Reading View */
-        .ebook-paper-document {
-            max-width: 820px;
-            width: 100%;
-            background: var(--paper-bg);
-            border: 1px solid var(--paper-border);
-            box-shadow: var(--paper-shadow);
-            border-radius: 16px;
-            padding: 55px 65px;
-            color: var(--text-color);
-            transition: all 0.3s ease;
-        }
-
-        /* Book Cover Header inside Paper */
-        .book-cover-header {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            padding-bottom: 35px;
-            margin-bottom: 40px;
-            border-bottom: 2px dashed var(--border-color);
-        }
-
-        .cover-thumbnail-box {
-            width: 150px;
-            height: 200px;
-            flex-shrink: 0;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
-            background: #f1f5f9;
-        }
-
-        .cover-thumbnail-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .cover-details-box {
-            flex-grow: 1;
-        }
-
-        .cover-category-badge {
-            display: inline-block;
-            background: rgba(124, 58, 237, 0.12);
-            color: var(--accent-color);
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            padding: 5px 12px;
-            border-radius: 20px;
-            margin-bottom: 12px;
-        }
-
-        .cover-book-title {
-            font-family: 'Cinzel', serif;
-            font-size: 2.2rem;
-            font-weight: 800;
-            line-height: 1.25;
-            color: var(--text-color);
-            margin-bottom: 10px;
-            text-transform: capitalize;
-        }
-
-        .cover-author-text {
-            font-size: 1rem;
-            color: var(--muted-text);
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-
-        .cover-meta-stats {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            font-size: 0.85rem;
-            color: var(--muted-text);
-            margin-bottom: 14px;
-        }
-
-        /* Chapter Text Article Styling */
-        .chapter-article-content {
-            font-family: 'Merriweather', serif;
-            line-height: 1.9;
-            font-size: 1.08rem;
-            color: var(--text-color);
-        }
-
-        .chapter-article-content p {
-            margin-bottom: 22px;
-        }
-
-        .chapter-section-card {
-            background: rgba(124, 58, 237, 0.04);
-            border-left: 4px solid var(--accent-color);
-            border-radius: 0 10px 10px 0;
-            padding: 24px;
-            margin-bottom: 30px;
-        }
-
-        .chapter-section-card h4 {
-            font-family: 'Inter', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-color);
-            margin-bottom: 8px;
-        }
-
-        /* Access Warning Card - Unique EduAiQ Logo Redesign */
-        .access-restricted-card {
-            max-width: 560px;
-            margin: 60px auto;
-            text-align: center;
-            background: var(--surface-bg);
-            padding: 48px 40px;
-            border-radius: 24px;
-            box-shadow: 0 25px 60px rgba(15, 23, 42, 0.12);
-            border: 1px solid rgba(226, 232, 240, 0.9);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .access-restricted-card::before {
-            content: '';
+        /* Loader Overlay */
+        .loader-overlay {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            height: 6px;
-            background: linear-gradient(90deg, #f6a055 0%, #f97316 50%, #1e293b 100%);
-        }
-
-        .access-icon-wrapper {
-            width: 84px;
-            height: 84px;
-            margin: 0 auto 22px auto;
-            border-radius: 50%;
-            background: rgba(249, 115, 22, 0.12);
-            border: 2px solid rgba(249, 115, 22, 0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 25px rgba(249, 115, 22, 0.2);
-            transition: transform 0.4s ease;
-        }
-
-        .access-restricted-card:hover .access-icon-wrapper {
-            transform: scale(1.08) rotate(5deg);
-        }
-
-        .access-icon-wrapper i {
-            font-size: 38px;
-            color: #f97316;
-            margin: 0;
-        }
-
-        .access-title {
-            font-size: 26px;
-            font-weight: 800;
-            color: #1e293b;
-            margin-bottom: 12px;
-            letter-spacing: -0.5px;
-        }
-
-        .access-desc {
-            font-size: 14.5px;
-            color: #475569;
-            line-height: 1.6;
-            margin-bottom: 30px;
-            max-width: 460px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .btn-access-login-pill {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 15px;
-            font-weight: 800;
-            color: #1e293b !important;
-            background: linear-gradient(135deg, #f6a055 0%, #f97316 100%) !important;
-            border: 2px solid #1e293b !important;
-            padding: 13px 28px !important;
-            border-radius: 50px !important;
-            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.35) !important;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-            text-decoration: none !important;
-        }
-
-        .btn-access-login-pill:hover {
-            background: #1e293b !important;
-            color: #f6a055 !important;
-            border-color: #f97316 !important;
-            box-shadow: 0 10px 25px rgba(30, 41, 59, 0.4) !important;
-            transform: translateY(-3px) scale(1.02) !important;
-        }
-
-        .btn-access-browse-pill {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 15px;
-            font-weight: 700;
-            color: #1e293b !important;
-            background: transparent !important;
-            border: 2px solid #1e293b !important;
-            padding: 13px 28px !important;
-            border-radius: 50px !important;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-            text-decoration: none !important;
-        }
-
-        .btn-access-browse-pill:hover {
-            background: #1e293b !important;
-            color: #ffffff !important;
-            box-shadow: 0 8px 20px rgba(30, 41, 59, 0.25) !important;
-            transform: translateY(-3px) scale(1.02) !important;
-        }
-
-        .access-badge-footer {
-            margin-top: 28px;
-            padding-top: 20px;
-            border-top: 1px dashed #cbd5e1;
-            font-size: 12px;
-            font-weight: 700;
-            color: #64748b;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        /* Progress Bar */
-        .reading-progress-bar {
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
             width: 100%;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            z-index: 1001;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.94);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: opacity 0.3s ease;
         }
 
-        .reading-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #7c3aed 0%, #4f46e5 100%);
-            width: 0%;
-            transition: width 0.3s ease;
+        .spinner-ring {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(249, 115, 22, 0.2);
+            border-top-color: #f97316;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 14px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Bottom Floating Play & Navigation Control Bar in EduAiQ Navy & Orange */
+        .bottom-control-dock {
+            position: absolute;
+            bottom: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--eduaiq-navy);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1.5px solid rgba(249, 115, 22, 0.35);
+            border-radius: 40px;
+            padding: 6px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 120;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .dock-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12.5px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dock-btn:hover:not(:disabled) {
+            background: rgba(249, 115, 22, 0.2);
+            border-color: #f97316;
+            color: #fdba74;
+            transform: translateY(-1px);
+        }
+
+        .dock-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Centered Play Button (Initial State: EduAiQ Gradient) */
+        .btn-main-play {
+            background: var(--eduaiq-gradient);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff !important;
+            padding: 8px 22px;
+            border-radius: 30px;
+            font-size: 13.5px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 18px rgba(249, 115, 22, 0.5);
+            transition: all 0.25s ease;
+        }
+
+        .btn-main-play:hover {
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 6px 22px rgba(234, 88, 12, 0.7);
+        }
+
+        /* Playing / Pause State (EduAiQ Logo Color: Deep Navy with Amber Glow & Golden Border) */
+        .btn-main-play.playing {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+            border: 1.5px solid #f97316 !important;
+            color: #fdba74 !important;
+            box-shadow: 0 4px 18px rgba(249, 115, 22, 0.6) !important;
+            animation: pulse-orange 1.5s infinite;
+        }
+
+        @keyframes pulse-orange {
+            0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+        }
+
+        .speed-select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(249, 115, 22, 0.4);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 12px;
+            padding: 4px 8px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .speed-select option {
+            background: #0f172a;
+            color: #ffffff;
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
-            .book-info-text { display: none; }
-            .book-cover-header { flex-direction: column; text-align: center; }
-            .cover-thumbnail-box { width: 130px; height: 175px; }
-            .ebook-paper-document { padding: 30px 24px; }
-            .floating-page-arrow { display: none; }
-            .reader-sidebar {
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                left: 0;
-                box-shadow: 10px 0 30px rgba(0,0,0,0.25);
-            }
+        @media (max-width: 850px) {
+            .book-identity { max-width: 140px; }
+            .book-author-sub { display: none; }
+            .pages-sidebar { display: none; }
+            .arrow-left { left: 6px; }
+            .arrow-right { right: 6px; }
+            .bottom-control-dock { padding: 4px 12px; gap: 8px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Reader Navbar -->
+    <!-- Top Navigation Bar -->
     <header class="reader-navbar">
         <div class="book-identity">
-            <a href="/ai-books/" class="back-btn">
-                <i class="fas fa-arrow-left"></i> Exit Reader
+            <a href="/" title="EduAiQ Home">
+                <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ logo" class="header-logo-brand">
             </a>
-            <div class="book-info-text">
-                <h1>{{ book.title }}</h1>
-                <span>By {{ book.author|default:"EduAiQ Editorial Team" }}</span>
+            <a href="/ai-books/" class="back-btn" title="Back to AI Books Catalog">
+                <i class="fas fa-arrow-left"></i> Exit
+            </a>
+            <div>
+                <h1 class="book-title-heading">{{ book.title }}</h1>
+                <span class="book-author-sub"><i class="fas fa-feather-alt me-1"></i>{{ book.author|default:"EduAiQ Editorial" }}</span>
             </div>
         </div>
 
         {% if is_accessible %}
-        <!-- Center Page Navigation -->
-        <div class="page-controls">
-            <button class="nav-icon-btn" id="prevBtn" title="Previous Page">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <div class="page-counter-box">
-                Page <input type="number" id="pageNumInput" value="1" min="1"> of <span id="pageCountSpan">1</span>
+        <!-- Top Center Page Jump & Integrated Voice Status (ZERO OVERLAP ON BOOK!) -->
+        <div class="top-center-section">
+            <div class="top-center-badge">
+                <span>Pages</span>
+                <span id="spanSpreadPages" class="badge bg-warning text-dark px-2 py-1 fw-bold">1 - 2</span>
+                <span>of</span>
+                <span id="spanTotalPages" class="fw-bold text-white">2</span>
+                <span class="ms-1 text-muted text-xs d-none d-sm-inline">| Jump:</span>
+                <input type="number" id="inputPageNum" value="1" min="1" title="Type page number and press Enter" class="d-none d-sm-inline-block">
             </div>
-            <button class="nav-icon-btn" id="nextBtn" title="Next Page">
-                <i class="fas fa-chevron-right"></i>
-            </button>
+
+            <!-- Integrated Navbar Voice Status Indicator -->
+            <div class="tts-nav-status" id="ttsNavStatus">
+                <div class="tts-wave-anim">
+                    <div class="tts-wave-bar"></div>
+                    <div class="tts-wave-bar"></div>
+                    <div class="tts-wave-bar"></div>
+                    <div class="tts-wave-bar"></div>
+                </div>
+                <span id="ttsNavStatusText">Reading Pages...</span>
+            </div>
         </div>
 
-        <!-- Right Toolbar Actions -->
-        <div class="toolbar-actions">
-            <button class="nav-icon-btn" id="zoomOutBtn" title="Zoom Out">
-                <i class="fas fa-search-minus"></i>
-            </button>
-            <span id="zoomLevelText" style="font-size: 12px; font-weight: 800; color: #fff; min-width: 45px; text-align: center;">100%</span>
-            <button class="nav-icon-btn" id="zoomInBtn" title="Zoom In">
-                <i class="fas fa-search-plus"></i>
+        <!-- Right Tools -->
+        <div class="right-actions">
+            <!-- Clear Female AI Voice Reading Button (Full Book Read Aloud) -->
+            <button class="voice-pill-btn" id="btnVoiceRead" title="Read Full Book in Crystal-Clear Female Voice">
+                <i class="fas fa-volume-up" id="voiceIcon"></i>
+                <span id="voiceText">Read Full Book</span>
             </button>
 
-            <!-- Theme Selector -->
-            <button class="theme-select-btn" id="themeCycleBtn">
-                <i class="fas fa-sun" id="themeIcon"></i> <span id="themeLabel">Light</span>
+            <!-- Side Pages Drawer Toggle -->
+            <button class="action-pill active" id="btnTogglePages" title="Show/Hide Side Pages Strip">
+                <i class="fas fa-th-large"></i>
+                <span class="d-none d-md-inline">All Pages</span>
             </button>
 
-            <!-- Sidebar Toggle -->
-            <button class="nav-icon-btn" id="toggleSidebarBtn" title="Toggle Book Outline & Chapters">
-                <i class="fas fa-list-ul"></i>
+            <!-- Theme Cycle -->
+            <button class="action-pill" id="btnThemeToggle" title="Change Theme (Light / Sepia / Dark)">
+                <i class="fas fa-sun" id="themeIcon"></i>
+                <span id="themeText" class="d-none d-lg-inline">Light</span>
             </button>
 
             <!-- Fullscreen -->
-            <button class="nav-icon-btn" id="fullscreenBtn" title="Toggle Fullscreen">
+            <button class="ctrl-icon-btn" id="btnFullscreen" title="Toggle Fullscreen">
                 <i class="fas fa-expand"></i>
             </button>
         </div>
         {% endif %}
     </header>
 
-    <!-- Reading Progress Bar -->
-    <div class="reading-progress-bar">
-        <div class="reading-progress-fill" id="progressFill"></div>
-    </div>
-
-    <!-- Main Reader Body -->
-    <div class="reader-body">
+    <!-- Main Workspace (Side Pages Strip + Center Dual-Page FlipBook - 100% UNOBSTRUCTED) -->
+    <div class="reader-workspace">
         {% if is_accessible %}
-        <!-- Floating Next / Prev Page Turn Buttons -->
-        <button class="floating-page-arrow arrow-left" id="floatPrevBtn" title="Previous Page">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-        <button class="floating-page-arrow arrow-right" id="floatNextBtn" title="Next Page">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-
-        <!-- Collapsible Table of Contents Sidebar -->
-        <aside class="reader-sidebar" id="readerSidebar">
-            <div class="sidebar-header">
-                <span>Book Outline & Pages</span>
-                <button class="nav-icon-btn text-dark" id="closeSidebarBtn">
-                    <i class="fas fa-times"></i>
-                </button>
+        
+        <!-- Left Side Pages Thumbnails Strip in Brand Navy -->
+        <aside class="pages-sidebar" id="pagesSidebar">
+            <div class="pages-sidebar-header">
+                <span><i class="fas fa-book-open me-1 text-warning"></i> Pages Overview</span>
+                <span id="sidePagesCount" class="badge bg-warning text-dark">0</span>
             </div>
-            <div class="sidebar-contents" id="sidebarContents">
-                <a href="javascript:void(0)" class="toc-item active" id="toc-item-1" onclick="jumpToDigitalPage(1)">
-                    <span>📘 Page 1: Overview & Intro</span>
-                    <i class="fas fa-chevron-right text-xs"></i>
-                </a>
-                {% for module in book.modules.all %}
-                <a href="javascript:void(0)" class="toc-item" id="toc-item-{{ forloop.counter|add:1 }}" onclick="jumpToDigitalPage({{ forloop.counter|add:1 }})">
-                    <span>📖 Page {{ forloop.counter|add:1 }}: {{ module.title }}</span>
-                    <i class="fas fa-chevron-right text-xs"></i>
-                </a>
-                {% empty %}
-                <a href="javascript:void(0)" class="toc-item" id="toc-item-2" onclick="jumpToDigitalPage(2)">
-                    <span>📖 Page 2: Core Concepts</span>
-                    <i class="fas fa-chevron-right text-xs"></i>
-                </a>
-                <a href="javascript:void(0)" class="toc-item" id="toc-item-3" onclick="jumpToDigitalPage(3)">
-                    <span>🛠️ Page 3: Hands-on AI Exercises</span>
-                    <i class="fas fa-chevron-right text-xs"></i>
-                </a>
-                <a href="javascript:void(0)" class="toc-item" id="toc-item-4" onclick="jumpToDigitalPage(4)">
-                    <span>🎓 Page 4: Summary & Next Steps</span>
-                    <i class="fas fa-chevron-right text-xs"></i>
-                </a>
-                {% endfor %}
+            <div class="pages-thumb-list" id="pagesThumbList">
+                <!-- Thumbnails rendered dynamically -->
             </div>
         </aside>
 
-        <!-- Viewport Stage -->
-        <main class="viewport-area" id="viewportArea">
-            {% if book.pdf_file %}
-            <!-- Interactive PDF Canvas Container -->
-            <div class="paper-container" id="paperContainer">
-                <canvas id="pdfCanvas"></canvas>
-            </div>
-            {% else %}
-            <!-- Styled Ebook Digital Document View -->
-            <div class="ebook-paper-document" id="articleView">
-                <!-- Cover Header Block -->
-                <div class="book-cover-header">
-                    <div class="cover-thumbnail-box">
-                        {% if book.thumbnail %}
-                        <img src="{{ book.thumbnail.url }}" alt="{{ book.title }}">
-                        {% else %}
-                        <img src="{% static 'assets/img/educator-img30.jpg' %}" alt="{{ book.title }}">
-                        {% endif %}
-                    </div>
-                    <div class="cover-details-box">
-                        <span class="cover-category-badge">{{ book.category.name|default:"AI Book & Guide" }}</span>
-                        <h1 class="cover-book-title">{{ book.title }}</h1>
-                        <div class="cover-author-text">Written by {{ book.author|default:"EduAiQ Editorial Team" }}</div>
-                        <div class="cover-meta-stats">
-                            <span><i class="fas fa-star text-warning"></i> 4.9 Rating</span>
-                            <span><i class="fas fa-book-open text-primary me-1"></i> Interactive eBook Edition</span>
-                        </div>
-                        <div>
-                            <button onclick="onNextPage()" class="btn btn-primary px-4 py-2 fw-bold radius-8 mt-2 shadow-sm d-inline-flex align-items-center gap-2">
-                                <i class="fas fa-book-reader"></i> Start Reading Book
-                            </button>
-                        </div>
-                    </div>
-                </div>
+        <!-- Center 3D FlipBook Stage Area (ZERO FLOATING TOASTS ON BOOK) -->
+        <main class="flipbook-stage">
+            <!-- Floating Next/Prev Arrows -->
+            <button class="arrow-nav arrow-left" id="floatArrowPrev" title="Flip Previous (Left Page)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="arrow-nav arrow-right" id="floatArrowNext" title="Flip Next (Right Page)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
 
-                <!-- Active Page Content Container -->
-                <div class="chapter-article-content" id="digitalPageContainer">
-                    <!-- Loaded dynamically by JS -->
-                </div>
+            <!-- Loader -->
+            <div class="loader-overlay" id="readerLoader">
+                <div class="spinner-ring"></div>
+                <h6 class="fw-bold text-white mb-1">Rendering 3D Dual-Page Open Book...</h6>
+                <span class="text-xs text-secondary-light" id="loaderStatusText">Optimizing high-resolution text clarity</span>
+            </div>
 
-                <!-- Page Navigation Footer -->
-                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mt-5 pt-4 border-top">
-                    <button class="btn btn-outline-secondary px-4 py-2 fw-bold radius-8" id="docPrevBtn" onclick="onPrevPage()">
-                        <i class="fas fa-arrow-left me-2"></i> Previous Page
-                    </button>
-                    <span class="text-muted fw-semibold text-sm">
-                        Page <strong id="docCurrentPage">1</strong> of <span id="docTotalPages">1</span>
-                    </span>
-                    <button class="btn btn-primary px-4 py-2 fw-bold radius-8 shadow-sm" id="docNextBtn" onclick="onNextPage()">
-                        Proceed to Next Page <i class="fas fa-arrow-right ms-2"></i>
-                    </button>
+            <!-- 3D Dual-Page FlipBook Container (100% UNBLOCKED & CLEAN) -->
+            <div class="flipbook-wrap" id="flipbookWrap" title="Click or drag corners to flip pages">
+                <div class="ribbon-bookmark" title="EduAiQ Interactive Bookmark"></div>
+                
+                <div id="flipBook">
+                    <!-- Default digital pages if no PDF is uploaded -->
+                    <div class="page">
+                        <div class="page-content">
+                            <div class="d-flex justify-content-between border-bottom pb-2 mb-3 text-xs fw-bold text-muted">
+                                <span>EduAiQ Publication</span>
+                                <span>Page 1 (Left)</span>
+                            </div>
+                            <h3 class="fw-bold mb-3" style="font-family: 'Cinzel', serif;">{{ book.title }}</h3>
+                            <p class="mb-3">{{ book.description|default:"Welcome to this interactive AI book. This e-book provides practical, hands-on learning topics and guided exercises." }}</p>
+                            <div class="mt-auto border-top pt-2 text-xs text-muted">EduAiQ Digital Reader</div>
+                        </div>
+                    </div>
+
+                    <div class="page">
+                        <div class="page-content">
+                            <div class="d-flex justify-content-between border-bottom pb-2 mb-3 text-xs fw-bold text-muted">
+                                <span>Table of Contents</span>
+                                <span>Page 2 (Right)</span>
+                            </div>
+                            <h4 class="fw-bold mb-3">Chapters & Topics</h4>
+                            <ul class="ps-3 text-sm" style="line-height: 2;">
+                                <li>1. Introduction & Overview</li>
+                                <li>2. Core Foundations & Data Flow</li>
+                                <li>3. Hands-on Lab Exercises</li>
+                                <li>4. Summary & Verification</li>
+                            </ul>
+                            <div class="mt-auto border-top pt-2 text-xs text-muted">EduAiQ Digital Reader</div>
+                        </div>
+                    </div>
+
+                    <div class="page">
+                        <div class="page-content">
+                            <div class="d-flex justify-content-between border-bottom pb-2 mb-3 text-xs fw-bold text-muted">
+                                <span>Chapter 1</span>
+                                <span>Page 3 (Left)</span>
+                            </div>
+                            <h4 class="fw-bold mb-3">Core Foundations</h4>
+                            <p>Understand standard architecture, parameters, and tensor operations tailored for modern AI applications.</p>
+                            <div class="mt-auto border-top pt-2 text-xs text-muted">EduAiQ Digital Reader</div>
+                        </div>
+                    </div>
+
+                    <div class="page">
+                        <div class="page-content">
+                            <div class="d-flex justify-content-between border-bottom pb-2 mb-3 text-xs fw-bold text-muted">
+                                <span>Chapter 2</span>
+                                <span>Page 4 (Right)</span>
+                            </div>
+                            <h4 class="fw-bold mb-3">Hands-on Exercises</h4>
+                            <p>Apply your skills through step-by-step challenges and interactive notebooks in the EduAiQ Lab.</p>
+                            <div class="mt-auto border-top pt-2 text-xs text-muted">EduAiQ Digital Reader</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            {% endif %}
+
+            <!-- Bottom Floating Control Dock in Brand Navy & Orange -->
+            <div class="bottom-control-dock">
+                <!-- Previous Button -->
+                <button class="dock-btn" id="dockPrevBtn" title="Previous Page Pair">
+                    <i class="fas fa-chevron-left"></i> <span>Prev</span>
+                </button>
+
+                <!-- Center Main EduAiQ Play / Pause Button -->
+                <button class="btn-main-play" id="btnMainPlay" title="Auto Play / Flip Pages">
+                    <i class="fas fa-play" id="mainPlayIcon"></i>
+                    <span id="mainPlayText">Auto Play</span>
+                </button>
+
+                <!-- Next Button -->
+                <button class="dock-btn" id="dockNextBtn" title="Next Page Pair">
+                    <span>Next</span> <i class="fas fa-chevron-right"></i>
+                </button>
+
+                <!-- Clear Female Voice Quick Button -->
+                <button class="dock-btn text-warning" id="dockVoiceBtn" title="Listen to Full Book in Female Voice">
+                    <i class="fas fa-female" id="dockVoiceIcon"></i> <span id="dockVoiceText" class="d-none d-sm-inline">Voice Read</span>
+                </button>
+
+                <!-- Auto-turn Speed Selector -->
+                <div class="d-flex align-items-center gap-1">
+                    <span class="text-xs text-secondary-light d-none d-sm-inline">Speed:</span>
+                    <select class="speed-select" id="speedSelect" title="Auto-turn interval speed">
+                        <option value="6000" selected>6s (Normal)</option>
+                        <option value="9000">9s (Slow)</option>
+                        <option value="12000">12s (Relaxed)</option>
+                        <option value="4000">4s (Fast)</option>
+                    </select>
+                </div>
+            </div>
         </main>
 
         {% else %}
-        <!-- Restrict Access Overlay -->
-        <main class="viewport-area">
-            <div class="access-restricted-card">
-                <div class="access-icon-wrapper">
+        <!-- Access Restricted -->
+        <main class="flipbook-stage">
+            <div class="p-5 bg-white text-dark rounded-4 shadow-lg text-center" style="max-width: 460px;">
+                <div class="w-64-px h-64-px bg-warning-100 text-warning-600 rounded-circle d-flex align-items-center justify-content-center text-3xl mx-auto mb-3">
                     <i class="fas fa-lock"></i>
                 </div>
-                <h3 class="access-title">Institution Access Required</h3>
-                <p class="access-desc">
-                    This AI Book is assigned to authorized partner institutions and enrolled students. 
-                    Please log in with your institution account or enroll to read the complete book.
-                </p>
-                <div class="d-flex justify-content-center align-items-center flex-wrap gap-3">
-                    <a href="/login/?next={{ request.path }}" class="btn-access-login-pill">
-                        <i class="fas fa-unlock-alt me-1"></i> Log In to Read
-                    </a>
-                    <a href="/ai-books/" class="btn-access-browse-pill">
-                        <i class="fas fa-book me-1"></i> Browse All Books
-                    </a>
-                </div>
-                <div class="access-badge-footer">
-                    <i class="fas fa-shield-alt text-warning"></i> Institution Verified Content &bull; Encrypted E-Book Reader
-                </div>
+                <h4 class="fw-bold mb-2">Access Required</h4>
+                <p class="text-muted text-sm mb-4">Please log in to read this complete interactive 3D book.</p>
+                <a href="/login/?next={{ request.path }}" class="btn btn-primary px-4 py-2 radius-8 fw-bold">Log In to Read</a>
             </div>
         </main>
         {% endif %}
@@ -825,323 +902,616 @@
 
     {% if is_accessible %}
     <script>
-        // Reader Configuration & State
         const pdfUrl = "{% if book.pdf_file %}{{ book.pdf_file.url }}{% endif %}";
-        let pdfDoc = null;
-        let pageNum = 1;
-        let pageRendering = false;
-        let pageNumPending = null;
-        let scale = 1.25;
+        let pdfDocInstance = null;
+        let pageFlip = null;
+        let autoPlayInterval = null;
         let currentTheme = 'light';
+        let totalBookPages = 0;
+        let isPlaying = false;
+        let renderedCanvases = [];
+        let autoPlaySpeed = 6000;
+        let pagesExtractedText = {};
+        let isVoiceReading = false;
+        let femaleVoice = null;
+        let speechChunks = [];
+        let currentChunkIndex = 0;
+        let pageRenderingFlags = {};
 
-        // Prepare digital text pages array for non-PDF digital reading
-        const bookTitle = "{{ book.title|escapejs }}";
-        const bookDesc = `{{ book.description|linebreaksbr|escapejs }}`;
-        
-        const digitalPages = [
-            {
-                title: "Book Overview & Intro",
-                content: `
-                    <div class="mb-4">
-                        <h3 class="fw-bold mb-3" style="font-family: 'Inter', sans-serif;">Welcome to ${bookTitle}</h3>
-                        <div class="lead text-secondary mb-4 font-serif">${bookDesc || 'Welcome to this interactive AI book. This e-book provides practical, hands-on learning topics and guided exercises.'}</div>
-                        <div class="p-4 bg-light rounded-3 border mb-4">
-                            <h5 class="fw-bold mb-2" style="font-family: 'Inter', sans-serif;"><i class="fas fa-bullseye text-primary me-2"></i> Learning Objectives</h5>
-                            <ul class="mb-0 text-secondary ps-3 font-serif">
-                                <li>Understand foundational concepts and practical workflows in ${bookTitle}.</li>
-                                <li>Build real-world hands-on projects using step-by-step guidance.</li>
-                                <li>Gain institution-ready skills verified by EduAiQ practical exercises.</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
+        // Helper: Hide loader overlay
+        function hideLoader() {
+            const loader = document.getElementById('readerLoader');
+            if (loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 300);
             }
-        ];
-
-        {% for module in book.modules.all %}
-        digitalPages.push({
-            title: "Page {{ forloop.counter|add:1 }}: {{ module.title|escapejs }}",
-            content: `
-                <div class="mb-4">
-                    <h3 class="fw-bold mb-3" style="font-family: 'Inter', sans-serif;">Chapter {{ forloop.counter }}: {{ module.title|escapejs }}</h3>
-                    <p class="font-serif">${ `{{ module.description|linebreaksbr|escapejs }}` || 'Detailed reading guide and practical exercise material for this chapter.' }</p>
-                    
-                    {% if module.lessons.all %}
-                    <div class="mt-4">
-                        <h5 class="fw-bold mb-3" style="font-family: 'Inter', sans-serif;">Chapter Lessons & Reading Topics</h5>
-                        {% for lesson in module.lessons.all %}
-                        <div class="chapter-section-card">
-                            <h4>Lesson {{ forloop.counter }}: {{ lesson.title|escapejs }}</h4>
-                            <p class="mb-2 text-secondary">${ `{{ lesson.description|linebreaksbr|escapejs }}` || 'Comprehensive lesson guide.' }</p>
-                            {% if lesson.content_url %}
-                            <div class="mt-2">
-                                <a href="{{ lesson.content_url }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fas fa-play-circle me-1"></i> Watch Video Material</a>
-                            </div>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-            `
-        });
-        {% empty %}
-        digitalPages.push(
-            {
-                title: "Page 2: Core Concepts & Prerequisites",
-                content: `
-                    <div class="mb-4">
-                        <h3 class="fw-bold mb-3" style="font-family: 'Inter', sans-serif;">Core Concepts & Prerequisites</h3>
-                        <p class="font-serif mb-3">Before diving into practical setup, ensure you have reviewed the key concepts of ${bookTitle}. This section covers essential tools, software prerequisites, and foundational architecture.</p>
-                        <div class="chapter-section-card">
-                            <h4>1. Key Fundamentals</h4>
-                            <p class="mb-0 text-secondary font-serif">Learn standard syntax, data structures, and foundational principles tailored for modern AI applications.</p>
-                        </div>
-                        <div class="chapter-section-card">
-                            <h4>2. Environment Setup</h4>
-                            <p class="mb-0 text-secondary font-serif">Configure your local workspace or open interactive notebooks in the EduAiQ AI Lab environment.</p>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "Page 3: Hands-on AI Exercises",
-                content: `
-                    <div class="mb-4">
-                        <h3 class="fw-bold mb-3" style="font-family: 'Inter', sans-serif;">Hands-on Practice & Exercises</h3>
-                        <p class="font-serif mb-3">Apply your knowledge through practical projects designed to reinforce real-world skills.</p>
-                        <div class="p-4 rounded-3 border mb-4" style="background: rgba(124, 58, 237, 0.05); border-color: rgba(124, 58, 237, 0.2) !important;">
-                            <h5 class="fw-bold text-primary mb-2" style="font-family: 'Inter', sans-serif;"><i class="fas fa-laptop-code me-2"></i> Project Challenge 1</h5>
-                            <p class="font-serif text-secondary mb-0">Build and execute a basic AI pipeline using Python data libraries. Validate outputs and inspect data structures.</p>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "Page 4: Summary & Next Steps",
-                content: `
-                    <div class="mb-4">
-                        <h3 class="fw-bold mb-3" style="font-family: 'Inter', sans-serif;">Summary & Next Recommended Reading</h3>
-                        <p class="font-serif mb-4">Congratulations on completing this interactive guide! You have mastered key concepts and practical exercises in ${bookTitle}.</p>
-                        <div class="p-4 bg-light rounded-3 text-center border">
-                            <i class="fas fa-award fa-3x text-warning mb-3"></i>
-                            <h4 class="fw-bold mb-2" style="font-family: 'Inter', sans-serif;">Book Completed!</h4>
-                            <p class="text-muted font-serif mb-3">Ready to explore advanced AI topics?</p>
-                            <a href="/ai-books/" class="btn btn-primary px-4 py-2 fw-bold radius-8"><i class="fas fa-book-open me-2"></i> Explore More AI Books</a>
-                        </div>
-                    </div>
-                `
-            }
-        );
-        {% endfor %}
-
-        const canvas = document.getElementById('pdfCanvas');
-        const ctx = canvas ? canvas.getContext('2d') : null;
-
-        // Initialize PDF.js if PDF exists
-        if (pdfUrl && canvas) {
-            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-            pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
-                pdfDoc = pdfDoc_;
-                document.getElementById('pageCountSpan').textContent = pdfDoc.numPages;
-                document.getElementById('pageNumInput').max = pdfDoc.numPages;
-                renderPage(pageNum);
-            }).catch(function(err) {
-                console.error("PDF load error:", err);
-            });
-        } else {
-            const totalPages = digitalPages.length;
-            document.getElementById('pageCountSpan').textContent = totalPages;
-            if (document.getElementById('docTotalPages')) {
-                document.getElementById('docTotalPages').textContent = totalPages;
-            }
-            renderDigitalPage(pageNum);
         }
 
-        function renderPage(num) {
-            if (!pdfDoc) return;
-            pageRendering = true;
+        // ==========================================
+        // 1. CRYSTAL-CLEAR NATURAL FEMALE VOICE AI ENGINE (READS ALL BOOK)
+        // ==========================================
+        window._activeUtterance = null;
+        let keepAliveTimer = null;
 
-            pdfDoc.getPage(num).then(function(page) {
-                const viewport = page.getViewport({ scale: scale });
+        function getBestFemaleVoice() {
+            if (!('speechSynthesis' in window)) return null;
+            const voices = window.speechSynthesis.getVoices();
+            if (!voices || voices.length === 0) return null;
+
+            const highQualityFemaleKeywords = [
+                'zira', 'sonia', 'jenny', 'google us english', 'google uk english female',
+                'heera', 'samantha', 'victoria', 'karen', 'serena', 'female', 'woman'
+            ];
+
+            for (const keyword of highQualityFemaleKeywords) {
+                const found = voices.find(v => v.name.toLowerCase().includes(keyword));
+                if (found) return found;
+            }
+
+            return voices.find(v => v.lang.startsWith('en')) || voices[0];
+        }
+
+        function loadFemaleVoice() {
+            femaleVoice = getBestFemaleVoice();
+        }
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                loadFemaleVoice();
+            };
+            loadFemaleVoice();
+        }
+
+        function cleanTextForSpeech(rawText) {
+            if (!rawText) return "";
+            return rawText
+                .replace(/\b(A REALM|CLASS XI|CHAPTER \d+|CONTENTS)\b/gi, '')
+                .replace(/-\s*\n/g, '')
+                .replace(/\r?\n|\r/g, ' ')
+                .replace(/\bPage\s+\d+\b/gi, '')
+                .replace(/[\u2022\u2023\u25E6\u2043\u2219]/g, ', ')
+                .replace(/\bMr\.\b/g, 'Mister ')
+                .replace(/\bMrs\.\b/g, 'Misses ')
+                .replace(/\bDr\.\b/g, 'Doctor ')
+                .replace(/[\s\t]+/g, ' ')
+                .trim();
+        }
+
+        function splitIntoSentenceChunks(text) {
+            if (!text) return [];
+            const sentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [text];
+            const chunks = [];
+            let current = "";
+
+            sentences.forEach(s => {
+                s = s.trim();
+                if (!s) return;
+                if ((current + " " + s).length < 160) {
+                    current = current ? current + " " + s : s;
+                } else {
+                    if (current) chunks.push(current);
+                    current = s;
+                }
+            });
+            if (current) chunks.push(current);
+            return chunks;
+        }
+
+        function toggleVoiceReader() {
+            if (isVoiceReading) {
+                stopVoiceReader();
+            } else {
+                startVoiceReader();
+            }
+        }
+
+        function startVoiceReader() {
+            if (!('speechSynthesis' in window)) {
+                alert("Speech Synthesis is not supported in this browser.");
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.resume();
+
+            femaleVoice = getBestFemaleVoice();
+
+            isVoiceReading = true;
+            document.getElementById('btnVoiceRead')?.classList.add('speaking');
+            document.getElementById('voiceText').textContent = "Stop Voice";
+            document.getElementById('voiceIcon').className = "fas fa-stop";
+            
+            const dockBtn = document.getElementById('dockVoiceBtn');
+            if (dockBtn) {
+                dockBtn.classList.add('btn-warning', 'text-dark');
+                document.getElementById('dockVoiceText').textContent = "Stop Voice";
+                document.getElementById('dockVoiceIcon').className = "fas fa-stop";
+            }
+
+            const navStatus = document.getElementById('ttsNavStatus');
+            if (navStatus) navStatus.style.display = 'inline-flex';
+
+            if (keepAliveTimer) clearInterval(keepAliveTimer);
+            keepAliveTimer = setInterval(() => {
+                if (isVoiceReading && window.speechSynthesis.paused) {
+                    window.speechSynthesis.resume();
+                }
+            }, 2500);
+
+            prepareAndSpeakCurrentSpread();
+        }
+
+        function stopVoiceReader() {
+            isVoiceReading = false;
+            speechChunks = [];
+            currentChunkIndex = 0;
+            if (keepAliveTimer) {
+                clearInterval(keepAliveTimer);
+                keepAliveTimer = null;
+            }
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+            window._activeUtterance = null;
+
+            document.getElementById('btnVoiceRead')?.classList.remove('speaking');
+            document.getElementById('voiceText').textContent = "Read Full Book";
+            document.getElementById('voiceIcon').className = "fas fa-volume-up";
+
+            const dockBtn = document.getElementById('dockVoiceBtn');
+            if (dockBtn) {
+                dockBtn.classList.remove('btn-warning', 'text-dark');
+                document.getElementById('dockVoiceText').textContent = "Voice Read";
+                document.getElementById('dockVoiceIcon').className = "fas fa-female";
+            }
+
+            const navStatus = document.getElementById('ttsNavStatus');
+            if (navStatus) navStatus.style.display = 'none';
+        }
+
+        function prepareAndSpeakCurrentSpread() {
+            if (!isVoiceReading || !pageFlip) return;
+
+            const currentIndex = pageFlip.getCurrentPageIndex();
+            const leftPageNum = currentIndex + 1;
+            const rightPageNum = Math.min(currentIndex + 2, totalBookPages);
+
+            let combinedText = "";
+            if (pagesExtractedText[leftPageNum]) combinedText += pagesExtractedText[leftPageNum] + ". ";
+            if (pagesExtractedText[rightPageNum] && rightPageNum !== leftPageNum) {
+                combinedText += pagesExtractedText[rightPageNum];
+            }
+
+            // Fallback to DOM content if PDF text is not yet loaded
+            if (!combinedText || combinedText.trim().length < 5) {
+                const pages = document.querySelectorAll('.page');
+                if (pages[currentIndex]) combinedText += pages[currentIndex].innerText + ". ";
+                if (pages[currentIndex + 1]) combinedText += pages[currentIndex + 1].innerText;
+            }
+
+            combinedText = cleanTextForSpeech(combinedText);
+            if (!combinedText || combinedText.length < 5) {
+                combinedText = `Page ${leftPageNum} and Page ${rightPageNum}. Let us continue reading the book.`;
+            }
+
+            speechChunks = splitIntoSentenceChunks(combinedText);
+            currentChunkIndex = 0;
+
+            const navText = document.getElementById('ttsNavStatusText');
+            if (navText) navText.textContent = `Reading P. ${leftPageNum} - ${rightPageNum}`;
+
+            speakNextChunk();
+        }
+
+        function speakNextChunk() {
+            if (!isVoiceReading) return;
+
+            if (currentChunkIndex >= speechChunks.length) {
+                const currentIndex = pageFlip.getCurrentPageIndex();
+                if (currentIndex < totalBookPages - 2) {
+                    setTimeout(() => {
+                        if (isVoiceReading) {
+                            pageFlip.flipNext();
+                            setTimeout(prepareAndSpeakCurrentSpread, 1600);
+                        }
+                    }, 800);
+                } else {
+                    const navText = document.getElementById('ttsNavStatusText');
+                    if (navText) navText.textContent = "Finished Book!";
+                    setTimeout(stopVoiceReader, 2500);
+                }
+                return;
+            }
+
+            const chunkText = speechChunks[currentChunkIndex];
+            currentChunkIndex++;
+
+            const utterance = new SpeechSynthesisUtterance(chunkText);
+            if (!femaleVoice) femaleVoice = getBestFemaleVoice();
+            if (femaleVoice) utterance.voice = femaleVoice;
+            
+            utterance.lang = femaleVoice ? femaleVoice.lang : 'en-US';
+            utterance.pitch = 1.05;
+            utterance.rate = 0.90;
+
+            utterance.onend = function() {
+                if (isVoiceReading) {
+                    setTimeout(speakNextChunk, 100);
+                }
+            };
+
+            utterance.onerror = function(err) {
+                console.warn("TTS error:", err);
+                if (isVoiceReading) {
+                    setTimeout(speakNextChunk, 150);
+                }
+            };
+
+            window._activeUtterance = utterance;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        document.getElementById('btnVoiceRead')?.addEventListener('click', toggleVoiceReader);
+        document.getElementById('dockVoiceBtn')?.addEventListener('click', toggleVoiceReader);
+
+        // ==========================================
+        // 2. PROGRESSIVE LIGHTNING-FAST PDF RENDER
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (pdfUrl) {
+                await loadAndRenderPdf(pdfUrl);
+            } else {
+                initDualPageFlip();
+                buildSidebarThumbnails();
+                hideLoader();
+            }
+        });
+
+        // Load PDF with Progressive Instant Startup
+        async function loadAndRenderPdf(url) {
+            const loaderStatus = document.getElementById('loaderStatusText');
+            loaderStatus.textContent = "Opening interactive 3D book...";
+
+            const forceHideTimer = setTimeout(() => {
+                hideLoader();
+            }, 2200);
+
+            try {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                pdfDocInstance = await pdfjsLib.getDocument(url).promise;
+                const numPages = pdfDocInstance.numPages;
+                const flipBookDiv = document.getElementById('flipBook');
+                flipBookDiv.innerHTML = '';
+                renderedCanvases = [];
+                pagesExtractedText = {};
+                pageRenderingFlags = {};
+
+                // Pre-create lightweight page containers for all N pages
+                for (let i = 1; i <= numPages; i++) {
+                    const pageDiv = document.createElement('div');
+                    pageDiv.className = 'page';
+                    pageDiv.id = `page-container-${i}`;
+                    pageDiv.innerHTML = `<div class="page-content d-flex align-items-center justify-content-center"><span class="text-xs text-muted">Page ${i}</span></div>`;
+                    flipBookDiv.appendChild(pageDiv);
+                }
+
+                // Balance dual-spread if odd number of pages
+                if (numPages % 2 !== 0) {
+                    const blankDiv = document.createElement('div');
+                    blankDiv.className = 'page';
+                    blankDiv.innerHTML = `<div class="page-content"><div class="m-auto text-muted text-xs">EduAiQ Ebook</div></div>`;
+                    flipBookDiv.appendChild(blankDiv);
+                }
+
+                // Render initial 4 pages immediately for instant opening
+                const initialPages = Math.min(numPages, 4);
+                for (let i = 1; i <= initialPages; i++) {
+                    await renderSinglePdfPage(i);
+                }
+
+                clearTimeout(forceHideTimer);
+                initDualPageFlip();
+                buildSidebarThumbnails();
+                hideLoader();
+
+                // Smooth background rendering of remaining pages
+                renderRemainingPagesInBackground(5, numPages);
+
+            } catch (err) {
+                console.warn("PDF load fallback:", err);
+                clearTimeout(forceHideTimer);
+                initDualPageFlip();
+                buildSidebarThumbnails();
+                hideLoader();
+            }
+        }
+
+        // Render a single high-resolution page canvas on demand
+        async function renderSinglePdfPage(pageNum) {
+            if (!pdfDocInstance || pageRenderingFlags[pageNum]) return;
+            pageRenderingFlags[pageNum] = true;
+
+            try {
+                const page = await pdfDocInstance.getPage(pageNum);
+                const viewport = page.getViewport({ scale: 2.0 });
+
+                // Extract text for Female AI Voice
+                page.getTextContent().then(textContent => {
+                    const pageString = textContent.items.map(item => item.str).join(' ');
+                    pagesExtractedText[pageNum] = pageString;
+                }).catch(() => {});
+
+                const canvas = document.createElement('canvas');
+                canvas.className = 'page-canvas';
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
 
                 const renderContext = {
-                    canvasContext: ctx,
+                    canvasContext: canvas.getContext('2d'),
                     viewport: viewport
                 };
+                await page.render(renderContext).promise;
 
-                const renderTask = page.render(renderContext);
-                renderTask.promise.then(function() {
-                    pageRendering = false;
-                    if (pageNumPending !== null) {
-                        renderPage(pageNumPending);
-                        pageNumPending = null;
-                    }
+                renderedCanvases[pageNum - 1] = canvas;
+
+                const container = document.getElementById(`page-container-${pageNum}`);
+                if (container) {
+                    container.innerHTML = '';
+                    container.appendChild(canvas);
+                }
+
+                updateSidebarThumbnail(pageNum - 1, canvas);
+
+            } catch (e) {
+                console.warn(`Error rendering page ${pageNum}:`, e);
+            }
+        }
+
+        // Background progressive page renderer
+        function renderRemainingPagesInBackground(startPage, totalPages) {
+            let current = startPage;
+            function renderNext() {
+                if (current > totalPages) return;
+                renderSinglePdfPage(current).then(() => {
+                    current++;
+                    setTimeout(renderNext, 50);
                 });
+            }
+            setTimeout(renderNext, 300);
+        }
+
+        // Initialize 3D Dual-Page Open Book with Smooth, Graceful Page Turn Physics
+        function initDualPageFlip() {
+            const flipEl = document.getElementById('flipBook');
+            flipEl.style.display = 'block';
+
+            const isMobile = window.innerWidth < 850;
+            const singlePageWidth = isMobile ? Math.min(window.innerWidth - 30, 380) : 440;
+            const singlePageHeight = isMobile ? 520 : 590;
+
+            pageFlip = new St.PageFlip(flipEl, {
+                width: singlePageWidth,
+                height: singlePageHeight,
+                size: 'fixed',
+                minWidth: 260,
+                maxWidth: 500,
+                minHeight: 380,
+                maxHeight: 700,
+                showCover: false,
+                usePortrait: false,
+                flippingTime: 1400,
+                maxShadowOpacity: 0.0,
+                drawShadow: false,
+                mobileScrollSupport: false,
+                useMouseEvents: true,
+                swipeDistance: 25,
+                clickEventForward: true,
+                autoSize: true,
             });
 
-            document.getElementById('pageNumInput').value = num;
-            updateProgressBar(num, pdfDoc.numPages);
-            updateNavButtons();
-        }
+            pageFlip.loadFromHTML(document.querySelectorAll('.page'));
 
-        function renderDigitalPage(num) {
-            const pageObj = digitalPages[num - 1] || digitalPages[0];
-            const container = document.getElementById('digitalPageContainer');
-            if (container) {
-                container.innerHTML = pageObj.content;
-            }
+            totalBookPages = pageFlip.getPageCount();
+            document.getElementById('spanTotalPages').textContent = totalBookPages;
+            document.getElementById('sidePagesCount').textContent = `${totalBookPages} Pages`;
 
-            document.getElementById('pageNumInput').value = num;
-            if (document.getElementById('docCurrentPage')) {
-                document.getElementById('docCurrentPage').textContent = num;
-            }
+            // Pre-fetch nearby pages on flip
+            pageFlip.on('flip', (e) => {
+                const pageIndex = e.data;
+                renderSinglePdfPage(pageIndex + 1);
+                renderSinglePdfPage(pageIndex + 2);
+                renderSinglePdfPage(pageIndex + 3);
+                renderSinglePdfPage(pageIndex + 4);
 
-            // Update TOC Sidebar Highlight
-            document.querySelectorAll('.toc-item').forEach(item => item.classList.remove('active'));
-            const activeToc = document.getElementById(`toc-item-${num}`);
-            if (activeToc) activeToc.classList.add('active');
-
-            updateProgressBar(num, digitalPages.length);
-            updateNavButtons();
-        }
-
-        function jumpToDigitalPage(num) {
-            pageNum = num;
-            if (pdfDoc) queueRenderPage(pageNum);
-            else renderDigitalPage(pageNum);
-
-            // Scroll viewport to top smoothly
-            document.getElementById('viewportArea')?.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function queueRenderPage(num) {
-            if (pageRendering) {
-                pageNumPending = num;
-            } else {
-                renderPage(num);
-            }
-        }
-
-        function onPrevPage() {
-            if (pageNum <= 1) return;
-            pageNum--;
-            if (pdfDoc) queueRenderPage(pageNum);
-            else renderDigitalPage(pageNum);
-
-            document.getElementById('viewportArea')?.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function onNextPage() {
-            const maxPages = pdfDoc ? pdfDoc.numPages : digitalPages.length;
-            if (pageNum >= maxPages) {
-                // Loop back to page 1 if at end
-                pageNum = 1;
-            } else {
-                pageNum++;
-            }
-
-            if (pdfDoc) queueRenderPage(pageNum);
-            else renderDigitalPage(pageNum);
-
-            document.getElementById('viewportArea')?.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function updateNavButtons() {
-            const maxPages = pdfDoc ? pdfDoc.numPages : digitalPages.length;
-            const isFirst = (pageNum <= 1);
-            const isLast = (pageNum >= maxPages);
-
-            document.getElementById('prevBtn').disabled = isFirst;
-            if (document.getElementById('floatPrevBtn')) document.getElementById('floatPrevBtn').disabled = isFirst;
-            if (document.getElementById('docPrevBtn')) document.getElementById('docPrevBtn').disabled = isFirst;
-
-            const nextBtn = document.getElementById('nextBtn');
-            const docNextBtn = document.getElementById('docNextBtn');
-
-            if (isLast) {
-                if (docNextBtn) {
-                    docNextBtn.innerHTML = `Restart Reading <i class="fas fa-sync-alt ms-2"></i>`;
+                updateUIState(pageIndex);
+                if (isVoiceReading) {
+                    prepareAndSpeakCurrentSpread();
                 }
-            } else {
-                if (docNextBtn) {
-                    docNextBtn.innerHTML = `Proceed to Next Page <i class="fas fa-arrow-right ms-2"></i>`;
+            });
+
+            hideLoader();
+            updateUIState(0);
+        }
+
+        // Build Side Page Thumbnails Grid
+        function buildSidebarThumbnails() {
+            const list = document.getElementById('pagesThumbList');
+            list.innerHTML = '';
+
+            for (let i = 0; i < totalBookPages; i++) {
+                const item = document.createElement('div');
+                item.className = `thumb-item ${i === 0 || i === 1 ? 'active' : ''}`;
+                item.id = `thumb-${i}`;
+
+                const box = document.createElement('div');
+                box.className = 'thumb-preview-box';
+                box.id = `thumb-box-${i}`;
+
+                if (renderedCanvases[i]) {
+                    const previewCanvas = document.createElement('canvas');
+                    previewCanvas.width = 80;
+                    previewCanvas.height = 95;
+                    const ctx = previewCanvas.getContext('2d');
+                    ctx.drawImage(renderedCanvases[i], 0, 0, 80, 95);
+                    box.appendChild(previewCanvas);
+                } else {
+                    box.innerHTML = `<span class="text-xs text-muted">P. ${i + 1}</span>`;
                 }
+
+                item.appendChild(box);
+
+                const label = document.createElement('div');
+                label.className = 'thumb-label';
+                label.textContent = `Page ${i + 1}`;
+                item.appendChild(label);
+
+                item.onclick = () => {
+                    const targetPage = (i % 2 === 0) ? i : i - 1;
+                    pageFlip.flip(targetPage);
+                };
+
+                list.appendChild(item);
             }
         }
 
-        function updateProgressBar(current, total) {
-            const pct = (current / total) * 100;
-            document.getElementById('progressFill').style.width = `${pct}%`;
+        function updateSidebarThumbnail(index, canvas) {
+            const box = document.getElementById(`thumb-box-${index}`);
+            if (box && (!box.querySelector('canvas'))) {
+                box.innerHTML = '';
+                const previewCanvas = document.createElement('canvas');
+                previewCanvas.width = 80;
+                previewCanvas.height = 95;
+                const ctx = previewCanvas.getContext('2d');
+                ctx.drawImage(canvas, 0, 0, 80, 95);
+                box.appendChild(previewCanvas);
+            }
         }
 
-        // Zoom Controls
-        document.getElementById('zoomInBtn')?.addEventListener('click', () => {
-            if (scale < 2.5) {
-                scale += 0.25;
-                document.getElementById('zoomLevelText').textContent = `${Math.round(scale * 80)}%`;
-                if (pdfDoc) queueRenderPage(pageNum);
+        function updateUIState(currentLeftIndex) {
+            const leftPageNum = currentLeftIndex + 1;
+            const rightPageNum = Math.min(currentLeftIndex + 2, totalBookPages);
+
+            document.getElementById('spanSpreadPages').textContent = `${leftPageNum} - ${rightPageNum}`;
+            const numInput = document.getElementById('inputPageNum');
+            if (numInput) numInput.value = leftPageNum;
+
+            const isFirst = (currentLeftIndex <= 0);
+            const isLast = (rightPageNum >= totalBookPages);
+
+            document.getElementById('dockPrevBtn').disabled = isFirst;
+            document.getElementById('floatArrowPrev').disabled = isFirst;
+
+            document.getElementById('dockNextBtn').disabled = isLast;
+            document.getElementById('floatArrowNext').disabled = isLast;
+
+            // Highlight active thumbnails in side strip
+            document.querySelectorAll('.thumb-item').forEach((el, idx) => {
+                if (idx === currentLeftIndex || idx === currentLeftIndex + 1) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+
+            // Scroll active thumbnail into view
+            const activeThumb = document.getElementById(`thumb-${currentLeftIndex}`);
+            if (activeThumb) {
+                activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // Navigation Bindings
+        document.getElementById('dockNextBtn')?.addEventListener('click', () => pageFlip?.flipNext());
+        document.getElementById('dockPrevBtn')?.addEventListener('click', () => pageFlip?.flipPrev());
+        document.getElementById('floatArrowNext')?.addEventListener('click', () => pageFlip?.flipNext());
+        document.getElementById('floatArrowPrev')?.addEventListener('click', () => pageFlip?.flipPrev());
+
+        // Keyboard Arrow Keys & Spacebar
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'PageDown') pageFlip?.flipNext();
+            if (e.key === 'ArrowLeft' || e.key === 'PageUp') pageFlip?.flipPrev();
+            if (e.key === ' ') {
+                e.preventDefault();
+                toggleAutoPlay();
             }
         });
 
-        document.getElementById('zoomOutBtn')?.addEventListener('click', () => {
-            if (scale > 0.75) {
-                scale -= 0.25;
-                document.getElementById('zoomLevelText').textContent = `${Math.round(scale * 80)}%`;
-                if (pdfDoc) queueRenderPage(pageNum);
+        // Jump to Page Number Input
+        document.getElementById('inputPageNum')?.addEventListener('change', (e) => {
+            const val = parseInt(e.target.value);
+            if (val >= 1 && val <= totalBookPages && pageFlip) {
+                const targetPage = (val % 2 === 0) ? val - 2 : val - 1;
+                pageFlip.flip(Math.max(0, targetPage));
             }
         });
 
-        // Theme Cycling: Light -> Sepia -> Dark -> Light
-        document.getElementById('themeCycleBtn')?.addEventListener('click', () => {
+        // Bottom Centered Play / Pause Button Handler
+        function toggleAutoPlay() {
+            const btn = document.getElementById('btnMainPlay');
+            const icon = document.getElementById('mainPlayIcon');
+            const text = document.getElementById('mainPlayText');
+
+            if (isPlaying) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+                isPlaying = false;
+                btn.classList.remove('playing');
+                icon.className = 'fas fa-play';
+                text.textContent = 'Auto Play';
+            } else {
+                isPlaying = true;
+                btn.classList.add('playing');
+                icon.className = 'fas fa-pause';
+                text.textContent = 'Pause';
+
+                startAutoPlayTimer();
+            }
+        }
+
+        function startAutoPlayTimer() {
+            if (autoPlayInterval) clearInterval(autoPlayInterval);
+            autoPlayInterval = setInterval(() => {
+                const currentIndex = pageFlip.getCurrentPageIndex();
+                if (currentIndex >= totalBookPages - 2) {
+                    pageFlip.flip(0);
+                } else {
+                    pageFlip.flipNext();
+                }
+            }, autoPlaySpeed);
+        }
+
+        document.getElementById('btnMainPlay')?.addEventListener('click', toggleAutoPlay);
+
+        // Speed Change Listener
+        document.getElementById('speedSelect')?.addEventListener('change', function() {
+            autoPlaySpeed = parseInt(this.value);
+            if (isPlaying) {
+                startAutoPlayTimer();
+            }
+        });
+
+        // Side Pages Drawer Toggle Button
+        document.getElementById('btnTogglePages')?.addEventListener('click', function() {
+            const sidebar = document.getElementById('pagesSidebar');
+            sidebar.classList.toggle('collapsed');
+            this.classList.toggle('active', !sidebar.classList.contains('collapsed'));
+        });
+
+        // Theme Cycling (Light / Sepia / Dark)
+        document.getElementById('btnThemeToggle')?.addEventListener('click', function() {
             const themes = ['light', 'sepia', 'dark'];
-            const labels = {'light': 'Light ☀️', 'sepia': 'Sepia 📜', 'dark': 'Dark 🌙'};
+            const labels = {'light': 'Light', 'sepia': 'Sepia', 'dark': 'Dark'};
             const icons = {'light': 'fa-sun', 'sepia': 'fa-book-open', 'dark': 'fa-moon'};
 
             let idx = (themes.indexOf(currentTheme) + 1) % themes.length;
             currentTheme = themes[idx];
 
             document.documentElement.setAttribute('data-theme', currentTheme);
-            document.getElementById('themeLabel').textContent = labels[currentTheme];
+            document.getElementById('themeText').textContent = labels[currentTheme];
             document.getElementById('themeIcon').className = `fas ${icons[currentTheme]}`;
         });
 
-        // Sidebar Toggle
-        const sidebar = document.getElementById('readerSidebar');
-        document.getElementById('toggleSidebarBtn')?.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-        });
-        document.getElementById('closeSidebarBtn')?.addEventListener('click', () => {
-            sidebar.classList.add('collapsed');
-        });
-
-        // Keyboard Navigation (Arrow Keys)
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'PageDown') onNextPage();
-            if (e.key === 'ArrowLeft' || e.key === 'PageUp') onPrevPage();
-        });
-
-        // Click Event Bindings
-        document.getElementById('prevBtn')?.addEventListener('click', onPrevPage);
-        document.getElementById('nextBtn')?.addEventListener('click', onNextPage);
-        document.getElementById('floatPrevBtn')?.addEventListener('click', onPrevPage);
-        document.getElementById('floatNextBtn')?.addEventListener('click', onNextPage);
-
-        document.getElementById('pageNumInput')?.addEventListener('change', (e) => {
-            let val = parseInt(e.target.value);
-            const maxPages = pdfDoc ? pdfDoc.numPages : digitalPages.length;
-            if (val >= 1 && val <= maxPages) {
-                pageNum = val;
-                if (pdfDoc) queueRenderPage(pageNum);
-                else renderDigitalPage(pageNum);
-            }
-        });
-
-        // Fullscreen Toggle
-        document.getElementById('fullscreenBtn')?.addEventListener('click', () => {
+        // Fullscreen
+        document.getElementById('btnFullscreen')?.addEventListener('click', () => {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
             } else {

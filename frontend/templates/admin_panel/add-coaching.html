@@ -1,0 +1,322 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAIQ - Add Coaching Institute{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-bold mb-4 h5 text-primary-light">🎯 Add New Coaching Institute</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/coaching-list/">Coaching Institutes</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-primary-light fw-medium">Add Coaching</span>
+    </div>
+  </div>
+  <a class="btn btn-outline-primary radius-8 d-flex align-items-center gap-6" href="/admin-panel/coaching-list/">
+    <i class="ri-arrow-left-line"></i>
+    <span>Back to Coaching Directory</span>
+  </a>
+</div>
+
+<div class="card mt-24">
+  <div class="card-header border-bottom bg-base py-16 px-24">
+    <h6 class="text-lg fw-bold mb-0 text-primary-600">
+      <i class="ri-focus-2-line me-2"></i> Coaching Center Details & Onboarding
+    </h6>
+    <span class="text-xs text-secondary-light">Register a coaching center, assign exam specializations, director credentials, and course access.</span>
+  </div>
+  <div class="card-body p-24">
+    <form id="addCoachingForm">
+      {% csrf_token %}
+      <input type="hidden" id="type" name="type" value="coaching">
+
+      <div class="row gy-3">
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="name">Coaching Institute / Center Name <span class="text-danger-600">*</span></label>
+          <input type="text" class="form-control radius-8" id="name" name="name" placeholder="e.g. Apex IIT-JEE & NEET Academy" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="board_affiliation">Target Competitive Exams / Specialization <span class="text-danger-600">*</span></label>
+          <input type="text" class="form-control radius-8" id="board_affiliation" name="board_affiliation" placeholder="e.g. NEET-UG, IIT-JEE, CUET, Foundation, UPSC" required>
+          <span class="text-xs text-secondary-light">Specify the primary target exams for this coaching institute.</span>
+        </div>
+
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="status">Onboarding Status</label>
+          <select class="form-control form-select radius-8" id="status" name="status">
+            <option value="active" selected>Active (Immediate Access)</option>
+            <option value="pending">Pending Review</option>
+            <option value="suspended">Suspended</option>
+          </select>
+        </div>
+
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="city">City / Center Hub <span class="text-danger-600">*</span></label>
+          <input type="text" class="form-control radius-8" id="city" name="city" placeholder="e.g. Kota, Delhi, Hyderabad" required>
+        </div>
+
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="state">State <span class="text-danger-600">*</span></label>
+          <input type="text" class="form-control radius-8" id="state" name="state" placeholder="e.g. Rajasthan, Delhi, Telangana" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="admin_user">Assign Center Director / Admin User Account <span class="text-danger-600">*</span></label>
+          <select class="form-control form-select radius-8" id="admin_user" name="admin_user" required>
+            <option value="" disabled selected>-- Select Admin / Director User --</option>
+          </select>
+          <span class="text-xs text-secondary-light">This user will manage batches, faculty, and student admissions for this coaching.</span>
+        </div>
+
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="initial_batch">Initial Launch Batch Name (Optional)</label>
+          <input type="text" class="form-control radius-8" id="initial_batch" name="initial_batch" placeholder="e.g. NEET 2027 Droppers Super-30">
+          <span class="text-xs text-secondary-light">Automatically creates the first batch upon onboarding.</span>
+        </div>
+
+        <div class="col-md-12">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="address">Full Campus / Center Address <span class="text-danger-600">*</span></label>
+          <textarea class="form-control radius-8" id="address" name="address" rows="3" placeholder="Enter full street, landmark, and building address..." required></textarea>
+        </div>
+
+        <!-- Section: Allot Courses & AI Books -->
+        <div class="col-12 mt-24">
+          <div class="card border border-neutral-200 radius-12 overflow-hidden">
+            <div class="card-header bg-neutral-50 py-16 px-24 border-bottom">
+              <h6 class="text-md fw-bold mb-0 text-primary-600"><i class="ri-book-read-line me-2"></i> Allot EduAiQ Courses, Test Series & AI Interactive Books</h6>
+              <span class="text-xs text-secondary-light">Select courses and AI books allotted to this coaching. Enrolled students will get full access.</span>
+            </div>
+            <div class="card-body p-24">
+              <div id="courseAllotmentContainer" class="row gy-3">
+                <div class="col-12 text-muted py-2"><i class="ri-loader-4-line ri-spin me-2"></i> Loading available courses & books...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Category Allotment -->
+        <div class="col-12 mt-16">
+          <div class="card border border-neutral-200 radius-12 overflow-hidden">
+            <div class="card-header bg-neutral-50 py-16 px-24 border-bottom">
+              <h6 class="text-md fw-bold mb-0 text-primary-600"><i class="ri-folders-line me-2"></i> Allot Entire Course Categories</h6>
+              <span class="text-xs text-secondary-light">Enables automatic access to all current and future courses/tests added to the selected categories.</span>
+            </div>
+            <div class="card-body p-24">
+              <div id="categoryAllotmentContainer" class="row gy-3">
+                <div class="col-12 text-muted py-2"><i class="ri-loader-4-line ri-spin me-2"></i> Loading categories...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 mt-24 text-end">
+          <a href="/admin-panel/coaching-list/" class="btn btn-outline-secondary px-24 py-12 radius-8 me-2">Cancel</a>
+          <button type="submit" class="btn btn-primary-600 px-32 py-12 radius-8 fw-bold" id="submitBtn">
+            <i class="ri-check-line me-2"></i> Register Coaching Institute
+          </button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+  function showToast(msg, type = 'success') {
+    const alertDiv = $(`
+      <div class="alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed top-0 end-0 m-24 z-3 shadow-lg" role="alert">
+        <strong>${type === 'success' ? 'Success!' : 'Error!'}</strong> ${msg}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `);
+    $('body').append(alertDiv);
+    setTimeout(() => { alertDiv.alert('close'); }, 3000);
+  }
+
+  // Load Admin Users
+  function loadUsers() {
+    $.ajax({
+      url: '/accounts/users/?role=institution&page_size=100',
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        const select = $('#admin_user');
+        const users = res.results || res || [];
+        if (users.length === 0) {
+          select.append('<option value="" disabled>No institution/director users available</option>');
+          return;
+        }
+        users.forEach(u => {
+          select.append(`<option value="${u.id}">${u.first_name || u.username} (${u.email || u.username})</option>`);
+        });
+      },
+      error: function() {
+        $.ajax({
+          url: '/accounts/users/?page_size=100',
+          type: 'GET',
+          xhrFields: { withCredentials: true },
+          success: function(res) {
+            const select = $('#admin_user');
+            const users = res.results || res || [];
+            users.forEach(u => {
+              select.append(`<option value="${u.id}">${u.first_name || u.username} (${u.role || 'user'})</option>`);
+            });
+          }
+        });
+      }
+    });
+  }
+
+  // Load Courses
+  function loadCourses() {
+    $.ajax({
+      url: '/courses/courses/?page_size=100',
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        const container = $('#courseAllotmentContainer');
+        const list = res.results || res.courses || [];
+        if (list.length === 0) {
+          container.html('<div class="col-12 text-muted">No courses available.</div>');
+          return;
+        }
+        let html = '';
+        list.forEach(c => {
+          const isBook = c.category_slug === 'ai-books' || (c.category && c.category.slug === 'ai-books');
+          const badge = isBook ? '<span class="badge bg-purple text-white ms-2">AI Book</span>' : '<span class="badge bg-info text-white ms-2">Course</span>';
+          html += `
+            <div class="col-md-6 col-lg-4">
+              <div class="form-check p-12 border radius-8 bg-neutral-50 d-flex align-items-center gap-2">
+                <input class="form-check-input flex-shrink-0" type="checkbox" name="allowed_courses" value="${c.id}" id="inst_course_${c.id}">
+                <label class="form-check-label w-100 cursor-pointer mb-0 text-sm" for="inst_course_${c.id}">
+                  <span class="fw-semibold text-dark d-block">${c.title} ${badge}</span>
+                  <span class="text-xs text-secondary-light">₹${c.price} • ${c.category_name || 'General'}</span>
+                </label>
+              </div>
+            </div>
+          `;
+        });
+        container.html(html);
+      },
+      error: function() {
+        $('#courseAllotmentContainer').html('<div class="col-12 text-danger">Failed to load courses list.</div>');
+      }
+    });
+  }
+
+  // Load Categories
+  function loadCategories() {
+    $.ajax({
+      url: '/courses/categories/?page_size=100',
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        const container = $('#categoryAllotmentContainer');
+        const list = res.results || res || [];
+        if (list.length === 0) {
+          container.html('<div class="col-12 text-muted">No categories available.</div>');
+          return;
+        }
+        let html = '';
+        list.forEach(cat => {
+          html += `
+            <div class="col-md-4 col-lg-3">
+              <div class="form-check p-12 border radius-8 bg-neutral-50 d-flex align-items-center gap-2">
+                <input class="form-check-input flex-shrink-0" type="checkbox" name="allowed_categories" value="${cat.id}" id="inst_cat_${cat.id}">
+                <label class="form-check-label w-100 cursor-pointer mb-0 text-sm fw-semibold text-dark" for="inst_cat_${cat.id}">
+                  ${cat.name}
+                </label>
+              </div>
+            </div>
+          `;
+        });
+        container.html(html);
+      },
+      error: function() {
+        $('#categoryAllotmentContainer').html('<div class="col-12 text-danger">Failed to load categories.</div>');
+      }
+    });
+  }
+
+  // Submit Handler
+  $('#addCoachingForm').on('submit', function(e) {
+    e.preventDefault();
+    $('#submitBtn').prop('disabled', true).html('<i class="ri-loader-4-line ri-spin me-2"></i> Registering Coaching Center...');
+
+    const match = document.cookie.match(/csrftoken=([^;]+)/);
+    const token = match ? match[1] : $('[name=csrfmiddlewaretoken]').val();
+    
+    const selectedCourses = $('input[name="allowed_courses"]:checked').map(function() { return parseInt($(this).val()); }).get();
+    const selectedCategories = $('input[name="allowed_categories"]:checked').map(function() { return parseInt($(this).val()); }).get();
+
+    const data = {
+      name: $('#name').val().trim(),
+      type: 'coaching',
+      board_affiliation: $('#board_affiliation').val().trim(),
+      status: $('#status').val(),
+      city: $('#city').val().trim(),
+      state: $('#state').val().trim(),
+      admin_user: parseInt($('#admin_user').val()),
+      address: $('#address').val().trim(),
+      allowed_courses: selectedCourses,
+      allowed_categories: selectedCategories
+    };
+
+    const initialBatchName = $('#initial_batch').val().trim();
+
+    $.ajax({
+      url: '/api/institutions/',
+      type: 'POST',
+      headers: { 'X-CSRFToken': token },
+      contentType: 'application/json',
+      data: JSON.stringify(data),
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        const coachingId = res.institution ? res.institution.id : null;
+
+        // If initial batch provided, create it automatically
+        if (coachingId && initialBatchName) {
+          $.ajax({
+            url: `/api/institutions/${coachingId}/batches/`,
+            type: 'POST',
+            headers: { 'X-CSRFToken': token },
+            contentType: 'application/json',
+            data: JSON.stringify({
+              institution: coachingId,
+              name: initialBatchName,
+              target_exam: $('#board_affiliation').val().trim() || 'General',
+              is_active: true
+            }),
+            xhrFields: { withCredentials: true }
+          });
+        }
+
+        showToast("Coaching Institute registered successfully!", 'success');
+        setTimeout(function() {
+          window.location.href = "/admin-panel/coaching-list/";
+        }, 1500);
+      },
+      error: function(xhr) {
+        $('#submitBtn').prop('disabled', false).html('<i class="ri-check-line me-2"></i> Register Coaching Institute');
+        let errorMsg = "Failed to save coaching institute.";
+        if (xhr.responseJSON && xhr.responseJSON.errors) {
+          errorMsg = JSON.stringify(xhr.responseJSON.errors, null, 2);
+        }
+        showToast(errorMsg, 'error');
+      }
+    });
+  });
+
+  loadUsers();
+  loadCourses();
+  loadCategories();
+});
+</script>
+{% endblock %}

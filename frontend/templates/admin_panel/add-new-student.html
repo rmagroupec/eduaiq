@@ -57,7 +57,7 @@
     <div class="col-lg-12">
       <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden border border-neutral-200">
         <div class="card-header border-bottom bg-neutral-50 py-16 px-24">
-          <h6 class="text-lg fw-bold mb-0 text-primary-600"><i class="ri-graduation-cap-line me-2"></i> Academic & Personal Profile</h6>
+          <h6 class="text-lg fw-bold mb-0 text-primary-600"><i class="ri-graduation-cap-line me-2"></i> Academic, Batch & Target Exam Profile</h6>
         </div>
         <div class="card-body p-24">
           <div class="row gy-3">
@@ -74,8 +74,18 @@
               <input type="text" class="form-control radius-8" id="admission_no" name="admission_no" placeholder="ADM2026001" required>
             </div>
             <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="class_grade">Class / Grade</label>
-              <input type="text" class="form-control radius-8" id="class_grade" name="class_grade" placeholder="e.g. Class 10" value="Class 10">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="class_grade">Class / Grade / Target Exam</label>
+              <input type="text" class="form-control radius-8" id="class_grade" name="class_grade" placeholder="e.g. Class 10, NEET 2027, JEE Main" value="Class 10">
+            </div>
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="batch_id">Assign Target Batch (Optional)</label>
+              <select class="form-control form-select radius-8" id="batch_id" name="batch_id">
+                <option value="">-- No Specific Batch / General --</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="section">Section</label>
+              <input type="text" class="form-control radius-8" id="section" name="section" placeholder="e.g. A, Morning, Batch-1" value="A">
             </div>
           </div>
         </div>
@@ -114,6 +124,7 @@
 
   document.addEventListener('DOMContentLoaded', function() {
     loadAllowedCoursesChecklist();
+    loadAvailableBatches();
 
     document.getElementById('addInstitutionStudentForm').addEventListener('submit', async function(e) {
       e.preventDefault();
@@ -121,8 +132,12 @@
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value.trim();
       const admission_no = document.getElementById('admission_no').value.trim();
+      const batchId = document.getElementById('batch_id').value;
 
       const selectedCourses = Array.from(document.querySelectorAll('input[name="course_ids"]:checked')).map(cb => cb.value);
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const instId = urlParams.get('institution_id');
 
       const payload = {
         username: username,
@@ -133,6 +148,9 @@
         last_name: document.getElementById('last_name').value.trim(),
         admission_no: admission_no,
         class_grade: document.getElementById('class_grade').value.trim(),
+        section: document.getElementById('section').value.trim(),
+        batch_id: batchId ? parseInt(batchId) : null,
+        institution: instId ? parseInt(instId) : null,
         course_ids: selectedCourses
       };
 
@@ -153,7 +171,7 @@
             <div class="alert alert-success radius-12 p-16 d-flex align-items-center justify-content-between mb-24">
               <div>
                 <strong><i class="ri-checkbox-circle-fill me-2"></i> Student Account Created Successfully!</strong><br>
-                <span>Username: <code>${data.student_username}</code> | Courses Enrolled: ${data.enrolled_courses.join(', ') || 'None'}</span>
+                <span>Username: <code>${data.student_username}</code> | Batch: <strong>${data.batch_name || 'None'}</strong> | Courses Enrolled: ${data.enrolled_courses.join(', ') || 'None'}</span>
               </div>
               <a href="/admin-panel/student-list/" class="btn btn-sm btn-success">View Student List</a>
             </div>
@@ -176,6 +194,34 @@
       }
     });
   });
+
+  async function loadAvailableBatches() {
+    const batchSelect = document.getElementById('batch_id');
+    const urlParams = new URLSearchParams(window.location.search);
+    const instId = urlParams.get('institution_id');
+
+    let fetchUrl = `${API_BASE_URL}/api/batches/`;
+    if (instId) {
+      fetchUrl = `${API_BASE_URL}/api/institutions/${instId}/batches/`;
+    }
+
+    try {
+      const response = await fetch(fetchUrl, { credentials: 'include' });
+      const data = await response.json();
+      const batches = data.results || [];
+
+      if (batches.length > 0) {
+        batches.forEach(b => {
+          const opt = document.createElement('option');
+          opt.value = b.id;
+          opt.textContent = `${b.name} (${b.target_exam || 'General'} - ${b.institution_name || 'Institution'})`;
+          batchSelect.appendChild(opt);
+        });
+      }
+    } catch (e) {
+      console.warn("Could not load batches:", e);
+    }
+  }
 
   async function loadAllowedCoursesChecklist() {
     const container = document.getElementById('courseChecklistContainer');

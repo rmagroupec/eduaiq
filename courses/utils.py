@@ -45,7 +45,7 @@ def is_course_accessible_by_user(user, course):
     if not user or not user.is_authenticated:
         return False
 
-    if user.is_superuser or getattr(user, 'role', '') == 'admin':
+    if user.is_superuser or user.is_staff or getattr(user, 'role', '') in ('admin', 'super_admin', 'staff'):
         return True
 
     from courses.models import Enrollment
