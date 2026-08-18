@@ -1,0 +1,247 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAIQ - Institution Leads{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Institution Leads (CRM)</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Institution Leads</span>
+    </div>
+  </div>
+  <a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/add-new-lead/">
+    <span class="d-flex text-md"><i class="ri-add-large-line"></i></span>
+    Add Lead
+  </a>
+</div>
+
+<div class="card h-100 mt-24">
+  <div class="card-body p-24">
+    <!-- Filters -->
+    <div class="row gy-3 mb-24 align-items-end">
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="stageFilter">Stage</label>
+        <select class="form-control form-select radius-8" id="stageFilter">
+          <option value="">All Stages</option>
+          <option value="new">New</option>
+          <option value="contacted">Contacted</option>
+          <option value="demo">Demo Scheduled</option>
+          <option value="negotiation">Negotiation</option>
+          <option value="converted">Converted</option>
+          <option value="lost">Lost</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="priorityFilter">Priority</label>
+        <select class="form-control form-select radius-8" id="priorityFilter">
+          <option value="">All Priorities</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <div class="position-relative">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="searchQuery">Search</label>
+          <input type="text" class="form-control radius-8" id="searchQuery" placeholder="Name, institution, or phone">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-outline-primary-600 w-100 radius-8" id="clearFiltersBtn">Clear Filters</button>
+      </div>
+    </div>
+
+    <div class="table-responsive mt-24">
+      <table class="table border-neutral-200 table-hover align-middle">
+        <thead>
+          <tr class="bg-neutral-50">
+            <th scope="col">ID</th>
+            <th scope="col">Lead / Institution</th>
+            <th scope="col">Contact</th>
+            <th scope="col">City</th>
+            <th scope="col">Stage</th>
+            <th scope="col">Priority</th>
+            <th scope="col">Next Follow-up</th>
+            <th scope="col" class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody id="leadsTableBody">
+          <tr><td colspan="8" class="text-center py-40"><div class="spinner-border text-primary"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 mt-24">
+      <span class="text-sm text-secondary-light" id="tableInfoSpan">Showing 0 to 0 of 0 entries</span>
+      <nav aria-label="Page navigation" id="paginationNav" class="d-none">
+        <ul class="pagination pagination-primary mb-0 gap-8" id="paginationUl"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+  let currentPage = 1;
+
+  function getCsrfToken() {
+    const match = document.cookie.match(/csrftoken=([^;]+)/);
+    return match ? match[1] : null;
+  }
+
+  function stageBadge(stage) {
+    const map = {
+      new: 'bg-info-100 text-info-600', contacted: 'bg-primary-100 text-primary-600',
+      demo: 'bg-warning-100 text-warning-600', negotiation: 'bg-orange-100 text-orange-600',
+      converted: 'bg-success-100 text-success-600', lost: 'bg-danger-100 text-danger-600',
+    };
+    return `<span class="px-16 py-4 radius-4 fw-medium text-sm ${map[stage] || 'bg-neutral-100'}">${stage.toUpperCase()}</span>`;
+  }
+
+  function priorityBadge(p) {
+    const map = { high: 'text-danger-600', medium: 'text-warning-600', low: 'text-secondary-light' };
+    return `<span class="fw-semibold ${map[p] || ''}">${p ? p.toUpperCase() : '-'}</span>`;
+  }
+
+  function loadLeads(page = 1) {
+    currentPage = page;
+    const stage = $('#stageFilter').val();
+    const priority = $('#priorityFilter').val();
+    const q = $('#searchQuery').val();
+
+    let url = `/api/crm/leads/?page=${page}&page_size=20&detailed=true`;
+    if (stage) url += `&stage=${stage}`;
+    if (priority) url += `&priority=${priority}`;
+    if (q) url += `&q=${encodeURIComponent(q)}`;
+
+    $.ajax({
+      url: url, type: 'GET', xhrFields: { withCredentials: true },
+      success: function(response) { renderTable(response); renderPagination(response); },
+      error: function() {
+        $('#leadsTableBody').html(`<tr><td colspan="8" class="text-center py-40 text-danger-600">
+          <i class="ri-error-warning-line text-xxl d-block mb-8"></i>Failed to load leads.</td></tr>`);
+      }
+    });
+  }
+
+  function renderTable(data) {
+    const tbody = $('#leadsTableBody');
+    tbody.empty();
+    if (!data.results || data.results.length === 0) {
+      tbody.html(`<tr><td colspan="8" class="text-center py-40 text-secondary-light">
+        <i class="ri-folder-open-line text-xxl d-block mb-8"></i>No leads yet.</td></tr>`);
+      $('#tableInfoSpan').text('Showing 0 to 0 of 0 entries');
+      return;
+    }
+    data.results.forEach(l => {
+      const convertBtn = (l.stage !== 'converted')
+        ? `<button class="btn btn-sm btn-outline-success px-8 py-4 radius-8 convert-lead-btn" data-id="${l.id}" title="Convert to Institution"><i class="ri-arrow-right-circle-line text-md"></i></button>`
+        : `<a href="/admin-panel/institution-details/?id=${l.converted_institution_id}" class="btn btn-sm btn-outline-neutral-300 px-8 py-4 radius-8" title="View Institution"><i class="ri-eye-line text-md"></i></a>`;
+      tbody.append(`
+        <tr>
+          <td><span class="text-secondary-light fw-medium">${l.id}</span></td>
+          <td>
+            <h6 class="text-md mb-0 fw-semibold text-neutral-800">${l.lead_name}</h6>
+            <span class="text-xs text-secondary-light">${l.institution_name || 'Individual'}</span>
+          </td>
+          <td>${l.phone}${l.email ? '<br><span class="text-xs text-secondary-light">' + l.email + '</span>' : ''}</td>
+          <td>${l.city || '-'}</td>
+          <td>${stageBadge(l.stage)}</td>
+          <td>${priorityBadge(l.priority)}</td>
+          <td>${l.next_follow_up_date || '-'}</td>
+          <td class="text-center">
+            <div class="d-flex align-items-center justify-content-center gap-8">
+              ${convertBtn}
+              <button class="btn btn-sm btn-outline-danger px-8 py-4 radius-8 delete-lead-btn" data-id="${l.id}" title="Delete"><i class="ri-delete-bin-line text-md"></i></button>
+            </div>
+          </td>
+        </tr>
+      `);
+    });
+    const startEntry = (data.page - 1) * data.page_size + 1;
+    const endEntry = Math.min(data.page * data.page_size, data.count);
+    $('#tableInfoSpan').text(`Showing ${startEntry} to ${endEntry} of ${data.count} entries`);
+  }
+
+  function renderPagination(data) {
+    const nav = $('#paginationNav'); const ul = $('#paginationUl'); ul.empty();
+    if (data.total_pages <= 1) { nav.addClass('d-none'); return; }
+    nav.removeClass('d-none');
+    const prevDisabled = data.page === 1 ? 'disabled' : '';
+    ul.append(`<li class="page-item ${prevDisabled}"><button class="page-link py-6 px-12" data-page="${data.page - 1}" ${prevDisabled}>Previous</button></li>`);
+    for (let i = 1; i <= data.total_pages; i++) {
+      ul.append(`<li class="page-item ${i === data.page ? 'active' : ''}"><button class="page-link py-6 px-12" data-page="${i}">${i}</button></li>`);
+    }
+    const nextDisabled = data.page === data.total_pages ? 'disabled' : '';
+    ul.append(`<li class="page-item ${nextDisabled}"><button class="page-link py-6 px-12" data-page="${data.page + 1}" ${nextDisabled}>Next</button></li>`);
+  }
+
+  $('#stageFilter, #priorityFilter').on('change', function() { loadLeads(1); });
+  $('#searchQuery').on('keyup', function() { loadLeads(1); });
+  $('#clearFiltersBtn').on('click', function() {
+    $('#stageFilter').val(''); $('#priorityFilter').val(''); $('#searchQuery').val('');
+    loadLeads(1);
+  });
+  $(document).on('click', '#paginationUl .page-link', function() {
+    const page = $(this).data('page'); if (page) loadLeads(page);
+  });
+
+  $(document).on('click', '.convert-lead-btn', function() {
+    const id = $(this).data('id');
+    showConfirmModal({
+      title: 'Convert Lead to Institution',
+      message: 'Convert this lead into a live Institution record? This action will activate their profile.',
+      icon: 'ri-building-line',
+      iconBgClass: 'bg-success-50',
+      iconColorClass: 'text-success-600',
+      confirmText: 'Convert Now',
+      confirmBtnClass: 'btn-success-600',
+      onConfirm: function() {
+        const token = getCsrfToken();
+        $.ajax({
+          url: `/api/crm/leads/${id}/convert/`, type: 'POST',
+          headers: { 'X-CSRFToken': token }, contentType: 'application/json', data: JSON.stringify({}),
+          xhrFields: { withCredentials: true },
+          success: function() { showToast('Lead converted to Institution!', 'success'); loadLeads(currentPage); },
+          error: function(err) {
+            let msg = 'Failed to convert lead.';
+            if (err.responseJSON && err.responseJSON.errors) msg = JSON.stringify(err.responseJSON.errors);
+            showToast(msg, 'error');
+          }
+        });
+      }
+    });
+  });
+
+  $(document).on('click', '.delete-lead-btn', function() {
+    const id = $(this).data('id');
+    showConfirmModal({
+      title: 'Delete Lead',
+      message: 'Are you sure you want to delete this lead? This action cannot be undone.',
+      icon: 'ri-delete-bin-line',
+      iconBgClass: 'bg-danger-50',
+      iconColorClass: 'text-danger-600',
+      confirmText: 'Delete Lead',
+      confirmBtnClass: 'btn-danger-600',
+      onConfirm: function() {
+        const token = getCsrfToken();
+        $.ajax({
+          url: `/api/crm/leads/${id}/`, type: 'DELETE',
+          headers: { 'X-CSRFToken': token }, xhrFields: { withCredentials: true },
+          success: function() { showToast('Lead deleted.', 'success'); loadLeads(currentPage); },
+          error: function() { showToast('Failed to delete lead.', 'error'); }
+        });
+      }
+    });
+  });
+
+  loadLeads();
+});
+</script>
+{% endblock %}

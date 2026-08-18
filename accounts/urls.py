@@ -53,4 +53,16 @@ urlpatterns = [
     path('api/check-email/', views.check_email, name='check-email'),
     path('api/check-phone/', views.check_phone, name='check-phone'),
     path('api/user-stats/', views.user_stats, name='user-stats'),
+    path('api/departments/', views.department_api, name='department_api'),
+    path('api/designations/', views.designation_api, name='designation_api'),
+    path('api/employee/onboard/', views.employee_onboarding_api, name='employee_onboarding_api'),
+    path('api/attendance/', views.attendance_api, name='attendance_api'),
+    path('api/attendance/check-in/', views.attendance_check_in_api, name='attendance_check_in_api'),
+    path('api/attendance/check-out/', views.attendance_check_out_api, name='attendance_check_out_api'),
+    path('api/attendance/today-status/', views.attendance_today_status_api, name='attendance_today_status_api'),
+    path('api/wfh/request/', views.wfh_request_api, name='wfh_request_api'),
+    path('api/wfh/approve/', views.wfh_approve_api, name='wfh_approve_api'),
 ]
+
+
+

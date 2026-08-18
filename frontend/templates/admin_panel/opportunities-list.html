@@ -1,0 +1,212 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAIQ - Opportunities & Deal Pipeline{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Opportunities & Deal Pipeline</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Opportunities</span>
+    </div>
+  </div>
+  <a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/add-opportunity/">
+    <span class="d-flex text-md"><i class="ri-add-large-line"></i></span>
+    Add Opportunity
+  </a>
+</div>
+
+<div class="card h-100 mt-24">
+  <div class="card-body p-24">
+    <!-- Pipeline total summary banner -->
+    <div class="alert alert-primary-100 text-primary-800 radius-8 p-16 mb-24 d-flex align-items-center justify-content-between">
+      <div>
+        <i class="ri-money-dollar-circle-line text-xl me-2 align-middle"></i>
+        <span class="fw-semibold">Active Pipeline Total:</span>
+        <span class="fs-5 fw-bold ms-2" id="pipelineTotalSpan">Rs. 0</span>
+      </div>
+      <span class="text-xs text-secondary-light">Excludes Won & Lost deals</span>
+    </div>
+
+    <!-- Filters -->
+    <div class="row gy-3 mb-24 align-items-end">
+      <div class="col-md-4">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="stageFilter">Stage Filter</label>
+        <select class="form-control form-select radius-8" id="stageFilter">
+          <option value="">All Stages</option>
+          <option value="prospecting">Prospecting</option>
+          <option value="qualification">Qualification</option>
+          <option value="proposal">Proposal Sent</option>
+          <option value="negotiation">Negotiation</option>
+          <option value="won">Won</option>
+          <option value="lost">Lost</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <button class="btn btn-outline-primary-600 w-100 radius-8" id="clearFiltersBtn">Clear Filters</button>
+      </div>
+    </div>
+
+    <div class="table-responsive mt-24">
+      <table class="table border-neutral-200 table-hover align-middle">
+        <thead>
+          <tr class="bg-neutral-50">
+            <th scope="col">ID</th>
+            <th scope="col">Deal Name</th>
+            <th scope="col">Linked Record</th>
+            <th scope="col">Amount (INR)</th>
+            <th scope="col">Prob %</th>
+            <th scope="col">Weighted Value</th>
+            <th scope="col">Stage</th>
+            <th scope="col">Expected Close</th>
+            <th scope="col" class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody id="oppsTableBody">
+          <tr><td colspan="9" class="text-center py-40"><div class="spinner-border text-primary"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 mt-24">
+      <span class="text-sm text-secondary-light" id="tableInfoSpan">Showing 0 to 0 of 0 entries</span>
+      <nav aria-label="Page navigation" id="paginationNav" class="d-none">
+        <ul class="pagination pagination-primary mb-0 gap-8" id="paginationUl"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+  let currentPage = 1;
+
+  function getCsrfToken() {
+    const match = document.cookie.match(/csrftoken=([^;]+)/);
+    return match ? match[1] : null;
+  }
+
+  function loadOpps(page = 1) {
+    currentPage = page;
+    const stage = $('#stageFilter').val();
+    let url = `/api/crm/opportunities/?page=${page}&page_size=20&detailed=true`;
+    if (stage) url += `&stage=${stage}`;
+
+    $.ajax({
+      url: url, type: 'GET', xhrFields: { withCredentials: true },
+      success: function(response) {
+        $('#pipelineTotalSpan').text('₹ ' + Math.round(Number(response.pipeline_total || 0)).toLocaleString('en-IN'));
+        renderTable(response);
+        renderPagination(response);
+      },
+      error: function() {
+        $('#oppsTableBody').html(`<tr><td colspan="9" class="text-center py-40 text-danger-600">Failed to load opportunities.</td></tr>`);
+      }
+    });
+  }
+
+  function renderTable(data) {
+    const tbody = $('#oppsTableBody');
+    tbody.empty();
+    if (!data.results || data.results.length === 0) {
+      tbody.html(`<tr><td colspan="9" class="text-center py-40 text-secondary-light">No opportunities found.</td></tr>`);
+      $('#tableInfoSpan').text('Showing 0 to 0 of 0 entries');
+      return;
+    }
+    data.results.forEach(o => {
+      let linked = '-';
+      if (o.lead_id) linked = `<span class="badge bg-primary-50 text-primary-600 border border-primary-200">Lead: ${o.lead_name}</span>`;
+      else if (o.student_inquiry_id) linked = `<span class="badge bg-info-50 text-info-600 border border-info-200">Inquiry: ${o.student_inquiry_name}</span>`;
+
+      tbody.append(`
+        <tr>
+          <td><span class="text-secondary-light fw-medium">${o.id}</span></td>
+          <td><h6 class="text-md mb-0 fw-semibold text-neutral-800">${o.name}</h6></td>
+          <td>${linked}</td>
+          <td class="fw-bold text-success-600">₹ ${Math.round(Number(o.amount)).toLocaleString('en-IN')}</td>
+          <td>${o.probability_pct}%</td>
+          <td class="fw-semibold">₹ ${Math.round(Number(o.weighted_amount)).toLocaleString('en-IN')}</td>
+          <td>
+            <select class="form-select form-select-sm radius-4 stage-select" data-id="${o.id}">
+              <option value="prospecting" ${o.stage === 'prospecting' ? 'selected' : ''}>Prospecting</option>
+              <option value="qualification" ${o.stage === 'qualification' ? 'selected' : ''}>Qualification</option>
+              <option value="proposal" ${o.stage === 'proposal' ? 'selected' : ''}>Proposal Sent</option>
+              <option value="negotiation" ${o.stage === 'negotiation' ? 'selected' : ''}>Negotiation</option>
+              <option value="won" ${o.stage === 'won' ? 'selected' : ''}>Won</option>
+              <option value="lost" ${o.stage === 'lost' ? 'selected' : ''}>Lost</option>
+            </select>
+          </td>
+          <td>${o.expected_close_date || '-'}</td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-outline-danger px-8 py-4 radius-8 delete-opp-btn" data-id="${o.id}" title="Delete"><i class="ri-delete-bin-line text-md"></i></button>
+          </td>
+        </tr>
+      `);
+    });
+    const startEntry = (data.page - 1) * data.page_size + 1;
+    const endEntry = Math.min(data.page * data.page_size, data.count);
+    $('#tableInfoSpan').text(`Showing ${startEntry} to ${endEntry} of ${data.count} entries`);
+  }
+
+  function renderPagination(data) {
+    const nav = $('#paginationNav'); const ul = $('#paginationUl'); ul.empty();
+    if (data.total_pages <= 1) { nav.addClass('d-none'); return; }
+    nav.removeClass('d-none');
+    const prevDisabled = data.page === 1 ? 'disabled' : '';
+    ul.append(`<li class="page-item ${prevDisabled}"><button class="page-link py-6 px-12" data-page="${data.page - 1}" ${prevDisabled}>Previous</button></li>`);
+    for (let i = 1; i <= data.total_pages; i++) {
+      ul.append(`<li class="page-item ${i === data.page ? 'active' : ''}"><button class="page-link py-6 px-12" data-page="${i}">${i}</button></li>`);
+    }
+    const nextDisabled = data.page === data.total_pages ? 'disabled' : '';
+    ul.append(`<li class="page-item ${nextDisabled}"><button class="page-link py-6 px-12" data-page="${data.page + 1}" ${nextDisabled}>Next</button></li>`);
+  }
+
+  $('#stageFilter').on('change', function() { loadOpps(1); });
+  $('#clearFiltersBtn').on('click', function() { $('#stageFilter').val(''); loadOpps(1); });
+  $(document).on('click', '#paginationUl .page-link', function() {
+    const page = $(this).data('page'); if (page) loadOpps(page);
+  });
+
+  $(document).on('change', '.stage-select', function() {
+    const id = $(this).data('id'); const newStage = $(this).val();
+    const token = getCsrfToken();
+    $.ajax({
+      url: `/api/crm/opportunities/${id}/`, type: 'PATCH',
+      headers: { 'X-CSRFToken': token }, contentType: 'application/json',
+      data: JSON.stringify({ stage: newStage }), xhrFields: { withCredentials: true },
+      success: function() { showToast('Deal stage updated.', 'success'); loadOpps(currentPage); },
+      error: function() { showToast('Failed to update stage.', 'error'); }
+    });
+  });
+
+  $(document).on('click', '.delete-opp-btn', function() {
+    const id = $(this).data('id');
+    showConfirmModal({
+      title: 'Delete Opportunity',
+      message: 'Are you sure you want to delete this sales opportunity? This action cannot be undone.',
+      icon: 'ri-delete-bin-line',
+      iconBgClass: 'bg-danger-50',
+      iconColorClass: 'text-danger-600',
+      confirmText: 'Delete Opportunity',
+      confirmBtnClass: 'btn-danger-600',
+      onConfirm: function() {
+        const token = getCsrfToken();
+        $.ajax({
+          url: `/api/crm/opportunities/${id}/`, type: 'DELETE',
+          headers: { 'X-CSRFToken': token }, xhrFields: { withCredentials: true },
+          success: function() { showToast('Opportunity deleted.', 'success'); loadOpps(currentPage); },
+          error: function() { showToast('Failed to delete opportunity.', 'error'); }
+        });
+      }
+    });
+  });
+
+  loadOpps();
+});
+</script>
+{% endblock %}

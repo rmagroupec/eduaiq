@@ -671,10 +671,18 @@ def admin_page_router(request, page_name):
     if request.user.role == 'institution' and page_name in superadmin_only_pages:
         return redirect('admin_panel')
 
+    if page_name in ['view-profile', 'profile']:
+        emp_profile = None
+        try:
+            from accounts.models import EmployeeProfile
+            emp_profile = EmployeeProfile.objects.select_related('department', 'designation').filter(user=request.user).first()
+        except Exception:
+            pass
+        return render(request, 'admin_panel/view-profile.html', {'emp_profile': emp_profile})
+
     mapping = {
         'courses': 'admin_panel/course-list.html',
-        'view-profile': 'admin_panel/view-profile.html',
-        'profile': 'admin_panel/view-profile.html',
+        'employee-details': 'admin_panel/employee-details.html',
     }
 
     if page_name in mapping:
@@ -782,7 +790,7 @@ def _get_redirect_url_for_user(request, user):
 
     if getattr(user, 'role', '') == 'student':
         return '/my-learning/'
-    elif getattr(user, 'role', '') in ['institution', 'admin', 'partner'] or user.is_staff or user.is_superuser:
+    elif getattr(user, 'role', '') in ['institution', 'admin', 'partner', 'employee', 'staff', 'teacher', 'sales', 'crm'] or user.is_staff or user.is_superuser:
         return '/admin-panel/dashboard/'
     
     return '/my-learning/'

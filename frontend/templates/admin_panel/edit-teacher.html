@@ -9,8 +9,8 @@
 <div class="">
 <h1 class="fw-semibold mb-4 h6 text-primary-light">Edit Teacher</h1>
 <div class="">
-<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
-<a class="text-secondary-light hover-text-primary hover-underline" href="teacher-list"> /
+<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
+<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/teacher-list/"> /
         Teacher</a>
 <span class="text-secondary-light">/ Edit Teacher</span>
 </div>
@@ -449,6 +449,21 @@
 
 {% block js %}
     <script>
+    $(document).ready(function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('name')) $('#fullName').val(urlParams.get('name'));
+        if (urlParams.has('id')) $('#teacherID').val(urlParams.get('id'));
+        if (urlParams.has('email')) {
+            $('#teacherEmails').val(urlParams.get('email'));
+            $('#myEmail').val(urlParams.get('email'));
+        }
+        if (urlParams.has('subject')) {
+            const subj = urlParams.get('subject');
+            if ($(`#teacherSubject option[value="${subj}"]`).length) {
+                $('#teacherSubject').val(subj);
+            }
+        }
+    });
 
     // ================== Password Show Hide Js Start ==========
     function initializePasswordToggle(toggleSelector) {

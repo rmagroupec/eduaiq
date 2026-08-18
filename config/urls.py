@@ -27,6 +27,9 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),      # Login, signup, profile API
     path('courses/', include('courses.urls')),        # Courses, quiz, enrollment API
     path('api/', include('institutions.urls')),       # Institutions & Students API
+    path('api/crm/', include('leads.urls')),           # CRM: Leads, Student Inquiries, Opportunities, Activities, Sales Targets
+    path('expenses/', include('expenses.urls')),      # Expense heads & expenses API
+    path('payments/', include('payments.urls')),      # Payments & Invoicing API
 
     # Frontend Routes (HTML Templates)
     # This already includes /ai-books/, /admin-panel/courses/, and now

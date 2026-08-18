@@ -482,6 +482,596 @@
           }, 400);
         }
       };
+
+      // Global confirmation modal helper
+      window.showConfirmModal = function(options) {
+        let defaultIcon = 'ri-question-line';
+        let defaultBg = 'bg-info-50';
+        let defaultColor = 'text-info-600';
+
+        if (options && options.confirmBtnClass) {
+          if (options.confirmBtnClass.includes('success')) {
+            defaultIcon = 'ri-checkbox-circle-line';
+            defaultBg = 'bg-success-50';
+            defaultColor = 'text-success-600';
+          } else if (options.confirmBtnClass.includes('danger')) {
+            defaultIcon = 'ri-error-warning-line';
+            defaultBg = 'bg-danger-50';
+            defaultColor = 'text-danger-600';
+          } else if (options.confirmBtnClass.includes('warning')) {
+            defaultIcon = 'ri-alert-line';
+            defaultBg = 'bg-warning-50';
+            defaultColor = 'text-warning-600';
+          }
+        }
+
+        const opts = Object.assign({
+          title: 'Are you sure?',
+          message: 'This action cannot be undone.',
+          icon: defaultIcon,
+          iconBgClass: defaultBg,
+          iconColorClass: defaultColor,
+          confirmText: 'Confirm',
+          confirmBtnClass: 'btn-primary-600',
+          cancelText: 'Cancel',
+          onConfirm: function() {}
+        }, options);
+
+        $('#confirmModalTitle').text(opts.title);
+        $('#confirmModalMessage').text(opts.message);
+        $('#confirmModalSubmitBtn').text(opts.confirmText)
+          .attr('class', `btn ${opts.confirmBtnClass} font-semibold radius-8 px-20 text-sm w-50 text-white`);
+        $('#confirmModalCancelBtn').text(opts.cancelText || 'Cancel');
+
+        const iconBox = $('#confirmModalIconBox');
+        iconBox.attr('class', `w-64-px h-64-px radius-50 mx-auto d-flex align-items-center justify-content-center ${opts.iconBgClass} mb-16`);
+        $('#confirmModalIcon').attr('class', `${opts.icon} ${opts.iconColorClass} text-3xl`);
+
+        $('#confirmModalSubmitBtn').off('click').on('click', function() {
+          const modalEl = document.getElementById('globalConfirmModal');
+          const modalInstance = bootstrap.Modal.getInstance(modalEl);
+          if (modalInstance) modalInstance.hide();
+          if (typeof opts.onConfirm === 'function') {
+            opts.onConfirm();
+          }
+        });
+
+        const modalEl = document.getElementById('globalConfirmModal');
+        let modalInstance = bootstrap.Modal.getInstance(modalEl);
+        if (!modalInstance) {
+          modalInstance = new bootstrap.Modal(modalEl);
+        }
+        modalInstance.show();
+      };
+
+      window.confirmDialog = window.showConfirmModal;
+
+      // Global document download helper
+      window.downloadDocument = function(filename, fileUrl) {
+        filename = filename || 'BirthCertificate.pdf';
+        if (fileUrl && fileUrl !== '#' && fileUrl !== 'javascript:void(0)') {
+          const a = document.createElement('a');
+          a.href = fileUrl;
+          a.download = filename;
+          a.target = '_blank';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          if (window.showToast) window.showToast(`Downloading ${filename}...`, 'info');
+        } else {
+          // Generate PDF Blob for demo documents
+          const pdfHeader = `%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>\nendobj\n4 0 obj\n<< /Length 85 >>\nstream\nBT\n/F1 18 Tf\n72 712 TD\n(EduAIQ Official Document: ${filename}) Tj\nET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000214 00000 n \ntrailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n350\n%%EOF`;
+          const blob = new Blob([pdfHeader], { type: 'application/pdf' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(function() { URL.revokeObjectURL(url); }, 500);
+          if (window.showToast) window.showToast(`Downloading ${filename}...`, 'success');
+        }
+      };
+
+      // Delegate click event for any element with class download-doc-btn or data-filename
+      $(document).on('click', '.download-doc-btn, [data-filename]', function(e) {
+        e.preventDefault();
+        const filename = $(this).attr('data-filename') || $(this).data('filename') || 'BirthCertificate.pdf';
+        const fileUrl = $(this).attr('href') || $(this).data('fileurl');
+        window.downloadDocument(filename, fileUrl);
+      });
+
+      // Password Visibility Toggle Handler
+      $(document).on('click', '.toggle-modal-password-btn', function() {
+        const $input = $('#loginModalPassword');
+        const $icon = $('#pwdToggleIcon');
+        if ($input.attr('type') === 'password') {
+          $input.attr('type', 'text');
+          $icon.removeClass('ri-eye-line').addClass('ri-eye-off-line');
+        } else {
+          $input.attr('type', 'password');
+          $icon.removeClass('ri-eye-off-line').addClass('ri-eye-line');
+        }
+      });
+
+      // Copy Credential Button Handler
+      $(document).on('click', '.copy-credential-btn', function() {
+        const targetId = $(this).attr('data-copy-target');
+        const textToCopy = $(targetId).val();
+        if (textToCopy) {
+          navigator.clipboard.writeText(textToCopy);
+          if (window.showToast) window.showToast('Copied to clipboard!', 'success');
+        }
+      });
+
+      // Copy All Login Details Handler
+      $(document).on('click', '.copy-all-login-details-btn', function() {
+        const user = $('#loginModalUsername').val();
+        const pwd = $('#loginModalPassword').val();
+        const details = `User ID: ${user}\nPassword: ${pwd}`;
+        navigator.clipboard.writeText(details);
+        if (window.showToast) window.showToast('Login details copied to clipboard!', 'success');
+      });
+
+      // Reset Password Handler
+      $(document).on('click', '.reset-modal-pwd-btn', function() {
+        if (window.showToast) window.showToast('Password reset link sent to registered email!', 'info');
+      });
+
+      // Dynamic population when loginDetailsModal opens
+      $(document).on('show.bs.modal', '#loginDetailsModal', function(e) {
+        $('#loginModalPassword').attr('type', 'password');
+        $('#pwdToggleIcon').removeClass('ri-eye-off-line').addClass('ri-eye-line');
+
+        const trigger = e.relatedTarget;
+        let profileName = trigger ? ($(trigger).data('username') || $(trigger).attr('data-username')) : null;
+        let profileRole = trigger ? ($(trigger).data('role') || $(trigger).attr('data-role')) : null;
+
+        if (!profileName) {
+          const pageTitle = $('h2.h6, h1.h6, h4.h6').first().text().trim();
+          if (pageTitle && pageTitle !== 'Student Details' && pageTitle !== 'Employee Details') {
+            profileName = pageTitle.toLowerCase().replace(/[^a-z0-9]/g, '.') + '@eduaiq.com';
+          }
+        }
+        if (profileName) {
+          $('#loginModalUsername').val(profileName);
+        }
+        if (profileRole) {
+          $('#loginProfileRole').text(profileRole + ' Login Credentials');
+        } else {
+          $('#loginProfileRole').text('System Account Credentials');
+        }
+      });
+
+      // Global click delegate for any button containing "Login Details"
+      $(document).on('click', '.my-sidebar-btn:contains("Login Details"), .login-details-btn', function(e) {
+        e.preventDefault();
+        const modalEl = document.getElementById('loginDetailsModal');
+        if (modalEl) {
+          const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+          modalInstance.show();
+        }
+      });
+    </script>
+
+    <!-- GLOBAL BEAUTIFUL CONFIRMATION MODAL -->
+    <div class="modal fade" id="globalConfirmModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-sm" style="max-width: 420px;">
+        <div class="modal-content radius-16 border-0 shadow-lg p-12 overflow-hidden">
+          <div class="modal-body text-center p-24">
+            <div id="confirmModalIconBox" class="w-64-px h-64-px radius-50 mx-auto d-flex align-items-center justify-content-center bg-warning-50 mb-16">
+              <i id="confirmModalIcon" class="ri-question-line text-warning-600 text-3xl"></i>
+            </div>
+            <h5 id="confirmModalTitle" class="fw-bold text-dark mb-8">Are you sure?</h5>
+            <p id="confirmModalMessage" class="text-neutral-500 text-sm mb-24">This action cannot be undone.</p>
+            
+            <div class="d-flex align-items-center justify-content-center gap-12">
+              <button type="button" class="btn btn-outline-neutral-400 font-semibold radius-8 px-20 text-sm w-50" data-bs-dismiss="modal" id="confirmModalCancelBtn">Cancel</button>
+              <button type="button" class="btn btn-primary-600 font-semibold radius-8 px-20 text-sm w-50 text-white" id="confirmModalSubmitBtn">Confirm</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GLOBAL LOGIN DETAILS MODAL -->
+    <div class="modal fade" id="loginDetailsModal" tabindex="-1" aria-labelledby="loginDetailsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content radius-16 border-0 shadow">
+          <div class="modal-header border-bottom px-24 py-16 bg-base">
+            <h6 class="modal-title fw-bold text-primary-light d-flex align-items-center gap-2" id="loginDetailsModalLabel">
+              <i class="ri-shield-keyhole-line text-primary-600 text-xl"></i> Account Login Credentials
+            </h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-24">
+            <div class="alert alert-primary-50 border border-primary-200 radius-8 p-16 mb-20 d-flex align-items-center gap-12">
+              <div class="w-40-px h-40-px bg-primary-100 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 text-primary-600">
+                <i class="ri-user-shared-line text-lg"></i>
+              </div>
+              <div>
+                <h6 class="text-sm fw-semibold text-primary-900 mb-2" id="loginProfileRole">System Account Details</h6>
+                <p class="text-xs text-primary-700 mb-0">Authorized credentials for accessing the EduAiQ Admin & Portal.</p>
+              </div>
+            </div>
+
+            <div class="mb-16">
+              <label class="form-label text-xs fw-semibold text-secondary-light uppercase mb-6">User ID / Username</label>
+              <div class="input-group">
+                <span class="input-group-text bg-base border-end-0 text-secondary-light"><i class="ri-user-3-line"></i></span>
+                <input type="text" class="form-control radius-8 border-start-0" id="loginModalUsername" value="marvin.mckinney@eduaiq.com" readonly>
+                <button class="btn btn-outline-neutral-300 copy-credential-btn" type="button" data-copy-target="#loginModalUsername" title="Copy Username">
+                  <i class="ri-file-copy-line text-secondary-light"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="mb-20">
+              <label class="form-label text-xs fw-semibold text-secondary-light uppercase mb-6">Default Password</label>
+              <div class="input-group">
+                <span class="input-group-text bg-base border-end-0 text-secondary-light"><i class="ri-lock-line"></i></span>
+                <input type="password" class="form-control radius-8 border-start-0 border-end-0" id="loginModalPassword" value="EduAiQ@2026" readonly>
+                <button class="btn btn-outline-neutral-300 toggle-modal-password-btn" type="button" title="Show/Hide Password">
+                  <i class="ri-eye-line text-secondary-light" id="pwdToggleIcon"></i>
+                </button>
+                <button class="btn btn-outline-neutral-300 copy-credential-btn" type="button" data-copy-target="#loginModalPassword" title="Copy Password">
+                  <i class="ri-file-copy-line text-secondary-light"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="p-12 radius-8 bg-warning-50 border border-warning-200 d-flex align-items-center justify-content-between gap-12">
+              <span class="text-xs text-warning-800 fw-medium">
+                <i class="ri-information-line me-1"></i> Passwords should be changed upon initial login.
+              </span>
+              <button type="button" class="btn btn-xs btn-outline-warning radius-4 text-nowrap reset-modal-pwd-btn">Reset Password</button>
+            </div>
+          </div>
+          <div class="modal-footer border-top px-24 py-16 bg-base">
+            <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary-600 radius-8 px-20 text-white copy-all-login-details-btn">
+              <i class="ri-file-copy-2-line me-1"></i> Copy Login Details
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- WFH Apply Modal -->
+    <div class="modal fade" id="wfhApplyModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content radius-16 border-0 shadow-lg">
+          <div class="modal-header border-bottom px-24 py-16 bg-info-50">
+            <h6 class="modal-title font-semibold text-info-900 d-flex align-items-center gap-2">
+              <i class="ri-home-wifi-line text-info-600 text-xl"></i> Apply for Work From Home (WFH)
+            </h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="wfhApplyForm">
+            <div class="modal-body p-24">
+              <div class="row gy-3">
+                <div class="col-6">
+                  <label class="form-label text-sm font-semibold mb-6">Start Date <span class="text-danger-600">*</span></label>
+                  <input type="date" class="form-control radius-8" id="wfhStartDate" required>
+                </div>
+                <div class="col-6">
+                  <label class="form-label text-sm font-semibold mb-6">End Date <span class="text-danger-600">*</span></label>
+                  <input type="date" class="form-control radius-8" id="wfhEndDate" required>
+                </div>
+                <div class="col-12">
+                  <label class="form-label text-sm font-semibold mb-6">Reason for WFH <span class="text-danger-600">*</span></label>
+                  <textarea class="form-control radius-8" id="wfhReason" rows="3" placeholder="State reason for working from home..." required></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer border-top px-24 py-16 bg-base">
+              <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn bg-info-600 text-white radius-8 px-20 font-semibold" id="submitWfhBtn">
+                <i class="ri-send-plane-line me-1"></i> Submit Request
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leave Apply Modal -->
+    <div class="modal fade" id="leaveApplyModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content radius-16 border-0 shadow-lg">
+          <div class="modal-header border-bottom px-24 py-16 bg-primary-50">
+            <h6 class="modal-title font-semibold text-primary-900 d-flex align-items-center gap-2">
+              <i class="ri-calendar-close-line text-primary-600 text-xl"></i> Apply for Leave
+            </h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="leaveApplyForm">
+            <div class="modal-body p-24">
+              <div class="row gy-3">
+                <div class="col-12">
+                  <label class="form-label text-sm font-semibold mb-6">Leave Type <span class="text-danger-600">*</span></label>
+                  <select class="form-select radius-8" id="leaveTypeSelect" required>
+                    <option value="Casual Leave">Casual Leave</option>
+                    <option value="Medical Leave">Medical Leave</option>
+                    <option value="Sick Leave">Sick Leave</option>
+                    <option value="Special Leave">Special Leave</option>
+                    <option value="Emergency Leave">Emergency Leave</option>
+                    <option value="Maternity/Paternity Leave">Maternity / Paternity Leave</option>
+                    <option value="Unpaid Leave">Unpaid Leave</option>
+                  </select>
+                </div>
+                <div class="col-6">
+                  <label class="form-label text-sm font-semibold mb-6">Start Date <span class="text-danger-600">*</span></label>
+                  <input type="date" class="form-control radius-8" id="leaveStartDate" required>
+                </div>
+                <div class="col-6">
+                  <label class="form-label text-sm font-semibold mb-6">End Date <span class="text-danger-600">*</span></label>
+                  <input type="date" class="form-control radius-8" id="leaveEndDate" required>
+                </div>
+                <div class="col-12">
+                  <label class="form-label text-sm font-semibold mb-6">Reason for Leave <span class="text-danger-600">*</span></label>
+                  <textarea class="form-control radius-8" id="leaveReason" rows="3" placeholder="State reason for leave application..." required></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer border-top px-24 py-16 bg-base">
+              <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn bg-primary-600 text-white radius-8 px-20 font-semibold" id="submitLeaveBtn">
+                <i class="ri-send-plane-line me-1"></i> Submit Leave Request
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Employee Self Attendance Punch In / Punch Out Widget Controller
+      (function() {
+        function updateAttendanceWidgetState() {
+          $.ajax({
+            url: '/accounts/api/attendance/today-status/',
+            type: 'GET',
+            success: function(res) {
+              if (res.status === 'success') {
+                const $inBtn = $('#punchInBtn');
+                const $outBtn = $('#punchOutBtn');
+
+                if (res.has_checked_out) {
+                  $inBtn.addClass('d-none');
+                  $outBtn.addClass('d-none');
+                  $('#attendanceStatusDot').removeClass('bg-neutral-400 bg-success-500').addClass('bg-primary-500');
+                  $('#attendancePillText').text(`Done (${res.check_in_time} - ${res.check_out_time})`);
+                  $('#attendancePillBadge').removeClass('bg-neutral-200 bg-success-100 text-success-800').addClass('bg-primary-50 text-primary-700').text('Completed');
+                } else if (res.has_checked_in) {
+                  $inBtn.addClass('d-none');
+                  $outBtn.removeClass('d-none');
+                  $('#attendanceStatusDot').removeClass('bg-neutral-400 bg-primary-500').addClass('bg-success-500');
+                  $('#attendancePillText').text(`In: ${res.check_in_time}`);
+                  $('#attendancePillBadge').removeClass('bg-neutral-200').addClass('bg-success-100 text-success-800').text(`In at ${res.check_in_time}`);
+                } else {
+                  $inBtn.removeClass('d-none');
+                  $outBtn.addClass('d-none');
+                  $('#attendanceStatusDot').removeClass('bg-success-500 bg-primary-500').addClass('bg-neutral-400');
+                  $('#attendancePillText').text('Attendance');
+                  $('#attendancePillBadge').removeClass('bg-success-100 text-success-800').addClass('bg-neutral-200 text-neutral-800').text('Not Marked');
+                }
+              }
+            }
+          });
+        }
+
+        $(document).ready(function() {
+          updateAttendanceWidgetState();
+
+          // Explicit WFH modal trigger handler
+          $(document).on('click', '#applyWfhBtn, [data-bs-target="#wfhApplyModal"], .apply-wfh-btn', function(e) {
+            e.preventDefault();
+
+            // Close parent dropdown menu if open
+            const $dropdown = $(this).closest('.dropdown-menu');
+            if ($dropdown.length) {
+              $dropdown.removeClass('show');
+            }
+
+            const modalEl = document.getElementById('wfhApplyModal');
+            if (modalEl) {
+              const bs = window.bootstrap || (typeof bootstrap !== 'undefined' ? bootstrap : null);
+              if (bs && bs.Modal) {
+                const modalInstance = bs.Modal.getOrCreateInstance(modalEl);
+                modalInstance.show();
+              } else if (typeof $ !== 'undefined' && $.fn.modal) {
+                $('#wfhApplyModal').modal('show');
+              }
+            }
+          });
+
+          // Explicit Leave modal trigger handler
+          $(document).on('click', '[data-bs-target="#leaveApplyModal"], .trigger-leave-modal', function(e) {
+            e.preventDefault();
+            const modalEl = document.getElementById('leaveApplyModal');
+            if (modalEl) {
+              const bs = window.bootstrap || (typeof bootstrap !== 'undefined' ? bootstrap : null);
+              if (bs && bs.Modal) {
+                const modalInstance = bs.Modal.getOrCreateInstance(modalEl);
+                modalInstance.show();
+              } else if (typeof $ !== 'undefined' && $.fn.modal) {
+                $('#leaveApplyModal').modal('show');
+              }
+            }
+          });
+
+          // Set default dates in WFH & Leave modals
+          const todayStr = new Date().toISOString().split('T')[0];
+          $('#wfhStartDate, #leaveStartDate').val(todayStr);
+          $('#wfhEndDate, #leaveEndDate').val(todayStr);
+
+          // Submit WFH Request Handler
+          $('#wfhApplyForm').on('submit', function(e) {
+            e.preventDefault();
+            const startDate = $('#wfhStartDate').val();
+            const endDate = $('#wfhEndDate').val();
+            const reason = $('#wfhReason').val();
+            const currentEmail = $('#empDetailEmail').length ? $('#empDetailEmail').text().replace(':', '').trim() : '';
+            const currentName = $('#empDetailName').length ? $('#empDetailName').text().trim() : '';
+
+            const $btn = $('#submitWfhBtn');
+            $btn.prop('disabled', true).html('<i class="ri-loader-4-line ri-spin me-1"></i> Submitting...');
+
+            $.ajax({
+              url: '/accounts/api/wfh/request/',
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({
+                leave_type: 'Work From Home (WFH)',
+                start_date: startDate,
+                end_date: endDate,
+                reason: reason,
+                email: currentEmail,
+                user_name: currentName
+              }),
+              success: function(res) {
+                $btn.prop('disabled', false).html('<i class="ri-send-plane-line me-1"></i> Submit Request');
+                if (res.status === 'success') {
+                  const modalEl = document.getElementById('wfhApplyModal');
+                  const bs = window.bootstrap || (typeof bootstrap !== 'undefined' ? bootstrap : null);
+                  const modalInstance = bs && bs.Modal ? bs.Modal.getInstance(modalEl) : null;
+                  if (modalInstance) modalInstance.hide();
+                  $('#wfhReason').val('');
+                  if (window.showToast) window.showToast(res.message, 'success');
+                  if (typeof window.loadEmployeeLeaves === 'function') {
+                    window.loadEmployeeLeaves();
+                  }
+                } else {
+                  if (window.showToast) window.showToast(res.message || 'Submission failed', 'danger');
+                }
+              },
+              error: function(err) {
+                $btn.prop('disabled', false).html('<i class="ri-send-plane-line me-1"></i> Submit Request');
+                const msg = err.responseJSON && err.responseJSON.message ? err.responseJSON.message : 'Error submitting WFH request';
+                if (window.showToast) window.showToast(msg, 'danger');
+              }
+            });
+          });
+
+          // Submit Leave Request Handler
+          $('#leaveApplyForm').on('submit', function(e) {
+            e.preventDefault();
+            const $btn = $('#submitLeaveBtn');
+            $btn.prop('disabled', true).html('<i class="ri-loader-4-line ri-spin me-1"></i> Submitting...');
+
+            const currentEmail = $('#empDetailEmail').length ? $('#empDetailEmail').text().replace(':', '').trim() : '';
+            const currentName = $('#empDetailName').length ? $('#empDetailName').text().trim() : '';
+
+            const postData = {
+              leave_type: $('#leaveTypeSelect').val(),
+              start_date: $('#leaveStartDate').val(),
+              end_date: $('#leaveEndDate').val(),
+              reason: $('#leaveReason').val(),
+              email: currentEmail,
+              user_name: currentName
+            };
+
+            $.ajax({
+              url: '/accounts/api/wfh/request/',
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify(postData),
+              headers: {
+                'X-CSRFToken': (function() {
+                  let cookieValue = null;
+                  if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                      const cookie = cookies[i].trim();
+                      if (cookie.substring(0, 10) === ('csrftoken=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(10));
+                        break;
+                      }
+                    }
+                  }
+                  return cookieValue;
+                })()
+              },
+              success: function(res) {
+                $btn.prop('disabled', false).html('<i class="ri-send-plane-line me-1"></i> Submit Leave Request');
+                if (res.status === 'success') {
+                  if (window.showToast) window.showToast('Leave request submitted successfully!', 'success');
+                  const modalEl = document.getElementById('leaveApplyModal');
+                  const bs = window.bootstrap || (typeof bootstrap !== 'undefined' ? bootstrap : null);
+                  const modalInstance = bs && bs.Modal ? bs.Modal.getInstance(modalEl) : null;
+                  if (modalInstance) modalInstance.hide();
+                  $('#leaveReason').val('');
+                  if (typeof window.loadEmployeeLeaves === 'function') {
+                    window.loadEmployeeLeaves();
+                  }
+                } else {
+                  if (window.showToast) window.showToast(res.message || 'Submission failed', 'danger');
+                }
+              },
+              error: function(err) {
+                $btn.prop('disabled', false).html('<i class="ri-send-plane-line me-1"></i> Submit Leave Request');
+                const msg = err.responseJSON && err.responseJSON.message ? err.responseJSON.message : 'Error submitting leave request';
+                if (window.showToast) window.showToast(msg, 'danger');
+              }
+            });
+          });
+
+          $('#punchInBtn').on('click', function() {
+            const $btn = $(this);
+            $btn.prop('disabled', true);
+            $.ajax({
+              url: '/accounts/api/attendance/check-in/',
+              type: 'POST',
+              success: function(res) {
+                $btn.prop('disabled', false);
+                if (res.status === 'success' || res.status === 'info') {
+                  if (window.showToast) window.showToast(res.message, res.status === 'success' ? 'success' : 'info');
+                  updateAttendanceWidgetState();
+                  if (typeof window.loadBackendAttendance === 'function') {
+                    window.loadBackendAttendance();
+                  }
+                } else {
+                  if (window.showToast) window.showToast(res.message || 'Check-in failed', 'danger');
+                }
+              },
+              error: function() {
+                $btn.prop('disabled', false);
+                if (window.showToast) window.showToast('Check-in failed. Please try again.', 'danger');
+              }
+            });
+          });
+
+          $('#punchOutBtn').on('click', function() {
+            const $btn = $(this);
+            $btn.prop('disabled', true);
+            $.ajax({
+              url: '/accounts/api/attendance/check-out/',
+              type: 'POST',
+              success: function(res) {
+                $btn.prop('disabled', false);
+                if (res.status === 'success') {
+                  if (window.showToast) window.showToast(res.message, 'success');
+                  updateAttendanceWidgetState();
+                  if (typeof window.loadBackendAttendance === 'function') {
+                    window.loadBackendAttendance();
+                  }
+                } else {
+                  if (window.showToast) window.showToast(res.message || 'Check-out failed', 'danger');
+                }
+              },
+              error: function() {
+                $btn.prop('disabled', false);
+                if (window.showToast) window.showToast('Check-out failed. Please try again.', 'danger');
+              }
+            });
+          });
+          // Suppress DataTables alert popups globally
+          if (typeof $ !== 'undefined' && $.fn && $.fn.dataTable) {
+            $.fn.dataTable.ext.errMode = 'none';
+          }
+        });
+      })();
     </script>
 
     {% block js %}{% endblock %}

@@ -10,13 +10,13 @@
 <div class="">
 <h1 class="fw-semibold mb-4 h6 text-primary-light">Teacher Details</h1>
 <div class="">
-<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
-<a class="text-secondary-light hover-text-primary hover-underline" href="teacher-list"> /
+<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
+<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/teacher-list/"> /
                         Teacher</a>
 <span class="text-secondary-light">/ Teacher Details</span>
 </div>
 </div>
-<button class="my-sidebar-btn btn btn-primary-600 d-flex align-items-center gap-6 bg-base text-primary-light bg-hover-primary-600" type="button">
+<button class="btn btn-primary-600 d-flex align-items-center gap-6 bg-base text-primary-light bg-hover-primary-600 login-details-btn" data-bs-toggle="modal" data-bs-target="#loginDetailsModal" data-username="kathryn.murphy@eduaiq.com" data-role="Teacher" type="button">
 <span class="d-flex text-md">
 <i class="ri-lock-2-line"></i>
 </span>
@@ -29,12 +29,12 @@
 <div class="d-flex gap-32 flex-md-row flex-column">
 <div class="max-w-300-px w-100 text-center">
 <figure class="mb-24 w-120-px h-120-px mx-auto rounded-circle overflow-hidden">
-<img alt="teacher Image" class="w-100 h-100 object-fit-cover" src="{% static 'admin_assets/images/thumbs/teacher-details-img.png' %}"/>
+<img id="empDetailImg" alt="teacher Image" class="w-100 h-100 object-fit-cover" src="{% static 'admin_assets/images/thumbs/teacher-details-img.png' %}"/>
 </figure>
-<h2 class="h6 text-primary-light mb-16 fw-semibold">Marvin McKinney</h2>
-<p class="mb-0">ID: <span class="text-primary-600 fw-semibold"> AD1256589</span>
+<h2 id="empDetailName" class="h6 text-primary-light mb-16 fw-semibold">Dr. Robert Fox</h2>
+<p class="mb-0">ID: <span id="empDetailId" class="text-primary-600 fw-semibold"> TCH52365</span>
 </p>
-<p class="mb-0">Subject: <span class="text-primary-light fw-semibold">Mathematics</span>
+<p class="mb-0">Subject: <span id="empDetailSubject" class="text-primary-light fw-semibold">Mathematics</span>
 </p>
 <div class="mt-32 d-flex gap-16 w-100">
 <button class="btn border fw-medium border-danger-600 bg-hover-danger-200 text-danger-600 text-md d-flex justify-content-center align-items-center gap-8 flex-grow-1 px-12 py-8 radius-8" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
@@ -43,7 +43,7 @@
 </span>
                                     Suspend
                                 </button>
-<a class="btn btn-primary-600 border fw-medium border-primary-600 text-md d-flex justify-content-center align-items-center gap-8 flex-grow-1 px-12 py-8 radius-8" href="edit-teacher">
+<a id="editTeacherBtn" class="btn btn-primary-600 border fw-medium border-primary-600 text-md d-flex justify-content-center align-items-center gap-8 flex-grow-1 px-12 py-8 radius-8" href="/admin-panel/edit-teacher/">
 <span class="d-flex text-lg">
 <i class="ri-edit-line"></i>
 </span>
@@ -57,12 +57,12 @@
 <div class="flex-grow-1">
 <div class="pb-16 border-bottom d-flex align-items-center justify-content-between gap-20">
 <h3 class="h6 text-primary-light text-lg mb-0 fw-semibold">Personal Info</h3>
-<span class="bg-success-100 text-success-600 px-16 py-4 radius-4 fw-medium text-sm">Active</span>
+<span id="empDetailStatus" class="bg-success-100 text-success-600 px-16 py-4 radius-4 fw-medium text-sm">Active</span>
 </div>
 <div class="mt-16 d-flex flex-column gap-8">
 <div class="d-flex gap-4">
 <span class="fw-semibold text-sm text-primary-light w-110-px">Class</span>
-<span class="fw-normal text-sm text-secondary-light">: Class 6 (2025-26)</span>
+<span class="fw-normal text-sm text-secondary-light">: Class 10 (2025-26)</span>
 </div>
 <div class="d-flex gap-4">
 <span class="fw-semibold text-sm text-primary-light w-110-px">Contract Type</span>
@@ -74,11 +74,11 @@
 </div>
 <div class="d-flex gap-4">
 <span class="fw-semibold text-sm text-primary-light w-110-px">Work Location</span>
-<span class="fw-normal text-sm text-secondary-light">: 2nd Floor</span>
+<span class="fw-normal text-sm text-secondary-light">: Academic Block A</span>
 </div>
 <div class="d-flex gap-4">
 <span class="fw-semibold text-sm text-primary-light w-110-px">Date Of Birth</span>
-<span class="fw-normal text-sm text-secondary-light">: 10 Nov 2006</span>
+<span class="fw-normal text-sm text-secondary-light">: 10 Nov 1985</span>
 </div>
 <div class="d-flex gap-4">
 <span class="fw-semibold text-sm text-primary-light w-110-px">Gender</span>
@@ -86,15 +86,15 @@
 </div>
 <div class="d-flex gap-4">
 <span class="fw-semibold text-sm text-primary-light w-110-px">Join Date</span>
-<span class="fw-normal text-sm text-secondary-light">: 05 May 2012</span>
+<span id="empDetailJoinDate" class="fw-normal text-sm text-secondary-light">: 12 Jan 2011</span>
 </div>
 <div class="d-flex gap-4">
 <span class="fw-semibold text-sm text-primary-light w-110-px">Phone Number</span>
-<span class="fw-normal text-sm text-primary-600">: 789678456</span>
+<span id="empDetailPhone" class="fw-normal text-sm text-primary-600">: 209.555.0101</span>
 </div>
 <div class="d-flex gap-4">
 <span class="fw-semibold text-sm text-primary-light w-110-px">Email</span>
-<span class="fw-normal text-sm text-primary-600">: set@example.com</span>
+<span id="empDetailEmail" class="fw-normal text-sm text-primary-600">: robert.fox@school.edu</span>
 </div>
 </div>
 </div>
@@ -339,7 +339,7 @@
 </span>
 <span class="text-md text-secondary-light">BirthCertificate.pdf</span>
 </div>
-<button class="w-36-px h-36-px radius-4 bg-primary-50 bg-hover-primary-100 text-primary-600 d-flex justify-content-center align-items-center text-xl" type="button">
+<button class="w-36-px h-36-px radius-4 bg-primary-50 bg-hover-primary-100 text-primary-600 d-flex justify-content-center align-items-center text-xl download-doc-btn" data-filename="BirthCertificate.pdf" title="Download Document" type="button">
 <i class="ri-download-2-line"></i>
 </button>
 </div>
@@ -1541,7 +1541,7 @@
 <div class="d-flex flex-wrap align-items-center gap-24 justify-content-between flex-wrap">
 <div class="d-flex flex-wrap align-items-center gap-16">
 <div class="">
-<select class="form-control form-select">
+<select class="form-control form-select" id="attendanceSessionSelect">
 <option value="Jun 2025/2026">Jun 2025/2026</option>
 <option value="Jun 2026/2027">Jun 2026/2027</option>
 <option value="Jun 2027/2028">Jun 2027/2028</option>
@@ -1625,8 +1625,6 @@
                                                 </th>
 <th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">15
                                                 </th>
-<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">15
-                                                </th>
 <th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">16
                                                 </th>
 <th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">17
@@ -1657,513 +1655,12 @@
                                                 </th>
 <th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">30
                                                 </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">31
+                                                </th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="px-10 py-16 text-sm">Jan</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">H</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">A</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">F</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">L</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">H</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">A</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">L</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">h</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">F</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">H</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">P</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">A</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">H</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">p</span>
-</td>
-<td class="px-10 py-14 text-sm text-uppercase">
-<span class="attendance">p</span>
-</td>
-</tr>
-<tr>
-<td class="px-10 py-16 text-sm">Feb</td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-</tr>
-<tr>
-<td class="px-10 py-16 text-sm">Mar</td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-</tr>
-<tr>
-<td class="px-10 py-16 text-sm">Apr</td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-</tr>
-<tr>
-<td class="px-10 py-16 text-sm">May</td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-</tr>
-<tr>
-<td class="px-10 py-16 text-sm">May</td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">F</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">L</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">H</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">P</span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance">A</span></td>
-</tr>
-<tr>
-<td class="px-10 py-16 text-sm">Jun</td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-</tr>
-<tr>
-<td class="px-10 py-16 text-sm">Ju</td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-</tr>
-<tr>
-<td class="px-10 py-16 text-sm">Aug</td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-</tr>
-<tr>
-<td class="px-10 py-16 text-sm">Sep</td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-</tr>
-<tr>
-<td class="px-10 py-16 text-sm">Oct</td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-</tr>
-<tr>
-<td class="px-10 py-16 text-sm">Nov</td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-</tr>
-<tr>
-<td class="px-10 py-16 text-sm">Dec</td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-<td class="px-10 py-16 text-sm"><span class="attendance"></span></td>
-</tr>
+<tbody id="attendanceMatrixBody">
+  <!-- Populated dynamically via JS / Backend API -->
 </tbody>
 </table>
 </div>
@@ -2176,7 +1673,7 @@
 <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
 <div class="card-header border-bottom bg-base py-10 px-20 d-flex align-items-center justify-content-between">
 <h6 class="text-lg fw-semibold mb-0">Leave </h6>
-<button class="apply-leave-btn btn btn-primary-600 d-flex align-items-center gap-6 py-8 text-sm" type="button">
+<button class="apply-leave-btn trigger-leave-modal btn btn-primary-600 d-flex align-items-center gap-6 py-8 text-sm" data-bs-toggle="modal" data-bs-target="#leaveApplyModal" type="button">
 <span class="d-flex text-sm">
 <i class="ri-calendar-close-line"></i>
 </span>
@@ -2240,7 +1737,7 @@
 </div>
 </div>
 </div>
-<table class="table bordered-table mb-0 table-heading-dark-mode w-100 data-table" data-page-length="10" id="dataTable">
+<table class="table bordered-table mb-0 table-heading-dark-mode w-100" id="teacherLeaveDataTable">
 <thead>
 <tr>
 <th scope="col">
@@ -2258,176 +1755,9 @@
 <th scope="col">Status</th>
 </tr>
 </thead>
-<tbody>
+<tbody id="teacherLeaveTableBody">
 <tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">
-                                                        01
-                                                    </label>
-</div>
-</td>
-<td>Medical Leave</td>
-<td>07 May 2025 - 08 may 2025</td>
-<td>1</td>
-<td>07 May 2025 </td>
-<td>
-<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">Approved</span>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">
-                                                        02
-                                                    </label>
-</div>
-</td>
-<td>Special Leave</td>
-<td>07 May 2025 - 08 may 2025</td>
-<td>3</td>
-<td>07 May 2025 </td>
-<td>
-<span class="bg-warning-100 text-warning-600 px-20 py-4 radius-4 fw-medium text-sm">Pending</span>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">
-                                                        03
-                                                    </label>
-</div>
-</td>
-<td>Medical Leave</td>
-<td>07 May 2025 - 08 may 2025</td>
-<td>5</td>
-<td>07 May 2025 </td>
-<td>
-<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">Approved</span>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">
-                                                        04
-                                                    </label>
-</div>
-</td>
-<td>Casual Leave</td>
-<td>07 May 2025 - 08 may 2025</td>
-<td>6</td>
-<td>07 May 2025 </td>
-<td>
-<span class="bg-warning-100 text-warning-600 px-20 py-4 radius-4 fw-medium text-sm">Pending</span>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">
-                                                        05
-                                                    </label>
-</div>
-</td>
-<td>Medical Leave</td>
-<td>07 May 2025 - 08 may 2025</td>
-<td>1</td>
-<td>07 May 2025 </td>
-<td>
-<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">Approved</span>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">
-                                                        06
-                                                    </label>
-</div>
-</td>
-<td>Special Leave</td>
-<td>07 May 2025 - 08 may 2025</td>
-<td>2</td>
-<td>07 May 2025 </td>
-<td>
-<span class="bg-danger-100 text-danger-600 px-20 py-4 radius-4 fw-medium text-sm">Rejected</span>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">
-                                                        07
-                                                    </label>
-</div>
-</td>
-<td>Medical Leave</td>
-<td>07 May 2025 - 08 may 2025</td>
-<td>5</td>
-<td>07 May 2025 </td>
-<td>
-<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">Approved</span>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">
-                                                        08
-                                                    </label>
-</div>
-</td>
-<td>Casual Leave</td>
-<td>07 May 2025 - 08 may 2025</td>
-<td>6</td>
-<td>07 May 2025 </td>
-<td>
-<span class="bg-danger-100 text-danger-600 px-20 py-4 radius-4 fw-medium text-sm">Rejected</span>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">
-                                                        09
-                                                    </label>
-</div>
-</td>
-<td>Medical Leave</td>
-<td>07 May 2025 - 08 may 2025</td>
-<td>1</td>
-<td>07 May 2025 </td>
-<td>
-<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">Approved</span>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">
-                                                        10
-                                                    </label>
-</div>
-</td>
-<td>Special Leave</td>
-<td>07 May 2025 - 08 may 2025</td>
-<td>2</td>
-<td>07 May 2025 </td>
-<td>
-<span class="bg-danger-100 text-danger-600 px-20 py-4 radius-4 fw-medium text-sm">Rejected</span>
-</td>
+<td colspan="6" class="text-center py-24 text-secondary-light">No leave applications found for this teacher.</td>
 </tr>
 </tbody>
 </table>
@@ -3030,25 +2360,142 @@
     });
     // ✅ Data Table end
 
-    // Dynamic Class added to the (absent/present/late/holiday)
-    $(document).ready(function () {
-        $('.attendance').each(function () {
-            let value = $(this).text().trim().toUpperCase();
+    // Dynamic Attendance Matrix Renderer (Connected to Backend API)
+    function renderAttendanceMatrix(targetId, attendanceData) {
+        const $tbody = $(targetId || '#attendanceMatrixBody');
+        if (!$tbody.length) return;
+        $tbody.empty();
 
-            if (value === 'P') {
-                $(this).addClass('text-success-600')
-            } else if (value === 'A') {
-                $(this).addClass('text-danger-600')
-            } else if (value === 'H') {
-                $(this).addClass('text-warning-600')
-            } else if (value === 'F') {
-                $(this).addClass('text-purple-600')
-            } else if (value === 'L') {
-                $(this).addClass('text-info-600')
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        months.forEach((month) => {
+            let row = `<tr><td class="px-10 py-16 text-sm font-semibold">${month}</td>`;
+            for (let day = 1; day <= 31; day++) {
+                let status = (attendanceData && attendanceData[month] && attendanceData[month][day]) 
+                             ? attendanceData[month][day] 
+                             : '';
+                
+                let colorClass = '';
+                if (status === 'P') colorClass = 'text-success-600';
+                else if (status === 'A') colorClass = 'text-danger-600';
+                else if (status === 'H') colorClass = 'text-warning-600';
+                else if (status === 'F') colorClass = 'text-purple-600';
+                else if (status === 'L') colorClass = 'text-info-600';
+                else if (status === 'WFH') colorClass = 'text-cyan-600 font-bold';
+
+
+                row += `<td class="px-10 py-14 text-sm text-uppercase"><span class="attendance ${colorClass}">${status}</span></td>`;
+            }
+            row += '</tr>';
+            $tbody.append(row);
+        });
+    }
+
+    function loadBackendAttendance() {
+        const selectedSession = $('#attendanceSessionSelect').val() || 'Jun 2025/2026';
+        const urlParams = new URLSearchParams(window.location.search);
+        const empEmail = urlParams.get('email');
+        const empName = urlParams.get('name');
+
+        $.ajax({
+            url: '/accounts/api/attendance/',
+            type: 'GET',
+            data: { academic_year: selectedSession, user_name: empEmail || empName },
+            success: function(res) {
+                if (res.status === 'success' && res.attendance_matrix) {
+                    renderAttendanceMatrix('#attendanceMatrixBody', res.attendance_matrix);
+                } else {
+                    renderAttendanceMatrix('#attendanceMatrixBody', null);
+                }
+            },
+            error: function() {
+                renderAttendanceMatrix('#attendanceMatrixBody', null);
             }
         });
+    }
+    window.loadBackendAttendance = loadBackendAttendance;
+
+
+    $(document).ready(function () {
+        // Parse URL parameters to render exact clicked teacher's profile
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('name')) {
+            const name = urlParams.get('name');
+            const id = urlParams.get('id') || 'TCH52365';
+            const subject = urlParams.get('subject') || 'Mathematics';
+            const email = urlParams.get('email') || 'robert.fox@school.edu';
+            const phone = urlParams.get('phone') || '209.555.0101';
+            const join = urlParams.get('join') || '12 Jan 2011';
+            const img = urlParams.get('img');
+            const status = urlParams.get('status') || 'Active';
+
+            $('#empDetailName').text(name);
+            $('#empDetailId').text(id);
+            $('#empDetailSubject').text(subject);
+            $('#empDetailEmail').text(': ' + email);
+            if (phone) $('#empDetailPhone').text(': ' + phone);
+            if (join) $('#empDetailJoinDate').text(': ' + join);
+            if (img) $('#empDetailImg').attr('src', img);
+            if (status) {
+                if (status.toLowerCase() === 'inactive') {
+                    $('#empDetailStatus').removeClass('bg-success-100 text-success-600').addClass('bg-danger-100 text-danger-600').text('Inactive');
+                } else {
+                    $('#empDetailStatus').removeClass('bg-danger-100 text-danger-600').addClass('bg-success-100 text-success-600').text('Active');
+                }
+            }
+            const editUrl = `/admin-panel/edit-teacher/?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&id=${encodeURIComponent(id)}&subject=${encodeURIComponent(subject)}`;
+            $('#editTeacherBtn').attr('href', editUrl);
+        }
+
+        loadBackendAttendance();
+        loadEmployeeLeaves();
+
+        $('#attendanceSessionSelect').on('change', function () {
+            loadBackendAttendance();
+            if (window.showToast) window.showToast(`Loaded backend attendance records for ${$(this).val()}`, 'info');
+        });
     });
-    // Dynamic Class added to the (absent/present/late/holiday)
+
+    function loadEmployeeLeaves() {
+        const empName = $('#empDetailName').text().trim();
+        const empEmail = $('#empDetailEmail').text().replace(':', '').trim();
+        const queryParam = empEmail ? `email=${encodeURIComponent(empEmail)}` : `user_name=${encodeURIComponent(empName)}`;
+        $.ajax({
+            url: `/accounts/api/wfh/request/?${queryParam}`,
+            type: 'GET',
+            success: function(res) {
+                const $tbody = $('#teacherLeaveTableBody');
+                $tbody.empty();
+                if (res.status === 'success' && res.data && res.data.length > 0) {
+                    res.data.forEach(function(item, idx) {
+                        let statusBadge = '<span class="bg-warning-100 text-warning-600 px-20 py-4 radius-4 fw-medium text-sm">Pending</span>';
+                        if (item.status === 'approved') {
+                            statusBadge = '<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">Approved</span>';
+                        } else if (item.status === 'rejected') {
+                            statusBadge = '<span class="bg-danger-100 text-danger-600 px-20 py-4 radius-4 fw-medium text-sm">Rejected</span>';
+                        }
+                        const rowHtml = `
+                            <tr>
+                                <td>${String(idx + 1).padStart(2, '0')}</td>
+                                <td><i class="ri-calendar-event-line me-1 text-primary-600"></i> ${item.leave_type || 'Casual Leave'}</td>
+                                <td>${item.start_date} to ${item.end_date}</td>
+                                <td>${item.reason}</td>
+                                <td>${item.applied_at}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+                        $tbody.append(rowHtml);
+                    });
+                } else {
+                    $tbody.html('<tr><td colspan="6" class="text-center py-24 text-secondary-light">No leave applications found for this teacher.</td></tr>');
+                }
+            },
+            error: function() {
+                $('#teacherLeaveTableBody').html('<tr><td colspan="6" class="text-center py-24 text-secondary-light">No leave applications found for this teacher.</td></tr>');
+            }
+        });
+    }
+    window.loadEmployeeLeaves = loadEmployeeLeaves;
 
 
     // Custom accordion js start

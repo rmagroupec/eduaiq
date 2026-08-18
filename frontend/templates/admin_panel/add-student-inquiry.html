@@ -1,0 +1,155 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAIQ - Add Student Inquiry{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Add Student Inquiry</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/student-inquiries/">Student Inquiries</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Add Inquiry</span>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-24">
+  <div class="card-header border-bottom bg-base py-16 px-24">
+    <h6 class="text-lg fw-semibold mb-0">Student & Contact Details</h6>
+  </div>
+  <div class="card-body p-24">
+    <form id="addInquiryForm">
+      {% csrf_token %}
+      <div class="row gy-3">
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="student_name">Student Name <span class="text-danger-600">*</span></label>
+          <input type="text" class="form-control radius-8" id="student_name" name="student_name" placeholder="e.g. Aarav Sharma" required>
+        </div>
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="guardian_name">Parent / Guardian Name</label>
+          <input type="text" class="form-control radius-8" id="guardian_name" name="guardian_name" placeholder="e.g. Vikram Sharma">
+        </div>
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="phone">Phone <span class="text-danger-600">*</span></label>
+          <input type="text" class="form-control radius-8" id="phone" name="phone" placeholder="9876543210" required>
+        </div>
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="email">Email</label>
+          <input type="email" class="form-control radius-8" id="email" name="email" placeholder="student@example.com">
+        </div>
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="class_grade_interested">Class / Grade Interested</label>
+          <input type="text" class="form-control radius-8" id="class_grade_interested" name="class_grade_interested" placeholder="e.g. Class 10, B.Tech">
+        </div>
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="city">City</label>
+          <input type="text" class="form-control radius-8" id="city" name="city" placeholder="e.g. Jaipur">
+        </div>
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="source">Source</label>
+          <select class="form-control form-select radius-8" id="source" name="source">
+            <option value="website">Website</option>
+            <option value="referral">Referral</option>
+            <option value="cold_call">Cold Call</option>
+            <option value="walk_in">Walk-in</option>
+            <option value="social_media">Social Media</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="stage">Stage</label>
+          <select class="form-control form-select radius-8" id="stage" name="stage">
+            <option value="new">New</option>
+            <option value="contacted">Contacted</option>
+            <option value="trial">Trial / Demo Class</option>
+            <option value="admission_offered">Admission Offered</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="priority">Priority</label>
+          <select class="form-control form-select radius-8" id="priority" name="priority">
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="next_follow_up_date">Next Follow-up Date</label>
+          <input type="date" class="form-control radius-8" id="next_follow_up_date" name="next_follow_up_date">
+        </div>
+        <div class="col-md-4 d-flex align-items-center mt-32">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="interested_in_olympiad" name="interested_in_olympiad">
+            <label class="form-check-label text-sm fw-semibold text-primary-light" for="interested_in_olympiad">
+              Interested in Olympiad Exams
+            </label>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="notes">Notes</label>
+          <textarea class="form-control radius-8" id="notes" name="notes" rows="3" placeholder="Context about this student's requirement..."></textarea>
+        </div>
+
+        <div class="col-12 mt-24">
+          <div class="d-flex align-items-center gap-16 justify-content-end">
+            <a href="/admin-panel/student-inquiries/" class="btn btn-outline-neutral-400 radius-8">Cancel</a>
+            <button type="submit" class="btn btn-primary-600 radius-8" id="submitBtn">Save Inquiry</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+  function getCsrfToken() {
+    const match = document.cookie.match(/csrftoken=([^;]+)/);
+    return match ? match[1] : null;
+  }
+
+  $('#addInquiryForm').on('submit', function(e) {
+    e.preventDefault();
+    $('#submitBtn').prop('disabled', true).html('Saving...');
+    const token = getCsrfToken();
+
+    const data = {
+      student_name: $('#student_name').val(),
+      guardian_name: $('#guardian_name').val(),
+      phone: $('#phone').val(),
+      email: $('#email').val(),
+      class_grade_interested: $('#class_grade_interested').val(),
+      city: $('#city').val(),
+      source: $('#source').val(),
+      stage: $('#stage').val(),
+      priority: $('#priority').val(),
+      next_follow_up_date: $('#next_follow_up_date').val() || null,
+      interested_in_olympiad: $('#interested_in_olympiad').is(':checked'),
+      notes: $('#notes').val(),
+    };
+
+    $.ajax({
+      url: '/api/crm/student-inquiries/', type: 'POST',
+      headers: { 'X-CSRFToken': token }, contentType: 'application/json', data: JSON.stringify(data),
+      xhrFields: { withCredentials: true },
+      success: function() {
+        showToast('Student Inquiry added successfully!', 'success');
+        setTimeout(function() { window.location.href = '/admin-panel/student-inquiries/'; }, 1200);
+      },
+      error: function(xhr) {
+        $('#submitBtn').prop('disabled', false).html('Save Inquiry');
+        let msg = 'Failed to save inquiry.';
+        if (xhr.responseJSON && xhr.responseJSON.errors) msg = JSON.stringify(xhr.responseJSON.errors, null, 2);
+        showToast(msg, 'error');
+      }
+    });
+  });
+});
+</script>
+{% endblock %}

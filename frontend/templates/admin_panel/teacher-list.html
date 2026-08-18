@@ -10,13 +10,13 @@
 <div class="">
 <h1 class="fw-semibold mb-4 h6 text-primary-light">Teacher List</h1>
 <div class="">
-<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
+<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
 <a class="text-secondary-light hover-text-primary hover-underline d-none" href="javascript:void(0)"> /
         Teacher</a>
 <span class="text-secondary-light">/ Teacher List</span>
 </div>
 </div>
-<a class="btn btn-primary-600 d-flex align-items-center gap-6" href="add-new-teacher">
+<a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/add-new-teacher/">
 <span class="d-flex text-md">
 <i class="ri-add-large-line"></i>
 </span>
@@ -155,20 +155,20 @@
                                             </label>
 </div>
 </td>
-<td><span class="text-primary-600">AD52365</span></td>
+<td><span class="text-primary-600">TCH52365</span></td>
 <td>
 <div class="d-flex align-items-center">
-<img alt="Marvin McKinney Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img1.png' %}"/>
+<img alt="Dr. Robert Fox Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img1.png' %}"/>
 <div class="">
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Marvin McKinney</h6>
+<h6 class="text-md mb-0 fw-medium flex-grow-1"><a href="/admin-panel/teacher-details/?name=Dr.+Robert+Fox&email=robert.fox%40school.edu" class="hover-text-primary text-neutral-800">Dr. Robert Fox</a></h6>
 </div>
 </div>
 </td>
 <td>Mathematics</td>
-<td>1 (A), 2(A), 3(A)</td>
-<td>chinthaka@hotmail.com</td>
-<td>209.555.0104</td>
-<td>05 May 2012</td>
+<td>10 (A), 11 (A), 12 (B)</td>
+<td>robert.fox@school.edu</td>
+<td>209.555.0101</td>
+<td>12 Jan 2011</td>
 <td> <span class="bg-success-100 text-success-600 px-24 py-4 radius-4 fw-medium text-sm">Active</span>
 </td>
 <td>
@@ -178,13 +178,13 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/teacher-details/?name=Dr.+Robert+Fox&email=robert.fox%40school.edu">
 <i class="ri-user-3-line"></i>
-                                                        View Student
+                                                        View Profile
                                                     </a>
 </li>
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-teacher">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/edit-teacher/">
 <i class="ri-edit-2-line"></i>
                                                         Edit
                                                     </a>
@@ -207,25 +207,25 @@
 <div class="form-check style-check d-flex align-items-center">
 <input class="form-check-input" type="checkbox"/>
 <label class="form-check-label">
-                                                01
+                                                02
                                             </label>
 </div>
 </td>
-<td><span class="text-primary-600">AD52365</span></td>
+<td><span class="text-primary-600">TCH52366</span></td>
 <td>
 <div class="d-flex align-items-center">
-<img alt="Ralph Edwards Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img2.png' %}"/>
+<img alt="Prof. Sarah Jenkins Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img2.png' %}"/>
 <div class="">
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Ralph Edwards</h6>
+<h6 class="text-md mb-0 fw-medium flex-grow-1"><a href="/admin-panel/teacher-details/?name=Prof.+Sarah+Jenkins&email=sarah.jenkins%40school.edu" class="hover-text-primary text-neutral-800">Prof. Sarah Jenkins</a></h6>
 </div>
 </div>
 </td>
 <td>Physics</td>
-<td>9 (A), 10 (B), </td>
-<td>mobileip@mac.com</td>
-<td>209.555.0104</td>
+<td>9 (A), 10 (B)</td>
+<td>sarah.jenkins@school.edu</td>
+<td>209.555.0102</td>
 <td>05 May 2012</td>
-<td> <span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span>
+<td> <span class="bg-success-100 text-success-600 px-24 py-4 radius-4 fw-medium text-sm">Active</span>
 </td>
 <td>
 <div class="btn-group">
@@ -234,13 +234,13 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/teacher-details/?name=Prof.+Sarah+Jenkins&email=sarah.jenkins%40school.edu">
 <i class="ri-user-3-line"></i>
-                                                        View Student
+                                                        View Profile
                                                     </a>
 </li>
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-teacher">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/edit-teacher/">
 <i class="ri-edit-2-line"></i>
                                                         Edit
                                                     </a>
@@ -265,12 +265,12 @@
 <label class="form-check-label">03</label>
 </div>
 </td>
-<td><span class="text-primary-600">AD52367</span></td>
+<td><span class="text-primary-600">TCH52367</span></td>
 <td>
 <div class="d-flex align-items-center">
 <img alt="Courtney Henry Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img3.png' %}"/>
 <div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Courtney Henry</h6>
+<h6 class="text-md mb-0 fw-medium flex-grow-1"><a href="/admin-panel/teacher-details/?name=Courtney+Henry&email=courtney%40edu.com" class="hover-text-primary text-neutral-800">Courtney Henry</a></h6>
 </div>
 </div>
 </td>
@@ -287,8 +287,8 @@
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list"><i class="ri-user-3-line"></i>View Student</a></li>
-<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-teacher"><i class="ri-edit-2-line"></i>Edit</a></li>
+<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/teacher-details/?name=Courtney+Henry&email=courtney%40edu.com"><i class="ri-user-3-line"></i>View Profile</a></li>
+<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/edit-teacher/"><i class="ri-edit-2-line"></i>Edit</a></li>
 <li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-error-warning-line"></i>Inactive</button></li>
 <li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-delete-bin-6-line"></i>Delete</button></li>
 </ul>
@@ -302,12 +302,12 @@
 <label class="form-check-label">04</label>
 </div>
 </td>
-<td><span class="text-primary-600">AD52368</span></td>
+<td><span class="text-primary-600">TCH52368</span></td>
 <td>
 <div class="d-flex align-items-center">
 <img alt="Eleanor Pena Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img4.png' %}"/>
 <div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Eleanor Pena</h6>
+<h6 class="text-md mb-0 fw-medium flex-grow-1"><a href="/admin-panel/teacher-details/?name=Eleanor+Pena&email=eleanor.pena%40school.org" class="hover-text-primary text-neutral-800">Eleanor Pena</a></h6>
 </div>
 </div>
 </td>
@@ -324,8 +324,8 @@
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list"><i class="ri-user-3-line"></i>View Student</a></li>
-<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-teacher"><i class="ri-edit-2-line"></i>Edit</a></li>
+<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/teacher-details/?name=Eleanor+Pena&email=eleanor.pena%40school.org"><i class="ri-user-3-line"></i>View Profile</a></li>
+<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/edit-teacher/"><i class="ri-edit-2-line"></i>Edit</a></li>
 <li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-error-warning-line"></i>Inactive</button></li>
 <li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-delete-bin-6-line"></i>Delete</button></li>
 </ul>
@@ -339,12 +339,12 @@
 <label class="form-check-label">05</label>
 </div>
 </td>
-<td><span class="text-primary-600">AD52369</span></td>
+<td><span class="text-primary-600">TCH52369</span></td>
 <td>
 <div class="d-flex align-items-center">
 <img alt="Cody Fisher Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img5.png' %}"/>
 <div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Cody Fisher</h6>
+<h6 class="text-md mb-0 fw-medium flex-grow-1"><a href="/admin-panel/teacher-details/?name=Cody+Fisher&email=cody.fisher%40school.com" class="hover-text-primary text-neutral-800">Cody Fisher</a></h6>
 </div>
 </div>
 </td>
@@ -361,8 +361,8 @@
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list"><i class="ri-user-3-line"></i>View Student</a></li>
-<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-teacher"><i class="ri-edit-2-line"></i>Edit</a></li>
+<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/teacher-details/?name=Cody+Fisher&email=cody.fisher%40school.com"><i class="ri-user-3-line"></i>View Profile</a></li>
+<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/edit-teacher/"><i class="ri-edit-2-line"></i>Edit</a></li>
 <li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-error-warning-line"></i>Inactive</button></li>
 <li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-delete-bin-6-line"></i>Delete</button></li>
 </ul>
@@ -376,12 +376,12 @@
 <label class="form-check-label">06</label>
 </div>
 </td>
-<td><span class="text-primary-600">AD52370</span></td>
+<td><span class="text-primary-600">TCH52370</span></td>
 <td>
 <div class="d-flex align-items-center">
 <img alt="Devon Lane Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img6.png' %}"/>
 <div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Devon Lane</h6>
+<h6 class="text-md mb-0 fw-medium flex-grow-1"><a href="/admin-panel/teacher-details/?name=Devon+Lane&email=devon%40edu.org" class="hover-text-primary text-neutral-800">Devon Lane</a></h6>
 </div>
 </div>
 </td>
@@ -399,13 +399,13 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/teacher-details/?name=Devon+Lane&email=devon%40edu.org">
 <i class="ri-user-3-line"></i>
-                                                        View Student
+                                                        View Profile
                                                     </a>
 </li>
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-teacher">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/edit-teacher/">
 <i class="ri-edit-2-line"></i>
                                                         Edit
                                                     </a>
@@ -430,12 +430,12 @@
 <label class="form-check-label">07</label>
 </div>
 </td>
-<td><span class="text-primary-600">AD52371</span></td>
+<td><span class="text-primary-600">TCH52371</span></td>
 <td>
 <div class="d-flex align-items-center">
 <img alt="Bessie Cooper Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img7.png' %}"/>
 <div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Bessie Cooper</h6>
+<h6 class="text-md mb-0 fw-medium flex-grow-1"><a href="/admin-panel/teacher-details/?name=Bessie+Cooper&email=bessie.cooper%40school.org" class="hover-text-primary text-neutral-800">Bessie Cooper</a></h6>
 </div>
 </div>
 </td>
@@ -453,13 +453,13 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/teacher-details/?name=Bessie+Cooper&email=bessie.cooper%40school.org">
 <i class="ri-user-3-line"></i>
-                                                        View Student
+                                                        View Profile
                                                     </a>
 </li>
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-teacher">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/edit-teacher/">
 <i class="ri-edit-2-line"></i>
                                                         Edit
                                                     </a>
@@ -484,12 +484,12 @@
 <label class="form-check-label">08</label>
 </div>
 </td>
-<td><span class="text-primary-600">AD52372</span></td>
+<td><span class="text-primary-600">TCH52372</span></td>
 <td>
 <div class="d-flex align-items-center">
 <img alt="Arlene McCoy Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img8.png' %}"/>
 <div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Arlene McCoy</h6>
+<h6 class="text-md mb-0 fw-medium flex-grow-1"><a href="/admin-panel/teacher-details/?name=Arlene+McCoy&email=arlene.mccoy%40edu.org" class="hover-text-primary text-neutral-800">Arlene McCoy</a></h6>
 </div>
 </div>
 </td>
@@ -507,13 +507,13 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/teacher-details/?name=Arlene+McCoy&email=arlene.mccoy%40edu.org">
 <i class="ri-user-3-line"></i>
-                                                        View Student
+                                                        View Profile
                                                     </a>
 </li>
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-teacher">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/edit-teacher/">
 <i class="ri-edit-2-line"></i>
                                                         Edit
                                                     </a>
@@ -538,12 +538,12 @@
 <label class="form-check-label">09</label>
 </div>
 </td>
-<td><span class="text-primary-600">AD52373</span></td>
+<td><span class="text-primary-600">TCH52373</span></td>
 <td>
 <div class="d-flex align-items-center">
 <img alt="Annette Black Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img9.png' %}"/>
 <div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Annette Black</h6>
+<h6 class="text-md mb-0 fw-medium flex-grow-1"><a href="/admin-panel/teacher-details/?name=Annette+Black&email=annette%40school.edu" class="hover-text-primary text-neutral-800">Annette Black</a></h6>
 </div>
 </div>
 </td>
@@ -561,13 +561,13 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/teacher-details/?name=Annette+Black&email=annette%40school.edu">
 <i class="ri-user-3-line"></i>
-                                                        View Student
+                                                        View Profile
                                                     </a>
 </li>
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-teacher">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/edit-teacher/">
 <i class="ri-edit-2-line"></i>
                                                         Edit
                                                     </a>
@@ -592,12 +592,12 @@
 <label class="form-check-label">10</label>
 </div>
 </td>
-<td><span class="text-primary-600">AD52374</span></td>
+<td><span class="text-primary-600">TCH52374</span></td>
 <td>
 <div class="d-flex align-items-center">
 <img alt="Guy Hawkins Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img2.png' %}"/>
 <div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Guy Hawkins</h6>
+<h6 class="text-md mb-0 fw-medium flex-grow-1"><a href="/admin-panel/teacher-details/?name=Guy+Hawkins&email=guy.hawkins%40edu.com" class="hover-text-primary text-neutral-800">Guy Hawkins</a></h6>
 </div>
 </div>
 </td>
@@ -615,13 +615,13 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/teacher-details/?name=Guy+Hawkins&email=guy.hawkins%40edu.com">
 <i class="ri-user-3-line"></i>
-                                                        View Student
+                                                        View Profile
                                                     </a>
 </li>
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-teacher">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/edit-teacher/">
 <i class="ri-edit-2-line"></i>
                                                         Edit
                                                     </a>
@@ -646,12 +646,12 @@
 <label class="form-check-label">11</label>
 </div>
 </td>
-<td><span class="text-primary-600">AD52375</span></td>
+<td><span class="text-primary-600">TCH52375</span></td>
 <td>
 <div class="d-flex align-items-center">
 <img alt="Theresa Webb Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img9.png' %}"/>
 <div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Theresa Webb</h6>
+<h6 class="text-md mb-0 fw-medium flex-grow-1"><a href="/admin-panel/teacher-details/?name=Theresa+Webb&email=theresa.webb%40school.edu" class="hover-text-primary text-neutral-800">Theresa Webb</a></h6>
 </div>
 </div>
 </td>
@@ -670,12 +670,12 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
-<i class="ri-user-3-line"></i> View Student
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/teacher-details/?name=Theresa+Webb&email=theresa.webb%40school.edu">
+<i class="ri-user-3-line"></i> View Profile
                                                     </a>
 </li>
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-teacher">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/edit-teacher/">
 <i class="ri-edit-2-line"></i> Edit
                                                     </a>
 </li>
@@ -698,12 +698,12 @@
 <label class="form-check-label">12</label>
 </div>
 </td>
-<td><span class="text-primary-600">AD52376</span></td>
+<td><span class="text-primary-600">TCH52376</span></td>
 <td>
 <div class="d-flex align-items-center">
 <img alt="Kathryn Murphy Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img6.png' %}"/>
 <div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Kathryn Murphy</h6>
+<h6 class="text-md mb-0 fw-medium flex-grow-1"><a href="/admin-panel/teacher-details/?name=Kathryn+Murphy&email=kathryn.murphy%40college.edu" class="hover-text-primary text-neutral-800">Kathryn Murphy</a></h6>
 </div>
 </div>
 </td>
@@ -722,12 +722,12 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
-<i class="ri-user-3-line"></i> View Student
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/teacher-details/?name=Kathryn+Murphy&email=kathryn.murphy%40college.edu">
+<i class="ri-user-3-line"></i> View Profile
                                                     </a>
 </li>
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="edit-teacher">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/edit-teacher/">
 <i class="ri-edit-2-line"></i> Edit
                                                     </a>
 </li>

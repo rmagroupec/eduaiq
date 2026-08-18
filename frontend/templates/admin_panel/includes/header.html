@@ -24,6 +24,8 @@
         <div class="col-auto">
             <div class="d-flex flex-wrap align-items-center gap-3">
 
+
+
                 <!-- Theme Toggle -->
                 <button type="button"
                     data-theme-toggle
@@ -140,9 +142,13 @@
 
                         <div class="text-start">
                             <h6 class="mb-0 text-sm">
-                                Admin
+                                {% if request.user.is_authenticated %}{{ request.user.first_name|default:request.user.username|title }}{% else %}Guest User{% endif %}
                             </h6>
-                            <small>Administrator</small>
+                            <small>
+                                {% if request.user.is_superuser or request.user.role == 'admin' %}Administrator
+                                {% elif request.user.role == 'institution' %}Institution Admin
+                                {% else %}Sales & CRM Staff{% endif %}
+                            </small>
                         </div>
 
                     </button>

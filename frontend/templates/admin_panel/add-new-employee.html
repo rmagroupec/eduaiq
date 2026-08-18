@@ -9,13 +9,13 @@
 <div class="">
 <h1 class="fw-semibold mb-4 h6 text-primary-light">Add New Employee</h1>
 <div class="">
-<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
-<a class="text-secondary-light hover-text-primary hover-underline" href="employee-list"> /
+<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
+<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/employee-list/"> /
         Employee List</a>
 <span class="text-secondary-light">/ Add New Employee</span>
 </div>
 </div>
-<a class="btn btn-primary-600 d-flex align-items-center gap-6 d-none" href="add-new-employee">
+<a class="btn btn-primary-600 d-flex align-items-center gap-6 d-none" href="/admin-panel/add-new-employee/">
 <span class="d-flex text-md">
 <i class="ri-add-large-line"></i>
 </span>
@@ -51,10 +51,15 @@
 <label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeDepartment">Department
                                         </label>
 <select class="form-control form-select" id="employeeDepartment">
-<option disabled="" value="Select a Department">Select a Department</option>
-<option value="English">English</option>
-<option value="Mathematics">Mathematics</option>
-<option value="Physics">Physics</option>
+<option disabled="" selected="" value="">Select a Department</option>
+<option value="CRM & Sales">CRM & Sales</option>
+<option value="Admissions & Counseling">Admissions & Counseling</option>
+<option value="Marketing & Lead Gen">Marketing & Lead Gen</option>
+<option value="Student Relations & Support">Student Relations & Support</option>
+<option value="Academic Management">Academic Management</option>
+<option value="Finance & Accounts">Finance & Accounts</option>
+<option value="Human Resources (HR)">Human Resources (HR)</option>
+<option value="Administration & Operations">Administration & Operations</option>
 </select>
 </div>
 </div>
@@ -63,12 +68,18 @@
 <label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeDesignation">Designation
                                         </label>
 <select class="form-control form-select" id="employeeDesignation">
-<option disabled="" value="Select a Class">Select a Designation</option>
+<option disabled="" selected="" value="">Select a Designation</option>
+<option value="CRM Manager">CRM Manager</option>
+<option value="Sales Executive">Sales Executive</option>
+<option value="Admission Counselor">Admission Counselor</option>
+<option value="Business Development Lead">Business Development Lead</option>
+<option value="Relationship Manager">Relationship Manager</option>
+<option value="Telecaller Executive">Telecaller Executive</option>
+<option value="Marketing Specialist">Marketing Specialist</option>
+<option value="Academic Coordinator">Academic Coordinator</option>
 <option value="Team Lead">Team Lead</option>
-<option value="Software Engineer">Software Engineer</option>
-<option value="Frontend Developer">Frontend Developer</option>
-<option value="Backend Developer">Backend Developer</option>
-<option value="Full Stack Developer">Full Stack Developer</option>
+<option value="Accountant">Accountant</option>
+<option value="HR Manager">HR Manager</option>
 </select>
 </div>
 </div>
@@ -287,22 +298,21 @@
 <div class="col-xxl-6">
 <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
 <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Previous School Details</h6>
+<h6 class="text-lg fw-semibold mb-0">Previous Experience &amp; Organization</h6>
 </div>
 <div class="card-body p-20">
 <div class="row gy-3">
 <div class="col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="schoolNamee">School
-                                            Name </label>
-<input class="form-control" id="schoolNamee" placeholder="Enter School Name" type="text"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="companyName">Previous Company Name </label>
+<input class="form-control" id="companyName" placeholder="Enter Company / Organization Name" type="text"/>
 </div>
 </div>
 <div class="col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="Address">Address
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="Address">Location / Address
                                         </label>
-<input class="form-control" id="Address" placeholder="Enter Address" type="text"/>
+<input class="form-control" id="Address" placeholder="Enter Company Address" type="text"/>
 </div>
 </div>
 </div>

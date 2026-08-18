@@ -9,13 +9,13 @@
 <div class="">
 <h1 class="fw-semibold mb-4 h6 text-primary-light">Designation </h1>
 <div class="">
-<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
-<a class="text-secondary-light hover-text-primary hover-underline" href="employee-list"> /
+<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
+<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/employee-list/"> /
                         HRM</a>
 <span class="text-secondary-light">/ Designation</span>
 </div>
 </div>
-<button class="my-sidebar-btn btn btn-primary-600 d-flex align-items-center gap-6" type="button">
+<button class="my-sidebar-btn btn btn-primary-600 d-flex align-items-center gap-6" data-bs-toggle="modal" data-bs-target="#addDesignationModal" type="button">
 <span class="d-flex text-md">
 <i class="ri-add-large-line"></i>
 </span>
@@ -359,8 +359,66 @@
 <label class="form-check-label">10</label>
 </div>
 </td>
-<td>Peon</td>
-<td>Assists staff with various daily duties and logistics</td>
+<td>CRM Manager</td>
+<td>Manages CRM system, sales funnels, and institution leads</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i>Edit
+                                                    </button>
+</li>
+<li>
+<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+                                                    </button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">11</label>
+</div>
+</td>
+<td>Sales Executive</td>
+<td>Handles client inquiries, course sales, and institution onboarding</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i>Edit
+                                                    </button>
+</li>
+<li>
+<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+                                                    </button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">12</label>
+</div>
+</td>
+<td>Admission Counselor</td>
+<td>Guides prospective students and parents through admission process</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
@@ -387,12 +445,44 @@
 </div>
 </div>
 </div>
+
+<!-- Add / Edit Designation Modal -->
+<div class="modal fade" id="addDesignationModal" tabindex="-1" aria-labelledby="addDesignationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content radius-16 border-0 shadow">
+      <div class="modal-header border-bottom px-24 py-16">
+        <h6 class="modal-title fw-bold text-primary-light" id="addDesignationModalLabel">Add Designation</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-24">
+        <form id="designationForm" onsubmit="handleDesignationSubmit(event)">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-12">
+              <label class="form-label text-sm fw-semibold text-primary-light">Designation Title <span class="text-danger">*</span></label>
+              <input type="text" class="form-control radius-8" id="desigName" name="name" placeholder="e.g. Senior Sales Manager" required>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label text-sm fw-semibold text-primary-light">Description</label>
+              <textarea class="form-control radius-8" id="desigDescription" name="description" rows="3" placeholder="Brief description of the designation responsibilities..."></textarea>
+            </div>
+          </div>
+          <div class="d-flex align-items-center justify-content-end gap-12 mt-24">
+            <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary-600 radius-8 px-20 text-white" id="desigSubmitBtn">Save Designation</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block js %}
     <script>
 
     let table = new DataTable('#dataTable');
+    let editingDesigRow = null;
 
     // ✅ Data Table start
     $('.data-table').each(function () {
@@ -412,27 +502,119 @@
     });
     // ✅ Data Table end
 
-    // Sidebar js start
-    $('.my-sidebar-btn').on('click', function () {
-        $('.my-sidebar').addClass('active');
-        $('.overlay').addClass('active');
-    });
-    $('.close-my-sidebar, .overlay').on('click', function () {
-        $('.my-sidebar').removeClass('active');
-        $('.overlay').removeClass('active');
+    // Reset modal state when opening for Add
+    $('.my-sidebar-btn, [data-bs-target="#addDesignationModal"]').on('click', function () {
+        if (!editingDesigRow) {
+            $('#addDesignationModalLabel').text('Add Designation');
+            $('#desigSubmitBtn').text('Save Designation');
+            $('#designationForm')[0].reset();
+        }
     });
 
-
-    $('.edit-sidebar-btn').on('click', function () {
-        $('.edit-sidebar').addClass('active');
-        $('.overlay').addClass('active');
+    // Reset editing state on modal close
+    $('#addDesignationModal').on('hidden.bs.modal', function () {
+        editingDesigRow = null;
+        $('#addDesignationModalLabel').text('Add Designation');
+        $('#desigSubmitBtn').text('Save Designation');
+        $('#designationForm')[0].reset();
     });
-    $('.close-edit-sidebar, .overlay').on('click', function () {
-        $('.edit-sidebar').removeClass('active');
-        $('.overlay').removeClass('active');
-    });
-    // Sidebar js end
 
+    // Delegate Edit Designation click
+    $(document).on('click', '.edit-sidebar-btn', function (e) {
+        e.preventDefault();
+        editingDesigRow = $(this).closest('tr');
+        const name = editingDesigRow.find('td:nth-child(2)').text().trim();
+        const desc = editingDesigRow.find('td:nth-child(3)').text().trim();
+
+        $('#desigName').val(name);
+        $('#desigDescription').val(desc);
+
+        $('#addDesignationModalLabel').text('Edit Designation');
+        $('#desigSubmitBtn').text('Update Designation');
+
+        const modalEl = document.getElementById('addDesignationModal');
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modalInstance.show();
+    });
+
+    // Delegate Delete Designation click
+    $(document).on('click', '[data-bs-target="#exampleModalDelete"]', function (e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        const desigName = $row.find('td:nth-child(2)').text().trim();
+        window.showConfirmModal({
+            title: 'Delete Designation',
+            message: `Are you sure you want to delete the designation "${desigName}"?`,
+            icon: 'ri-delete-bin-6-line',
+            iconBgClass: 'bg-danger-100',
+            iconColorClass: 'text-danger-600',
+            confirmText: 'Yes, Delete',
+            confirmBtnClass: 'btn-danger',
+            onConfirm: function () {
+                $row.fadeOut(250, function () {
+                    $row.remove();
+                    if (window.showToast) window.showToast(`Designation "${desigName}" deleted successfully!`, 'info');
+                });
+            }
+        });
+    });
+
+    // Handle Form Submission for Add / Edit
+    function handleDesignationSubmit(e) {
+        e.preventDefault();
+        const name = $('#desigName').val().trim();
+        const desc = $('#desigDescription').val().trim();
+
+        if (!name) return;
+
+        if (editingDesigRow) {
+            editingDesigRow.find('td:nth-child(2)').text(name);
+            editingDesigRow.find('td:nth-child(3)').text(desc);
+            editingDesigRow = null;
+            if (window.showToast) window.showToast('Designation updated successfully!', 'success');
+        } else {
+            const count = $('#dataTable tbody tr').length + 1;
+            const sl = String(count).padStart(2, '0');
+            const newRowHtml = `
+                <tr>
+                    <td>
+                        <div class="form-check style-check d-flex align-items-center">
+                            <input class="form-check-input" type="checkbox"/>
+                            <label class="form-check-label">${sl}</label>
+                        </div>
+                    </td>
+                    <td>${name}</td>
+                    <td>${desc}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+                                <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+                                <li>
+                                    <button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+                                        <i class="ri-edit-2-line"></i>Edit
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
+                                        <i class="ri-delete-bin-6-line"></i>Delete
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            $('#dataTable tbody').append(newRowHtml);
+            if (window.showToast) window.showToast('Designation added successfully!', 'success');
+        }
+
+        const modalEl = document.getElementById('addDesignationModal');
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        if (modalInstance) modalInstance.hide();
+        $('#designationForm')[0].reset();
+    }
 
     </script>
 {% endblock %}

@@ -27,7 +27,11 @@
             class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0">
           <span class="profile-dropdown__contents">
             <span class="h6 mb-0 text-md d-block text-primary-light">{% if request.user.is_authenticated %}{{ request.user.first_name|default:request.user.username|title }}{% else %}Admin User{% endif %}</span>
-            <span class="text-secondary-light text-sm mb-0 d-block">{% if request.user.role == 'institution' %}Institution Admin{% else %}Super Admin{% endif %}</span>
+            <span class="text-secondary-light text-sm mb-0 d-block">
+              {% if request.user.is_superuser or request.user.role == 'admin' %}Super Admin
+              {% elif request.user.role == 'institution' %}Institution Admin
+              {% else %}Sales & CRM Staff{% endif %}
+            </span>
           </span>
         </span>
         <span class="profile-dropdown__icon pe-8 text-xl d-flex line-height-1">
@@ -100,6 +104,102 @@
         </a>
       </li>
 
+      {% elif not request.user.is_superuser and request.user.role != 'admin' %}
+      <!-- SALES & EMPLOYEE PORTAL RESTRICTED MENU -->
+      <li class="sidebar-menu-header" style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #487fff; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
+        Sales & CRM Portal
+      </li>
+      <li>
+        <a href="/admin-panel/dashboard/">
+          <i class="ri-home-4-line"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <!-- SALES CRM MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-line-chart-line"></i>
+          <span>Sales CRM</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/crm-dashboard/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Pipeline Overview
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/leads/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Institution Leads (B2B)
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-new-lead/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Lead
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/student-inquiries/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Student Inquiries (B2C)
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-student-inquiry/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Inquiry
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/opportunities/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Deals & Opportunities
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-opportunity/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Opportunity
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- INSTITUTIONS VIEW -->
+      <li>
+        <a href="/admin-panel/institution-list/">
+          <i class="ri-building-line"></i>
+          <span>Institutions</span>
+        </a>
+      </li>
+
+      <!-- COURSES CATALOG -->
+      <li>
+        <a href="/admin-panel/courses/">
+          <i class="ri-book-open-line"></i>
+          <span>Course Catalog</span>
+        </a>
+      </li>
+
+      <!-- WFH REQUESTS -->
+      <li>
+        <a href="/admin-panel/wfh-requests/">
+          <i class="ri-home-wifi-line"></i>
+          <span>Apply WFH / Requests</span>
+        </a>
+      </li>
+
+      <!-- MY PROFILE -->
+      <li>
+        <a href="/admin-panel/view-profile/">
+          <i class="ri-user-3-line"></i>
+          <span>My Profile</span>
+        </a>
+      </li>
+
       {% else %}
       <!-- SUPERADMIN FULL MENU -->
       <li>
@@ -107,6 +207,58 @@
           <i class="ri-home-4-line"></i>
           <span>Dashboard</span>
         </a>
+      </li>
+
+      <!-- SALES CRM MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-line-chart-line"></i>
+          <span>Sales CRM</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/crm-dashboard/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Pipeline Overview
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/leads/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Institution Leads (B2B)
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-new-lead/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Lead
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/student-inquiries/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Student Inquiries (B2C)
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-student-inquiry/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Inquiry
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/opportunities/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Deals & Opportunities
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-opportunity/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Opportunity
+            </a>
+          </li>
+        </ul>
       </li>
 
       <!-- INSTITUTIONS MODULE -->
@@ -311,6 +463,91 @@
           <i class="ri-user-star-line"></i>
           <span>Student Enrollments</span>
         </a>
+      </li>
+
+      <!-- HR & EMPLOYEE ONBOARDING MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-user-add-line"></i>
+          <span>HR & Onboarding</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/employee-list/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Employee Directory
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-new-employee/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Employee Onboarding
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/department/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Departments
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/designation/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Designations
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/wfh-requests/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              WFH Requests
+            </a>
+          </li>
+        </ul>
+      </li>
+
+
+      <!-- EXPENSE MANAGEMENT MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-money-dollar-circle-line"></i>
+          <span>Expense Management</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/expense-list/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Expense Records
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/expense-head/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Expense Heads / Categories
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- BILLING & FEES MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-bill-line"></i>
+          <span>Billing & Invoices</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/fees-collect/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Fee Collection
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/transaction/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Transaction History
+            </a>
+          </li>
+        </ul>
       </li>
       {% endif %}
     </ul>

@@ -1,0 +1,204 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAIQ - Student Inquiries{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Student Inquiries (B2C CRM)</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Student Inquiries</span>
+    </div>
+  </div>
+  <a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/add-student-inquiry/">
+    <span class="d-flex text-md"><i class="ri-add-large-line"></i></span>
+    Add Inquiry
+  </a>
+</div>
+
+<div class="card h-100 mt-24">
+  <div class="card-body p-24">
+    <!-- Filters -->
+    <div class="row gy-3 mb-24 align-items-end">
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="stageFilter">Stage</label>
+        <select class="form-control form-select radius-8" id="stageFilter">
+          <option value="">All Stages</option>
+          <option value="new">New</option>
+          <option value="contacted">Contacted</option>
+          <option value="trial">Trial / Demo Class</option>
+          <option value="admission_offered">Admission Offered</option>
+          <option value="enrolled">Enrolled</option>
+          <option value="lost">Lost</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="priorityFilter">Priority</label>
+        <select class="form-control form-select radius-8" id="priorityFilter">
+          <option value="">All Priorities</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <input type="text" class="form-control radius-8" id="searchQuery" placeholder="Student, guardian, or phone">
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-outline-primary-600 w-100 radius-8" id="clearFiltersBtn">Clear Filters</button>
+      </div>
+    </div>
+
+    <div class="table-responsive mt-24">
+      <table class="table border-neutral-200 table-hover align-middle">
+        <thead>
+          <tr class="bg-neutral-50">
+            <th scope="col">ID</th>
+            <th scope="col">Student / Guardian</th>
+            <th scope="col">Contact</th>
+            <th scope="col">Class Interest</th>
+            <th scope="col">Stage</th>
+            <th scope="col">Priority</th>
+            <th scope="col">Next Follow-up</th>
+            <th scope="col" class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody id="inquiriesTableBody">
+          <tr><td colspan="8" class="text-center py-40"><div class="spinner-border text-primary"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 mt-24">
+      <span class="text-sm text-secondary-light" id="tableInfoSpan">Showing 0 to 0 of 0 entries</span>
+      <nav aria-label="Page navigation" id="paginationNav" class="d-none">
+        <ul class="pagination pagination-primary mb-0 gap-8" id="paginationUl"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+  let currentPage = 1;
+
+  function getCsrfToken() {
+    const match = document.cookie.match(/csrftoken=([^;]+)/);
+    return match ? match[1] : null;
+  }
+
+  function stageBadge(stage) {
+    const map = {
+      new: 'bg-info-100 text-info-600', contacted: 'bg-primary-100 text-primary-600',
+      trial: 'bg-warning-100 text-warning-600', admission_offered: 'bg-orange-100 text-orange-600',
+      enrolled: 'bg-success-100 text-success-600', lost: 'bg-danger-100 text-danger-600',
+    };
+    return `<span class="px-16 py-4 radius-4 fw-medium text-sm ${map[stage] || 'bg-neutral-100'}">${stage.toUpperCase().replace('_', ' ')}</span>`;
+  }
+
+  function loadInquiries(page = 1) {
+    currentPage = page;
+    const stage = $('#stageFilter').val();
+    const priority = $('#priorityFilter').val();
+    const q = $('#searchQuery').val();
+
+    let url = `/api/crm/student-inquiries/?page=${page}&page_size=20&detailed=true`;
+    if (stage) url += `&stage=${stage}`;
+    if (priority) url += `&priority=${priority}`;
+    if (q) url += `&q=${encodeURIComponent(q)}`;
+
+    $.ajax({
+      url: url, type: 'GET', xhrFields: { withCredentials: true },
+      success: function(response) { renderTable(response); renderPagination(response); },
+      error: function() {
+        $('#inquiriesTableBody').html(`<tr><td colspan="8" class="text-center py-40 text-danger-600">Failed to load inquiries.</td></tr>`);
+      }
+    });
+  }
+
+  function renderTable(data) {
+    const tbody = $('#inquiriesTableBody');
+    tbody.empty();
+    if (!data.results || data.results.length === 0) {
+      tbody.html(`<tr><td colspan="8" class="text-center py-40 text-secondary-light">No inquiries found.</td></tr>`);
+      $('#tableInfoSpan').text('Showing 0 to 0 of 0 entries');
+      return;
+    }
+    data.results.forEach(i => {
+      tbody.append(`
+        <tr>
+          <td><span class="text-secondary-light fw-medium">${i.id}</span></td>
+          <td>
+            <h6 class="text-md mb-0 fw-semibold text-neutral-800">${i.student_name}</h6>
+            <span class="text-xs text-secondary-light">${i.guardian_name ? 'Guardian: ' + i.guardian_name : 'No guardian'}</span>
+          </td>
+          <td>${i.phone}${i.email ? '<br><span class="text-xs text-secondary-light">' + i.email + '</span>' : ''}</td>
+          <td>${i.class_grade_interested || '-'}</td>
+          <td>${stageBadge(i.stage)}</td>
+          <td>${i.priority ? i.priority.toUpperCase() : '-'}</td>
+          <td>${i.next_follow_up_date || '-'}</td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-outline-danger px-8 py-4 radius-8 delete-inquiry-btn" data-id="${i.id}" title="Delete"><i class="ri-delete-bin-line text-md"></i></button>
+          </td>
+        </tr>
+      `);
+    });
+    const startEntry = (data.page - 1) * data.page_size + 1;
+    const endEntry = Math.min(data.page * data.page_size, data.count);
+    $('#tableInfoSpan').text(`Showing ${startEntry} to ${endEntry} of ${data.count} entries`);
+  }
+
+  function renderPagination(data) {
+    const nav = $('#paginationNav'); const ul = $('#paginationUl'); ul.empty();
+    if (data.total_pages <= 1) { nav.addClass('d-none'); return; }
+    nav.removeClass('d-none');
+    const prevDisabled = data.page === 1 ? 'disabled' : '';
+    ul.append(`<li class="page-item ${prevDisabled}"><button class="page-link py-6 px-12" data-page="${data.page - 1}" ${prevDisabled}>Previous</button></li>`);
+    for (let i = 1; i <= data.total_pages; i++) {
+      ul.append(`<li class="page-item ${i === data.page ? 'active' : ''}"><button class="page-link py-6 px-12" data-page="${i}">${i}</button></li>`);
+    }
+    const nextDisabled = data.page === data.total_pages ? 'disabled' : '';
+    ul.append(`<li class="page-item ${nextDisabled}"><button class="page-link py-6 px-12" data-page="${data.page + 1}" ${nextDisabled}>Next</button></li>`);
+  }
+
+  $('#stageFilter, #priorityFilter').on('change', function() { loadInquiries(1); });
+  $('#searchQuery').on('keyup', function() { loadInquiries(1); });
+  $('#clearFiltersBtn').on('click', function() {
+    $('#stageFilter').val(''); $('#priorityFilter').val(''); $('#searchQuery').val('');
+    loadInquiries(1);
+  });
+  $(document).on('click', '#paginationUl .page-link', function() {
+    const page = $(this).data('page'); if (page) loadInquiries(page);
+  });
+
+  $(document).on('click', '.delete-inquiry-btn', function() {
+    const id = $(this).data('id');
+    showConfirmModal({
+      title: 'Delete Student Inquiry',
+      message: 'Are you sure you want to delete this student inquiry? This action cannot be undone.',
+      icon: 'ri-delete-bin-line',
+      iconBgClass: 'bg-danger-50',
+      iconColorClass: 'text-danger-600',
+      confirmText: 'Delete Inquiry',
+      confirmBtnClass: 'btn-danger-600',
+      onConfirm: function() {
+        const token = getCsrfToken();
+        $.ajax({
+          url: `/api/crm/student-inquiries/${id}/`, type: 'DELETE',
+          headers: { 'X-CSRFToken': token }, xhrFields: { withCredentials: true },
+          success: function() { showToast('Inquiry deleted.', 'success'); loadInquiries(currentPage); },
+          error: function() { showToast('Failed to delete inquiry.', 'error'); }
+        });
+      }
+    });
+  });
+
+  loadInquiries();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,169 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAIQ - Add Opportunity{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Add Opportunity (Deal)</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/opportunities/">Opportunities</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Add Opportunity</span>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-24">
+  <div class="card-header border-bottom bg-base py-16 px-24">
+    <h6 class="text-lg fw-semibold mb-0">Deal & Revenue Details</h6>
+  </div>
+  <div class="card-body p-24">
+    <form id="addOppForm">
+      {% csrf_token %}
+      <div class="row gy-3">
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="link_type">Link Deal To <span class="text-danger-600">*</span></label>
+          <select class="form-control form-select radius-8" id="link_type" required>
+            <option value="lead">Institution Lead (B2B)</option>
+            <option value="inquiry">Student Inquiry (B2C)</option>
+          </select>
+        </div>
+        <div class="col-md-6" id="leadSelectGroup">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="lead">Select Institution Lead <span class="text-danger-600">*</span></label>
+          <select class="form-control form-select radius-8" id="lead" name="lead"></select>
+        </div>
+        <div class="col-md-6 d-none" id="inquirySelectGroup">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="student_inquiry">Select Student Inquiry <span class="text-danger-600">*</span></label>
+          <select class="form-control form-select radius-8" id="student_inquiry" name="student_inquiry"></select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="name">Deal Name <span class="text-danger-600">*</span></label>
+          <input type="text" class="form-control radius-8" id="name" name="name" placeholder="e.g. Sunrise School 500 Seats License" required>
+        </div>
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="amount">Deal Amount (INR) <span class="text-danger-600">*</span></label>
+          <input type="number" min="0" step="0.01" class="form-control radius-8" id="amount" name="amount" placeholder="e.g. 250000" required>
+        </div>
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="probability_pct">Win Probability %</label>
+          <input type="number" min="0" max="100" class="form-control radius-8" id="probability_pct" name="probability_pct" value="20">
+        </div>
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="stage">Stage</label>
+          <select class="form-control form-select radius-8" id="stage" name="stage">
+            <option value="prospecting">Prospecting</option>
+            <option value="qualification">Qualification</option>
+            <option value="proposal">Proposal Sent</option>
+            <option value="negotiation">Negotiation</option>
+            <option value="won">Won</option>
+            <option value="lost">Lost</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="expected_close_date">Expected Close Date</label>
+          <input type="date" class="form-control radius-8" id="expected_close_date" name="expected_close_date">
+        </div>
+        <div class="col-md-12">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="notes">Notes</label>
+          <textarea class="form-control radius-8" id="notes" name="notes" rows="3" placeholder="Context about proposal or pricing terms..."></textarea>
+        </div>
+
+        <div class="col-12 mt-24">
+          <div class="d-flex align-items-center gap-16 justify-content-end">
+            <a href="/admin-panel/opportunities/" class="btn btn-outline-neutral-400 radius-8">Cancel</a>
+            <button type="submit" class="btn btn-primary-600 radius-8" id="submitBtn">Save Opportunity</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+  function getCsrfToken() {
+    const match = document.cookie.match(/csrftoken=([^;]+)/);
+    return match ? match[1] : null;
+  }
+
+  function loadLeads() {
+    $.ajax({
+      url: '/api/crm/leads/?page_size=200', type: 'GET', xhrFields: { withCredentials: true },
+      success: function(res) {
+        const sel = $('#lead').empty();
+        (res.results || []).forEach(l => {
+          sel.append(`<option value="${l.id}">${l.lead_name} (${l.institution_name || 'Individual'})</option>`);
+        });
+      }
+    });
+  }
+
+  function loadInquiries() {
+    $.ajax({
+      url: '/api/crm/student-inquiries/?page_size=200', type: 'GET', xhrFields: { withCredentials: true },
+      success: function(res) {
+        const sel = $('#student_inquiry').empty();
+        (res.results || []).forEach(i => {
+          sel.append(`<option value="${i.id}">${i.student_name} (${i.phone})</option>`);
+        });
+      }
+    });
+  }
+
+  $('#link_type').on('change', function() {
+    const val = $(this).val();
+    if (val === 'lead') {
+      $('#leadSelectGroup').removeClass('d-none');
+      $('#inquirySelectGroup').addClass('d-none');
+    } else {
+      $('#inquirySelectGroup').removeClass('d-none');
+      $('#leadSelectGroup').addClass('d-none');
+    }
+  });
+
+  $('#addOppForm').on('submit', function(e) {
+    e.preventDefault();
+    $('#submitBtn').prop('disabled', true).html('Saving...');
+    const token = getCsrfToken();
+    const linkType = $('#link_type').val();
+
+    const data = {
+      name: $('#name').val(),
+      amount: $('#amount').val(),
+      probability_pct: $('#probability_pct').val(),
+      stage: $('#stage').val(),
+      expected_close_date: $('#expected_close_date').val() || null,
+      notes: $('#notes').val(),
+    };
+    if (linkType === 'lead') data.lead = $('#lead').val();
+    else data.student_inquiry = $('#student_inquiry').val();
+
+    $.ajax({
+      url: '/api/crm/opportunities/', type: 'POST',
+      headers: { 'X-CSRFToken': token }, contentType: 'application/json', data: JSON.stringify(data),
+      xhrFields: { withCredentials: true },
+      success: function() {
+        showToast('Opportunity added successfully!', 'success');
+        setTimeout(function() { window.location.href = '/admin-panel/opportunities/'; }, 1200);
+      },
+      error: function(xhr) {
+        $('#submitBtn').prop('disabled', false).html('Save Opportunity');
+        let msg = 'Failed to save opportunity.';
+        if (xhr.responseJSON && xhr.responseJSON.errors) msg = JSON.stringify(xhr.responseJSON.errors, null, 2);
+        showToast(msg, 'error');
+      }
+    });
+  });
+
+  loadLeads();
+  loadInquiries();
+});
+</script>
+{% endblock %}

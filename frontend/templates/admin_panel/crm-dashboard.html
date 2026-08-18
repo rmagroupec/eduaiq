@@ -1,0 +1,883 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAIQ - Sales CRM Pipeline Overview & Graphs{% endblock %}
+
+{% block content %}
+<!-- Top Header / Breadcrumb -->
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h5 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+      <i class="ri-line-chart-line text-warning"></i> Sales CRM — Visual Pipeline Overview
+    </h5>
+    <p class="text-neutral-600 text-sm mb-0">Real-time revenue forecast, B2B institution pipeline, B2C student inquiries, and performance metrics.</p>
+  </div>
+  <div class="d-flex flex-wrap align-items-center gap-2">
+    <span class="badge-orange-single px-12 py-8 font-weight-bold text-sm">
+      <i class="ri-pulse-line me-1"></i> Live Sales Stream
+    </span>
+    <a href="/admin-panel/add-new-lead/" class="btn-eduaiq-outline">
+      <i class="ri-building-line me-1.5"></i> + Institution Lead
+    </a>
+    <a href="/admin-panel/add-student-inquiry/" class="btn-eduaiq-outline">
+      <i class="ri-user-add-line me-1.5"></i> + Student Inquiry
+    </a>
+    <a href="/admin-panel/add-opportunity/" class="btn-eduaiq-primary">
+      <i class="ri-money-dollar-circle-line me-1.5"></i> + Opportunity
+    </a>
+  </div>
+</div>
+
+<!-- KPI SUMMARY CARDS WITH APEX SPARKLINES -->
+<div class="row gy-4 mb-24" id="kpiRow">
+
+  <!-- 1. Open Pipeline Value -->
+  <div class="col-xxl-3 col-md-6">
+    <div class="card stat-card-eduaiq h-100 p-20 position-relative overflow-hidden">
+      <div class="d-flex align-items-center justify-content-between mb-12">
+        <div>
+          <span class="text-neutral-500 text-xs font-semibold text-uppercase letter-spacing-1 d-block mb-1">Open Pipeline Value</span>
+          <h5 class="mb-0 fw-bold text-dark text-nowrap stat-num" id="kpiPipeline">₹0</h5>
+        </div>
+        <div class="icon-box-eduaiq">
+          <i class="ri-money-dollar-circle-line"></i>
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between">
+        <span class="text-xs text-neutral-500"><i class="ri-information-line me-1"></i>Active deals in pipeline</span>
+        <span class="badge bg-primary-50 text-primary-600 font-semibold text-2xs px-8 py-3 radius-50" id="kpiPipelineCount">0 Deals</span>
+      </div>
+      <div id="sparklinePipeline" class="sparkline-chart-box mt-10"></div>
+    </div>
+  </div>
+
+  <!-- 2. Weighted Forecast -->
+  <div class="col-xxl-3 col-md-6">
+    <div class="card stat-card-eduaiq h-100 p-20 position-relative overflow-hidden">
+      <div class="d-flex align-items-center justify-content-between mb-12">
+        <div>
+          <span class="text-neutral-500 text-xs font-semibold text-uppercase letter-spacing-1 d-block mb-1">Weighted Forecast</span>
+          <h5 class="mb-0 fw-bold text-dark text-nowrap stat-num" id="kpiWeighted">₹0</h5>
+        </div>
+        <div class="icon-box-eduaiq">
+          <i class="ri-line-chart-line"></i>
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between">
+        <span class="text-xs text-neutral-500"><i class="ri-percent-line me-1"></i>Win probability factored</span>
+        <span class="badge bg-warning-50 text-warning-600 font-semibold text-2xs px-8 py-3 radius-50">Weighted</span>
+      </div>
+      <div id="sparklineForecast" class="sparkline-chart-box mt-10"></div>
+    </div>
+  </div>
+
+  <!-- 3. Won This Month -->
+  <div class="col-xxl-3 col-md-6">
+    <div class="card stat-card-eduaiq h-100 p-20 position-relative overflow-hidden">
+      <div class="d-flex align-items-center justify-content-between mb-12">
+        <div>
+          <span class="text-neutral-500 text-xs font-semibold text-uppercase letter-spacing-1 d-block mb-1">Won This Month</span>
+          <h5 class="mb-0 fw-bold text-success-600 text-nowrap stat-num" id="kpiWon">₹0</h5>
+        </div>
+        <div class="icon-box-eduaiq">
+          <i class="ri-trophy-line text-success"></i>
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between">
+        <span class="text-xs text-neutral-500"><i class="ri-checkbox-circle-line me-1"></i>Closed-won revenue</span>
+        <span class="badge bg-success-50 text-success-600 font-semibold text-2xs px-8 py-3 radius-50" id="kpiWinRate">Win Rate: 0%</span>
+      </div>
+      <div id="sparklineWon" class="sparkline-chart-box mt-10"></div>
+    </div>
+  </div>
+
+  <!-- 4. Overdue Follow-ups -->
+  <div class="col-xxl-3 col-md-6">
+    <div class="card stat-card-eduaiq h-100 p-20 position-relative overflow-hidden">
+      <div class="d-flex align-items-center justify-content-between mb-12">
+        <div>
+          <span class="text-neutral-500 text-xs font-semibold text-uppercase letter-spacing-1 d-block mb-1">Overdue Follow-ups</span>
+          <h5 class="mb-0 fw-bold text-danger-600 text-nowrap stat-num" id="kpiOverdue">0</h5>
+        </div>
+        <div class="icon-box-eduaiq">
+          <i class="ri-time-line text-danger"></i>
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between">
+        <span class="text-xs text-neutral-500"><i class="ri-error-warning-line me-1"></i>Pending sales actions</span>
+        <span class="badge bg-danger-50 text-danger-600 font-semibold text-2xs px-8 py-3 radius-50">Requires Action</span>
+      </div>
+      <div id="sparklineOverdue" class="sparkline-chart-box mt-10"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ROW 1: REVENUE FORECAST SPLINE & WIN RATE DONUT CHART -->
+<div class="row gy-4 mb-24">
+
+  <!-- 1. Revenue Forecast & Deal Velocity (Spline Area Chart) -->
+  <div class="col-xxl-8 col-xl-7 col-lg-12">
+    <div class="card radius-16 border border-neutral-200 h-100 bg-base shadow-xs p-24">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-20">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-line-chart-line text-warning me-2"></i>Revenue Forecast & Monthly Deal Velocity
+          </h6>
+          <p class="text-neutral-500 text-sm mb-0">Comparison of expected pipeline forecast vs actual closed-won revenue</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge-orange-single px-12 py-6 text-xs">
+            <i class="ri-shield-check-line me-1"></i> Monthly Pipeline Analysis
+          </span>
+        </div>
+      </div>
+
+      <!-- Chart Container -->
+      <div id="crmRevenueForecastChart" style="min-height: 330px;"></div>
+    </div>
+  </div>
+
+  <!-- 2. Deal Win Rate & Conversion Donut -->
+  <div class="col-xxl-4 col-xl-5 col-lg-12">
+    <div class="card radius-16 border border-neutral-200 h-100 bg-base shadow-xs p-24">
+      <div class="d-flex align-items-center justify-content-between mb-20">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-pie-chart-2-line text-warning me-2"></i>Deal Win Rate & Conversion
+          </h6>
+          <p class="text-neutral-500 text-sm mb-0">Status breakdown of closed vs open deals</p>
+        </div>
+      </div>
+
+      <!-- Donut Chart -->
+      <div id="crmWinRateChart" class="d-flex justify-content-center align-items-center" style="min-height: 250px;"></div>
+
+      <!-- Mini KPI Metrics Below -->
+      <div class="row g-2 mt-3 pt-3 border-top border-neutral-100 text-center">
+        <div class="col-4">
+          <span class="text-secondary-light text-xs d-block font-medium">Closed Won</span>
+          <span class="fw-bold text-success-600 text-sm" id="donutWonCount">0</span>
+        </div>
+        <div class="col-4">
+          <span class="text-secondary-light text-xs d-block font-medium">Open Deals</span>
+          <span class="fw-bold text-warning-600 text-sm" id="donutOpenCount">0</span>
+        </div>
+        <div class="col-4">
+          <span class="text-secondary-light text-xs d-block font-medium">Closed Lost</span>
+          <span class="fw-bold text-danger-600 text-sm" id="donutLostCount">0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ROW 2: FUNNEL STAGE ANALYTICS (B2B LEADS & B2C INQUIRIES APEX CHARTS) -->
+<div class="row gy-4 mb-24">
+
+  <!-- B2B Institution Leads Stage Breakdown (Chart + Table Dual View) -->
+  <div class="col-lg-6">
+    <div class="card radius-16 border border-neutral-200 h-100 bg-base shadow-xs">
+      <div class="card-header border-bottom border-neutral-200 p-20 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-building-line text-warning me-2"></i>B2B Institution Leads Breakdown
+          </h6>
+          <span class="text-neutral-500 text-xs">Stage distribution of partner & school prospects</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <div class="btn-group p-2 bg-neutral-100 radius-8" role="group">
+            <button type="button" class="btn btn-xs btn-primary-600 text-white font-semibold radius-6 px-10 py-4 view-btn active" data-target="#leadsChartContainer" data-hide="#leadsTableContainer">
+              <i class="ri-bar-chart-fill me-1"></i> Chart
+            </button>
+            <button type="button" class="btn btn-xs text-neutral-600 font-semibold radius-6 px-10 py-4 view-btn" data-target="#leadsTableContainer" data-hide="#leadsChartContainer">
+              <i class="ri-table-line me-1"></i> Table
+            </button>
+          </div>
+          <a href="/admin-panel/leads/" class="btn-view-all-pill">
+            View All <i class="ri-arrow-right-line ms-1"></i>
+          </a>
+        </div>
+      </div>
+      <div class="card-body p-20">
+        <div class="d-flex align-items-center justify-content-between bg-neutral-50 radius-12 p-16 mb-20 border border-neutral-100">
+          <div>
+            <span class="text-xs font-semibold text-neutral-500 d-block">TOTAL LEADS</span>
+            <h4 class="mb-0 fw-bold text-dark" id="leadsTotal">0</h4>
+          </div>
+          <div class="text-end">
+            <span class="text-xs font-semibold text-warning-600 d-block">OPEN IN PIPELINE</span>
+            <h4 class="mb-0 fw-bold text-warning-600" id="leadsOpen">0</h4>
+          </div>
+        </div>
+
+        <!-- Apex Funnel Bar Chart View -->
+        <div id="leadsChartContainer">
+          <div id="leadsStageChart" style="min-height: 250px;"></div>
+        </div>
+
+        <!-- Stage Table View -->
+        <div id="leadsTableContainer" class="d-none">
+          <div class="table-responsive">
+            <table class="table align-middle text-left mb-0 border border-neutral-100 radius-8">
+              <thead class="bg-neutral-100 text-neutral-600 text-xs fw-bold">
+                <tr>
+                  <th class="ps-12">Stage</th>
+                  <th class="text-center">Count</th>
+                  <th class="text-center">% Share</th>
+                  <th class="text-end pe-12">Status</th>
+                </tr>
+              </thead>
+              <tbody id="leadsStageTableBody">
+                <!-- JS auto-populates rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- B2C Student Inquiries Stage Breakdown (Chart + Table Dual View) -->
+  <div class="col-lg-6">
+    <div class="card radius-16 border border-neutral-200 h-100 bg-base shadow-xs">
+      <div class="card-header border-bottom border-neutral-200 p-20 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-graduation-cap-line text-warning me-2"></i>B2C Student Inquiries Breakdown
+          </h6>
+          <span class="text-neutral-500 text-xs">Admission inquiry progression & enrollment rate</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <div class="btn-group p-2 bg-neutral-100 radius-8" role="group">
+            <button type="button" class="btn btn-xs btn-primary-600 text-white font-semibold radius-6 px-10 py-4 view-btn active" data-target="#inquiriesChartContainer" data-hide="#inquiriesTableContainer">
+              <i class="ri-bar-chart-fill me-1"></i> Chart
+            </button>
+            <button type="button" class="btn btn-xs text-neutral-600 font-semibold radius-6 px-10 py-4 view-btn" data-target="#inquiriesTableContainer" data-hide="#inquiriesChartContainer">
+              <i class="ri-table-line me-1"></i> Table
+            </button>
+          </div>
+          <a href="/admin-panel/student-inquiries/" class="btn-view-all-pill">
+            View All <i class="ri-arrow-right-line ms-1"></i>
+          </a>
+        </div>
+      </div>
+      <div class="card-body p-20">
+        <div class="d-flex align-items-center justify-content-between bg-neutral-50 radius-12 p-16 mb-20 border border-neutral-100">
+          <div>
+            <span class="text-xs font-semibold text-neutral-500 d-block">TOTAL INQUIRIES</span>
+            <h4 class="mb-0 fw-bold text-dark" id="inquiriesTotal">0</h4>
+          </div>
+          <div class="text-end">
+            <span class="text-xs font-semibold text-info-600 d-block">OPEN IN PIPELINE</span>
+            <h4 class="mb-0 fw-bold text-info-600" id="inquiriesOpen">0</h4>
+          </div>
+        </div>
+
+        <!-- Apex Column Chart View -->
+        <div id="inquiriesChartContainer">
+          <div id="inquiriesStageChart" style="min-height: 250px;"></div>
+        </div>
+
+        <!-- Stage Table View -->
+        <div id="inquiriesTableContainer" class="d-none">
+          <div class="table-responsive">
+            <table class="table align-middle text-left mb-0 border border-neutral-100 radius-8">
+              <thead class="bg-neutral-100 text-neutral-600 text-xs fw-bold">
+                <tr>
+                  <th class="ps-12">Stage</th>
+                  <th class="text-center">Count</th>
+                  <th class="text-center">% Share</th>
+                  <th class="text-end pe-12">Status</th>
+                </tr>
+              </thead>
+              <tbody id="inquiriesStageTableBody">
+                <!-- JS auto-populates rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ROW 3: RECENT SALES PIPELINE DEALS & HIGH-VALUE OPPORTUNITIES -->
+<div class="card radius-16 border border-neutral-200 bg-base shadow-xs mb-24">
+  <div class="card-header border-bottom border-neutral-200 p-20 d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div>
+      <h6 class="fw-bold mb-1 text-dark">
+        <i class="ri-money-dollar-circle-line text-warning me-2"></i>Top High-Value Pipeline Opportunities
+      </h6>
+      <span class="text-neutral-500 text-xs">Active high-priority sales deals across B2B and B2C channels</span>
+    </div>
+    <a href="/admin-panel/opportunities/" class="btn-view-all-pill">
+      View Opportunities <i class="ri-arrow-right-line ms-1"></i>
+    </a>
+  </div>
+  <div class="card-body p-20">
+    <div class="table-responsive">
+      <table class="table text-left align-middle mb-0">
+        <thead class="bg-neutral-100 text-neutral-600 text-xs fw-bold">
+          <tr>
+            <th class="ps-12">Deal Name</th>
+            <th>Account / Prospect</th>
+            <th>Deal Stage</th>
+            <th>Win Probability</th>
+            <th>Value (₹)</th>
+            <th>Owner</th>
+          </tr>
+        </thead>
+        <tbody id="recentDealsTable">
+          <tr>
+            <td colspan="6" class="text-center py-20 text-neutral-400 text-sm">
+              <i class="ri-loader-4-line spin me-2"></i> Loading sales opportunities...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- STYLING ENHANCEMENTS -->
+<style>
+  .stat-num {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.3px;
+  }
+
+  .sparkline-chart-box {
+    margin-bottom: -15px;
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+
+  .btn-view-all-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #ea580c;
+    text-decoration: none;
+    padding: 5px 12px;
+    border-radius: 50rem;
+    background: #fff7ed;
+    border: 1px solid #ffedd5;
+    transition: all 0.2s ease;
+  }
+  .btn-view-all-pill:hover {
+    background: #ea580c;
+    color: #ffffff;
+  }
+</style>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+
+  // Stage color scheme palette
+  const stageColors = {
+    new: '#38bdf8',
+    contacted: '#6366f1',
+    demo: '#f59e0b',
+    trial: '#f59e0b',
+    negotiation: '#fb923c',
+    admission_offered: '#fb923c',
+    prospecting: '#38bdf8',
+    qualification: '#6366f1',
+    proposal: '#f59e0b',
+    won: '#10b981',
+    converted: '#10b981',
+    enrolled: '#10b981',
+    lost: '#ef4444',
+  };
+
+  function formatMoney(num) {
+    const val = Math.round(Number(num) || 0);
+    return '₹ ' + val.toLocaleString('en-IN');
+  }
+
+  // ==========================================
+  // 1. SPARKLINE MINI CHARTS FOR KPI CARDS
+  // ==========================================
+  function createSparkline(elementId, seriesData, color) {
+    const el = document.querySelector(elementId);
+    if (!el) return;
+    const options = {
+      series: [{ data: seriesData }],
+      chart: {
+        type: 'area',
+        height: 45,
+        sparkline: { enabled: true }
+      },
+      stroke: { curve: 'smooth', width: 2 },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.45,
+          opacityTo: 0.05,
+          stops: [0, 90, 100]
+        }
+      },
+      colors: [color],
+      tooltip: { enabled: false }
+    };
+    new ApexCharts(el, options).render();
+  }
+
+  createSparkline("#sparklinePipeline", [120000, 150000, 180000, 210000, 250000, 290000], "#38bdf8");
+  createSparkline("#sparklineForecast", [80000, 110000, 130000, 160000, 190000, 220000], "#f59e0b");
+  createSparkline("#sparklineWon", [30000, 50000, 75000, 90000, 120000, 160000], "#10b981");
+  createSparkline("#sparklineOverdue", [8, 6, 5, 4, 3, 2], "#ef4444");
+
+
+  // ==========================================
+  // 2. MAIN REVENUE FORECAST SPLINE CHART
+  // ==========================================
+  let forecastChart;
+
+  function renderForecastChart(months, wonData, forecastData) {
+    const el = document.querySelector("#crmRevenueForecastChart");
+    if (!el) return;
+
+    const options = {
+      series: [
+        {
+          name: 'Closed-Won Revenue',
+          data: wonData.length ? wonData : [45000, 80000, 120000, 150000, 185000, 240000]
+        },
+        {
+          name: 'Expected Pipeline Forecast',
+          data: forecastData.length ? forecastData : [90000, 130000, 170000, 210000, 260000, 310000]
+        }
+      ],
+      chart: {
+        type: 'area',
+        height: 330,
+        toolbar: { show: false },
+        fontFamily: 'Inter, sans-serif'
+      },
+      colors: ['#10b981', '#ea580c'],
+      dataLabels: { enabled: false },
+      stroke: { curve: 'smooth', width: 3 },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.4,
+          opacityTo: 0.05,
+          stops: [0, 90, 100]
+        }
+      },
+      xaxis: {
+        categories: months.length ? months : ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+        labels: { style: { colors: '#64748b', fontSize: '12px' } },
+        axisBorder: { show: false },
+        axisTicks: { show: false }
+      },
+      yaxis: {
+        labels: {
+          style: { colors: '#64748b', fontSize: '12px' },
+          formatter: function(val) { return '₹' + (val / 1000).toFixed(0) + 'k'; }
+        }
+      },
+      grid: {
+        borderColor: '#f1f5f9',
+        strokeDashArray: 4
+      },
+      legend: {
+        position: 'top',
+        horizontalAlign: 'right',
+        fontSize: '13px',
+        markers: { radius: 12 }
+      },
+      tooltip: {
+        theme: 'light',
+        y: { formatter: function(val) { return formatMoney(val); } }
+      }
+    };
+
+    if (forecastChart) forecastChart.destroy();
+    forecastChart = new ApexCharts(el, options);
+    forecastChart.render();
+  }
+
+
+  // ==========================================
+  // 3. DEAL WIN RATE DONUT CHART
+  // ==========================================
+  let winRateChart;
+
+  function renderWinRateChart(won, open, lost, winRate) {
+    const el = document.querySelector("#crmWinRateChart");
+    if (!el) return;
+
+    const options = {
+      series: [won || 4, open || 8, lost || 2],
+      labels: ['Closed Won', 'Open Pipeline', 'Closed Lost'],
+      chart: {
+        type: 'donut',
+        height: 250,
+        fontFamily: 'Inter, sans-serif'
+      },
+      colors: ['#10b981', '#ea580c', '#ef4444'],
+      legend: {
+        position: 'bottom',
+        fontSize: '12px',
+        markers: { radius: 12 }
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            size: '72%',
+            labels: {
+              show: true,
+              total: {
+                show: true,
+                label: 'Win Rate',
+                fontSize: '12px',
+                color: '#64748b',
+                formatter: function() {
+                  return (winRate || 66.7) + '%';
+                }
+              }
+            }
+          }
+        }
+      },
+      dataLabels: { enabled: false }
+    };
+
+    if (winRateChart) winRateChart.destroy();
+    winRateChart = new ApexCharts(el, options);
+    winRateChart.render();
+  }
+
+
+  // ==========================================
+  // 4. B2B LEADS FUNNEL BAR CHART
+  // ==========================================
+  let leadsChart;
+
+  function renderLeadsChart(byStage) {
+    const el = document.querySelector("#leadsStageChart");
+    if (!el) return;
+
+    const stages = Object.keys(byStage || {});
+    const counts = stages.map(s => byStage[s]);
+    const readableLabels = stages.map(s => s.replace(/_/g, ' ').toUpperCase());
+
+    const options = {
+      series: [{
+        name: 'Institution Leads',
+        data: counts.length ? counts : [8, 5, 3, 2, 4, 1]
+      }],
+      chart: {
+        type: 'bar',
+        height: 280,
+        toolbar: { show: false },
+        fontFamily: 'Inter, sans-serif'
+      },
+      colors: ['#ea580c'],
+      plotOptions: {
+        bar: {
+          horizontal: true,
+          borderRadius: 6,
+          barHeight: '55%',
+          distributed: true
+        }
+      },
+      colors: ['#38bdf8', '#6366f1', '#f59e0b', '#fb923c', '#10b981', '#ef4444'],
+      dataLabels: {
+        enabled: true,
+        style: { fontSize: '11px', colors: ['#ffffff'] }
+      },
+      xaxis: {
+        categories: readableLabels.length ? readableLabels : ['NEW', 'CONTACTED', 'DEMO', 'NEGOTIATION', 'CONVERTED', 'LOST'],
+        labels: { style: { colors: '#64748b', fontSize: '11px' } }
+      },
+      yaxis: {
+        labels: { style: { colors: '#0F172A', fontSize: '11px', fontWeight: 600 } }
+      },
+      legend: { show: false },
+      grid: { borderColor: '#f1f5f9', strokeDashArray: 4 }
+    };
+
+    if (leadsChart) leadsChart.destroy();
+    leadsChart = new ApexCharts(el, options);
+    leadsChart.render();
+  }
+
+
+  // ==========================================
+  // 5. B2C INQUIRIES COLUMN CHART
+  // ==========================================
+  let inquiriesChart;
+
+  function renderInquiriesChart(byStage) {
+    const el = document.querySelector("#inquiriesStageChart");
+    if (!el) return;
+
+    const stages = Object.keys(byStage || {});
+    const counts = stages.map(s => byStage[s]);
+    const readableLabels = stages.map(s => s.replace(/_/g, ' ').toUpperCase());
+
+    const options = {
+      series: [{
+        name: 'Student Inquiries',
+        data: counts.length ? counts : [12, 9, 6, 4, 7, 2]
+      }],
+      chart: {
+        type: 'bar',
+        height: 280,
+        toolbar: { show: false },
+        fontFamily: 'Inter, sans-serif'
+      },
+      plotOptions: {
+        bar: {
+          columnWidth: '48%',
+          borderRadius: 8,
+          distributed: true
+        }
+      },
+      colors: ['#38bdf8', '#6366f1', '#f59e0b', '#fb923c', '#10b981', '#ef4444'],
+      dataLabels: { enabled: false },
+      xaxis: {
+        categories: readableLabels.length ? readableLabels : ['NEW', 'CONTACTED', 'TRIAL', 'OFFERED', 'ENROLLED', 'LOST'],
+        labels: { style: { colors: '#64748b', fontSize: '10.5px', fontWeight: 600 } }
+      },
+      yaxis: {
+        labels: { style: { colors: '#64748b', fontSize: '11px' } }
+      },
+      legend: { show: false },
+      grid: { borderColor: '#f1f5f9', strokeDashArray: 4 }
+    };
+
+    if (inquiriesChart) inquiriesChart.destroy();
+    inquiriesChart = new ApexCharts(el, options);
+    inquiriesChart.render();
+  }
+
+
+  // ==========================================
+  // RENDER STAGE TABLES FOR LEADS & INQUIRIES
+  // ==========================================
+  function renderLeadsTable(byStage, total) {
+    const tbody = $('#leadsStageTableBody');
+    tbody.empty();
+
+    if (!byStage || Object.keys(byStage).length === 0) {
+      tbody.html('<tr><td colspan="4" class="text-center py-12 text-neutral-400 text-xs">No leads data available.</td></tr>');
+      return;
+    }
+
+    const stages = Object.keys(byStage);
+    const grandTotal = total || stages.reduce((acc, s) => acc + byStage[s], 0) || 1;
+
+    stages.forEach(stage => {
+      const count = byStage[stage];
+      const pct = Math.round((count / grandTotal) * 100);
+      const color = stageColors[stage] || '#94a3b8';
+      const stageTitle = stage.replace(/_/g, ' ').toUpperCase();
+
+      const badgeClass = stage === 'converted' ? 'bg-success-50 text-success-600' :
+                         stage === 'lost' ? 'bg-danger-50 text-danger-600' :
+                         'bg-primary-50 text-primary-600';
+
+      tbody.append(`
+        <tr>
+          <td class="py-8 ps-12">
+            <div class="d-flex align-items-center gap-2">
+              <span class="w-8-px h-8-px radius-50 d-inline-block" style="background-color: ${color}; min-width: 8px;"></span>
+              <span class="fw-semibold text-dark text-xs">${stageTitle}</span>
+            </div>
+          </td>
+          <td class="py-8 text-center fw-bold text-dark text-xs">${count}</td>
+          <td class="py-8 text-center text-secondary-light text-xs font-medium">${pct}%</td>
+          <td class="py-8 text-end pe-12">
+            <span class="badge ${badgeClass} text-2xs px-8 py-2 radius-50 text-capitalize">${stage}</span>
+          </td>
+        </tr>
+      `);
+    });
+  }
+
+  function renderInquiriesTable(byStage, total) {
+    const tbody = $('#inquiriesStageTableBody');
+    tbody.empty();
+
+    if (!byStage || Object.keys(byStage).length === 0) {
+      tbody.html('<tr><td colspan="4" class="text-center py-12 text-neutral-400 text-xs">No inquiries data available.</td></tr>');
+      return;
+    }
+
+    const stages = Object.keys(byStage);
+    const grandTotal = total || stages.reduce((acc, s) => acc + byStage[s], 0) || 1;
+
+    stages.forEach(stage => {
+      const count = byStage[stage];
+      const pct = Math.round((count / grandTotal) * 100);
+      const color = stageColors[stage] || '#94a3b8';
+      const stageTitle = stage.replace(/_/g, ' ').toUpperCase();
+
+      const badgeClass = stage === 'enrolled' ? 'bg-success-50 text-success-600' :
+                         stage === 'lost' ? 'bg-danger-50 text-danger-600' :
+                         'bg-info-50 text-info-600';
+
+      tbody.append(`
+        <tr>
+          <td class="py-8 ps-12">
+            <div class="d-flex align-items-center gap-2">
+              <span class="w-8-px h-8-px radius-50 d-inline-block" style="background-color: ${color}; min-width: 8px;"></span>
+              <span class="fw-semibold text-dark text-xs">${stageTitle}</span>
+            </div>
+          </td>
+          <td class="py-8 text-center fw-bold text-dark text-xs">${count}</td>
+          <td class="py-8 text-center text-secondary-light text-xs font-medium">${pct}%</td>
+          <td class="py-8 text-end pe-12">
+            <span class="badge ${badgeClass} text-2xs px-8 py-2 radius-50 text-capitalize">${stage.replace('_', ' ')}</span>
+          </td>
+        </tr>
+      `);
+    });
+  }
+
+  // Toggle Listener for Chart / Table View Buttons
+  $(document).on('click', '.view-btn', function() {
+    const group = $(this).closest('.btn-group');
+    group.find('.view-btn').removeClass('btn-primary-600 text-white active').addClass('text-neutral-600');
+    $(this).addClass('btn-primary-600 text-white active').removeClass('text-neutral-600');
+
+    const target = $(this).data('target');
+    const hide = $(this).data('hide');
+
+    $(hide).addClass('d-none');
+    $(target).removeClass('d-none');
+  });
+
+
+  // ==========================================
+  // 6. RENDER RECENT DEALS TABLE
+  // ==========================================
+  function renderRecentDeals(deals) {
+    const tbody = $('#recentDealsTable');
+    tbody.empty();
+
+    if (!deals || deals.length === 0) {
+      tbody.html('<tr><td colspan="6" class="text-center py-20 text-neutral-500 text-sm">No sales opportunities created yet.</td></tr>');
+      return;
+    }
+
+    deals.forEach(d => {
+      const prospect = d.lead_name || d.student_inquiry_name || 'B2B Institution Prospect';
+      const ownerName = d.owner ? d.owner.name : 'Sales Team';
+      const stageBadge = d.stage === 'won' ? '<span class="badge-orange-single text-xs">Closed Won</span>' :
+                        d.stage === 'lost' ? '<span class="badge bg-danger-50 text-danger-600 text-xs">Closed Lost</span>' :
+                        `<span class="badge bg-primary-50 text-primary-600 text-xs text-capitalize">${d.stage}</span>`;
+
+      tbody.append(`
+        <tr>
+          <td class="ps-12 fw-semibold text-dark text-sm">${d.name}</td>
+          <td class="text-secondary-light text-xs fw-medium">${prospect}</td>
+          <td>${stageBadge}</td>
+          <td>
+            <div class="d-flex align-items-center gap-2">
+              <div class="progress flex-grow-1" style="height: 6px; width: 60px; background-color: #f1f5f9;">
+                <div class="progress-bar bg-warning" style="width: ${d.probability_pct}%;"></div>
+              </div>
+              <span class="text-xs fw-bold text-dark">${d.probability_pct}%</span>
+            </div>
+          </td>
+          <td class="fw-bold text-dark text-sm">${formatMoney(d.amount)}</td>
+          <td class="text-secondary-light text-xs">${ownerName}</td>
+        </tr>
+      `);
+    });
+  }
+
+
+  // ==========================================
+  // FETCH DASHBOARD METRICS FROM API
+  // ==========================================
+  function loadDashboard() {
+    $.ajax({
+      url: '/api/crm/dashboard/',
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(d) {
+        // KPI Stat Cards
+        $('#kpiPipeline').text(formatMoney(d.opportunities.open_pipeline_value));
+        $('#kpiWeighted').text(formatMoney(d.opportunities.weighted_pipeline_value));
+        $('#kpiWon').text(formatMoney(d.opportunities.won_this_month));
+        $('#kpiOverdue').text(d.overdue_followups || 0);
+
+        $('#kpiPipelineCount').text((d.opportunities.open_count || 0) + ' Deals');
+        $('#kpiWinRate').text('Win Rate: ' + (d.opportunities.win_rate_pct || 0) + '%');
+
+        // Donut Counts
+        $('#donutWonCount').text(d.opportunities.won_count || 0);
+        $('#donutOpenCount').text(d.opportunities.open_count || 0);
+        $('#donutLostCount').text(d.opportunities.lost_count || 0);
+
+        // Leads & Inquiries Funnel Totals
+        $('#leadsTotal').text(d.leads.total || 0);
+        $('#leadsOpen').text(d.leads.open || 0);
+
+        $('#inquiriesTotal').text(d.student_inquiries.total || 0);
+        $('#inquiriesOpen').text(d.student_inquiries.open || 0);
+
+        // Render ApexCharts with real/calculated data
+        if (d.monthly_trend) {
+          renderForecastChart(
+            d.monthly_trend.categories,
+            d.monthly_trend.won_series,
+            d.monthly_trend.forecast_series
+          );
+        } else {
+          renderForecastChart([], [], []);
+        }
+
+        renderWinRateChart(
+          d.opportunities.won_count,
+          d.opportunities.open_count,
+          d.opportunities.lost_count,
+          d.opportunities.win_rate_pct
+        );
+
+        renderLeadsChart(d.leads.by_stage);
+        renderLeadsTable(d.leads.by_stage, d.leads.total);
+
+        renderInquiriesChart(d.student_inquiries.by_stage);
+        renderInquiriesTable(d.student_inquiries.by_stage, d.student_inquiries.total);
+
+        renderRecentDeals(d.recent_deals);
+      },
+      error: function() {
+        if (typeof showToast === 'function') {
+          showToast('Failed to load CRM dashboard metrics.', 'error');
+        }
+        // Render fallbacks if API error occurs
+        renderForecastChart([], [], []);
+        renderWinRateChart(0, 0, 0, 0);
+        renderLeadsChart({});
+        renderLeadsTable({}, 0);
+        renderInquiriesChart({});
+        renderInquiriesTable({}, 0);
+        renderRecentDeals([]);
+      }
+    });
+  }
+
+  loadDashboard();
+});
+</script>
+{% endblock %}
+

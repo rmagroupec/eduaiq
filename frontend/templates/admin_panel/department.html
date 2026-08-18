@@ -9,13 +9,13 @@
 <div class="">
 <h1 class="fw-semibold mb-4 h6 text-primary-light">Department </h1>
 <div class="">
-<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
-<a class="text-secondary-light hover-text-primary hover-underline" href="employee-list"> /
+<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
+<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/employee-list/"> /
                         HRM</a>
 <span class="text-secondary-light">/ Department</span>
 </div>
 </div>
-<button class="my-sidebar-btn btn btn-primary-600 d-flex align-items-center gap-6" type="button">
+<button class="my-sidebar-btn btn btn-primary-600 d-flex align-items-center gap-6" data-bs-toggle="modal" data-bs-target="#addDepartmentModal" type="button">
 <span class="d-flex text-md">
 <i class="ri-add-large-line"></i>
 </span>
@@ -98,8 +98,8 @@
 <label class="form-check-label">01</label>
 </div>
 </td>
-<td>English Department</td>
-<td>Head of the entire school/institution</td>
+<td>CRM &amp; Sales Department</td>
+<td>Manages institution leads, CRM pipelines, and sales operations</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
@@ -127,8 +127,8 @@
 <label class="form-check-label">02</label>
 </div>
 </td>
-<td>Mathematics Department</td>
-<td>Assists the principal in academic/admin</td>
+<td>Admissions &amp; Counseling</td>
+<td>Oversees student inquiries, enrollment process, and counseling</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
@@ -156,8 +156,8 @@
 <label class="form-check-label">03</label>
 </div>
 </td>
-<td>Science Department  </td>
-<td>Leads a subject/department</td>
+<td>Marketing &amp; Lead Gen</td>
+<td>Handles digital campaigns, lead generation, and brand promotion</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
@@ -185,8 +185,8 @@
 <label class="form-check-label">04</label>
 </div>
 </td>
-<td>Social Studies Department</td>
-<td>Experienced teacher with leadership duties</td>
+<td>Student Relations &amp; Support</td>
+<td>Manages student onboardings, queries, and support desk</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
@@ -214,8 +214,8 @@
 <label class="form-check-label">05</label>
 </div>
 </td>
-<td>Computer Science / ICT</td>
-<td>Teaches specific subjects (e.g. Math Teacher)</td>
+<td>Academic Management</td>
+<td>Coordinates course curriculum, faculty scheduling, and exams</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
@@ -243,8 +243,8 @@
 <label class="form-check-label">06</label>
 </div>
 </td>
-<td>Language Department</td>
-<td>Supports main class teacher</td>
+<td>Finance &amp; Accounts</td>
+<td>Manages fee collections, expenses, transactions, and payroll</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
@@ -272,8 +272,8 @@
 <label class="form-check-label">07</label>
 </div>
 </td>
-<td>Arts Department</td>
-<td>Teaches KG, nursery, or early learners</td>
+<td>Human Resources (HR)</td>
+<td>Handles employee recruitment, onboarding, and staff records</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
@@ -301,66 +301,8 @@
 <label class="form-check-label">08</label>
 </div>
 </td>
-<td>Music &amp; Performing Arts</td>
-<td>Assigned to manage a particular grade/section</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-edit-2-line"></i>Edit
-                                                    </button>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<i class="ri-delete-bin-6-line"></i>Delete
-                                                    </button>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">09</label>
-</div>
-</td>
-<td>Physical Education (PE)</td>
-<td>Teaches performing arts</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-edit-2-line"></i>Edit
-                                                    </button>
-</li>
-<li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<i class="ri-delete-bin-6-line"></i>Delete
-                                                    </button>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">10</label>
-</div>
-</td>
-<td>Commerce / Business Studies</td>
-<td>Teaches foreign or regional languages</td>
+<td>Administration &amp; Operations</td>
+<td>Oversees facility management, daily operations, and compliance</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
@@ -387,12 +329,44 @@
 </div>
 </div>
 </div>
+
+<!-- Add / Edit Department Modal -->
+<div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="addDepartmentModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content radius-16 border-0 shadow">
+      <div class="modal-header border-bottom px-24 py-16">
+        <h6 class="modal-title fw-bold text-primary-light" id="addDepartmentModalLabel">Add Department</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-24">
+        <form id="departmentForm" onsubmit="handleDepartmentSubmit(event)">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-12">
+              <label class="form-label text-sm fw-semibold text-primary-light">Department Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control radius-8" id="deptName" name="name" placeholder="e.g. Sales & Marketing" required>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label text-sm fw-semibold text-primary-light">Description</label>
+              <textarea class="form-control radius-8" id="deptDescription" name="description" rows="3" placeholder="Brief description of the department functions..."></textarea>
+            </div>
+          </div>
+          <div class="d-flex align-items-center justify-content-end gap-12 mt-24">
+            <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary-600 radius-8 px-20 text-white" id="deptSubmitBtn">Save Department</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block js %}
     <script>
 
     let table = new DataTable('#dataTable');
+    let editingRow = null;
 
     // ✅ Data Table start
     $('.data-table').each(function () {
@@ -412,27 +386,119 @@
     });
     // ✅ Data Table end
 
-    // Sidebar js start
-    $('.my-sidebar-btn').on('click', function () {
-        $('.my-sidebar').addClass('active');
-        $('.overlay').addClass('active');
-    });
-    $('.close-my-sidebar, .overlay').on('click', function () {
-        $('.my-sidebar').removeClass('active');
-        $('.overlay').removeClass('active');
+    // Reset modal state when opening for Add
+    $('.my-sidebar-btn, [data-bs-target="#addDepartmentModal"]').on('click', function () {
+        if (!editingRow) {
+            $('#addDepartmentModalLabel').text('Add Department');
+            $('#deptSubmitBtn').text('Save Department');
+            $('#departmentForm')[0].reset();
+        }
     });
 
-
-    $('.edit-sidebar-btn').on('click', function () {
-        $('.edit-sidebar').addClass('active');
-        $('.overlay').addClass('active');
+    // Reset editing state on modal close
+    $('#addDepartmentModal').on('hidden.bs.modal', function () {
+        editingRow = null;
+        $('#addDepartmentModalLabel').text('Add Department');
+        $('#deptSubmitBtn').text('Save Department');
+        $('#departmentForm')[0].reset();
     });
-    $('.close-edit-sidebar, .overlay').on('click', function () {
-        $('.edit-sidebar').removeClass('active');
-        $('.overlay').removeClass('active');
-    });
-    // Sidebar js end
 
+    // Delegate Edit Department click
+    $(document).on('click', '.edit-sidebar-btn', function (e) {
+        e.preventDefault();
+        editingRow = $(this).closest('tr');
+        const name = editingRow.find('td:nth-child(2)').text().trim();
+        const desc = editingRow.find('td:nth-child(3)').text().trim();
+
+        $('#deptName').val(name);
+        $('#deptDescription').val(desc);
+
+        $('#addDepartmentModalLabel').text('Edit Department');
+        $('#deptSubmitBtn').text('Update Department');
+
+        const modalEl = document.getElementById('addDepartmentModal');
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modalInstance.show();
+    });
+
+    // Delegate Delete Department click
+    $(document).on('click', '[data-bs-target="#exampleModalDelete"]', function (e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        const deptName = $row.find('td:nth-child(2)').text().trim();
+        window.showConfirmModal({
+            title: 'Delete Department',
+            message: `Are you sure you want to delete the department "${deptName}"?`,
+            icon: 'ri-delete-bin-6-line',
+            iconBgClass: 'bg-danger-100',
+            iconColorClass: 'text-danger-600',
+            confirmText: 'Yes, Delete',
+            confirmBtnClass: 'btn-danger',
+            onConfirm: function () {
+                $row.fadeOut(250, function () {
+                    $row.remove();
+                    if (window.showToast) window.showToast(`Department "${deptName}" deleted successfully!`, 'info');
+                });
+            }
+        });
+    });
+
+    // Handle Form Submission for Add / Edit
+    function handleDepartmentSubmit(e) {
+        e.preventDefault();
+        const name = $('#deptName').val().trim();
+        const desc = $('#deptDescription').val().trim();
+
+        if (!name) return;
+
+        if (editingRow) {
+            editingRow.find('td:nth-child(2)').text(name);
+            editingRow.find('td:nth-child(3)').text(desc);
+            editingRow = null;
+            if (window.showToast) window.showToast('Department updated successfully!', 'success');
+        } else {
+            const count = $('#dataTable tbody tr').length + 1;
+            const sl = String(count).padStart(2, '0');
+            const newRowHtml = `
+                <tr>
+                    <td>
+                        <div class="form-check style-check d-flex align-items-center">
+                            <input class="form-check-input" type="checkbox"/>
+                            <label class="form-check-label">${sl}</label>
+                        </div>
+                    </td>
+                    <td>${name}</td>
+                    <td>${desc}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+                                <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+                                <li>
+                                    <button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+                                        <i class="ri-edit-2-line"></i>Edit
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
+                                        <i class="ri-delete-bin-6-line"></i>Delete
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            $('#dataTable tbody').append(newRowHtml);
+            if (window.showToast) window.showToast('Department added successfully!', 'success');
+        }
+
+        const modalEl = document.getElementById('addDepartmentModal');
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        if (modalInstance) modalInstance.hide();
+        $('#departmentForm')[0].reset();
+    }
 
     </script>
 {% endblock %}

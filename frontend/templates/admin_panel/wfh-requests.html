@@ -1,0 +1,267 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Work From Home (WFH) Requests — EduAIQ Admin{% endblock %}
+
+{% block content %}
+<div class="dashboard-main-body">
+
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+        <div>
+            <h6 class="fw-semibold mb-4">Work From Home (WFH) Requests</h6>
+            <ul class="d-flex align-items-center gap-2 text-sm">
+                <li class="fw-medium">
+                    <a href="/admin-panel/dashboard/" class="d-flex align-items-center gap-1 hover-text-primary">
+                        <i class="ri-home-4-line"></i> Dashboard
+                    </a>
+                </li>
+                <li>-</li>
+                <li class="fw-medium text-secondary-light">WFH Requests</li>
+            </ul>
+        </div>
+        <button type="button" class="btn bg-info-600 text-white radius-8 px-20 font-semibold d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#wfhApplyModal">
+            <i class="ri-home-wifi-line text-lg"></i> Apply WFH
+        </button>
+    </div>
+
+    <!-- WFH Summary Cards -->
+    <div class="row g-3 mb-24">
+        <div class="col-xl-3 col-sm-6">
+            <div class="card p-20 radius-12 border shadow-sm">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-secondary-light text-xs font-semibold uppercase">Total Requests</span>
+                        <h4 class="mb-0 mt-2 font-bold" id="totalWfhCount">0</h4>
+                    </div>
+                    <div class="w-48-px h-48-px radius-8 bg-info-50 text-info-600 d-flex align-items-center justify-content-center text-2xl">
+                        <i class="ri-home-wifi-line"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card p-20 radius-12 border shadow-sm">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-secondary-light text-xs font-semibold uppercase">Pending Approval</span>
+                        <h4 class="mb-0 mt-2 font-bold text-warning-600" id="pendingWfhCount">0</h4>
+                    </div>
+                    <div class="w-48-px h-48-px radius-8 bg-warning-50 text-warning-600 d-flex align-items-center justify-content-center text-2xl">
+                        <i class="ri-time-line"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card p-20 radius-12 border shadow-sm">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-secondary-light text-xs font-semibold uppercase">Approved</span>
+                        <h4 class="mb-0 mt-2 font-bold text-success-600" id="approvedWfhCount">0</h4>
+                    </div>
+                    <div class="w-48-px h-48-px radius-8 bg-success-50 text-success-600 d-flex align-items-center justify-content-center text-2xl">
+                        <i class="ri-checkbox-circle-line"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card p-20 radius-12 border shadow-sm">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-secondary-light text-xs font-semibold uppercase">Rejected</span>
+                        <h4 class="mb-0 mt-2 font-bold text-danger-600" id="rejectedWfhCount">0</h4>
+                    </div>
+                    <div class="w-48-px h-48-px radius-8 bg-danger-50 text-danger-600 d-flex align-items-center justify-content-center text-2xl">
+                        <i class="ri-close-circle-line"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Requests Table -->
+    <div class="card radius-12 border shadow-sm">
+        <div class="card-header border-bottom p-20 d-flex align-items-center justify-content-between">
+            <h6 class="card-title mb-0 font-semibold">All WFH Applications</h6>
+            <button type="button" class="btn btn-sm btn-outline-neutral-300 radius-8" onclick="loadWfhRequests()">
+                <i class="ri-refresh-line me-1"></i> Refresh
+            </button>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table hover-table align-middle mb-0">
+                    <thead class="bg-neutral-50 text-secondary-light font-semibold text-xs uppercase">
+                        <tr>
+                            <th class="ps-24">Employee</th>
+                            <th>Role</th>
+                            <th>Date Range</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Applied Date</th>
+                            <th class="pe-24 text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="wfhTableBody">
+                        <tr>
+                            <td colspan="7" class="text-center py-32 text-secondary-light">
+                                <i class="ri-loader-4-line ri-spin text-2xl me-2"></i> Loading WFH requests...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    const IS_ADMIN = Boolean("{% if request.user.is_superuser or request.user.role == 'admin' %}1{% endif %}");
+
+    function loadWfhRequests() {
+        $.ajax({
+            url: '/accounts/api/wfh/request/',
+            type: 'GET',
+            success: function(res) {
+                if (res.status === 'success' && res.data) {
+                    renderWfhTable(res.data);
+                }
+            },
+            error: function() {
+                $('#wfhTableBody').html(`<tr><td colspan="7" class="text-center py-20 text-danger-600">Failed to load WFH requests.</td></tr>`);
+            }
+        });
+    }
+    window.loadWfhRequests = loadWfhRequests;
+
+    function renderWfhTable(requests) {
+        const $tbody = $('#wfhTableBody');
+        $tbody.empty();
+
+        let pendingCount = 0, approvedCount = 0, rejectedCount = 0;
+
+        if (requests.length === 0) {
+            $tbody.html(`<tr><td colspan="7" class="text-center py-32 text-secondary-light">No WFH requests submitted yet.</td></tr>`);
+            $('#totalWfhCount').text(0);
+            $('#pendingWfhCount').text(0);
+            $('#approvedWfhCount').text(0);
+            $('#rejectedWfhCount').text(0);
+            return;
+        }
+
+        requests.forEach(req => {
+            if (req.status === 'pending') pendingCount++;
+            else if (req.status === 'approved') approvedCount++;
+            else if (req.status === 'rejected') rejectedCount++;
+
+            let statusBadge = '';
+            if (req.status === 'pending') {
+                statusBadge = `<span class="badge bg-warning-100 text-warning-800 radius-4 px-10 py-4 text-xs font-semibold">Pending</span>`;
+            } else if (req.status === 'approved') {
+                statusBadge = `<span class="badge bg-success-100 text-success-800 radius-4 px-10 py-4 text-xs font-semibold">Approved</span>`;
+            } else {
+                statusBadge = `<span class="badge bg-danger-100 text-danger-800 radius-4 px-10 py-4 text-xs font-semibold">Rejected</span>`;
+            }
+
+            let actionBtn = '';
+            if (req.status === 'pending') {
+                if (IS_ADMIN) {
+                    actionBtn = `
+                        <button type="button" class="btn btn-xs bg-success-600 text-white radius-6 px-12 py-4 font-semibold me-1 action-wfh-btn" data-id="${req.id}" data-action="approve" title="Approve WFH Request">
+                            <i class="ri-check-line me-1"></i> Approve
+                        </button>
+                        <button type="button" class="btn btn-xs bg-danger-600 text-white radius-6 px-12 py-4 font-semibold action-wfh-btn" data-id="${req.id}" data-action="reject" title="Reject WFH Request">
+                            <i class="ri-close-line me-1"></i> Reject
+                        </button>
+                    `;
+                } else {
+                    actionBtn = `<span class="text-xs text-warning-600 font-semibold"><i class="ri-time-line me-1"></i> Awaiting Approval</span>`;
+                }
+            } else {
+                actionBtn = `<span class="text-xs text-secondary-light font-medium">${req.approved_by_name ? 'By ' + req.approved_by_name : 'Completed'}</span>`;
+            }
+
+            const row = `
+                <tr>
+                    <td class="ps-24">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="w-36-px h-36-px radius-50 bg-info-100 text-info-700 d-flex align-items-center justify-content-center font-bold text-sm">
+                                ${req.employee_name.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                                <h6 class="text-sm font-semibold mb-0">${req.employee_name}</h6>
+                                <span class="text-xs text-secondary-light">${req.email}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-sm font-medium text-capitalize">${req.role}</td>
+                    <td class="text-sm font-semibold">${req.start_date} <i class="ri-arrow-right-line text-secondary-light mx-1"></i> ${req.end_date}</td>
+                    <td class="text-sm text-secondary-light max-w-200-px text-truncate" title="${req.reason}">${req.reason}</td>
+                    <td>${statusBadge}</td>
+                    <td class="text-sm text-secondary-light">${req.applied_at}</td>
+                    <td class="pe-24 text-end">${actionBtn}</td>
+                </tr>
+            `;
+            $tbody.append(row);
+        });
+
+        $('#totalWfhCount').text(requests.length);
+        $('#pendingWfhCount').text(pendingCount);
+        $('#approvedWfhCount').text(approvedCount);
+        $('#rejectedWfhCount').text(rejectedCount);
+    }
+
+    $(document).ready(function() {
+        loadWfhRequests();
+
+        $(document).on('click', '.action-wfh-btn', function() {
+            const reqId = $(this).data('id');
+            const action = $(this).data('action');
+
+            const confirmMsg = action === 'approve' 
+                ? 'Approve this WFH request? Attendance for selected dates will automatically be marked as WFH.' 
+                : 'Reject this WFH request?';
+
+            if (window.confirmDialog) {
+                window.confirmDialog({
+                    title: action === 'approve' ? 'Approve WFH Request' : 'Reject WFH Request',
+                    message: confirmMsg,
+                    confirmText: action === 'approve' ? 'Approve WFH' : 'Reject Request',
+                    confirmBtnClass: action === 'approve' ? 'btn-success' : 'btn-danger',
+                    onConfirm: function() {
+                        processWfhAction(reqId, action);
+                    }
+                });
+            } else if (confirm(confirmMsg)) {
+                processWfhAction(reqId, action);
+            }
+        });
+
+        function processWfhAction(reqId, action) {
+            $.ajax({
+                url: '/accounts/api/wfh/approve/',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    request_id: reqId,
+                    action: action
+                }),
+                success: function(res) {
+                    if (res.status === 'success') {
+                        if (window.showToast) window.showToast(res.message, 'success');
+                        loadWfhRequests();
+                    } else {
+                        if (window.showToast) window.showToast(res.message || 'Action failed', 'danger');
+                    }
+                },
+                error: function() {
+                    if (window.showToast) window.showToast('Server error processing request', 'danger');
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

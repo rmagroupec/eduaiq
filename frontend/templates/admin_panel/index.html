@@ -162,7 +162,13 @@
   </div>
   <div class="d-flex flex-wrap gap-3">
     {% if request.user.role != 'institution' %}
-    <a href="/admin-panel/add-new-institution/" class="btn-eduaiq-primary">
+    <a href="/admin-panel/crm-dashboard/" class="btn-eduaiq-primary">
+      <i class="ri-line-chart-line me-1.5"></i> Sales CRM Pipeline
+    </a>
+    <a href="/admin-panel/add-new-lead/" class="btn-eduaiq-outline">
+      <i class="ri-building-line me-1.5"></i> + Add Lead
+    </a>
+    <a href="/admin-panel/add-new-institution/" class="btn-eduaiq-outline">
       <i class="ri-building-line me-1.5"></i> + Add Institution
     </a>
     <a href="/admin-panel/add-new-course/" class="btn-eduaiq-outline">

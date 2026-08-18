@@ -10,13 +10,13 @@
 <div class="">
 <h1 class="fw-semibold mb-4 h6 text-primary-light">Employee List</h1>
 <div class="">
-<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
-<a class="text-secondary-light hover-text-primary hover-underline" href="employee-list"> /
+<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
+<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/employee-list/"> /
         HRM</a>
 <span class="text-secondary-light">/ Employee List</span>
 </div>
 </div>
-<a class="btn btn-primary-600 d-flex align-items-center gap-6" href="add-new-student">
+<a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/add-new-employee/">
 <span class="d-flex text-md">
 <i class="ri-add-large-line"></i>
 </span>
@@ -78,14 +78,15 @@
     {% csrf_token %}
 <div class="row g-3">
 <div class="col-12">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="subject">Gender</label>
-<select class="form-control form-select" id="subject">
-<option value="Select">Select Subject</option>
-<option value="Match">Match</option>
-<option value="English">English</option>
-<option value="Bangla">Bangla</option>
-<option value="Economics">Economics</option>
-<option value="Physics">Physics</option>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="department">Department</label>
+<select class="form-control form-select" id="department">
+<option value="Select">Select Department</option>
+<option value="CRM & Sales">CRM & Sales</option>
+<option value="Admissions & Counseling">Admissions & Counseling</option>
+<option value="Marketing & Lead Gen">Marketing & Lead Gen</option>
+<option value="Finance & Accounts">Finance & Accounts</option>
+<option value="Human Resources (HR)">Human Resources (HR)</option>
+<option value="Administration & Operations">Administration & Operations</option>
 </select>
 </div>
 <div class="col-12">
@@ -136,8 +137,8 @@
 </th>
 <th scope="col">ID</th>
 <th scope="col">Name</th>
-<th scope="col">Subject</th>
-<th scope="col">Class</th>
+<th scope="col">Department</th>
+<th scope="col">Designation</th>
 <th scope="col">Email</th>
 <th scope="col">Phone Number</th>
 <th scope="col">Join Date</th>
@@ -164,8 +165,8 @@
 </div>
 </div>
 </td>
-<td>Mathematics</td>
-<td>1 (A), 2(A), 3(A)</td>
+<td>CRM &amp; Sales</td>
+<td>CRM Manager</td>
 <td>chinthaka@hotmail.com</td>
 <td>209.555.0104</td>
 <td>05 May 2012</td>
@@ -178,9 +179,9 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/employee-details/">
 <i class="ri-user-3-line"></i>
-                                                        View Student
+                                                        View Profile
                                                     </a>
 </li>
 <li>
@@ -220,8 +221,8 @@
 </div>
 </div>
 </td>
-<td>Physics</td>
-<td>9 (A), 10 (B), </td>
+<td>Admissions &amp; Counseling</td>
+<td>Admission Counselor</td>
 <td>mobileip@mac.com</td>
 <td>209.555.0104</td>
 <td>05 May 2012</td>
@@ -234,9 +235,9 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/employee-details/">
 <i class="ri-user-3-line"></i>
-                                                        View Student
+                                                        View Profile
                                                     </a>
 </li>
 <li>
@@ -287,7 +288,7 @@
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list"><i class="ri-user-3-line"></i>View Student</a></li>
+<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/employee-details/"><i class="ri-user-3-line"></i>View Profile</a></li>
 <li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="javascript:void(0)"><i class="ri-edit-2-line"></i>Edit</a></li>
 <li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-error-warning-line"></i>Inactive</button></li>
 <li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-delete-bin-6-line"></i>Delete</button></li>
@@ -324,7 +325,7 @@
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list"><i class="ri-user-3-line"></i>View Student</a></li>
+<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/employee-details/"><i class="ri-user-3-line"></i>View Profile</a></li>
 <li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="javascript:void(0)"><i class="ri-edit-2-line"></i>Edit</a></li>
 <li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-error-warning-line"></i>Inactive</button></li>
 <li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-delete-bin-6-line"></i>Delete</button></li>
@@ -361,7 +362,7 @@
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list"><i class="ri-user-3-line"></i>View Student</a></li>
+<li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/employee-details/"><i class="ri-user-3-line"></i>View Profile</a></li>
 <li><a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="javascript:void(0)"><i class="ri-edit-2-line"></i>Edit</a></li>
 <li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-error-warning-line"></i>Inactive</button></li>
 <li><button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6"><i class="ri-delete-bin-6-line"></i>Delete</button></li>
@@ -399,9 +400,9 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/employee-details/">
 <i class="ri-user-3-line"></i>
-                                                        View Student
+                                                        View Profile
                                                     </a>
 </li>
 <li>
@@ -453,9 +454,9 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/employee-details/">
 <i class="ri-user-3-line"></i>
-                                                        View Student
+                                                        View Profile
                                                     </a>
 </li>
 <li>
@@ -507,9 +508,9 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/employee-details/">
 <i class="ri-user-3-line"></i>
-                                                        View Student
+                                                        View Profile
                                                     </a>
 </li>
 <li>
@@ -561,9 +562,9 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/employee-details/">
 <i class="ri-user-3-line"></i>
-                                                        View Student
+                                                        View Profile
                                                     </a>
 </li>
 <li>
@@ -615,9 +616,9 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/employee-details/">
 <i class="ri-user-3-line"></i>
-                                                        View Student
+                                                        View Profile
                                                     </a>
 </li>
 <li>
@@ -670,8 +671,8 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
-<i class="ri-user-3-line"></i> View Student
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/employee-details/">
+<i class="ri-user-3-line"></i> View Profile
                                                     </a>
 </li>
 <li>
@@ -722,8 +723,8 @@
 </button>
 <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
 <li>
-<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="student-list">
-<i class="ri-user-3-line"></i> View Student
+<a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/employee-details/">
+<i class="ri-user-3-line"></i> View Profile
                                                     </a>
 </li>
 <li>
@@ -774,5 +775,33 @@
     });
     // ✅ Data Table end
 
+    // ✅ Dynamic Employee Profile Navigation Handler
+    $(document).ready(function() {
+        $(document).on('click', 'a[href*="/admin-panel/employee-details/"]', function(e) {
+            e.preventDefault();
+            const $row = $(this).closest('tr');
+            if ($row.length) {
+                const empId = $row.find('td:eq(1)').text().trim();
+                const empName = $row.find('td:eq(2) h6').text().trim();
+                const empImgSrc = $row.find('td:eq(2) img').attr('src') || '';
+                const imgFilename = empImgSrc.split('/').pop();
+                const empDept = $row.find('td:eq(3)').text().trim();
+                const empRole = $row.find('td:eq(4)').text().trim();
+                const empEmail = $row.find('td:eq(5)').text().trim();
+                const empPhone = $row.find('td:eq(6)').text().trim();
+                const empJoin = $row.find('td:eq(7)').text().trim();
+                const empStatus = $row.find('td:eq(8)').text().trim();
+
+                const targetUrl = `/admin-panel/employee-details/?name=${encodeURIComponent(empName)}&id=${encodeURIComponent(empId)}&dept=${encodeURIComponent(empDept)}&role=${encodeURIComponent(empRole)}&email=${encodeURIComponent(empEmail)}&phone=${encodeURIComponent(empPhone)}&join=${encodeURIComponent(empJoin)}&img=${encodeURIComponent(imgFilename)}&status=${encodeURIComponent(empStatus)}`;
+                window.location.href = targetUrl;
+            } else {
+                window.location.href = '/admin-panel/employee-details/';
+            }
+        });
+
+        $('table tbody tr td:nth-child(3)').css('cursor', 'pointer').on('click', function() {
+            $(this).closest('tr').find('a[href*="/admin-panel/employee-details/"]').first().trigger('click');
+        });
+    });
     </script>
 {% endblock %}

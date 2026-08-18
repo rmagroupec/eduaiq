@@ -89,6 +89,12 @@
       <span class="text-secondary-light">Student Details</span>
     </div>
   </div>
+  <button class="btn btn-primary-600 d-flex align-items-center gap-6 bg-base text-primary-light bg-hover-primary-600 login-details-btn" data-bs-toggle="modal" data-bs-target="#loginDetailsModal" data-role="Student" type="button">
+    <span class="d-flex text-md">
+      <i class="ri-lock-2-line"></i>
+    </span>
+    Login Details
+  </button>
 </div>
 
 <div class="card mt-24">
@@ -474,7 +480,7 @@ $(document).ready(function() {
         // Docs tab
         if (student.aadhar_or_id_proof) {
           $('#idProofContainer').html(`
-            <a href="${student.aadhar_or_id_proof}" target="_blank" class="btn btn-sm btn-primary-600 radius-8">
+            <a href="${student.aadhar_or_id_proof}" target="_blank" class="btn btn-sm btn-primary-600 radius-8 download-doc-btn" data-filename="Student_ID_Proof.pdf">
               <i class="ri-download-2-line"></i> Download Document
             </a>
           `);
