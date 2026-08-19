@@ -394,6 +394,59 @@
     border-left-color: #ea580c;
     background: #fffdfb;
   }
+
+  /* Mobile Responsiveness for Quiz Player & Scorecard */
+  @media screen and (max-width: 768px) {
+    .quiz-player-container {
+      padding: 1.25rem 1rem !important;
+    }
+    .question-card-inner {
+      padding: 1.25rem 1rem !important;
+    }
+    .question-text-title {
+      font-size: 1.15rem !important;
+    }
+    .option-card-row {
+      padding: 10px 12px !important;
+      gap: 10px !important;
+    }
+    .option-letter-badge {
+      width: 32px !important;
+      height: 32px !important;
+      min-width: 32px !important;
+      font-size: 13px !important;
+    }
+    .option-text-label {
+      font-size: 14px !important;
+    }
+    .scorecard-modal-dialog {
+      max-width: 95% !important;
+      margin: 0.75rem auto !important;
+    }
+    .scorecard-hero-panel {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 12px !important;
+    }
+    .scorecard-hero-panel .text-end {
+      text-align: left !important;
+      flex-direction: row !important;
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .quiz-player-topbar {
+      flex-wrap: wrap !important;
+      gap: 10px !important;
+    }
+    #submitBtn {
+      width: 100% !important;
+      font-size: 1rem !important;
+      padding: 12px 18px !important;
+    }
+  }
 </style>
 
 <script>

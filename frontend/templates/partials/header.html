@@ -546,7 +546,7 @@
     color: #ffffff !important;
   }
 
-  /* Responsive Adjustments for Medium-Large Desktops */
+  /* Responsive Adjustments for All Devices */
   @media screen and (max-width: 1399px) {
     .navigation>ul {
       gap: 12px !important;
@@ -555,8 +555,8 @@
       font-size: 12.5px !important;
     }
     .header-logo-img {
-      max-height: 72px !important;
-      height: 72px !important;
+      max-height: 70px !important;
+      height: 70px !important;
     }
   }
 
@@ -569,20 +569,68 @@
       letter-spacing: 0px !important;
     }
     .btn-theme-yellow {
-      padding: 8px 16px !important;
+      padding: 8px 14px !important;
       font-size: 12px !important;
     }
     .btn-theme-navy {
-      padding: 8px 18px !important;
+      padding: 8px 16px !important;
       font-size: 12px !important;
     }
   }
 
-  /* Mobile Responsive Logo Sizing */
   @media screen and (max-width: 991px) {
     .header-logo-img {
-      max-height: 55px !important;
-      height: 55px !important;
+      max-height: 52px !important;
+      height: 52px !important;
+    }
+    .bottom-header {
+      padding: 8px 0 !important;
+    }
+    .hb-group {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .header-btn .btn-theme-yellow,
+    .header-btn .btn-theme-navy {
+      padding: 7px 14px !important;
+      font-size: 11.5px !important;
+    }
+    .top-header .header-contact-info ul {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .header-logo-img {
+      max-height: 44px !important;
+      height: 44px !important;
+    }
+    .header-btn .btn-theme-yellow,
+    .header-btn .btn-theme-navy {
+      padding: 6px 11px !important;
+      font-size: 11px !important;
+    }
+    .site-header {
+      overflow-x: clip;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .header-logo-img {
+      max-height: 38px !important;
+      height: 38px !important;
+    }
+    .header-btn {
+      gap: 4px;
+    }
+    .header-btn .btn-theme-yellow {
+      padding: 5px 9px !important;
+      font-size: 10px !important;
+    }
+    .header-btn .btn-theme-navy {
+      padding: 5px 9px !important;
+      font-size: 10px !important;
     }
   }
 </style>

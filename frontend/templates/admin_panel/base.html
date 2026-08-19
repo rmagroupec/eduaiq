@@ -435,9 +435,55 @@
       .swal2-confirm, .swal2-cancel {
         padding: 8px 20px !important;
         font-size: 0.85rem !important;
-        font-weight: 600 !important;
-        border-radius: 8px !important;
         box-shadow: none !important;
+      }
+
+      /* Admin Panel Global Mobile Responsiveness */
+      @media screen and (max-width: 991px) {
+        .dashboard-main {
+          margin-left: 0 !important;
+          width: 100% !important;
+        }
+        .dashboard-main-body {
+          padding: 16px 12px 30px 12px !important;
+        }
+        .breadcrumb {
+          flex-direction: column !important;
+          align-items: flex-start !important;
+          gap: 10px !important;
+        }
+        .breadcrumb .btn, .breadcrumb a.btn {
+          width: 100% !important;
+          justify-content: center !important;
+        }
+      }
+
+      @media screen and (max-width: 768px) {
+        .table-responsive {
+          border-radius: 8px !important;
+          -webkit-overflow-scrolling: touch !important;
+        }
+        .dataTable-wrapper .d-flex.align-items-center.justify-content-between {
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 12px !important;
+        }
+        .navbar-search {
+          width: 100% !important;
+        }
+        .navbar-search input {
+          width: 100% !important;
+        }
+      }
+
+      @media screen and (max-width: 480px) {
+        .stat-card-eduaiq {
+          padding: 14px 12px !important;
+        }
+        .custom-toast {
+          min-width: 260px !important;
+          max-width: calc(100vw - 24px) !important;
+        }
       }
     </style>
 </head>

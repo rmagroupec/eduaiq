@@ -355,6 +355,32 @@ level.{% endblock %}
     font-size: 48px;
     margin-bottom: 20px;
   }
+
+  /* Responsive Adjustments for Mobile & Tablet */
+  @media (max-width: 991px) {
+    .home-course-section {
+      padding: 30px 0 !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .pagination-wrap #prevPageBtn,
+    .pagination-wrap #nextPageBtn {
+      padding: 8px 14px !important;
+      font-size: 0.8rem !important;
+    }
+    #pageInfo {
+      font-size: 0.82rem !important;
+      padding: 6px 14px !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .pagination-wrap {
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+    }
+  }
 </style>
 
 <script>

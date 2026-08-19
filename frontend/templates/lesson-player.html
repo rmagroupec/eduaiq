@@ -138,6 +138,54 @@
             font-weight: 700;
             border: 1px solid #86efac;
         }
+
+        /* Mobile and Tablet Responsiveness for Lesson Player */
+        @media screen and (max-width: 991px) {
+            .lesson-player-container {
+                padding: 16px 0 40px 0;
+            }
+            #contentViewer iframe, #contentViewer video {
+                height: 340px;
+            }
+            #contentViewer {
+                min-height: 340px !important;
+            }
+            .sidebar-card {
+                margin-top: 10px;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .lesson-navbar {
+                padding: 10px 14px;
+            }
+            #contentViewer iframe, #contentViewer video {
+                height: 240px;
+            }
+            #contentViewer {
+                min-height: 240px !important;
+            }
+            .main-player-card .p-4 {
+                padding: 1rem !important;
+            }
+            .lesson-action-bar {
+                flex-direction: column !important;
+                gap: 12px;
+            }
+            .lesson-action-bar .btn {
+                width: 100% !important;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .lesson-navbar .progress {
+                width: 70px !important;
+            }
+            #backToCourseBtn {
+                padding: 4px 10px !important;
+                font-size: 11px !important;
+            }
+        }
     </style>
 </head>
 <body>

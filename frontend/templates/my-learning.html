@@ -459,6 +459,56 @@
     border-color: #fd7e14 !important;
     transform: translateY(-2px) !important;
   }
+
+  /* Mobile & Tablet Responsiveness for Student Dashboard */
+  @media screen and (max-width: 991px) {
+    .dashboard-hero-wrap {
+      padding: 30px 0 !important;
+    }
+    .dashboard-hero-wrap h2 {
+      font-size: 1.45rem !important;
+    }
+    .my-learning-section {
+      padding: 30px 0 !important;
+    }
+    #learningTabs {
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      padding-bottom: 8px !important;
+    }
+    #learningTabs .nav-item {
+      white-space: nowrap !important;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .stat-card-v2 {
+      padding: 1rem !important;
+      gap: 0.85rem !important;
+    }
+    .stat-icon-v2 {
+      width: 44px !important;
+      height: 44px !important;
+      font-size: 1.2rem !important;
+    }
+    .stat-content-v2 p {
+      font-size: 1.4rem !important;
+    }
+    .dashboard-hero-wrap .d-flex.flex-md-row {
+      text-align: center !important;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .dashboard-hero-wrap .btn {
+      width: 100% !important;
+      font-size: 13px !important;
+    }
+    .stat-content-v2 h6 {
+      font-size: 0.72rem !important;
+    }
+  }
 </style>
 
 <!-- Hero Dashboard Banner -->

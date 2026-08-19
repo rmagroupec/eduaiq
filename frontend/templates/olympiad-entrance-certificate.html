@@ -305,8 +305,95 @@
     border-radius: 0.85rem;
     padding: 0.55rem 1.25rem;
     display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 1.75rem;
     margin-bottom: 0.85rem;
+  }
+
+  /* Responsive Scaling for Tablets & Mobile Screens */
+  @media screen and (max-width: 860px) {
+    .certificate-container {
+      padding: 1.5rem 1.25rem;
+      border-width: 6px !important;
+      border-radius: 0.85rem;
+    }
+    .cert-logo img {
+      height: 75px !important;
+      max-width: 240px !important;
+    }
+    .cert-title {
+      font-size: 1.45rem;
+    }
+    .cert-recipient {
+      font-size: 1.4rem;
+      padding: 0 1rem 0.15rem 1rem;
+    }
+    .cert-body-text {
+      font-size: 0.86rem;
+    }
+    .cert-meta-box {
+      gap: 1rem;
+      padding: 0.5rem 1rem;
+    }
+  }
+
+  @media screen and (max-width: 576px) {
+    .certificate-wrap {
+      padding: 0.75rem 0.5rem;
+    }
+    .certificate-container {
+      padding: 1.25rem 0.85rem;
+      border-width: 4px !important;
+    }
+    .certificate-corner {
+      width: 25px;
+      height: 25px;
+    }
+    .corner-tl { top: 6px; left: 6px; }
+    .corner-tr { top: 6px; right: 6px; }
+    .corner-bl { bottom: 6px; left: 6px; }
+    .corner-br { bottom: 6px; right: 6px; }
+    .cert-logo img {
+      height: 58px !important;
+      max-width: 190px !important;
+    }
+    .cert-title {
+      font-size: 1.2rem;
+      margin: 0.4rem 0 0.1rem 0;
+    }
+    .cert-subtitle {
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+    }
+    .cert-recipient {
+      font-size: 1.15rem;
+      padding: 0 0.5rem 0.1rem 0.5rem;
+      margin: 0.25rem 0;
+    }
+    .cert-body-text {
+      font-size: 0.78rem;
+      line-height: 1.45;
+      margin-bottom: 0.6rem;
+    }
+    .cert-meta-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      padding: 0.45rem 0.75rem;
+      width: 100%;
+      text-align: center;
+    }
+    .cert-seal {
+      width: 48px;
+      height: 48px;
+      font-size: 1.2rem;
+    }
+    .certificate-top-bar .btn-cert-back,
+    .certificate-top-bar .btn-cert-print {
+      padding: 0.45rem 0.85rem;
+      font-size: 0.78rem;
+    }
   }
 </style>
 

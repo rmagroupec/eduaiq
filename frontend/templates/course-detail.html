@@ -946,13 +946,58 @@
     color: #1e293b;
   }
 
+  @media (max-width: 991px) {
+    .course-detail-section {
+      padding: 24px 0 50px 0;
+    }
+    .course-detail-hero-card {
+      padding: 18px;
+    }
+    .sidebar-pro {
+      position: static !important;
+      top: 0 !important;
+      margin-top: 24px;
+    }
+    .nav-tabs-pro {
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      padding-bottom: 6px !important;
+    }
+    .nav-tabs-pro .nav-item {
+      white-space: nowrap !important;
+    }
+  }
+
   @media (max-width: 768px) {
     .course-meta-pills-row {
       grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
     }
-
+    .course-title-main {
+      font-size: 1.5rem !important;
+    }
     .course-thumb-hero-wrap {
-      height: 250px;
+      height: 220px;
+    }
+    .overview-section-box {
+      padding: 18px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .course-meta-pills-row {
+      grid-template-columns: 1fr;
+    }
+    .course-thumb-hero-wrap {
+      height: 190px;
+    }
+    .price-main {
+      font-size: 1.8rem;
+    }
+    .btn-enroll-pro-cta {
+      padding: 12px 18px;
+      font-size: 15px;
     }
   }
 
