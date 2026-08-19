@@ -1316,19 +1316,26 @@ courses in India with AI-driven online courses, e-books & practical training. St
       <div class="col-lg-5 col-md-12">
         <div class="course-form course-form-pro">
           <h3>Get Free Courses ! Book Your Seat Now.</h3>
-          <form action="{% url 'contact' %}" method="get" class="course-field">
+          <div id="bookSeatSuccessMsg" class="alert alert-success d-none mb-3 radius-12 p-3 text-sm fw-semibold" style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
+            <i class="fas fa-check-circle me-2"></i><span id="bookSeatSuccessText">Thank you! Your seat booking inquiry has been received. Our team will contact you shortly.</span>
+          </div>
+          <form id="bookSeatForm" class="course-field">
+            {% csrf_token %}
             <div class="row">
               <div class="col-sm-6 mb-3">
-                <input name="name" placeholder="Your Name.." type="text" class="form-control-pro" />
+                <input name="name" id="bookSeatName" placeholder="Your Name *" type="text" class="form-control-pro" required />
               </div>
               <div class="col-sm-6 mb-3">
-                <input name="email" placeholder="Your Email.." type="email" class="form-control-pro" />
+                <input name="email" id="bookSeatEmail" placeholder="Your Email *" type="email" class="form-control-pro" required />
               </div>
-              <div class="col-sm-12 mb-3">
-                <input name="subject" placeholder="Your Subject.." type="text" class="form-control-pro" />
+              <div class="col-sm-6 mb-3">
+                <input name="phone" id="bookSeatPhone" placeholder="Your Phone Number" type="tel" class="form-control-pro" />
+              </div>
+              <div class="col-sm-6 mb-3">
+                <input name="subject" id="bookSeatSubject" placeholder="Your Subject / Course *" type="text" class="form-control-pro" required />
               </div>
               <div class="col-sm-12">
-                <button class="button-round-secondary w-100" type="submit">BOOK SEAT</button>
+                <button class="button-round-secondary w-100" id="bookSeatSubmitBtn" type="submit">BOOK SEAT</button>
               </div>
             </div>
           </form>
@@ -2109,6 +2116,70 @@ courses in India with AI-driven online courses, e-books & practical training. St
     }
   }
 
-  document.addEventListener('DOMContentLoaded', loadHomeCourses);
+  document.addEventListener('DOMContentLoaded', function() {
+    loadHomeCourses();
+
+    const form = document.getElementById('bookSeatForm');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('bookSeatSubmitBtn');
+        const successMsg = document.getElementById('bookSeatSuccessMsg');
+        
+        const name = document.getElementById('bookSeatName').value.trim();
+        const email = document.getElementById('bookSeatEmail').value.trim();
+        const phone = document.getElementById('bookSeatPhone') ? document.getElementById('bookSeatPhone').value.trim() : '';
+        const subject = document.getElementById('bookSeatSubject').value.trim();
+
+        if (!name) {
+          alert('Please enter your name');
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>SUBMITTING...';
+
+        const payload = {
+          name: name,
+          email: email,
+          phone: phone,
+          subject: subject,
+          source: 'website'
+        };
+
+        fetch('/api/crm/leads/submit/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': (document.cookie.match(/csrftoken=([^;]+)/) || [])[1] || ''
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+          btn.disabled = false;
+          btn.innerHTML = 'BOOK SEAT';
+          if (data.success) {
+            showSuccessModal(
+              'Seat Booked Successfully!',
+              data.message || 'Thank you! Your seat booking inquiry has been received. Our team will contact you shortly.'
+            );
+            if (successMsg) {
+              document.getElementById('bookSeatSuccessText').innerText = data.message || 'Thank you! Your seat booking inquiry has been received. Our team will contact you shortly.';
+              successMsg.classList.remove('d-none');
+            }
+            form.reset();
+          } else {
+            alert(data.message || 'Error submitting form. Please try again.');
+          }
+        })
+        .catch(err => {
+          btn.disabled = false;
+          btn.innerHTML = 'BOOK SEAT';
+          alert('Network error. Please try again.');
+        });
+      });
+    }
+  });
 </script>
 {% endblock %}

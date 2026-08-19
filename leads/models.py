@@ -23,6 +23,8 @@ PHONE_VALIDATOR = RegexValidator(regex=r'^\+?1?\d{9,15}$', message='Enter a vali
 
 SOURCE_CHOICES = [
     ('website', 'Website Enquiry'),
+    ('contact_page', 'Contact Page'),
+    ('franchise_application', 'Franchise Application'),
     ('referral', 'Partner Referral'),
     ('cold_call', 'Cold Call'),
     ('walk_in', 'Walk-in'),
@@ -49,7 +51,8 @@ class Lead(models.Model):
     ]
     INSTITUTION_TYPE_CHOICES = [
         ('school', 'School'), ('college', 'College'),
-        ('coaching', 'Coaching Institute'), ('other', 'Other'),
+        ('coaching', 'Coaching Institute'), ('franchise', 'Franchise Partner'),
+        ('other', 'Other'),
     ]
 
     # Ownership / attribution
@@ -59,14 +62,14 @@ class Lead(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                                related_name='owned_leads',
                                help_text='In-house sales rep responsible for working this lead.')
-    source = models.CharField(max_length=20, choices=SOURCE_CHOICES, default='website')
+    source = models.CharField(max_length=30, choices=SOURCE_CHOICES, default='website')
 
     # Contact details
     lead_name = models.CharField(max_length=150)
     institution_name = models.CharField(max_length=255, blank=True)
-    institution_type = models.CharField(max_length=20, choices=INSTITUTION_TYPE_CHOICES, blank=True)
+    institution_type = models.CharField(max_length=30, choices=INSTITUTION_TYPE_CHOICES, blank=True)
     designation = models.CharField(max_length=100, blank=True)
-    phone = models.CharField(max_length=15, validators=[PHONE_VALIDATOR])
+    phone = models.CharField(max_length=15, validators=[PHONE_VALIDATOR], blank=True)
     email = models.EmailField(blank=True)
     city = models.CharField(max_length=100, blank=True)
     state = models.CharField(max_length=100, blank=True)
@@ -125,7 +128,7 @@ class StudentInquiry(models.Model):
 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                                related_name='owned_student_inquiries')
-    source = models.CharField(max_length=20, choices=SOURCE_CHOICES, default='website')
+    source = models.CharField(max_length=30, choices=SOURCE_CHOICES, default='website')
 
     # Contact details
     student_name = models.CharField(max_length=150)

@@ -251,29 +251,32 @@
                 <div class="col-lg-6">
                     <div class="contact-from-wrap">
                         <div class="pattern-overlay circle-patten"></div>
-                        <form class="contact-from">
+                        <div id="contactSuccessMsg" class="alert alert-success d-none mb-3 radius-12 p-3 text-sm fw-semibold" style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
+                            <i class="fas fa-check-circle me-2"></i><span id="contactSuccessText">Thank you! Your message has been received. Our team will contact you shortly.</span>
+                        </div>
+                        <form id="contactForm" class="contact-from">
                             {% csrf_token %}
                             <p class="input-icon-group">
-                                <input name="name" placeholder="Enter Name*" type="text" />
+                                <input name="name" id="contactName" placeholder="Enter Name*" type="text" required />
                                 <i aria-hidden="true" class="fas fa-user input-icon"></i>
                             </p>
                             <p class="input-icon-group">
-                                <input name="email" placeholder="Enter Email*" type="email" />
+                                <input name="email" id="contactEmail" placeholder="Enter Email*" type="email" required />
                                 <i aria-hidden="true" class="fas fa-envelope input-icon"></i>
                             </p>
                             <p class="input-icon-group">
-                                <input name="subject" placeholder="Enter Subject*" type="text" />
+                                <input name="subject" id="contactSubject" placeholder="Enter Subject*" type="text" required />
                                 <i aria-hidden="true" class="fas fa-tag input-icon"></i>
                             </p>
                             <p class="input-icon-group">
-                                <input name="phone" placeholder="Enter Phone*" type="number" />
+                                <input name="phone" id="contactPhone" placeholder="Enter Phone" type="tel" />
                                 <i aria-hidden="true" class="fas fa-phone input-icon"></i>
                             </p>
                             <p class="width-full">
-                                <textarea placeholder="Enter Message*" rows="8"></textarea>
+                                <textarea name="message" id="contactMessage" placeholder="Enter Message" rows="6"></textarea>
                             </p>
                             <p class="width-full">
-                                <input name="submit" type="submit" value="Submit Now" />
+                                <input id="contactSubmitBtn" name="submit" type="submit" value="Submit Now" />
                             </p>
                         </form>
                     </div>
@@ -282,4 +285,74 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('contactForm');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('contactSubmitBtn');
+      const successMsg = document.getElementById('contactSuccessMsg');
+      
+      const name = document.getElementById('contactName').value.trim();
+      const email = document.getElementById('contactEmail').value.trim();
+      const phone = document.getElementById('contactPhone') ? document.getElementById('contactPhone').value.trim() : '';
+      const subject = document.getElementById('contactSubject').value.trim();
+      const message = document.getElementById('contactMessage') ? document.getElementById('contactMessage').value.trim() : '';
+
+      if (!name) {
+        alert('Please enter your name');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.value = 'Submitting...';
+
+      const payload = {
+        name: name,
+        email: email,
+        phone: phone,
+        subject: subject,
+        message: message,
+        source: 'contact_page'
+      };
+
+      fetch('/api/crm/leads/submit/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': (document.cookie.match(/csrftoken=([^;]+)/) || [])[1] || ''
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        btn.disabled = false;
+        btn.value = 'Submit Now';
+        if (data.success) {
+          showSuccessModal(
+            'Inquiry Submitted Successfully!',
+            data.message || 'Thank you! Your inquiry has been received. Our team will contact you shortly.'
+          );
+          if (successMsg) {
+            document.getElementById('contactSuccessText').innerText = data.message || 'Thank you! Your inquiry has been received. Our team will contact you shortly.';
+            successMsg.classList.remove('d-none');
+          }
+          form.reset();
+        } else {
+          alert(data.message || 'Error submitting inquiry. Please try again.');
+        }
+      })
+      .catch(err => {
+        btn.disabled = false;
+        btn.value = 'Submit Now';
+        alert('Network error. Please try again.');
+      });
+    });
+  }
+});
+</script>
 {% endblock %}

@@ -20,6 +20,7 @@ urlpatterns = [
     # ========================================================================
     # PASSWORD MANAGEMENT URLS
     # ========================================================================
+    path('forgot-password/', views.forgot_password_api, name='forgot-password'),
     path('change-password/', views.change_password, name='change-password'),
     path('delete-account/', views.delete_account, name='delete-account'),
 

@@ -10,7 +10,7 @@
     <meta name="description" content="{% block description %}EduAIQ - AI Powered Education Platform{% endblock %}">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{% static 'assets/img/educator-fabicon-300x300.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'assets/img/favicon.png' %}">
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="{% static 'assets/vendors/bootstrap/css/bootstrap.min.css' %}" media="all">
@@ -268,7 +268,68 @@
         </div>
     </div>
 
+    <!-- Global Lead / Form Submission Success Modal Popup -->
+    <div class="modal fade" id="globalSuccessModal" tabindex="-1" aria-labelledby="globalSuccessModalLabel" aria-hidden="true" style="z-index: 9999;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
+            <div class="modal-content text-center p-4" style="border-radius: 24px; border: none; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25); background: #ffffff; overflow: hidden; position: relative;">
+                
+                <!-- Decorative Top Accent Bar -->
+                <div style="height: 5px; background: linear-gradient(90deg, #22c55e 0%, #16a34a 50%, #15803d 100%); position: absolute; top: 0; left: 0; right: 0;"></div>
+
+                <!-- Close X Button -->
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3 shadow-none" data-bs-dismiss="modal" aria-label="Close" style="z-index: 10; font-size: 12px;"></button>
+
+                <!-- Animated Icon Circle -->
+                <div class="my-3 d-inline-flex align-items-center justify-content-center mx-auto" style="width: 84px; height: 84px; border-radius: 50%; background: #f0fdf4; border: 3px solid #bbf7d0; box-shadow: 0 10px 25px rgba(34, 197, 94, 0.25);">
+                    <i class="fas fa-check-circle text-success" style="font-size: 44px; color: #16a34a !important;"></i>
+                </div>
+
+                <h3 class="fw-bold mb-2 text-dark" id="globalSuccessModalTitle" style="font-size: 22px; color: #0f172a !important;">Submitted Successfully!</h3>
+                <p class="text-secondary mb-4 px-2" id="globalSuccessModalMessage" style="font-size: 14.5px; line-height: 1.6; color: #475569 !important;">
+                    Thank you! Your details have been submitted successfully. Our team will contact you shortly.
+                </p>
+
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-success radius-50 py-3 px-4 fw-bold text-white shadow-sm" data-bs-dismiss="modal" onclick="closeSuccessModal()" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important; border: none !important; border-radius: 50px !important; font-size: 15px; letter-spacing: 0.3px;">
+                        <i class="fas fa-check me-2"></i> OK, Got It!
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        function showSuccessModal(title, message) {
+            var titleEl = document.getElementById('globalSuccessModalTitle');
+            var msgEl = document.getElementById('globalSuccessModalMessage');
+            if (title && titleEl) titleEl.innerText = title;
+            if (message && msgEl) msgEl.innerText = message;
+            
+            var modalEl = document.getElementById('globalSuccessModal');
+            if (modalEl) {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                    modal.show();
+                } else if (typeof $ !== 'undefined' && $.fn.modal) {
+                    $(modalEl).modal('show');
+                } else {
+                    alert((title ? title + "\n\n" : "") + (message || 'Submitted successfully!'));
+                }
+            }
+        }
+
+        function closeSuccessModal() {
+            var modalEl = document.getElementById('globalSuccessModal');
+            if (modalEl) {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    var modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+                } else if (typeof $ !== 'undefined' && $.fn.modal) {
+                    $(modalEl).modal('hide');
+                }
+            }
+        }
+
         function openInstitutionModal(e) {
             if (e) e.preventDefault();
             var modalEl = document.getElementById('institutionAccessModal');

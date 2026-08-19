@@ -6,6 +6,7 @@ app_name = "leads"
 
 urlpatterns = [
     # Leads (Institution / Franchise — B2B)
+    path("leads/submit/", views.submit_public_lead, name="submit-public-lead"),
     path("leads/", views.lead_list, name="lead-list"),
     path("leads/<int:pk>/", views.lead_detail, name="lead-detail"),
     path("leads/<int:pk>/convert/", views.lead_convert, name="lead-convert"),

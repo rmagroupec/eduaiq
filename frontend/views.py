@@ -872,6 +872,54 @@ def login_view(request):
     return render(request, 'admin_panel/login.html', {'next': next_param})
 
 
+def forgot_password_view(request):
+    """
+    GET  -> Renders forgot password form
+    POST -> Verifies username/email exists and updates user's password
+    """
+    if request.method == 'POST':
+        identifier = request.POST.get('identifier', '').strip()
+        new_password = request.POST.get('new_password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+
+        errors = []
+
+        if not identifier:
+            errors.append("Please enter your username or email address.")
+        if not new_password or not confirm_password:
+            errors.append("Please enter and confirm your new password.")
+        elif new_password != confirm_password:
+            errors.append("New password and confirm password do not match.")
+        elif len(new_password) < 8:
+            errors.append("Password must be at least 8 characters long.")
+
+        if errors:
+            return render(request, 'admin_panel/forgot_password.html', {
+                'form_errors': errors,
+                'old_identifier': identifier,
+            })
+
+        # Look up user by username or email
+        user = User.objects.filter(Q(username__iexact=identifier) | Q(email__iexact=identifier)).first()
+
+        if not user:
+            return render(request, 'admin_panel/forgot_password.html', {
+                'form_errors': ["No account found with this username or email address."],
+                'old_identifier': identifier,
+            })
+
+        # Update password
+        user.set_password(new_password)
+        user.save()
+
+        return render(request, 'admin_panel/forgot_password.html', {
+            'success_message': f"Password for account '{user.username}' has been successfully reset! You can now log in with your new password.",
+        })
+
+    return render(request, 'admin_panel/forgot_password.html')
+
+
+
 def institution_login_view(request):
     """
     Institution Partner & Admin Login View.

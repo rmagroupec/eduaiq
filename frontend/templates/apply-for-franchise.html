@@ -152,53 +152,55 @@
 <div class="col-lg-7">
 <div class="contact-from-wrap">
 <div class="pattern-overlay circle-patten"></div>
-<form class="contact-from">
+<div id="franchiseSuccessMsg" class="alert alert-success d-none mb-3 radius-12 p-3 text-sm fw-semibold" style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
+    <i class="fas fa-check-circle me-2"></i><span id="franchiseSuccessText">Thank you! Your franchise application has been received. Our team will contact you shortly.</span>
+</div>
+<form id="franchiseForm" class="contact-from">
     {% csrf_token %}
 <p>
-<input name="applicant_name" placeholder="Full Name*" type="text"/>
+<input id="franchiseName" name="applicant_name" placeholder="Full Name*" type="text" required />
 </p>
 <p>
-<input name="email" placeholder="Email Address*" type="email"/>
+<input id="franchiseEmail" name="email" placeholder="Email Address*" type="email" required />
 </p>
 <p>
-<input name="phone" placeholder="Phone Number*" type="number"/>
+<input id="franchisePhone" name="phone" placeholder="Phone Number*" type="tel" required />
 </p>
 <p>
-<input name="city" placeholder="Proposed City / Territory*" type="text"/>
+<input id="franchiseCity" name="city" placeholder="Proposed City / Territory*" type="text" required />
 </p>
 <p>
-<select name="investment_range" required="">
+<select id="franchiseInvestment" name="investment_range" required="">
 <option disabled="" selected="" value="">Investment Capacity*</option>
-<option value="under-5l">Under ₹5 Lakh</option>
-<option value="5-10l">₹5-10 Lakh</option>
-<option value="10-25l">₹10-25 Lakh</option>
-<option value="above-25l">Above ₹25 Lakh</option>
+<option value="Under ₹5 Lakh">Under ₹5 Lakh</option>
+<option value="₹5-10 Lakh">₹5-10 Lakh</option>
+<option value="₹10-25 Lakh">₹10-25 Lakh</option>
+<option value="Above ₹25 Lakh">Above ₹25 Lakh</option>
 </select>
 </p>
 <p>
-<select name="business_background" required="">
+<select id="franchiseBackground" name="business_background" required="">
 <option disabled="" selected="" value="">Current Background*</option>
-<option value="education">Existing education business</option>
-<option value="business">Other business owner</option>
-<option value="professional">Working professional</option>
-<option value="fresh">New to business ownership</option>
+<option value="Existing education business">Existing education business</option>
+<option value="Other business owner">Other business owner</option>
+<option value="Working professional">Working professional</option>
+<option value="New to business ownership">New to business ownership</option>
 </select>
 </p>
 <p class="width-full">
-<textarea placeholder="Relevant experience (running a coaching center, school, business, etc. — optional)" rows="3"></textarea>
+<textarea id="franchiseExperience" name="experience" placeholder="Relevant experience (running a coaching center, school, business, etc. — optional)" rows="3"></textarea>
 </p>
 <p class="width-full">
-<textarea placeholder="Why are you interested in an EduAiQ franchise?*" rows="4"></textarea>
+<textarea id="franchiseWhy" name="why_interested" placeholder="Why are you interested in an EduAiQ franchise?*" rows="4" required></textarea>
 </p>
 <p class="width-full">
 <label style="font-size: 13px; color: #414141; font-weight: 400;">
-<input name="agree" style="width: auto; margin-right: 8px;" type="checkbox"/>
-                                                I understand this application does not guarantee territory
-                                                approval and agree to be contacted regarding it.
-                                            </label>
+<input id="franchiseAgree" name="agree" style="width: auto; margin-right: 8px;" type="checkbox" required />
+    I understand this application does not guarantee territory approval and agree to be contacted regarding it.
+</label>
 </p>
 <p class="width-full">
-<input name="submit" type="submit" value="Submit Franchise Application"/>
+<input id="franchiseSubmitBtn" name="submit" type="submit" value="Submit Franchise Application"/>
 </p>
 </form>
 </div>
@@ -207,4 +209,85 @@
 </div>
 </div>
 </section>
+{% endblock %}
+
+{% block js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('franchiseForm');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('franchiseSubmitBtn');
+      const successMsg = document.getElementById('franchiseSuccessMsg');
+      
+      const name = document.getElementById('franchiseName').value.trim();
+      const email = document.getElementById('franchiseEmail').value.trim();
+      const phone = document.getElementById('franchisePhone').value.trim();
+      const city = document.getElementById('franchiseCity').value.trim();
+      const investment = document.getElementById('franchiseInvestment').value;
+      const background = document.getElementById('franchiseBackground').value;
+      const experience = document.getElementById('franchiseExperience').value.trim();
+      const why_interested = document.getElementById('franchiseWhy').value.trim();
+      const agree = document.getElementById('franchiseAgree').checked;
+
+      if (!name || !email || !phone || !city) {
+        alert('Please fill in all required fields (*)');
+        return;
+      }
+      if (!agree) {
+        alert('Please check the confirmation box before submitting.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.value = 'Submitting Application...';
+
+      const payload = {
+        applicant_name: name,
+        email: email,
+        phone: phone,
+        city: city,
+        investment_range: investment,
+        business_background: background,
+        experience: experience,
+        why_interested: why_interested,
+        source: 'franchise_application'
+      };
+
+      fetch('/api/crm/leads/submit/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': (document.cookie.match(/csrftoken=([^;]+)/) || [])[1] || ''
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        btn.disabled = false;
+        btn.value = 'Submit Franchise Application';
+        if (data.success) {
+          showSuccessModal(
+            'Application Submitted Successfully!',
+            data.message || 'Thank you! Your franchise application has been received. Our team will contact you shortly.'
+          );
+          if (successMsg) {
+            document.getElementById('franchiseSuccessText').innerText = data.message || 'Thank you! Your franchise application has been received. Our team will contact you shortly.';
+            successMsg.classList.remove('d-none');
+          }
+          form.reset();
+        } else {
+          alert(data.message || 'Error submitting application. Please try again.');
+        }
+      })
+      .catch(err => {
+        btn.disabled = false;
+        btn.value = 'Submit Franchise Application';
+        alert('Network error. Please try again.');
+      });
+    });
+  }
+});
+</script>
 {% endblock %}

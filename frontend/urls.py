@@ -104,6 +104,7 @@ urlpatterns = [
     path('register/', views.register_view, name='register'),
     path('register/submit/', views.register_submit, name='register_submit'),
     path('login/', views.login_view, name='public_login'),
+    path('forgot-password/', views.forgot_password_view, name='forgot_password'),
     path('institution/login/', views.institution_login_view, name='institution_login'),
     path('institution-login/', views.institution_login_view, name='institution_login_alias'),
     path('admin-panel/login/', views.login_view, name='login'),

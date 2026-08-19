@@ -23,6 +23,7 @@ from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.decorators.http import require_GET, require_http_methods
+from django.views.decorators.csrf import csrf_exempt
 
 from institutions.forms import StudentForm
 from institutions.models import Institution, Student
@@ -948,4 +949,82 @@ def crm_dashboard(request):
         },
         'recent_deals': recent_deals,
     })
+
+
+# ============================================================================
+# PUBLIC LEAD SUBMISSION (Book Your Seat & Contact Forms)
+# ============================================================================
+
+@csrf_exempt
+@require_http_methods(['POST'])
+def submit_public_lead(request):
+    """Public endpoint to capture website lead forms (Book Your Seat, Contact, Franchise Application, etc.)."""
+    try:
+        data = _body(request)
+
+        name = data.get('name') or data.get('applicant_name') or data.get('lead_name') or ''
+        email = data.get('email') or ''
+        phone = data.get('phone') or ''
+        city = data.get('city') or ''
+        state = data.get('state') or ''
+        subject = data.get('subject') or ''
+        message = data.get('message') or data.get('notes') or ''
+        source = data.get('source') or 'website'
+
+        # Additional Franchise Form fields if present
+        investment = data.get('investment_range') or ''
+        background = data.get('business_background') or ''
+        experience = data.get('experience') or ''
+        why_interested = data.get('why_interested') or ''
+
+        if not name.strip():
+            return JsonResponse({'success': False, 'message': 'Please enter your name.'}, status=400)
+
+        notes_parts = []
+        if subject:
+            notes_parts.append(f"Subject: {subject}")
+        if investment:
+            notes_parts.append(f"Investment Capacity: {investment}")
+        if background:
+            notes_parts.append(f"Current Background: {background}")
+        if experience:
+            notes_parts.append(f"Relevant Experience: {experience}")
+        if why_interested:
+            notes_parts.append(f"Why Interested: {why_interested}")
+        if message:
+            notes_parts.append(f"Message: {message}")
+
+        notes_content = "\n".join(notes_parts) if notes_parts else "Website Inquiry Form"
+
+        inst_name = subject.strip()
+        if not inst_name and source == 'franchise_application':
+            inst_name = f"Franchise Application ({city})" if city else "Franchise Application"
+        if not inst_name:
+            inst_name = 'Free Course Inquiry'
+
+        is_franchise = (source == 'franchise_application')
+
+        lead = Lead.objects.create(
+            lead_name=name.strip(),
+            email=email.strip(),
+            phone=phone.strip(),
+            city=city.strip(),
+            state=state.strip(),
+            institution_name=inst_name,
+            institution_type='franchise' if is_franchise else '',
+            notes=notes_content,
+            source=source,
+            stage='new',
+            priority='high' if is_franchise else 'medium'
+        )
+
+        resp_msg = 'Thank you! Your franchise application has been received. Our team will contact you shortly.' if is_franchise else 'Thank you! Your inquiry has been received. Our team will contact you shortly.'
+
+        return JsonResponse({
+            'success': True,
+            'message': resp_msg,
+            'lead_id': lead.id
+        }, status=201)
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Error submitting lead: {str(e)}'}, status=500)
 

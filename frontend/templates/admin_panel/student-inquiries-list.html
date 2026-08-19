@@ -140,7 +140,7 @@ $(document).ready(function() {
         ownerHtml = `<div>
           <span class="fw-semibold text-neutral-800 text-sm d-block mb-2"><i class="ri-user-3-line me-1 text-primary-600"></i>${ownerName}</span>
           ${ownerDesig ? `<span class="badge bg-primary-50 text-primary-600 border border-primary-100 radius-4 px-6 py-2 text-xs d-inline-block">${ownerDesig}</span>` : ''}
-          ${(i.created_by && i.created_by.id !== i.owner.id) ? `<div class="text-xs text-secondary-light mt-4"><i class="ri-user-shared-line me-1 text-primary-500"></i>Assigned by ${createdByName}</div>` : ''}
+          ${i.created_by ? (i.created_by.id !== i.owner.id ? `<div class="text-xs text-secondary-light mt-4"><i class="ri-user-shared-line me-1 text-primary-500"></i>Assigned by ${createdByName}</div>` : '') : `<div class="text-xs text-info-600 mt-4"><i class="ri-global-line me-1"></i>Added via Website</div>`}
         </div>`;
       } else if (i.created_by) {
         ownerHtml = `<div>
@@ -148,7 +148,10 @@ $(document).ready(function() {
           <div class="text-xs text-secondary-light"><i class="ri-user-add-line me-1"></i>Added by ${createdByName}</div>
         </div>`;
       } else {
-        ownerHtml = `<span class="badge bg-neutral-100 text-neutral-500 radius-4 px-8 py-4">Unassigned</span>`;
+        ownerHtml = `<div>
+          <span class="badge bg-info-50 text-info-600 border border-info-200 radius-4 px-8 py-4 mb-2 d-inline-block"><i class="ri-global-line me-1"></i>Website Direct</span>
+          <div class="text-xs text-secondary-light"><i class="ri-user-add-line me-1"></i>Added via Website</div>
+        </div>`;
       }
 
       tbody.append(`

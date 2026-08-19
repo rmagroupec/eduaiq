@@ -145,6 +145,32 @@ def logout_view(request):
 # PASSWORD MANAGEMENT
 # ============================================================================
 
+@csrf_exempt
+@require_http_methods(['POST'])
+def forgot_password_api(request):
+    data = _body(request)
+    identifier = (data.get('identifier', '') or data.get('username', '') or data.get('email', '')).strip()
+    new_password = data.get('new_password', '')
+    confirm_password = data.get('confirm_password', '')
+
+    if not identifier:
+        return JsonResponse({'success': False, 'error': 'Username or email address is required.'}, status=400)
+    if not new_password or not confirm_password:
+        return JsonResponse({'success': False, 'error': 'New password and confirm password are required.'}, status=400)
+    if new_password != confirm_password:
+        return JsonResponse({'success': False, 'error': 'Passwords do not match.'}, status=400)
+    if len(new_password) < 8:
+        return JsonResponse({'success': False, 'error': 'Password must be at least 8 characters long.'}, status=400)
+
+    user = User.objects.filter(Q(username__iexact=identifier) | Q(email__iexact=identifier)).first()
+    if not user:
+        return JsonResponse({'success': False, 'error': 'No account found with this username or email address.'}, status=404)
+
+    user.set_password(new_password)
+    user.save()
+    return JsonResponse({'success': True, 'message': 'Password has been successfully updated.'})
+
+
 @login_required
 @require_http_methods(['POST'])
 def change_password(request):
