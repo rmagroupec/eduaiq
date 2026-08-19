@@ -23,17 +23,26 @@
         
         <!-- Profile Image & Quick Details -->
         <div class="max-w-300-px w-100 text-center p-24 bg-neutral-50 radius-12 border border-neutral-200">
-          <figure class="mb-20 w-120-px h-120-px mx-auto rounded-circle overflow-hidden border border-3 border-primary-600 shadow-sm">
-            <img src="{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}" alt="User Avatar"
-              class="w-100 h-100 object-fit-cover">
+          <figure class="mb-20 w-120-px h-120-px mx-auto rounded-circle position-relative border border-3 border-primary-600 shadow-sm" style="width: 120px; height: 120px;">
+            <img id="userProfileAvatar" src="{% if request.user.profile_image %}{{ request.user.profile_image.url }}{% else %}{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}{% endif %}" alt="User Avatar"
+              class="w-100 h-100 object-fit-cover rounded-circle">
+            <label for="userAvatarInput" class="position-absolute bottom-0 end-0 bg-primary-600 text-white rounded-circle d-flex align-items-center justify-content-center cursor-pointer shadow hover-bg-primary-700" style="width: 34px; height: 34px; right: 0; bottom: 0;" title="Change Profile Picture">
+              <i class="ri-camera-fill text-lg"></i>
+            </label>
+            <input type="file" id="userAvatarInput" accept="image/*" class="d-none">
           </figure>
           <h2 class="h5 text-primary-light mb-8 fw-bold">{% if request.user.is_authenticated %}{{ request.user.get_full_name|default:request.user.username|title }}{% else %}User Account{% endif %}</h2>
           <span class="badge bg-primary-600 text-white px-16 py-6 radius-20 text-sm fw-semibold mb-12">
-            {% if emp_profile and emp_profile.designation %}{{ emp_profile.designation.title }}{% elif request.user.is_superuser %}Administrator{% else %}{{ request.user.role|default:"Executive"|title }}{% endif %}
+            {% if emp_profile and emp_profile.designation %}{{ emp_profile.designation.title }}{% elif request.user.employee_profile and request.user.employee_profile.designation %}{{ request.user.employee_profile.designation.title }}{% elif request.user.is_superuser or request.user.role == 'admin' %}System Administrator{% elif request.user.role == 'sales' or request.user.role == 'crm' %}Sales Executive{% elif request.user.role == 'teacher' %}Faculty / Educator{% else %}{{ request.user.role|default:"Executive"|title }}{% endif %}
           </span>
-          <p class="mb-0 text-sm text-secondary-light">Role: <span class="text-primary-600 fw-semibold">{% if request.user.is_superuser or request.user.role == 'admin' %}Super Admin{% elif emp_profile and emp_profile.department %}{{ emp_profile.department.name }}{% else %}{{ request.user.role|default:"Staff"|title }}{% endif %}</span></p>
+          <p class="mb-0 text-sm text-secondary-light">Department: <span class="text-primary-600 fw-semibold">{% if emp_profile and emp_profile.department %}{{ emp_profile.department.name }}{% elif request.user.employee_profile and request.user.employee_profile.department %}{{ request.user.employee_profile.department.name }}{% elif request.user.is_superuser or request.user.role == 'admin' %}Administration & Operations{% elif request.user.role == 'sales' or request.user.role == 'crm' %}CRM & Sales{% elif request.user.role == 'teacher' %}Academics{% elif request.user.school_name %}{{ request.user.school_name }}{% else %}Human Resources (HR){% endif %}</span></p>
           <p class="mb-0 text-sm text-secondary-light">Platform: <span class="text-primary-light fw-semibold">EduAiQ Portal</span></p>
-
+          
+          <div class="mt-16">
+            <label for="userAvatarInput" class="btn btn-sm btn-outline-primary radius-8 px-16 py-6 text-xs d-inline-flex align-items-center gap-1 cursor-pointer" id="uploadAvatarBtnLabel">
+              <i class="ri-upload-2-line"></i> Upload Photo
+            </label>
+          </div>
         </div>
 
         <span class="h-100 w-1-px bg-neutral-200 d-none d-md-block"></span>
@@ -65,7 +74,12 @@
 
             <div class="d-flex flex-wrap gap-4 align-items-center">
               <span class="fw-semibold text-sm text-primary-light w-140-px">Designation</span>
-              <span class="fw-medium text-sm text-secondary-light">: {% if emp_profile and emp_profile.designation %}{{ emp_profile.designation.title }}{% elif request.user.is_superuser %}System Administrator{% else %}Sales Executive{% endif %}</span>
+              <span class="fw-medium text-sm text-secondary-light">: {% if emp_profile and emp_profile.designation %}{{ emp_profile.designation.title }}{% elif request.user.employee_profile and request.user.employee_profile.designation %}{{ request.user.employee_profile.designation.title }}{% elif request.user.is_superuser or request.user.role == 'admin' %}System Administrator{% elif request.user.role == 'sales' or request.user.role == 'crm' %}Sales Executive{% elif request.user.role == 'teacher' %}Faculty / Educator{% else %}{{ request.user.role|default:"Executive"|title }}{% endif %}</span>
+            </div>
+
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Department</span>
+              <span class="fw-medium text-sm text-secondary-light">: {% if emp_profile and emp_profile.department %}{{ emp_profile.department.name }}{% elif request.user.employee_profile and request.user.employee_profile.department %}{{ request.user.employee_profile.department.name }}{% elif request.user.is_superuser or request.user.role == 'admin' %}Administration & Operations{% elif request.user.role == 'sales' or request.user.role == 'crm' %}CRM & Sales{% elif request.user.role == 'teacher' %}Academics{% elif request.user.school_name %}{{ request.user.school_name }}{% else %}Human Resources (HR){% endif %}</span>
             </div>
 
             <div class="d-flex flex-wrap gap-4 align-items-center">
@@ -84,4 +98,64 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block js %}
+<script>
+  $(document).ready(function() {
+    $('#userAvatarInput').on('change', function() {
+      var file = this.files[0];
+      if (!file) return;
+
+      if (file.size > 5 * 1024 * 1024) {
+        if (window.showToast) window.showToast('Profile image must be less than 5MB', 'error');
+        $(this).val('');
+        return;
+      }
+
+      // Live Instant Preview
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        $('#userProfileAvatar').attr('src', e.target.result);
+      };
+      reader.readAsDataURL(file);
+
+      // Perform Permanent Database Upload via AJAX
+      var formData = new FormData();
+      formData.append('profile_image', file);
+
+      var $label = $('#uploadAvatarBtnLabel');
+      var originalText = $label.html();
+      $label.html('<i class="ri-loader-4-line ri-spin"></i> Uploading...');
+
+      $.ajax({
+        url: '/accounts/api/profile/update-image/',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(res) {
+          $label.html(originalText);
+          if (res.status === 'success') {
+            if (res.image_url) {
+              $('#userProfileAvatar').attr('src', res.image_url);
+              // Also update navbar header avatar if present
+              $('.navbar-header img[alt="Admin"]').attr('src', res.image_url);
+            }
+            if (window.showToast) {
+              window.showToast('Profile picture saved permanently! 🎉', 'success');
+            }
+          } else {
+            if (window.showToast) window.showToast(res.message || 'Upload failed', 'error');
+          }
+        },
+        error: function(err) {
+          $label.html(originalText);
+          var msg = err.responseJSON && err.responseJSON.message ? err.responseJSON.message : 'Error uploading profile image';
+          if (window.showToast) window.showToast(msg, 'error');
+        }
+      });
+    });
+  });
+</script>
 {% endblock %}

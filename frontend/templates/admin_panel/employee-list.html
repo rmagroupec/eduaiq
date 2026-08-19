@@ -754,6 +754,79 @@
 
 {% block js %}
     <script>
+    // ✅ Fetch Onboarded Employees dynamically from API & populate table
+    $(document).ready(function() {
+        $.ajax({
+            url: '/accounts/api/employee/onboard/',
+            type: 'GET',
+            success: function(resp) {
+                if (resp.status === 'success' && resp.data && resp.data.length > 0) {
+                    var existingIds = {};
+                    $('#dataTable tbody tr').each(function() {
+                        var idText = $(this).find('td:eq(1)').text().trim();
+                        if (idText) existingIds[idText] = true;
+                    });
+
+                    resp.data.forEach(function(emp, index) {
+                        if (!existingIds[emp.employee_id]) {
+                            var sl = String($('#dataTable tbody tr').length + 1).padStart(2, '0');
+                            var avatarNum = (index % 6) + 1;
+                            var avatarUrl = "{% static 'admin_assets/images/thumbs/teacher-avatar-img' %}" + avatarNum + ".png";
+                            
+                            var viewUrl = `/admin-panel/employee-details/?name=${encodeURIComponent(emp.full_name)}&id=${encodeURIComponent(emp.employee_id)}&dept=${encodeURIComponent(emp.department)}&role=${encodeURIComponent(emp.designation)}&email=${encodeURIComponent(emp.email)}&phone=${encodeURIComponent(emp.phone)}&join=${encodeURIComponent(emp.joining_date)}&status=${encodeURIComponent(emp.status)}`;
+                            var newRow = `
+                            <tr class="table-success-light">
+                                <td>
+                                    <div class="form-check style-check d-flex align-items-center">
+                                        <input class="form-check-input" type="checkbox"/>
+                                        <label class="form-check-label">${sl}</label>
+                                    </div>
+                                </td>
+                                <td><span class="text-primary-600 fw-bold">${emp.employee_id}</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img alt="${emp.full_name}" class="flex-shrink-0 me-12 radius-8" src="${avatarUrl}" width="40" height="40"/>
+                                        <div>
+                                            <h6 class="text-md mb-0 fw-medium flex-grow-1">${emp.full_name}</h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>${emp.department || 'CRM & Sales'}</td>
+                                <td>${emp.designation || 'Sales Executive'}</td>
+                                <td>${emp.email || 'N/A'}</td>
+                                <td>${emp.phone || 'N/A'}</td>
+                                <td>${emp.joining_date || '19 Aug 2026'}</td>
+                                <td><span class="bg-success-100 text-success-600 px-24 py-4 radius-4 fw-medium text-sm">${emp.status || 'Active'}</span></td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+                                            <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+                                            <li>
+                                                <a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="${viewUrl}">
+                                                    <i class="ri-user-3-line"></i> View Profile
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6 login-details-btn" href="javascript:void(0)" data-username="${emp.email}" data-role="${emp.designation}">
+                                                    <i class="ri-shield-keyhole-line"></i> Login Details
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal"><i class="ri-delete-bin-6-line"></i>Delete</button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>`;
+                            $('#dataTable tbody').prepend(newRow);
+                        }
+                    });
+                }
+            }
+        });
+    });
 
     let table = new DataTable('#dataTable');
 
@@ -799,7 +872,7 @@
             }
         });
 
-        $('table tbody tr td:nth-child(3)').css('cursor', 'pointer').on('click', function() {
+        $(document).on('click', 'table tbody tr td:nth-child(3)', function() {
             $(this).closest('tr').find('a[href*="/admin-panel/employee-details/"]').first().trigger('click');
         });
     });

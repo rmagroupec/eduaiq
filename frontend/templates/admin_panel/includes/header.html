@@ -136,18 +136,19 @@
                         class="d-flex align-items-center gap-2"
                         data-bs-toggle="dropdown">
 
-                        <img src="{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}"
-                            class="w-40-px h-40-px rounded-circle"
+                        <img src="{% if request.user.profile_image %}{{ request.user.profile_image.url }}{% else %}{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}{% endif %}"
+                            class="w-40-px h-40-px rounded-circle object-fit-cover"
                             alt="Admin">
 
                         <div class="text-start">
                             <h6 class="mb-0 text-sm">
                                 {% if request.user.is_authenticated %}{{ request.user.first_name|default:request.user.username|title }}{% else %}Guest User{% endif %}
                             </h6>
-                            <small>
+                            <small class="text-secondary-light text-xs d-block">
                                 {% if request.user.is_superuser or request.user.role == 'admin' %}Administrator
                                 {% elif request.user.role == 'institution' %}Institution Admin
-                                {% else %}Sales & CRM Staff{% endif %}
+                                {% elif request.user.employee_profile and request.user.employee_profile.designation %}{{ request.user.employee_profile.designation.title }}
+                                {% else %}{{ request.user.role|default:"Staff"|title }}{% endif %}
                             </small>
                         </div>
 

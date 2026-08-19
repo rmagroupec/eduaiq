@@ -56,6 +56,7 @@ urlpatterns = [
     path('api/departments/', views.department_api, name='department_api'),
     path('api/designations/', views.designation_api, name='designation_api'),
     path('api/employee/onboard/', views.employee_onboarding_api, name='employee_onboarding_api'),
+    path('api/profile/update-image/', views.update_profile_image_api, name='update_profile_image_api'),
     path('api/attendance/', views.attendance_api, name='attendance_api'),
     path('api/attendance/check-in/', views.attendance_check_in_api, name='attendance_check_in_api'),
     path('api/attendance/check-out/', views.attendance_check_out_api, name='attendance_check_out_api'),

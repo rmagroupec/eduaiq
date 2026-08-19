@@ -30,7 +30,8 @@
             <span class="text-secondary-light text-sm mb-0 d-block">
               {% if request.user.is_superuser or request.user.role == 'admin' %}Super Admin
               {% elif request.user.role == 'institution' %}Institution Admin
-              {% else %}Sales & CRM Staff{% endif %}
+              {% elif request.user.employee_profile and request.user.employee_profile.designation %}{{ request.user.employee_profile.designation.title }}
+              {% else %}{{ request.user.role|default:"Staff"|title }}{% endif %}
             </span>
           </span>
         </span>
@@ -184,11 +185,11 @@
         </a>
       </li>
 
-      <!-- WFH REQUESTS -->
+      <!-- LEAVE & WFH REQUESTS -->
       <li>
         <a href="/admin-panel/wfh-requests/">
-          <i class="ri-home-wifi-line"></i>
-          <span>Apply WFH / Requests</span>
+          <i class="ri-calendar-close-line"></i>
+          <span>Leave & WFH Requests</span>
         </a>
       </li>
 
@@ -499,7 +500,7 @@
           <li>
             <a href="/admin-panel/wfh-requests/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
-              WFH Requests
+              Leave & WFH Requests
             </a>
           </li>
         </ul>

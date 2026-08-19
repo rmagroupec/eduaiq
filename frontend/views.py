@@ -638,7 +638,13 @@ def users(request):
 @login_required(login_url='/admin-panel/login/')
 def admin_profile(request):
     """Admin profile details page"""
-    return render(request, "admin_panel/view-profile.html")
+    emp_profile = None
+    try:
+        from accounts.models import EmployeeProfile
+        emp_profile = EmployeeProfile.objects.select_related('department', 'designation').filter(user=request.user).first()
+    except Exception:
+        pass
+    return render(request, "admin_panel/view-profile.html", {'emp_profile': emp_profile})
 
 
 @login_required(login_url='/admin-panel/login/')

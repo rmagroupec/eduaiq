@@ -387,6 +387,58 @@
       .custom-toast.toast-info .custom-toast-progress::after {
         background: #3b82f6;
       }
+
+      /* Global SweetAlert Compact Popup Styling */
+      .swal2-container {
+        z-index: 999999 !important;
+      }
+      .swal2-popup {
+        width: 360px !important;
+        max-width: 90vw !important;
+        padding: 1.25rem 1rem 1rem !important;
+        border-radius: 16px !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+        font-family: inherit !important;
+      }
+      .swal2-icon {
+        width: 52px !important;
+        height: 52px !important;
+        margin: 0.25rem auto 0.75rem !important;
+        border-width: 3px !important;
+      }
+      .swal2-icon .swal2-icon-content {
+        font-size: 1.75rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      .swal2-title {
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        padding: 0 !important;
+        margin: 0.25rem 0 0.5rem 0 !important;
+        line-height: 1.35 !important;
+        text-align: center !important;
+      }
+      .swal2-html-container {
+        margin: 0.5rem 0 0 !important;
+        padding: 0 !important;
+        font-size: 0.85rem !important;
+        color: #475569 !important;
+        line-height: 1.45 !important;
+      }
+      .swal2-actions {
+        margin-top: 1rem !important;
+        gap: 8px !important;
+      }
+      .swal2-confirm, .swal2-cancel {
+        padding: 8px 20px !important;
+        font-size: 0.85rem !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        box-shadow: none !important;
+      }
     </style>
 </head>
 
@@ -942,6 +994,9 @@
                   if (typeof window.loadEmployeeLeaves === 'function') {
                     window.loadEmployeeLeaves();
                   }
+                  if (typeof window.loadWfhRequests === 'function') {
+                    window.loadWfhRequests();
+                  }
                 } else {
                   if (window.showToast) window.showToast(res.message || 'Submission failed', 'danger');
                 }
@@ -1004,6 +1059,9 @@
                   $('#leaveReason').val('');
                   if (typeof window.loadEmployeeLeaves === 'function') {
                     window.loadEmployeeLeaves();
+                  }
+                  if (typeof window.loadWfhRequests === 'function') {
+                    window.loadWfhRequests();
                   }
                 } else {
                   if (window.showToast) window.showToast(res.message || 'Submission failed', 'danger');

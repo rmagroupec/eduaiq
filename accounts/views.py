@@ -87,8 +87,18 @@ def _is_staff(user):
     return user.is_authenticated and (
         user.is_staff or 
         user.is_superuser or 
-        getattr(user, 'role', None) in ('staff', 'super_admin', 'teacher', 'admin')
+        getattr(user, 'role', None) in ('staff', 'super_admin', 'teacher', 'admin', 'sales', 'sales_manager', 'employee')
     )
+
+
+def _is_hr_or_admin(user):
+    if not user or not user.is_authenticated:
+        return False
+    if user.is_superuser:
+        return True
+    role = (getattr(user, 'role', '') or '').lower()
+    return role in ('admin', 'super_admin', 'hr', 'hr_manager', 'hr_head') or 'admin' in role or 'hr' in role
+
 
 
 # ============================================================================
@@ -238,6 +248,15 @@ def user_list(request):
     exclude_has_profile = request.GET.get('exclude_has_profile')
     if exclude_has_profile == 'true':
         qs = qs.filter(student_profile__isnull=True)
+    is_employee = request.GET.get('is_employee')
+    if is_employee == 'true':
+        qs = qs.filter(
+            Q(role__in=['employee', 'sales', 'sales_manager', 'admin', 'staff', 'super_admin', 'teacher']) |
+            Q(employee_profile__isnull=False) |
+            Q(is_staff=True) |
+            Q(is_superuser=True)
+        ).exclude(role__in=['student', 'parent', 'institution'])
+
 
     try:
         page = max(int(request.GET.get('page', 1)), 1)
@@ -389,79 +408,213 @@ def designation_api(request):
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
 
+@csrf_exempt
 @login_required
 def employee_onboarding_api(request):
     """API for onboarding a new employee and viewing employee profiles"""
     if request.method == 'GET':
-        employees = EmployeeProfile.objects.select_related('user', 'department', 'designation').prefetch_related('documents')
+        # Ensure all employee role users have EmployeeProfiles
+        emp_users = User.objects.filter(
+            Q(role__in=['employee', 'sales', 'sales_manager', 'staff', 'teacher', 'admin']) |
+            Q(employee_profile__isnull=False)
+        ).distinct()
+        
+        for u in emp_users:
+            if not hasattr(u, 'employee_profile') or u.employee_profile is None:
+                emp_id = f"EMP-{u.id:04d}"
+                EmployeeProfile.objects.get_or_create(
+                    user=u,
+                    defaults={'employee_id': emp_id, 'onboarding_status': 'active'}
+                )
+
+        employees = EmployeeProfile.objects.select_related('user', 'department', 'designation').prefetch_related('documents').order_by('-created_at')
         data = []
         for emp in employees:
+            dept_name = emp.department.name if emp.department else (emp.user.school_name or 'CRM & Sales')
+            desig_title = emp.designation.title if emp.designation else (emp.user.role.title() if emp.user.role else 'Employee')
+            join_str = emp.joining_date.strftime('%d %b %Y') if emp.joining_date else (emp.user.joining_date.strftime('%d %b %Y') if emp.user.joining_date else '19 Aug 2026')
+            
             data.append({
                 'id': emp.id,
                 'employee_id': emp.employee_id,
                 'full_name': emp.user.get_full_name() or emp.user.username,
-                'email': emp.user.email,
-                'phone': emp.user.phone,
-                'role': emp.user.role,
-                'department': emp.department.name if emp.department else 'N/A',
-                'designation': emp.designation.title if emp.designation else 'N/A',
-                'joining_date': emp.joining_date.strftime('%Y-%m-%d') if emp.joining_date else 'N/A',
+                'email': emp.user.email or 'N/A',
+                'phone': emp.user.phone or 'N/A',
+                'role': emp.user.role or 'employee',
+                'department': dept_name,
+                'designation': desig_title,
+                'joining_date': join_str,
                 'onboarding_status': emp.onboarding_status,
-                'onboarding_status_display': emp.get_onboarding_status_display(),
+                'onboarding_status_display': emp.get_onboarding_status_display() if hasattr(emp, 'get_onboarding_status_display') else 'Active',
+                'status': 'Active' if emp.user.is_active else 'Inactive',
                 'docs_count': emp.documents.count(),
+                'profile_image': emp.user.profile_image.url if emp.user.profile_image else None,
             })
         return JsonResponse({'status': 'success', 'data': data})
 
     elif request.method == 'POST':
         try:
-            data = json.loads(request.body) if request.body else request.POST
+            if request.content_type and 'multipart/form-data' in request.content_type:
+                data = request.POST
+            else:
+                try:
+                    data = json.loads(request.body) if request.body else request.POST
+                except Exception:
+                    data = request.POST
+            
+            full_name = data.get('fullName') or data.get('full_name') or ''
             first_name = data.get('first_name', '').strip()
             last_name = data.get('last_name', '').strip()
-            email = data.get('email', '').strip()
-            phone = data.get('phone', '').strip()
-            role = data.get('role', 'employee')
-            department_id = data.get('department_id')
-            designation_id = data.get('designation_id')
-            joining_date = data.get('joining_date')
             
-            if not email or not first_name:
-                return JsonResponse({'status': 'error', 'message': 'First name and Email are required.'}, status=400)
+            if full_name and not first_name:
+                parts = full_name.strip().split(' ', 1)
+                first_name = parts[0]
+                last_name = parts[1] if len(parts) > 1 else ''
+            
+            email = (data.get('myEmail') or data.get('employeeEmails') or data.get('email') or '').strip()
+            phone = (data.get('phoneNumber') or data.get('phone') or '').strip()
+            password = (data.get('your-password') or data.get('password') or '').strip()
+            employee_id_input = (data.get('employeeID') or data.get('employee_id') or '').strip()
 
-            username = email.split('@')[0] + "_" + phone[-4:] if phone else email.split('@')[0]
-            user, created = User.objects.get_or_create(
+            department_val = data.get('employeeDepartment') or data.get('department')
+            designation_val = data.get('employeeDesignation') or data.get('designation')
+            joining_date = data.get('joinDate') or data.get('joining_date') or None
+            if joining_date == '': 
+                joining_date = None
+
+            gender = data.get('gender') or 'prefer_not_to_say'
+            father_name = data.get('fathersName') or data.get('father_name') or ''
+            mother_name = data.get('mothersName') or data.get('mother_name') or ''
+            marital_status = data.get('meritalStatus') or data.get('marital_status') or 'single'
+            contract_type = data.get('contractType') or data.get('contract_type') or 'full_time'
+            shift = data.get('employeeShift') or data.get('shift') or 'morning'
+            work_location = data.get('workLocation') or data.get('work_location') or ''
+            
+            facebook = data.get('facebookLink') or data.get('facebook') or ''
+            linkedin = data.get('linkedInLink') or data.get('linkedin') or ''
+            instagram = data.get('instagramLink') or data.get('instagram') or ''
+
+            if not email:
+                return JsonResponse({'status': 'error', 'message': 'Email address is required.'}, status=400)
+            if not first_name:
+                return JsonResponse({'status': 'error', 'message': 'Employee full name is required.'}, status=400)
+            if not password:
+                return JsonResponse({'status': 'error', 'message': 'Password is required.'}, status=400)
+
+            # Check if email is already registered
+            if User.objects.filter(email__iexact=email).exists():
+                return JsonResponse({'status': 'error', 'message': f'An account with email {email} already exists.'}, status=400)
+
+            # Generate unique username from email
+            base_username = email.split('@')[0].replace('.', '_').replace('-', '_')
+            username = base_username
+            counter = 1
+            while User.objects.filter(username__iexact=username).exists():
+                username = f"{base_username}_{counter}"
+                counter += 1
+
+            if not phone:
+                phone = f"+9199{User.objects.count():08d}"
+            elif User.objects.filter(phone=phone).exists():
+                return JsonResponse({'status': 'error', 'message': f'An account with phone number {phone} already exists.'}, status=400)
+
+            # Determine role from department if specified
+            role = 'employee'
+            dept_str = str(department_val).lower() if department_val else ''
+            if 'sales' in dept_str or 'crm' in dept_str:
+                role = 'sales'
+            elif 'teacher' in dept_str or 'faculty' in dept_str:
+                role = 'teacher'
+
+            user = User(
+                username=username,
                 email=email,
-                defaults={
-                    'username': username,
-                    'first_name': first_name,
-                    'last_name': last_name,
-                    'phone': phone or f"+9199{User.objects.count():08d}",
-                    'role': role,
-                    'is_staff': True,
-                    'is_active': True
-                }
+                first_name=first_name,
+                last_name=last_name,
+                phone=phone,
+                role=role,
+                gender=gender if gender in dict(User.GenderChoices.choices) else 'prefer_not_to_say',
+                father_name=father_name,
+                mother_name=mother_name,
+                marital_status=marital_status if marital_status in dict(User.MaritalStatusChoices.choices) else 'single',
+                contract_type=contract_type if contract_type in dict(User.ContractTypeChoices.choices) else 'full_time',
+                shift=shift if shift in dict(User.ShiftChoices.choices) else 'morning',
+                joining_date=joining_date,
+                school_name=work_location,
+                facebook=facebook,
+                linkedin=linkedin,
+                instagram=instagram,
+                is_staff=True,
+                is_active=True
             )
-            if created:
-                user.set_password('EduAiQ@123')
-                user.save()
+            user.set_password(password)
+            
+            profile_pic_file = request.FILES.get('profile_picture') or request.FILES.get('profile_image') or request.FILES.get('myFile')
+            if profile_pic_file:
+                user.profile_image = profile_pic_file
+                
+            user.save()
 
-            emp_id = f"EMP-{user.id:04d}"
-            emp_profile, _ = EmployeeProfile.objects.get_or_create(
+            # Handle Department & Designation ForeignKey lookup
+            dept_obj = None
+            if department_val and department_val != 'Select' and department_val.strip():
+                if str(department_val).isdigit():
+                    dept_obj = Department.objects.filter(id=department_val).first()
+                else:
+                    dept_obj, _ = Department.objects.get_or_create(
+                        name=department_val.strip(),
+                        defaults={'code': str(department_val)[:10].upper().replace(' ', '_')}
+                    )
+
+            if not dept_obj:
+                dept_obj, _ = Department.objects.get_or_create(
+                    name='General',
+                    defaults={'code': 'GENERAL'}
+                )
+
+            desig_obj = None
+            if designation_val and designation_val != 'Select' and designation_val.strip():
+                if str(designation_val).isdigit():
+                    desig_obj = Designation.objects.filter(id=designation_val).first()
+                else:
+                    desig_obj = Designation.objects.filter(title__iexact=designation_val.strip()).first()
+                    if not desig_obj:
+                        desig_obj = Designation.objects.create(
+                            title=designation_val.strip(),
+                            department=dept_obj
+                        )
+
+            emp_id = employee_id_input if employee_id_input else f"EMP-{user.id:04d}"
+            if EmployeeProfile.objects.filter(employee_id=emp_id).exists():
+                emp_id = f"EMP-{user.id:04d}-{User.objects.count()}"
+
+            emp_profile, created = EmployeeProfile.objects.get_or_create(
                 user=user,
                 defaults={
                     'employee_id': emp_id,
-                    'department_id': department_id,
-                    'designation_id': designation_id,
+                    'department': dept_obj,
+                    'designation': desig_obj,
                     'joining_date': joining_date,
-                    'onboarding_status': 'under_review'
+                    'onboarding_status': 'active'
                 }
             )
+            emp_profile.department = dept_obj
+            emp_profile.designation = desig_obj
+            emp_profile.save()
 
             # Assign default checklist tasks
             default_tasks = ["ID Proof Submitted", "Work Email Created", "System Allocated", "HR Agreement Signed"]
             for task in default_tasks:
                 OnboardingTask.objects.get_or_create(employee=emp_profile, title=task)
 
-            return JsonResponse({'status': 'success', 'message': 'Employee onboarded successfully!', 'employee_id': emp_id, 'user_id': user.id})
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Employee added successfully!',
+                'employee_id': emp_id,
+                'username': user.username,
+                'email': user.email,
+                'user_id': user.id
+            })
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
@@ -674,42 +827,58 @@ def wfh_request_api(request):
     """
     API for Employee to apply for Work From Home (WFH) and view request status.
     GET: Returns list of WFH requests.
-    POST: Submit a new WFH application (start_date, end_date, reason).
+         - Regular Employees: ONLY see their own requests.
+         - HR & Admin: see all requests (or filter by employee if query params are provided).
+    POST: Submit a new WFH application.
     """
     if request.method == 'GET':
-        reqs = WFHRequest.objects.select_related('user', 'approved_by').order_by('-applied_at')
-        user_id = request.GET.get('user_id')
-        user_name = request.GET.get('user_name')
-        email = request.GET.get('email')
-        if user_id:
-            reqs = reqs.filter(user_id=user_id)
-        elif email:
-            reqs = reqs.filter(
-                Q(user__email__iexact=email) |
-                Q(target_email__iexact=email)
-            )
-        elif user_name:
-            reqs = reqs.filter(
-                Q(user__first_name__icontains=user_name) |
-                Q(user__last_name__icontains=user_name) |
-                Q(user__username__icontains=user_name) |
-                Q(target_name__icontains=user_name)
-            )
-        elif not _is_staff(request.user) and request.user.is_authenticated:
-            reqs = reqs.filter(user=request.user)
+        if not request.user.is_authenticated:
+            return JsonResponse({'status': 'success', 'data': []})
 
-        # Fallback: if filtering returned nothing for requested profile, return all recent requests
-        if (email or user_name) and not reqs.exists():
-            reqs = WFHRequest.objects.select_related('user', 'approved_by').order_by('-applied_at')
+        reqs = WFHRequest.objects.select_related('user', 'approved_by').order_by('-applied_at')
+
+        if _is_hr_or_admin(request.user):
+            # Admin & HR can see all requests, or filter by requested employee if params provided
+            user_id = request.GET.get('user_id')
+            user_name = request.GET.get('user_name')
+            email = request.GET.get('email')
+
+            if user_id:
+                reqs = reqs.filter(user_id=user_id)
+            elif email:
+                reqs = reqs.filter(
+                    Q(user__email__iexact=email) |
+                    Q(target_email__iexact=email)
+                )
+            elif user_name:
+                reqs = reqs.filter(
+                    Q(user__first_name__icontains=user_name) |
+                    Q(user__last_name__icontains=user_name) |
+                    Q(user__username__icontains=user_name) |
+                    Q(target_name__icontains=user_name)
+                )
+        else:
+            # Regular Employee: STRICTLY ONLY view their own WFH/Leave requests
+            user_email = request.user.email if request.user.email else '---'
+            reqs = reqs.filter(
+                Q(user=request.user) |
+                Q(target_email__iexact=user_email)
+            )
+
+        req_type = request.GET.get('type')
+        if req_type == 'wfh':
+            reqs = reqs.filter(leave_type__icontains='Work From Home')
+        elif req_type == 'leave':
+            reqs = reqs.exclude(leave_type__icontains='Work From Home')
 
         data = []
         for r in reqs:
             data.append({
                 'id': r.id,
                 'user_id': r.user_id,
-                'employee_name': r.target_name or (r.user.get_full_name() or r.user.username),
-                'email': r.target_email or r.user.email,
-                'role': r.user.role if hasattr(r.user, 'role') else 'Staff',
+                'employee_name': r.target_name or (r.user.get_full_name() or r.user.username if r.user else 'Employee'),
+                'email': r.target_email or (r.user.email if r.user else ''),
+                'role': r.user.role if r.user and hasattr(r.user, 'role') else 'Staff',
                 'leave_type': getattr(r, 'leave_type', 'Work From Home (WFH)'),
                 'start_date': r.start_date.strftime('%Y-%m-%d'),
                 'end_date': r.end_date.strftime('%Y-%m-%d'),
@@ -729,15 +898,17 @@ def wfh_request_api(request):
             target_name = (data.get('user_name') or '').strip()
 
             user = None
-            if target_email:
-                user = User.objects.filter(email__iexact=target_email).first()
-            if not user and target_name:
-                user = User.objects.filter(
-                    Q(first_name__icontains=target_name) |
-                    Q(last_name__icontains=target_name) |
-                    Q(username__icontains=target_name)
-                ).first()
-            if not user:
+            if _is_hr_or_admin(request.user):
+                if target_email:
+                    user = User.objects.filter(email__iexact=target_email).first()
+                if not user and target_name:
+                    user = User.objects.filter(
+                        Q(first_name__icontains=target_name) |
+                        Q(last_name__icontains=target_name) |
+                        Q(username__icontains=target_name)
+                    ).first()
+
+            if not user or not request.user.is_authenticated:
                 user = request.user if request.user.is_authenticated else User.objects.first()
 
             leave_type = data.get('leave_type', 'Work From Home (WFH)')
@@ -754,10 +925,13 @@ def wfh_request_api(request):
             if e_date < s_date:
                 return JsonResponse({'status': 'error', 'message': 'End date cannot be before start date'}, status=400)
 
+            t_email = (user.email if user and user.email else target_email) or (request.user.email if request.user.is_authenticated else '')
+            t_name = (user.get_full_name() or user.username if user else target_name) or (request.user.get_full_name() or request.user.username if request.user.is_authenticated else 'Employee')
+
             wfh_req = WFHRequest.objects.create(
                 user=user,
-                target_email=target_email or (user.email if user else ''),
-                target_name=target_name or (user.get_full_name() if user else ''),
+                target_email=t_email,
+                target_name=t_name,
                 leave_type=leave_type,
                 start_date=s_date,
                 end_date=e_date,
@@ -765,9 +939,10 @@ def wfh_request_api(request):
                 status='pending'
             )
 
+
             return JsonResponse({
                 'status': 'success',
-                'message': 'WFH request submitted successfully for Admin approval.',
+                'message': 'WFH / Leave request submitted successfully.',
                 'request_id': wfh_req.id
             })
         except Exception as e:
@@ -782,6 +957,10 @@ def wfh_approve_api(request):
     """
     if request.method != 'POST':
         return JsonResponse({'status': 'error', 'message': 'POST method required'}, status=405)
+
+    if not _is_hr_or_admin(request.user):
+        return JsonResponse({'status': 'error', 'message': 'Permission denied. Only HR and Admin can approve or reject WFH requests.'}, status=403)
+
 
     try:
         data = json.loads(request.body) if request.body else request.POST
@@ -843,6 +1022,25 @@ def wfh_approve_api(request):
         return JsonResponse({'status': 'error', 'message': 'WFH Request not found'}, status=404)
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@csrf_exempt
+@login_required
+def update_profile_image_api(request):
+    """API for uploading and updating current user's profile image permanently in database"""
+    if request.method == 'POST':
+        image_file = request.FILES.get('profile_image') or request.FILES.get('profile_picture') or request.FILES.get('myFile')
+        if image_file:
+            request.user.profile_image = image_file
+            request.user.save()
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Profile picture updated successfully!',
+                'image_url': request.user.profile_image.url
+            })
+        return JsonResponse({'status': 'error', 'message': 'No profile picture file provided.'}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
+
 
 
 

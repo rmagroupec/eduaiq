@@ -100,12 +100,14 @@
           <label class="text-sm fw-semibold text-primary-light mb-8" for="next_follow_up_date">Next Follow-up Date</label>
           <input type="date" class="form-control radius-8" id="next_follow_up_date" name="next_follow_up_date">
         </div>
+        {% if request.user.is_superuser or request.user.role == 'admin' %}
         <div class="col-md-6">
           <label class="text-sm fw-semibold text-primary-light mb-8" for="owner">Assigned Sales Rep</label>
           <select class="form-control form-select radius-8" id="owner" name="owner">
             <option value="">-- Unassigned --</option>
           </select>
         </div>
+        {% endif %}
         <div class="col-md-6">
           <label class="text-sm fw-semibold text-primary-light mb-8" for="partner">Referring Partner ID</label>
           <input type="number" min="1" class="form-control radius-8" id="partner" name="partner" placeholder="Leave blank for a direct / in-house lead">
@@ -138,15 +140,19 @@ $(document).ready(function() {
 
   function loadUsers() {
     $.ajax({
-      url: '/accounts/users/?page_size=200', type: 'GET', xhrFields: { withCredentials: true },
+      url: '/accounts/users/?is_employee=true&page_size=200', type: 'GET', xhrFields: { withCredentials: true },
       success: function(response) {
-        const select = $('#owner');
+        const select = $('#owner').empty().append('<option value="">-- Unassigned --</option>');
         (response.results || []).forEach(user => {
-          select.append(`<option value="${user.id}">${user.first_name} ${user.last_name} (${user.username})</option>`);
+          const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ').trim();
+          const displayName = fullName ? `${fullName} (${user.username})` : user.username;
+          const roleTag = user.role ? ` — [${user.role.toUpperCase()}]` : '';
+          select.append(`<option value="${user.id}">${displayName}${roleTag}</option>`);
         });
       }
     });
   }
+
 
   $('#addLeadForm').on('submit', function(e) {
     e.preventDefault();
@@ -189,7 +195,9 @@ $(document).ready(function() {
     });
   });
 
-  loadUsers();
+  if ($('#owner').length) {
+    loadUsers();
+  }
 });
 </script>
 {% endblock %}

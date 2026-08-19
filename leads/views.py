@@ -37,29 +37,41 @@ from .models import Activity, Lead, Opportunity, SalesTarget, StudentInquiry
 
 def _body(request):
     data = {}
-    if request.content_type.startswith('application/json') and request.body:
+    if request.content_type and request.content_type.startswith('application/json') and request.body:
         try:
             data = json.loads(request.body)
         except (ValueError, TypeError):
             pass
     else:
         data = request.POST.dict()
-    return data
+
+    optional_fk_fields = {
+        'partner', 'owner', 'interested_plan', 'lead', 'student_inquiry',
+        'interested_institution', 'interested_course', 'plan', 'linked_transaction',
+        'next_follow_up_date', 'expected_close_date', 'actual_close_date',
+        'converted_institution', 'converted_student'
+    }
+    cleaned = {}
+    for k, v in data.items():
+        if k in optional_fk_fields and (v == '' or v == 'null' or v == 'None' or v == 'undefined'):
+            cleaned[k] = None
+        else:
+            cleaned[k] = v
+    return cleaned
 
 
 def _is_staff(user):
     return user.is_authenticated and (
-        getattr(user, 'role', None) in ('staff', 'super_admin', 'admin', 'sales_manager') or
-        getattr(user, 'is_staff', False) or
-        getattr(user, 'is_superuser', False)
+        getattr(user, 'is_superuser', False) or
+        getattr(user, 'role', None) in ('super_admin', 'admin')
     )
 
 
 def _is_crm_user(user):
-    """Anyone allowed to touch the CRM at all: staff, or an in-house sales rep."""
+    """Anyone allowed to touch the CRM at all: admin, sales rep, employee, counselor, or staff."""
     if not user.is_authenticated:
         return False
-    return _is_staff(user) or getattr(user, 'role', None) in ('sales', 'sales_manager', 'partner')
+    return _is_staff(user) or getattr(user, 'role', None) in ('sales', 'sales_manager', 'partner', 'employee', 'teacher', 'staff') or getattr(user, 'is_staff', False)
 
 
 def _form_errors(form):
@@ -99,16 +111,35 @@ def _paginate(request, qs, serializer_fn, default_page_size=20, **serializer_kwa
 
 
 def _owned_or_all(user, qs, owner_field='owner'):
-    """Staff sees everything; a sales rep only sees their own records."""
+    """Staff sees everything; a sales rep or employee only sees their own records."""
     if _is_staff(user):
         return qs
-    return qs.filter(**{owner_field: user})
+    filter_q = dj_models.Q(**{owner_field: user})
+    if hasattr(qs.model, 'created_by'):
+        filter_q |= dj_models.Q(created_by=user)
+    return qs.filter(filter_q)
+
 
 
 def _user_brief(u):
     if not u:
         return None
-    return {'id': u.id, 'name': u.get_full_name() or u.username, 'role': getattr(u, 'role', '')}
+    desig = ''
+    try:
+        if hasattr(u, 'employee_profile') and u.employee_profile and u.employee_profile.designation:
+            desig = u.employee_profile.designation.title
+    except Exception:
+        pass
+    if not desig:
+        role = getattr(u, 'role', '')
+        if role:
+            desig = role.replace('_', ' ').title()
+    return {
+        'id': u.id,
+        'name': u.get_full_name() or u.username,
+        'role': getattr(u, 'role', ''),
+        'designation': desig
+    }
 
 
 # ============================================================================
@@ -129,6 +160,7 @@ def serialize_lead(l, detailed=False):
         'priority': l.priority,
         'source': l.source,
         'owner': _user_brief(l.owner),
+        'created_by': _user_brief(l.created_by),
         'next_follow_up_date': l.next_follow_up_date,
         'is_open': l.is_open,
         'created_at': l.created_at.isoformat() if l.created_at else None,
@@ -168,6 +200,7 @@ def serialize_inquiry(s, detailed=False):
         'priority': s.priority,
         'source': s.source,
         'owner': _user_brief(s.owner),
+        'created_by': _user_brief(s.created_by),
         'next_follow_up_date': s.next_follow_up_date,
         'is_open': s.is_open,
         'created_at': s.created_at.isoformat() if s.created_at else None,
@@ -200,8 +233,10 @@ def serialize_opportunity(o, detailed=False):
         'owner': _user_brief(o.owner),
         'lead_id': o.lead_id,
         'lead_name': o.lead.lead_name if o.lead_id else None,
+        'lead_created_by': _user_brief(o.lead.created_by) if (o.lead_id and o.lead.created_by) else None,
         'student_inquiry_id': o.student_inquiry_id,
         'student_inquiry_name': o.student_inquiry.student_name if o.student_inquiry_id else None,
+        'inquiry_created_by': _user_brief(o.student_inquiry.created_by) if (o.student_inquiry_id and o.student_inquiry.created_by) else None,
         'expected_close_date': o.expected_close_date,
         'actual_close_date': o.actual_close_date,
         'created_at': o.created_at.isoformat() if o.created_at else None,
@@ -258,7 +293,11 @@ def lead_list(request):
         return JsonResponse({'error': 'Forbidden'}, status=403)
 
     if request.method == 'GET':
-        qs = Lead.objects.select_related('partner', 'owner', 'interested_plan').all()
+        qs = Lead.objects.select_related(
+            'partner', 'owner', 'created_by', 'interested_plan',
+            'owner__employee_profile__designation',
+            'created_by__employee_profile__designation'
+        ).all()
         qs = _owned_or_all(request.user, qs)
 
         stage = request.GET.get('stage')
@@ -275,7 +314,15 @@ def lead_list(request):
             qs = qs.filter(
                 dj_models.Q(lead_name__icontains=search) |
                 dj_models.Q(institution_name__icontains=search) |
-                dj_models.Q(phone__icontains=search)
+                dj_models.Q(phone__icontains=search) |
+                dj_models.Q(email__icontains=search) |
+                dj_models.Q(city__icontains=search) |
+                dj_models.Q(owner__first_name__icontains=search) |
+                dj_models.Q(owner__last_name__icontains=search) |
+                dj_models.Q(owner__username__icontains=search) |
+                dj_models.Q(created_by__first_name__icontains=search) |
+                dj_models.Q(created_by__last_name__icontains=search) |
+                dj_models.Q(created_by__username__icontains=search)
             )
 
         payload = _paginate(request, qs, serialize_lead, detailed=request.GET.get('detailed') == 'true')
@@ -289,6 +336,8 @@ def lead_list(request):
     if form.is_valid():
         lead = form.save(commit=False)
         lead.created_by = request.user
+        if not lead.owner and not _is_staff(request.user):
+            lead.owner = request.user
         try:
             lead.full_clean()
             lead.save()
@@ -305,8 +354,10 @@ def _get_lead_or_404(pk):
         return None
 
 
-def _can_touch(user, owner_id):
-    return _is_staff(user) or owner_id == user.id
+def _can_touch(user, owner_id, created_by_id=None):
+    if _is_staff(user):
+        return True
+    return owner_id == user.id or (created_by_id is not None and created_by_id == user.id)
 
 
 @login_required
@@ -315,8 +366,9 @@ def lead_detail(request, pk):
     lead = _get_lead_or_404(pk)
     if lead is None:
         return JsonResponse({'error': 'Lead not found'}, status=404)
-    if not _is_crm_user(request.user) or not _can_touch(request.user, lead.owner_id):
+    if not _is_crm_user(request.user) or not _can_touch(request.user, lead.owner_id, lead.created_by_id):
         return JsonResponse({'error': 'Forbidden'}, status=403)
+
 
     if request.method == 'GET':
         return JsonResponse({'lead': serialize_lead(lead, detailed=True)})
@@ -392,7 +444,11 @@ def inquiry_list(request):
         return JsonResponse({'error': 'Forbidden'}, status=403)
 
     if request.method == 'GET':
-        qs = StudentInquiry.objects.select_related('owner', 'interested_institution', 'interested_course').all()
+        qs = StudentInquiry.objects.select_related(
+            'owner', 'created_by', 'interested_institution', 'interested_course',
+            'owner__employee_profile__designation',
+            'created_by__employee_profile__designation'
+        ).all()
         qs = _owned_or_all(request.user, qs)
 
         stage = request.GET.get('stage')
@@ -406,7 +462,14 @@ def inquiry_list(request):
             qs = qs.filter(
                 dj_models.Q(student_name__icontains=search) |
                 dj_models.Q(guardian_name__icontains=search) |
-                dj_models.Q(phone__icontains=search)
+                dj_models.Q(phone__icontains=search) |
+                dj_models.Q(email__icontains=search) |
+                dj_models.Q(assigned_to__first_name__icontains=search) |
+                dj_models.Q(assigned_to__last_name__icontains=search) |
+                dj_models.Q(assigned_to__username__icontains=search) |
+                dj_models.Q(created_by__first_name__icontains=search) |
+                dj_models.Q(created_by__last_name__icontains=search) |
+                dj_models.Q(created_by__username__icontains=search)
             )
 
         payload = _paginate(request, qs, serialize_inquiry, detailed=request.GET.get('detailed') == 'true')
@@ -421,6 +484,8 @@ def inquiry_list(request):
     if form.is_valid():
         inquiry = form.save(commit=False)
         inquiry.created_by = request.user
+        if not inquiry.owner:
+            inquiry.owner = request.user
         try:
             inquiry.full_clean()
             inquiry.save()
@@ -516,7 +581,12 @@ def opportunity_list(request):
         return JsonResponse({'error': 'Forbidden'}, status=403)
 
     if request.method == 'GET':
-        qs = Opportunity.objects.select_related('lead', 'student_inquiry', 'owner', 'plan').all()
+        qs = Opportunity.objects.select_related(
+            'lead', 'student_inquiry', 'owner', 'plan',
+            'lead__created_by', 'student_inquiry__created_by',
+            'owner__employee_profile__designation',
+            'lead__created_by__employee_profile__designation'
+        ).all()
         qs = _owned_or_all(request.user, qs)
 
         stage = request.GET.get('stage')
@@ -528,6 +598,16 @@ def opportunity_list(request):
         student_inquiry_id = request.GET.get('student_inquiry')
         if student_inquiry_id:
             qs = qs.filter(student_inquiry_id=student_inquiry_id)
+        search = request.GET.get('q', '').strip()
+        if search:
+            qs = qs.filter(
+                dj_models.Q(name__icontains=search) |
+                dj_models.Q(lead__lead_name__icontains=search) |
+                dj_models.Q(student_inquiry__student_name__icontains=search) |
+                dj_models.Q(owner__first_name__icontains=search) |
+                dj_models.Q(owner__last_name__icontains=search) |
+                dj_models.Q(owner__username__icontains=search)
+            )
 
         payload = _paginate(request, qs, serialize_opportunity, detailed=request.GET.get('detailed') == 'true')
         payload['pipeline_total'] = str(
@@ -538,9 +618,28 @@ def opportunity_list(request):
     body = _body(request)
     body.setdefault('stage', 'prospecting')
     body.setdefault('probability_pct', 20)
+
+    # Auto-assign owner if not explicitly provided
+    if not body.get('owner'):
+        lead_id = body.get('lead')
+        inquiry_id = body.get('student_inquiry')
+        if lead_id:
+            lead_obj = Lead.objects.filter(pk=lead_id).first()
+            if lead_obj and lead_obj.owner:
+                body['owner'] = lead_obj.owner.pk
+        elif inquiry_id:
+            inquiry_obj = StudentInquiry.objects.filter(pk=inquiry_id).first()
+            if inquiry_obj and inquiry_obj.assigned_to:
+                body['owner'] = inquiry_obj.assigned_to.pk
+
+        if not body.get('owner'):
+            body['owner'] = request.user.pk
+
     form = OpportunityForm(body)
     if form.is_valid():
         opp = form.save(commit=False)
+        if not opp.owner:
+            opp.owner = request.user
         try:
             opp.full_clean()
             opp.save()

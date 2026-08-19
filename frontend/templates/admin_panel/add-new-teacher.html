@@ -451,8 +451,8 @@
 
     // ================== Password Show Hide Js Start ==========
     function initializePasswordToggle(toggleSelector) {
-        $(toggleSelector).on('click', function () {
-            $(this).toggleClass("ri-eye-off-line");
+        $(document).on('click', toggleSelector, function () {
+            $(this).toggleClass("ri-eye-line ri-eye-off-line");
             var input = $($(this).attr("data-toggle"));
             if (input.attr("type") === "password") {
                 input.attr("type", "text");
@@ -462,7 +462,9 @@
         });
     }
     // Call the function
-    initializePasswordToggle('.toggle-password');
+    $(document).ready(function() {
+        initializePasswordToggle('.toggle-password');
+    });
     // ========================= Password Show Hide Js End ===========================
 
     // ========================== Drag & Drop Upload photo Js start ========================

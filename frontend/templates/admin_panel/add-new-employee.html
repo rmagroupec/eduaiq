@@ -1,4 +1,5 @@
 {% extends 'admin_panel/base.html' %}
+{% load static %}
 
 {% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
 
@@ -6,50 +7,69 @@
 
 {% block content %}
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-<div class="">
-<h1 class="fw-semibold mb-4 h6 text-primary-light">Add New Employee</h1>
-<div class="">
-<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
-<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/employee-list/"> /
-        Employee List</a>
-<span class="text-secondary-light">/ Add New Employee</span>
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Add New Employee</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/employee-list/"> / Employee List</a>
+      <span class="text-secondary-light">/ Add New Employee</span>
+    </div>
+  </div>
 </div>
-</div>
-<a class="btn btn-primary-600 d-flex align-items-center gap-6 d-none" href="/admin-panel/add-new-employee/">
-<span class="d-flex text-md">
-<i class="ri-add-large-line"></i>
-</span>
-    Add Employee
-  </a>
-</div>
-<form action="#" class="mt-24">
+
+<form id="addEmployeeForm" action="#" class="mt-24">
     {% csrf_token %}
 <div class="row gy-3">
+
+<!-- 1. Personal Info -->
 <div class="col-lg-12">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="shadow-1 radius-12 bg-base overflow-hidden">
 <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
 <h6 class="text-lg fw-semibold mb-0">Personal Info</h6>
 </div>
 <div class="card-body p-20">
+<!-- Profile Upload Row -->
+<div class="row mb-24 align-items-center pb-20 border-bottom">
+<div class="col-12">
+<label class="text-sm fw-semibold text-primary-light d-block mb-12">Employee Profile Picture</label>
+<div class="d-flex align-items-center gap-24">
+<div class="position-relative d-inline-block">
+<img id="profileImagePreview" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img1.png' %}" alt="Profile Image" class="w-100-px h-100-px rounded-circle object-fit-cover border border-3 border-primary-600 shadow-sm" style="width: 100px; height: 100px;" />
+<label for="profileUploadInput" class="position-absolute bottom-0 end-0 bg-primary-600 text-white rounded-circle d-flex align-items-center justify-content-center cursor-pointer shadow hover-bg-primary-700" style="width: 32px; height: 32px; right: -4px; bottom: -4px;" title="Upload Profile Picture">
+<i class="ri-camera-fill text-md"></i>
+</label>
+<input type="file" id="profileUploadInput" name="profile_picture" accept="image/*" class="d-none" />
+</div>
+<div>
+<h6 class="text-md fw-semibold mb-4 text-primary-light">Upload Profile Photo</h6>
+<p class="text-xs text-secondary-light mb-8">Allowed formats: JPG, PNG, WEBP (Recommended size: 200x200px, Max: 5MB)</p>
+<div class="d-flex align-items-center gap-2">
+<label for="profileUploadInput" class="btn btn-sm btn-primary-50 text-primary-600 border border-primary-200 radius-8 d-inline-flex align-items-center gap-1 cursor-pointer fw-medium px-16 py-6">
+<i class="ri-upload-cloud-2-line text-lg"></i> Choose Image
+</label>
+<button type="button" id="removeProfileImgBtn" class="btn btn-sm btn-outline-danger radius-8 px-12 py-6 text-xs d-none">Remove</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+
 <div class="row gy-3">
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeID">Employee
-                                            ID* <span class="text-danger-600">* </span> </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeID">Employee ID <span class="text-danger-600">*</span></label>
 <input class="form-control" id="employeeID" placeholder="Enter Employee ID" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="fullName">Full Name
-                                            <span class="text-danger-600">*</span> </label>
-<input class="form-control" id="fullName" placeholder="Enter your Full Name" type="text"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="fullName">Full Name <span class="text-danger-600">*</span></label>
+<input class="form-control" id="fullName" placeholder="Enter your Full Name" type="text" required/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeDepartment">Department
-                                        </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeDepartment">Department</label>
 <select class="form-control form-select" id="employeeDepartment">
 <option disabled="" selected="" value="">Select a Department</option>
 <option value="CRM & Sales">CRM & Sales</option>
@@ -65,8 +85,7 @@
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeDesignation">Designation
-                                        </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeDesignation">Designation</label>
 <select class="form-control form-select" id="employeeDesignation">
 <option disabled="" selected="" value="">Select a Designation</option>
 <option value="CRM Manager">CRM Manager</option>
@@ -95,32 +114,27 @@
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="dateOfBirth">Date Of
-                                            Birth <span class="text-danger-600">*</span> </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="dateOfBirth">Date Of Birth <span class="text-danger-600">*</span></label>
 <input class="form-control" id="dateOfBirth" type="date"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="fathersName">Fathers
-                                            Name </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="fathersName">Fathers Name</label>
 <input class="form-control" id="fathersName" placeholder="Enter Fathers Name" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="mothersName">Mothers
-                                            Name </label>
-<input class="form-control" id="mothersName" placeholder="Enter mothers Name" type="text"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="mothersName">Mothers Name</label>
+<input class="form-control" id="mothersName" placeholder="Enter Mothers Name" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="meritalStatus">Merital
-                                            Status</label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="meritalStatus">Marital Status</label>
 <select class="form-control form-select" id="meritalStatus">
-<option disabled="" value="Select a Merital Status">Select a Merital Status
-                                            </option>
+<option disabled="" value="">Select Marital Status</option>
 <option value="Married">Married</option>
 <option value="Unmarried">Unmarried</option>
 </select>
@@ -128,11 +142,9 @@
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="contractType">Contract
-                                            Type</label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="contractType">Contract Type</label>
 <select class="form-control form-select" id="contractType">
-<option disabled="" value="Select a Contract Type">Select a Contract Type
-                                            </option>
+<option disabled="" value="">Select Contract Type</option>
 <option value="Contractual">Contractual</option>
 <option value="Hourly">Hourly</option>
 </select>
@@ -142,7 +154,7 @@
 <div class="">
 <label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeShift">Shift</label>
 <select class="form-control form-select" id="employeeShift">
-<option disabled="" value="Select a shift">Select a shift</option>
+<option disabled="" value="">Select a Shift</option>
 <option value="Day Shift">Day Shift</option>
 <option value="Night Shift">Night Shift</option>
 </select>
@@ -150,38 +162,33 @@
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="workLocation">Work
-                                            Location </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="workLocation">Work Location</label>
 <input class="form-control" id="workLocation" placeholder="Enter work location" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="joinDate">Join
-                                            Date</label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="joinDate">Join Date</label>
 <input class="form-control" id="joinDate" type="date"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="phoneNumber">Phone
-                                            Number <span class="text-danger-600">*</span> </label>
-<input class="form-control" id="phoneNumber" placeholder="Enter your Phone Number" type="tel"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="phoneNumber">Phone Number <span class="text-danger-600">*</span></label>
+<input class="form-control" id="phoneNumber" placeholder="Enter Phone Number" type="tel"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeEmails">Email
-                                            <span class="text-danger-600">*</span> </label>
-<input class="form-control" id="employeeEmails" placeholder="Enter your Email" type="text"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeEmails">Email <span class="text-danger-600">*</span></label>
+<input class="form-control" id="employeeEmails" placeholder="Enter Email" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Employee
-                                            Photo <span class="text-danger-600">*</span> </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Employee Photo</label>
 <div class="drop-zone height-44-px p-4 d-flex justify-content-center align-items-center text-center fw-medium text-md cursor-pointer border border-neutral-400 radius-8 border-dashed bg-hover-neutral-200">
-<span class="drop-zone__prompt">Darg &amp; drop a file here or click</span>
+<span class="drop-zone__prompt">Drag &amp; drop a file here or click</span>
 <input class="drop-zone__input" name="myFile" type="file"/>
 </div>
 </div>
@@ -190,8 +197,10 @@
 </div>
 </div>
 </div>
+
+<!-- 2. Medical Details -->
 <div class="col-lg-12">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="shadow-1 radius-12 bg-base overflow-hidden">
 <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
 <h6 class="text-lg fw-semibold mb-0">Medical Details</h6>
 </div>
@@ -199,94 +208,99 @@
 <div class="row gy-3">
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bloodGroup">Blood
-                                            Group</label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bloodGroup">Blood Group</label>
 <select class="form-control form-select" id="bloodGroup">
-<option disabled="" value="Select blood group">Select blood group</option>
+<option disabled="" selected="" value="">Select Blood Group</option>
 <option value="A+">A+</option>
+<option value="B+">B+</option>
 <option value="AB+">AB+</option>
+<option value="O+">O+</option>
 <option value="A-">A-</option>
+<option value="B-">B-</option>
 <option value="AB-">AB-</option>
+<option value="O-">O-</option>
 </select>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="medicalHeight">Height
-                                        </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="medicalHeight">Medical Height (In Inch)</label>
 <input class="form-control" id="medicalHeight" placeholder="Enter height" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="medicalWeight">Weight
-                                        </label>
-<input class="form-control" id="medicalWeight" placeholder="Enter Weight" type="text"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="medicalWeight">Medical Weight (In Kg)</label>
+<input class="form-control" id="medicalWeight" placeholder="Enter weight" type="text"/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8">As On Date</label>
+<input class="form-control" type="date"/>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
+
+<!-- 3. Bank Info -->
 <div class="col-lg-12">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="shadow-1 radius-12 bg-base overflow-hidden">
 <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Bank Details </h6>
+<h6 class="text-lg fw-semibold mb-0">Bank Info</h6>
 </div>
 <div class="card-body p-20">
 <div class="row gy-3">
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bankAccountNumber">Bank
-                                            Account Number </label>
-<input class="form-control" id="bankAccountNumber" placeholder="Enter bank account number" type="text"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bankAccountNumber">Bank Account Number</label>
+<input class="form-control" id="bankAccountNumber" placeholder="Enter Bank Account Number" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bankName">Bank Name
-                                        </label>
-<input class="form-control" id="bankName" placeholder="Enter bank name" type="text"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bankName">Bank Name</label>
+<input class="form-control" id="bankName" placeholder="Enter Bank Name" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="iFSCCode">IFSC Code
-                                        </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="iFSCCode">IFSC Code</label>
 <input class="form-control" id="iFSCCode" placeholder="Enter IFSC Code" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="nationalIdentificationNumber">National
-                                            Identification Number</label>
-<input class="form-control" id="nationalIdentificationNumber" placeholder="Enter national identification number" type="text"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="nationalIdentificationNumber">National Identification Number</label>
+<input class="form-control" id="nationalIdentificationNumber" placeholder="Enter National Identification Number" type="text"/>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="col-xxl-12">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+
+<!-- 4. Documents Info -->
+<div class="col-lg-12">
+<div class="shadow-1 radius-12 bg-base overflow-hidden">
 <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Upload Documents</h6>
+<h6 class="text-lg fw-semibold mb-0">Documents Info</h6>
 </div>
 <div class="card-body p-20">
 <div class="row gy-3">
-<div class="col-sm-6">
+<div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="docName">Doc Name
-                                        </label>
-<input class="form-control" id="docName" placeholder="Enter Doc Name" type="text"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="docName">Document Name</label>
+<input class="form-control" id="docName" placeholder="Enter Document Name" type="text"/>
 </div>
 </div>
-<div class="col-sm-6">
+<div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Upload
-                                            File</label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Document File</label>
 <div class="drop-zone height-44-px p-4 d-flex justify-content-center align-items-center text-center fw-medium text-md cursor-pointer border border-neutral-400 radius-8 border-dashed bg-hover-neutral-200">
-<span class="drop-zone__prompt">Darg &amp; drop a file here or click</span>
+<span class="drop-zone__prompt">Drag &amp; drop a file here or click</span>
 <input class="drop-zone__input" name="myFile" type="file"/>
 </div>
 </div>
@@ -295,96 +309,61 @@
 </div>
 </div>
 </div>
-<div class="col-xxl-6">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+
+<!-- 5. Payroll Info -->
+<div class="col-lg-12">
+<div class="shadow-1 radius-12 bg-base overflow-hidden">
 <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Previous Experience &amp; Organization</h6>
-</div>
-<div class="card-body p-20">
-<div class="row gy-3">
-<div class="col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="companyName">Previous Company Name </label>
-<input class="form-control" id="companyName" placeholder="Enter Company / Organization Name" type="text"/>
-</div>
-</div>
-<div class="col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="Address">Location / Address
-                                        </label>
-<input class="form-control" id="Address" placeholder="Enter Company Address" type="text"/>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xxl-6">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Address</h6>
-</div>
-<div class="card-body p-20">
-<div class="row gy-3">
-<div class="col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="currentAddress">Current
-                                            Address </label>
-<input class="form-control" id="currentAddress" placeholder="Enter Current Address" type="text"/>
-</div>
-</div>
-<div class="col-sm-6">
-<div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="permanentAddress">Permanent
-                                            Address </label>
-<input class="form-control" id="permanentAddress" placeholder="Enter Permanent Address" type="text"/>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xl-12">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
-<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Employee Details</h6>
+<h6 class="text-lg fw-semibold mb-0">Payroll Info</h6>
 </div>
 <div class="card-body p-20">
 <div class="row gy-3">
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="facebookLink">Facebook
-                                        </label>
-<input class="form-control" id="facebookLink" placeholder="Enter your facebook link" type="text"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="companyName">EPF No</label>
+<input class="form-control" id="companyName" placeholder="Enter EPF No" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="linkedInLink">LinkedIn
-                                        </label>
-<input class="form-control" id="linkedInLink" placeholder="Enter your LinkedIn link" type="text"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="Address">Basic Salary</label>
+<input class="form-control" id="Address" placeholder="Enter Basic Salary" type="text"/>
 </div>
 </div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
+</div>
+</div>
+</div>
+</div>
+
+<!-- 6. Address Details -->
+<div class="col-lg-12">
+<div class="shadow-1 radius-12 bg-base overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Address Details</h6>
+</div>
+<div class="card-body p-20">
+<div class="row gy-3">
+<div class="col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="instagramLink">Instagram
-                                        </label>
-<input class="form-control" id="instagramLink" placeholder="Enter your Instagram link" type="text"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="currentAddress">Current Address</label>
+<textarea class="form-control" id="currentAddress" placeholder="Enter Current Address" rows="3"></textarea>
 </div>
 </div>
-<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="youTubeLink">YouTube
-                                        </label>
-<input class="form-control" id="youTubeLink" placeholder="Enter your YouTube link" type="text"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="permanentAddress">Permanent Address</label>
+<textarea class="form-control" id="permanentAddress" placeholder="Enter Permanent Address" rows="3"></textarea>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="col-xl-12">
-<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+
+
+<!-- 8. Login Details -->
+<div class="col-lg-12">
+<div class="shadow-1 radius-12 bg-base overflow-hidden">
 <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
 <h6 class="text-lg fw-semibold mb-0">Login Details</h6>
 </div>
@@ -392,20 +371,18 @@
 <div class="row gy-3">
 <div class="col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="myEmail">Email
-                                            <span class="text-danger-600">*</span>
-</label>
-<input class="form-control" id="myEmail" placeholder="Enter Email" type="email"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="myEmail">Email <span class="text-danger-600">*</span></label>
+<input class="form-control" id="myEmail" name="myEmail" placeholder="Enter Email" type="email" required/>
 </div>
 </div>
 <div class="col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="your-password">Password
-                                            <span class="text-danger-600">*</span>
-</label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="your-password">Password <span class="text-danger-600">*</span></label>
 <div class="position-relative">
-<input class="form-control" id="your-password" placeholder="Enter your password" type="password"/>
-<span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#your-password"></span>
+<input class="form-control" id="your-password" name="your-password" placeholder="Enter your password" type="password" style="padding-right: 45px;" required/>
+<span class="toggle-password cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" style="z-index: 10;">
+  <i class="ri-eye-line text-xl"></i>
+</span>
 </div>
 </div>
 </div>
@@ -413,38 +390,182 @@
 </div>
 </div>
 </div>
+
 <div class="col-12">
 <div class="d-flex align-items-center justify-content-center gap-3 mt-8">
 <button class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-50 py-11 radius-8" type="reset">
                             Reset
                         </button>
-<button class="btn btn-primary-600 border border-primary-600 text-md px-28 py-12 radius-8" type="submit">
+<button class="btn btn-primary-600 border border-primary-600 text-md px-28 py-12 radius-8" type="submit" id="saveEmployeeBtn">
                             Save Changes
                         </button>
-</div>
 </div>
 </div>
 </form>
 {% endblock %}
 
 {% block js %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
 
-    // ================== Password Show Hide Js Start ==========
-    function initializePasswordToggle(toggleSelector) {
-        $(toggleSelector).on('click', function () {
-            $(this).toggleClass("ri-eye-off-line");
-            var input = $($(this).attr("data-toggle"));
-            if (input.attr("type") === "password") {
-                input.attr("type", "text");
-            } else {
-                input.attr("type", "password");
+    // ================== Profile Image Upload Preview ==================
+    var defaultAvatarUrl = "{% static 'admin_assets/images/thumbs/teacher-avatar-img1.png' %}";
+    $('#profileUploadInput').on('change', function() {
+        var file = this.files[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                Swal.fire({ icon: 'warning', title: 'File Too Large', text: 'Profile picture must be less than 5MB.' });
+                $(this).val('');
+                return;
             }
-        });
-    }
-    // Call the function
-    initializePasswordToggle('.toggle-password');
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#profileImagePreview').attr('src', e.target.result);
+                $('#removeProfileImgBtn').removeClass('d-none');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    $('#removeProfileImgBtn').on('click', function() {
+        $('#profileUploadInput').val('');
+        $('#profileImagePreview').attr('src', defaultAvatarUrl);
+        $(this).addClass('d-none');
+    });
+
+    // ================== Password Show Hide Js Start ==========
+    $(document).on('click', '.toggle-password', function () {
+        var $icon = $(this).find('i');
+        var $input = $('#your-password');
+        if ($input.length === 0) {
+            $input = $(this).siblings('input');
+        }
+        if ($input.attr("type") === "password") {
+            $input.attr("type", "text");
+            $icon.removeClass("ri-eye-line").addClass("ri-eye-off-line");
+        } else {
+            $input.attr("type", "password");
+            $icon.removeClass("ri-eye-off-line").addClass("ri-eye-line");
+        }
+    });
     // ========================= Password Show Hide Js End ===========================
+
+    // ========================== AJAX Form Submit Handler ===========================
+    $(document).ready(function() {
+        // Clear any stored drafts completely
+        localStorage.removeItem('eduaiq_add_employee_draft');
+
+        // Clear draft when reset button is clicked
+        $('button[type="reset"]').on('click', function() {
+            localStorage.removeItem('eduaiq_add_employee_draft');
+            $('#profileUploadInput').val('');
+            $('#profileImagePreview').attr('src', defaultAvatarUrl);
+            $('#removeProfileImgBtn').addClass('d-none');
+            if (window.showToast) window.showToast('Form cleared', 'info');
+        });
+
+        $('#addEmployeeForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            var fullNameVal = ($('#fullName').val() || '').trim();
+            var emailVal = ($('#myEmail').val() || $('#employeeEmails').val() || '').trim();
+            var passwordVal = $('#your-password').val() || '';
+
+            if (!fullNameVal) {
+                Swal.fire({ icon: 'warning', title: 'Full Name Required', text: 'Please enter employee full name.' });
+                return;
+            }
+            if (!emailVal) {
+                Swal.fire({ icon: 'warning', title: 'Email Required', text: 'Please enter a valid email address.' });
+                return;
+            }
+            if (!passwordVal) {
+                Swal.fire({ icon: 'warning', title: 'Password Required', text: 'Please enter login password for employee.' });
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append('fullName', fullNameVal);
+            formData.append('employeeID', ($('#employeeID').val() || '').trim());
+            formData.append('employeeDepartment', $('#employeeDepartment').val() || '');
+            formData.append('employeeDesignation', $('#employeeDesignation').val() || '');
+            formData.append('gender', $('#gender').val() || '');
+            formData.append('dateOfBirth', $('#dateOfBirth').val() || '');
+            formData.append('fathersName', ($('#fathersName').val() || '').trim());
+            formData.append('mothersName', ($('#mothersName').val() || '').trim());
+            formData.append('meritalStatus', $('#meritalStatus').val() || '');
+            formData.append('contractType', $('#contractType').val() || '');
+            formData.append('employeeShift', $('#employeeShift').val() || '');
+            formData.append('workLocation', ($('#workLocation').val() || '').trim());
+            formData.append('joinDate', $('#joinDate').val() || '');
+            formData.append('phoneNumber', ($('#phoneNumber').val() || '').trim());
+            formData.append('myEmail', emailVal);
+            formData.append('your-password', passwordVal);
+            formData.append('facebookLink', ($('#facebookLink').val() || '').trim());
+            formData.append('linkedInLink', ($('#linkedInLink').val() || '').trim());
+            formData.append('instagramLink', ($('#instagramLink').val() || '').trim());
+
+            var fileInput = $('#profileUploadInput')[0];
+            if (fileInput && fileInput.files && fileInput.files[0]) {
+                formData.append('profile_picture', fileInput.files[0]);
+            }
+
+            var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+            $('#saveEmployeeBtn').prop('disabled', true).html('<i class="ri-loader-4-line ri-spin me-1"></i> Saving...');
+
+            $.ajax({
+                url: '/accounts/api/employee/onboard/',
+                type: 'POST',
+                headers: { 'X-CSRFToken': csrfToken },
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(resp) {
+                    $('#saveEmployeeBtn').prop('disabled', false).html('Save Changes');
+                    if (resp.status === 'success') {
+                        localStorage.removeItem('eduaiq_add_employee_draft');
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Employee Added Successfully!',
+                            width: '360px',
+                            padding: '1.25rem 1rem 1rem',
+                            customClass: {
+                                popup: 'radius-16 border-0 shadow-lg',
+                                title: 'fs-6 fw-bold text-dark my-1',
+                                htmlContainer: 'm-0 text-sm',
+                                confirmButton: 'btn btn-primary-600 radius-8 px-20 py-8 text-sm fw-medium shadow-none'
+                            },
+                            html: `
+                                <div class="text-start mt-12 p-12 bg-neutral-50 radius-8 border text-secondary-light">
+                                    <div class="mb-6 text-xs"><strong>Employee ID:</strong> <span class="badge bg-primary-600 text-white ms-1 px-8 py-2 radius-4">${resp.employee_id || 'N/A'}</span></div>
+                                    <div class="mb-6 text-xs"><strong>Username:</strong> <code class="text-primary-600 bg-neutral-200 px-6 py-2 radius-4 fw-semibold">${resp.username || ''}</code></div>
+                                    <div class="text-xs"><strong>Email:</strong> <span class="text-primary-600">${resp.email || ''}</span></div>
+                                </div>
+                                <p class="text-secondary-light text-xs mt-10 mb-0">Employee can log in using these credentials.</p>
+                            `,
+                            confirmButtonColor: '#ea580c',
+                            confirmButtonText: '<i class="ri-user-follow-line me-1"></i> View Employee List',
+                            allowOutsideClick: false
+                        }).then(function() {
+                            window.location.href = '/admin-panel/employee-list/';
+                        });
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Submission Error', text: resp.message || 'Could not add employee.' });
+                    }
+                },
+                error: function(xhr) {
+                    $('#saveEmployeeBtn').prop('disabled', false).html('Save Changes');
+                    var msg = 'An error occurred while adding the employee.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        msg = xhr.responseJSON.message;
+                    }
+                    Swal.fire({ icon: 'error', title: 'Error', text: msg });
+                }
+            });
+        });
+    });
+    // ========================== AJAX Form Submit Handler End =========================
 
     // ========================== Drag & Drop Upload photo Js start ========================
     document.querySelectorAll(".drop-zone__input").forEach((inputElement) => {

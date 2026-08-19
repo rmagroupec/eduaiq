@@ -1,14 +1,14 @@
 {% extends 'admin_panel/base.html' %}
 {% load static %}
 
-{% block title %}Work From Home (WFH) Requests — EduAIQ Admin{% endblock %}
+{% block title %}Leave & WFH Requests — EduAIQ Admin{% endblock %}
 
 {% block content %}
 <div class="dashboard-main-body">
 
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
         <div>
-            <h6 class="fw-semibold mb-4">Work From Home (WFH) Requests</h6>
+            <h6 class="fw-semibold mb-4">Leave & Work From Home (WFH) Requests</h6>
             <ul class="d-flex align-items-center gap-2 text-sm">
                 <li class="fw-medium">
                     <a href="/admin-panel/dashboard/" class="d-flex align-items-center gap-1 hover-text-primary">
@@ -16,15 +16,20 @@
                     </a>
                 </li>
                 <li>-</li>
-                <li class="fw-medium text-secondary-light">WFH Requests</li>
+                <li class="fw-medium text-secondary-light">Leave & WFH Requests</li>
             </ul>
         </div>
-        <button type="button" class="btn bg-info-600 text-white radius-8 px-20 font-semibold d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#wfhApplyModal">
-            <i class="ri-home-wifi-line text-lg"></i> Apply WFH
-        </button>
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn bg-primary-600 text-white radius-8 px-16 py-8 font-semibold d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#leaveApplyModal">
+                <i class="ri-calendar-close-line text-lg"></i> Apply Leave
+            </button>
+            <button type="button" class="btn bg-info-600 text-white radius-8 px-16 py-8 font-semibold d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#wfhApplyModal">
+                <i class="ri-home-wifi-line text-lg"></i> Apply WFH
+            </button>
+        </div>
     </div>
 
-    <!-- WFH Summary Cards -->
+    <!-- Summary Cards -->
     <div class="row g-3 mb-24">
         <div class="col-xl-3 col-sm-6">
             <div class="card p-20 radius-12 border shadow-sm">
@@ -34,7 +39,7 @@
                         <h4 class="mb-0 mt-2 font-bold" id="totalWfhCount">0</h4>
                     </div>
                     <div class="w-48-px h-48-px radius-8 bg-info-50 text-info-600 d-flex align-items-center justify-content-center text-2xl">
-                        <i class="ri-home-wifi-line"></i>
+                        <i class="ri-file-list-3-line"></i>
                     </div>
                 </div>
             </div>
@@ -80,10 +85,17 @@
         </div>
     </div>
 
-    <!-- Requests Table -->
+    <!-- Filter & Table Card -->
     <div class="card radius-12 border shadow-sm">
-        <div class="card-header border-bottom p-20 d-flex align-items-center justify-content-between">
-            <h6 class="card-title mb-0 font-semibold">All WFH Applications</h6>
+        <div class="card-header border-bottom p-20 d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <h6 class="card-title mb-0 font-semibold me-3">Applications</h6>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-primary active filter-tab-btn" data-type="all">All</button>
+                    <button type="button" class="btn btn-outline-primary filter-tab-btn" data-type="leave">Leave Requests</button>
+                    <button type="button" class="btn btn-outline-primary filter-tab-btn" data-type="wfh">WFH Requests</button>
+                </div>
+            </div>
             <button type="button" class="btn btn-sm btn-outline-neutral-300 radius-8" onclick="loadWfhRequests()">
                 <i class="ri-refresh-line me-1"></i> Refresh
             </button>
@@ -95,6 +107,7 @@
                         <tr>
                             <th class="ps-24">Employee</th>
                             <th>Role</th>
+                            <th>Request Type</th>
                             <th>Date Range</th>
                             <th>Reason</th>
                             <th>Status</th>
@@ -104,8 +117,8 @@
                     </thead>
                     <tbody id="wfhTableBody">
                         <tr>
-                            <td colspan="7" class="text-center py-32 text-secondary-light">
-                                <i class="ri-loader-4-line ri-spin text-2xl me-2"></i> Loading WFH requests...
+                            <td colspan="8" class="text-center py-32 text-secondary-light">
+                                <i class="ri-loader-4-line ri-spin text-2xl me-2"></i> Loading requests...
                             </td>
                         </tr>
                     </tbody>
@@ -119,11 +132,17 @@
 
 {% block js %}
 <script>
-    const IS_ADMIN = Boolean("{% if request.user.is_superuser or request.user.role == 'admin' %}1{% endif %}");
+    const IS_ADMIN = Boolean("{% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'super_admin' or request.user.role == 'hr' or request.user.role == 'hr_manager' or request.user.role == 'hr_head' or 'hr' in request.user.role or 'admin' in request.user.role %}1{% endif %}");
+    let currentFilterType = 'all';
 
     function loadWfhRequests() {
+        let apiUrl = '/accounts/api/wfh/request/';
+        if (currentFilterType !== 'all') {
+            apiUrl += '?type=' + currentFilterType;
+        }
+
         $.ajax({
-            url: '/accounts/api/wfh/request/',
+            url: apiUrl,
             type: 'GET',
             success: function(res) {
                 if (res.status === 'success' && res.data) {
@@ -131,7 +150,7 @@
                 }
             },
             error: function() {
-                $('#wfhTableBody').html(`<tr><td colspan="7" class="text-center py-20 text-danger-600">Failed to load WFH requests.</td></tr>`);
+                $('#wfhTableBody').html(`<tr><td colspan="8" class="text-center py-20 text-danger-600">Failed to load requests.</td></tr>`);
             }
         });
     }
@@ -144,7 +163,7 @@
         let pendingCount = 0, approvedCount = 0, rejectedCount = 0;
 
         if (requests.length === 0) {
-            $tbody.html(`<tr><td colspan="7" class="text-center py-32 text-secondary-light">No WFH requests submitted yet.</td></tr>`);
+            $tbody.html(`<tr><td colspan="8" class="text-center py-32 text-secondary-light">No requests submitted yet.</td></tr>`);
             $('#totalWfhCount').text(0);
             $('#pendingWfhCount').text(0);
             $('#approvedWfhCount').text(0);
@@ -166,14 +185,22 @@
                 statusBadge = `<span class="badge bg-danger-100 text-danger-800 radius-4 px-10 py-4 text-xs font-semibold">Rejected</span>`;
             }
 
+            let typeBadge = '';
+            const typeStr = req.leave_type || 'Work From Home (WFH)';
+            if (typeStr.toLowerCase().includes('wfh') || typeStr.toLowerCase().includes('work from home')) {
+                typeBadge = `<span class="badge bg-info-100 text-info-800 radius-4 px-8 py-3 text-xs font-semibold"><i class="ri-home-wifi-line me-1"></i> ${typeStr}</span>`;
+            } else {
+                typeBadge = `<span class="badge bg-primary-100 text-primary-800 radius-4 px-8 py-3 text-xs font-semibold"><i class="ri-calendar-close-line me-1"></i> ${typeStr}</span>`;
+            }
+
             let actionBtn = '';
             if (req.status === 'pending') {
                 if (IS_ADMIN) {
                     actionBtn = `
-                        <button type="button" class="btn btn-xs bg-success-600 text-white radius-6 px-12 py-4 font-semibold me-1 action-wfh-btn" data-id="${req.id}" data-action="approve" title="Approve WFH Request">
+                        <button type="button" class="btn btn-xs bg-success-600 text-white radius-6 px-12 py-4 font-semibold me-1 action-wfh-btn" data-id="${req.id}" data-action="approve" title="Approve Request">
                             <i class="ri-check-line me-1"></i> Approve
                         </button>
-                        <button type="button" class="btn btn-xs bg-danger-600 text-white radius-6 px-12 py-4 font-semibold action-wfh-btn" data-id="${req.id}" data-action="reject" title="Reject WFH Request">
+                        <button type="button" class="btn btn-xs bg-danger-600 text-white radius-6 px-12 py-4 font-semibold action-wfh-btn" data-id="${req.id}" data-action="reject" title="Reject Request">
                             <i class="ri-close-line me-1"></i> Reject
                         </button>
                     `;
@@ -184,12 +211,14 @@
                 actionBtn = `<span class="text-xs text-secondary-light font-medium">${req.approved_by_name ? 'By ' + req.approved_by_name : 'Completed'}</span>`;
             }
 
+            const initial = req.employee_name ? req.employee_name.charAt(0).toUpperCase() : 'E';
+
             const row = `
                 <tr>
                     <td class="ps-24">
                         <div class="d-flex align-items-center gap-2">
-                            <div class="w-36-px h-36-px radius-50 bg-info-100 text-info-700 d-flex align-items-center justify-content-center font-bold text-sm">
-                                ${req.employee_name.charAt(0).toUpperCase()}
+                            <div class="w-36-px h-36-px radius-50 bg-primary-100 text-primary-700 d-flex align-items-center justify-content-center font-bold text-sm">
+                                ${initial}
                             </div>
                             <div>
                                 <h6 class="text-sm font-semibold mb-0">${req.employee_name}</h6>
@@ -198,6 +227,7 @@
                         </div>
                     </td>
                     <td class="text-sm font-medium text-capitalize">${req.role}</td>
+                    <td>${typeBadge}</td>
                     <td class="text-sm font-semibold">${req.start_date} <i class="ri-arrow-right-line text-secondary-light mx-1"></i> ${req.end_date}</td>
                     <td class="text-sm text-secondary-light max-w-200-px text-truncate" title="${req.reason}">${req.reason}</td>
                     <td>${statusBadge}</td>
@@ -217,19 +247,26 @@
     $(document).ready(function() {
         loadWfhRequests();
 
+        $('.filter-tab-btn').on('click', function() {
+            $('.filter-tab-btn').removeClass('active');
+            $(this).addClass('active');
+            currentFilterType = $(this).data('type');
+            loadWfhRequests();
+        });
+
         $(document).on('click', '.action-wfh-btn', function() {
             const reqId = $(this).data('id');
             const action = $(this).data('action');
 
             const confirmMsg = action === 'approve' 
-                ? 'Approve this WFH request? Attendance for selected dates will automatically be marked as WFH.' 
-                : 'Reject this WFH request?';
+                ? 'Approve this request? Attendance for selected dates will automatically be updated.' 
+                : 'Reject this request?';
 
             if (window.confirmDialog) {
                 window.confirmDialog({
-                    title: action === 'approve' ? 'Approve WFH Request' : 'Reject WFH Request',
+                    title: action === 'approve' ? 'Approve Request' : 'Reject Request',
                     message: confirmMsg,
-                    confirmText: action === 'approve' ? 'Approve WFH' : 'Reject Request',
+                    confirmText: action === 'approve' ? 'Approve' : 'Reject',
                     confirmBtnClass: action === 'approve' ? 'btn-success' : 'btn-danger',
                     onConfirm: function() {
                         processWfhAction(reqId, action);
@@ -265,3 +302,4 @@
     });
 </script>
 {% endblock %}
+

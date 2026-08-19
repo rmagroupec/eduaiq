@@ -55,18 +55,19 @@
         <thead>
           <tr class="bg-neutral-50">
             <th scope="col">ID</th>
-            <th scope="col">Deal Name</th>
-            <th scope="col">Linked Record</th>
-            <th scope="col">Amount (INR)</th>
-            <th scope="col">Prob %</th>
-            <th scope="col">Weighted Value</th>
-            <th scope="col">Stage</th>
-            <th scope="col">Expected Close</th>
-            <th scope="col" class="text-center">Action</th>
+            <th scope="col" class="text-nowrap">Deal Name</th>
+            <th scope="col" class="text-nowrap">Linked Record</th>
+            <th scope="col" class="text-nowrap">Added By</th>
+            <th scope="col" class="text-nowrap">Amount (INR)</th>
+            <th scope="col" class="text-nowrap">Prob %</th>
+            <th scope="col" class="text-nowrap">Weighted Value</th>
+            <th scope="col" class="text-nowrap">Stage</th>
+            <th scope="col" class="text-nowrap">Expected Close</th>
+            <th scope="col" class="text-center text-nowrap">Action</th>
           </tr>
         </thead>
         <tbody id="oppsTableBody">
-          <tr><td colspan="9" class="text-center py-40"><div class="spinner-border text-primary"></div></td></tr>
+          <tr><td colspan="10" class="text-center py-40"><div class="spinner-border text-primary"></div></td></tr>
         </tbody>
       </table>
     </div>
@@ -105,7 +106,7 @@ $(document).ready(function() {
         renderPagination(response);
       },
       error: function() {
-        $('#oppsTableBody').html(`<tr><td colspan="9" class="text-center py-40 text-danger-600">Failed to load opportunities.</td></tr>`);
+        $('#oppsTableBody').html(`<tr><td colspan="10" class="text-center py-40 text-danger-600">Failed to load opportunities.</td></tr>`);
       }
     });
   }
@@ -114,20 +115,41 @@ $(document).ready(function() {
     const tbody = $('#oppsTableBody');
     tbody.empty();
     if (!data.results || data.results.length === 0) {
-      tbody.html(`<tr><td colspan="9" class="text-center py-40 text-secondary-light">No opportunities found.</td></tr>`);
+      tbody.html(`<tr><td colspan="10" class="text-center py-40 text-secondary-light">No opportunities found.</td></tr>`);
       $('#tableInfoSpan').text('Showing 0 to 0 of 0 entries');
       return;
     }
     data.results.forEach(o => {
       let linked = '-';
-      if (o.lead_id) linked = `<span class="badge bg-primary-50 text-primary-600 border border-primary-200">Lead: ${o.lead_name}</span>`;
-      else if (o.student_inquiry_id) linked = `<span class="badge bg-info-50 text-info-600 border border-info-200">Inquiry: ${o.student_inquiry_name}</span>`;
+      const creatorInfo = o.lead_created_by || o.inquiry_created_by;
+
+      if (o.lead_id) {
+        linked = `<div>
+          <span class="badge bg-primary-50 text-primary-600 border border-primary-200">Lead: ${o.lead_name}</span>
+          ${creatorInfo ? `<div class="text-xs text-secondary-light mt-4"><i class="ri-user-add-line me-1"></i>Added by ${creatorInfo.name}</div>` : ''}
+        </div>`;
+      } else if (o.student_inquiry_id) {
+        linked = `<div>
+          <span class="badge bg-info-50 text-info-600 border border-info-200">Inquiry: ${o.student_inquiry_name}</span>
+          ${creatorInfo ? `<div class="text-xs text-secondary-light mt-4"><i class="ri-user-add-line me-1"></i>Added by ${creatorInfo.name}</div>` : ''}
+        </div>`;
+      }
+
+      let ownerHtml = '-';
+      const ownerObj = o.owner;
+      if (ownerObj) {
+        ownerHtml = `<div>
+          <span class="fw-semibold text-neutral-800 text-sm d-block mb-2"><i class="ri-user-3-line me-1 text-primary-600"></i>${ownerObj.name}</span>
+          ${ownerObj.designation ? `<span class="badge bg-primary-50 text-primary-600 border border-primary-100 radius-4 px-6 py-2 text-xs d-inline-block">${ownerObj.designation}</span>` : ''}
+        </div>`;
+      }
 
       tbody.append(`
         <tr>
           <td><span class="text-secondary-light fw-medium">${o.id}</span></td>
           <td><h6 class="text-md mb-0 fw-semibold text-neutral-800">${o.name}</h6></td>
           <td>${linked}</td>
+          <td>${ownerHtml}</td>
           <td class="fw-bold text-success-600">₹ ${Math.round(Number(o.amount)).toLocaleString('en-IN')}</td>
           <td>${o.probability_pct}%</td>
           <td class="fw-semibold">₹ ${Math.round(Number(o.weighted_amount)).toLocaleString('en-IN')}</td>

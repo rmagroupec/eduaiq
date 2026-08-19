@@ -23,7 +23,7 @@
   <div class="card-body p-24">
     <!-- Filters -->
     <div class="row gy-3 mb-24 align-items-end">
-      <div class="col-md-3">
+      <div class="col-md-2">
         <label class="text-sm fw-semibold text-primary-light mb-8" for="stageFilter">Stage</label>
         <select class="form-control form-select radius-8" id="stageFilter">
           <option value="">All Stages</option>
@@ -35,7 +35,7 @@
           <option value="lost">Lost</option>
         </select>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-2">
         <label class="text-sm fw-semibold text-primary-light mb-8" for="priorityFilter">Priority</label>
         <select class="form-control form-select radius-8" id="priorityFilter">
           <option value="">All Priorities</option>
@@ -44,13 +44,21 @@
           <option value="low">Low</option>
         </select>
       </div>
+      {% if request.user.is_superuser or request.user.role == 'admin' %}
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="ownerFilter">Assigned Employee</label>
+        <select class="form-control form-select radius-8" id="ownerFilter">
+          <option value="">All Assigned Employees</option>
+        </select>
+      </div>
+      {% endif %}
       <div class="col-md-3">
         <div class="position-relative">
           <label class="text-sm fw-semibold text-primary-light mb-8" for="searchQuery">Search</label>
           <input type="text" class="form-control radius-8" id="searchQuery" placeholder="Name, institution, or phone">
         </div>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-2">
         <button class="btn btn-outline-primary-600 w-100 radius-8" id="clearFiltersBtn">Clear Filters</button>
       </div>
     </div>
@@ -61,16 +69,17 @@
           <tr class="bg-neutral-50">
             <th scope="col">ID</th>
             <th scope="col">Lead / Institution</th>
-            <th scope="col">Contact</th>
-            <th scope="col">City</th>
-            <th scope="col">Stage</th>
-            <th scope="col">Priority</th>
-            <th scope="col">Next Follow-up</th>
-            <th scope="col" class="text-center">Action</th>
+            <th scope="col" class="text-nowrap">Added By</th>
+            <th scope="col" class="text-nowrap">Contact</th>
+            <th scope="col" class="text-nowrap">City</th>
+            <th scope="col" class="text-nowrap">Stage</th>
+            <th scope="col" class="text-nowrap">Priority</th>
+            <th scope="col" class="text-nowrap">Next Follow-up</th>
+            <th scope="col" class="text-center text-nowrap">Action</th>
           </tr>
         </thead>
         <tbody id="leadsTableBody">
-          <tr><td colspan="8" class="text-center py-40"><div class="spinner-border text-primary"></div></td></tr>
+          <tr><td colspan="9" class="text-center py-40"><div class="spinner-border text-primary"></div></td></tr>
         </tbody>
       </table>
     </div>
@@ -83,12 +92,89 @@
     </div>
   </div>
 </div>
+
+<!-- Edit / Reassign Lead Modal -->
+<div class="modal fade" id="editLeadModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content radius-16">
+      <div class="modal-header border-bottom py-16 px-24">
+        <h6 class="modal-title fw-semibold text-lg">Edit / Assign Lead</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-24">
+        <form id="editLeadForm">
+          <input type="hidden" id="editLeadId">
+          <div class="row gy-3">
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editLeadName">Contact Name <span class="text-danger-600">*</span></label>
+              <input type="text" class="form-control radius-8" id="editLeadName" required>
+            </div>
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editInstitutionName">Institution Name</label>
+              <input type="text" class="form-control radius-8" id="editInstitutionName">
+            </div>
+            {% if request.user.is_superuser or request.user.role == 'admin' %}
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editOwner">Assigned Employee / Sales Rep</label>
+              <select class="form-control form-select radius-8" id="editOwner"></select>
+            </div>
+            {% endif %}
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editPhone">Phone <span class="text-danger-600">*</span></label>
+              <input type="text" class="form-control radius-8" id="editPhone" required>
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editStage">Stage</label>
+              <select class="form-control form-select radius-8" id="editStage">
+                <option value="new">New</option>
+                <option value="contacted">Contacted</option>
+                <option value="demo">Demo Scheduled</option>
+                <option value="negotiation">Negotiation</option>
+                <option value="converted">Converted</option>
+                <option value="lost">Lost</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editPriority">Priority</label>
+              <select class="form-control form-select radius-8" id="editPriority">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editNextFollowUp">Next Follow-up Date</label>
+              <input type="date" class="form-control radius-8" id="editNextFollowUp">
+            </div>
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editEmail">Email</label>
+              <input type="email" class="form-control radius-8" id="editEmail">
+            </div>
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editCity">City</label>
+              <input type="text" class="form-control radius-8" id="editCity">
+            </div>
+            <div class="col-md-12">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editNotes">Notes</label>
+              <textarea class="form-control radius-8" id="editNotes" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end gap-12 mt-24">
+            <button type="button" class="btn btn-outline-neutral-400 radius-8" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary-600 radius-8" id="saveEditLeadBtn">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block js %}
 <script>
 $(document).ready(function() {
   let currentPage = 1;
+  let cachedLeads = {};
 
   function getCsrfToken() {
     const match = document.cookie.match(/csrftoken=([^;]+)/);
@@ -101,7 +187,7 @@ $(document).ready(function() {
       demo: 'bg-warning-100 text-warning-600', negotiation: 'bg-orange-100 text-orange-600',
       converted: 'bg-success-100 text-success-600', lost: 'bg-danger-100 text-danger-600',
     };
-    return `<span class="px-16 py-4 radius-4 fw-medium text-sm ${map[stage] || 'bg-neutral-100'}">${stage.toUpperCase()}</span>`;
+    return `<span class="px-16 py-4 radius-4 fw-medium text-sm ${map[stage] || 'bg-neutral-100'}">${(stage || '').toUpperCase()}</span>`;
   }
 
   function priorityBadge(p) {
@@ -109,22 +195,41 @@ $(document).ready(function() {
     return `<span class="fw-semibold ${map[p] || ''}">${p ? p.toUpperCase() : '-'}</span>`;
   }
 
+  function loadEmployeeDropdowns() {
+    $.ajax({
+      url: '/accounts/users/?is_employee=true&page_size=200', type: 'GET', xhrFields: { withCredentials: true },
+      success: function(response) {
+        const filterSel = $('#ownerFilter').empty().append('<option value="">All Assigned Employees</option>');
+        const editSel = $('#editOwner').empty().append('<option value="">-- Unassigned --</option>');
+        (response.results || []).forEach(user => {
+          const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ').trim();
+          const displayName = fullName ? `${fullName} (${user.username})` : user.username;
+          const roleTag = user.role ? ` — [${user.role.toUpperCase()}]` : '';
+          filterSel.append(`<option value="${user.id}">${displayName}${roleTag}</option>`);
+          editSel.append(`<option value="${user.id}">${displayName}${roleTag}</option>`);
+        });
+      }
+    });
+  }
+
   function loadLeads(page = 1) {
     currentPage = page;
     const stage = $('#stageFilter').val();
     const priority = $('#priorityFilter').val();
+    const owner = $('#ownerFilter').val();
     const q = $('#searchQuery').val();
 
     let url = `/api/crm/leads/?page=${page}&page_size=20&detailed=true`;
     if (stage) url += `&stage=${stage}`;
     if (priority) url += `&priority=${priority}`;
+    if (owner) url += `&owner=${owner}`;
     if (q) url += `&q=${encodeURIComponent(q)}`;
 
     $.ajax({
       url: url, type: 'GET', xhrFields: { withCredentials: true },
       success: function(response) { renderTable(response); renderPagination(response); },
       error: function() {
-        $('#leadsTableBody').html(`<tr><td colspan="8" class="text-center py-40 text-danger-600">
+        $('#leadsTableBody').html(`<tr><td colspan="9" class="text-center py-40 text-danger-600">
           <i class="ri-error-warning-line text-xxl d-block mb-8"></i>Failed to load leads.</td></tr>`);
       }
     });
@@ -133,16 +238,39 @@ $(document).ready(function() {
   function renderTable(data) {
     const tbody = $('#leadsTableBody');
     tbody.empty();
+    cachedLeads = {};
     if (!data.results || data.results.length === 0) {
-      tbody.html(`<tr><td colspan="8" class="text-center py-40 text-secondary-light">
-        <i class="ri-folder-open-line text-xxl d-block mb-8"></i>No leads yet.</td></tr>`);
+      tbody.html(`<tr><td colspan="9" class="text-center py-40 text-secondary-light">
+        <i class="ri-folder-open-line text-xxl d-block mb-8"></i>No leads found.</td></tr>`);
       $('#tableInfoSpan').text('Showing 0 to 0 of 0 entries');
       return;
     }
     data.results.forEach(l => {
+      cachedLeads[l.id] = l;
       const convertBtn = (l.stage !== 'converted')
         ? `<button class="btn btn-sm btn-outline-success px-8 py-4 radius-8 convert-lead-btn" data-id="${l.id}" title="Convert to Institution"><i class="ri-arrow-right-circle-line text-md"></i></button>`
         : `<a href="/admin-panel/institution-details/?id=${l.converted_institution_id}" class="btn btn-sm btn-outline-neutral-300 px-8 py-4 radius-8" title="View Institution"><i class="ri-eye-line text-md"></i></a>`;
+      
+      let ownerHtml = '';
+      const ownerName = l.owner ? l.owner.name : null;
+      const ownerDesig = (l.owner && l.owner.designation) ? l.owner.designation : null;
+      const createdByName = l.created_by ? l.created_by.name : null;
+
+      if (l.owner) {
+        ownerHtml = `<div>
+          <span class="fw-semibold text-neutral-800 text-sm d-block mb-2"><i class="ri-user-3-line me-1 text-primary-600"></i>${ownerName}</span>
+          ${ownerDesig ? `<span class="badge bg-primary-50 text-primary-600 border border-primary-100 radius-4 px-6 py-2 text-xs d-inline-block">${ownerDesig}</span>` : ''}
+          ${(l.created_by && l.created_by.id !== l.owner.id) ? `<div class="text-xs text-secondary-light mt-4"><i class="ri-user-shared-line me-1 text-primary-500"></i>Assigned by ${createdByName}</div>` : ''}
+        </div>`;
+      } else if (l.created_by) {
+        ownerHtml = `<div>
+          <span class="badge bg-neutral-100 text-neutral-600 radius-4 px-8 py-4 mb-2 d-inline-block">Unassigned</span>
+          <div class="text-xs text-secondary-light"><i class="ri-user-add-line me-1"></i>Added by ${createdByName}</div>
+        </div>`;
+      } else {
+        ownerHtml = `<span class="badge bg-neutral-100 text-neutral-500 radius-4 px-8 py-4">Unassigned</span>`;
+      }
+
       tbody.append(`
         <tr>
           <td><span class="text-secondary-light fw-medium">${l.id}</span></td>
@@ -150,6 +278,7 @@ $(document).ready(function() {
             <h6 class="text-md mb-0 fw-semibold text-neutral-800">${l.lead_name}</h6>
             <span class="text-xs text-secondary-light">${l.institution_name || 'Individual'}</span>
           </td>
+          <td>${ownerHtml}</td>
           <td>${l.phone}${l.email ? '<br><span class="text-xs text-secondary-light">' + l.email + '</span>' : ''}</td>
           <td>${l.city || '-'}</td>
           <td>${stageBadge(l.stage)}</td>
@@ -157,6 +286,7 @@ $(document).ready(function() {
           <td>${l.next_follow_up_date || '-'}</td>
           <td class="text-center">
             <div class="d-flex align-items-center justify-content-center gap-8">
+              <button class="btn btn-sm btn-outline-primary px-8 py-4 radius-8 edit-lead-btn" data-id="${l.id}" title="Edit / Reassign Lead"><i class="ri-edit-line text-md"></i></button>
               ${convertBtn}
               <button class="btn btn-sm btn-outline-danger px-8 py-4 radius-8 delete-lead-btn" data-id="${l.id}" title="Delete"><i class="ri-delete-bin-line text-md"></i></button>
             </div>
@@ -182,14 +312,75 @@ $(document).ready(function() {
     ul.append(`<li class="page-item ${nextDisabled}"><button class="page-link py-6 px-12" data-page="${data.page + 1}" ${nextDisabled}>Next</button></li>`);
   }
 
-  $('#stageFilter, #priorityFilter').on('change', function() { loadLeads(1); });
+  $('#stageFilter, #priorityFilter, #ownerFilter').on('change', function() { loadLeads(1); });
   $('#searchQuery').on('keyup', function() { loadLeads(1); });
   $('#clearFiltersBtn').on('click', function() {
-    $('#stageFilter').val(''); $('#priorityFilter').val(''); $('#searchQuery').val('');
+    $('#stageFilter').val(''); $('#priorityFilter').val(''); $('#ownerFilter').val(''); $('#searchQuery').val('');
     loadLeads(1);
   });
   $(document).on('click', '#paginationUl .page-link', function() {
     const page = $(this).data('page'); if (page) loadLeads(page);
+  });
+
+  $(document).on('click', '.edit-lead-btn', function() {
+    const id = $(this).data('id');
+    const lead = cachedLeads[id];
+    if (!lead) return;
+
+    $('#editLeadId').val(lead.id);
+    $('#editLeadName').val(lead.lead_name);
+    $('#editInstitutionName').val(lead.institution_name || '');
+    $('#editPhone').val(lead.phone || '');
+    $('#editEmail').val(lead.email || '');
+    $('#editCity').val(lead.city || '');
+    $('#editStage').val(lead.stage || 'new');
+    $('#editPriority').val(lead.priority || 'medium');
+    $('#editNextFollowUp').val(lead.next_follow_up_date || '');
+    $('#editOwner').val(lead.owner ? lead.owner.id : '');
+    $('#editNotes').val(lead.notes || '');
+
+    const modal = new bootstrap.Modal(document.getElementById('editLeadModal'));
+    modal.show();
+  });
+
+  $('#editLeadForm').on('submit', function(e) {
+    e.preventDefault();
+    const id = $('#editLeadId').val();
+    const token = getCsrfToken();
+    $('#saveEditLeadBtn').prop('disabled', true).text('Saving...');
+
+    const payload = {
+      lead_name: $('#editLeadName').val(),
+      institution_name: $('#editInstitutionName').val(),
+      phone: $('#editPhone').val(),
+      email: $('#editEmail').val(),
+      city: $('#editCity').val(),
+      stage: $('#editStage').val(),
+      priority: $('#editPriority').val(),
+      next_follow_up_date: $('#editNextFollowUp').val() || null,
+      owner: $('#editOwner').val() || null,
+      notes: $('#editNotes').val()
+    };
+
+    $.ajax({
+      url: `/api/crm/leads/${id}/`, type: 'PATCH',
+      headers: { 'X-CSRFToken': token }, contentType: 'application/json', data: JSON.stringify(payload),
+      xhrFields: { withCredentials: true },
+      success: function() {
+        $('#saveEditLeadBtn').prop('disabled', false).text('Save Changes');
+        const modalEl = document.getElementById('editLeadModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+        showToast('Lead updated and assigned successfully!', 'success');
+        loadLeads(currentPage);
+      },
+      error: function(err) {
+        $('#saveEditLeadBtn').prop('disabled', false).text('Save Changes');
+        let msg = 'Failed to update lead.';
+        if (err.responseJSON && err.responseJSON.errors) msg = JSON.stringify(err.responseJSON.errors);
+        showToast(msg, 'error');
+      }
+    });
   });
 
   $(document).on('click', '.convert-lead-btn', function() {
@@ -241,6 +432,9 @@ $(document).ready(function() {
     });
   });
 
+  if ($('#ownerFilter').length || $('#editOwner').length) {
+    loadEmployeeDropdowns();
+  }
   loadLeads();
 });
 </script>
