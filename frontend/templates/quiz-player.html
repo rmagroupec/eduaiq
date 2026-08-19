@@ -68,30 +68,78 @@
   </div>
 </div>
 
-<!-- Results Modal -->
+<!-- Results Modal (Compact & Ultra-Professional Scorecard) -->
 <div id="resultsModal" class="modal fade" tabindex="-1" style="display:none; background: rgba(15,23,42,0.85); backdrop-filter: blur(8px);">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden" style="border: 2px solid #fd7e14 !important;">
+  <div class="modal-dialog modal-dialog-centered scorecard-modal-dialog">
+    <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden" style="border: 1.5px solid rgba(253, 126, 20, 0.4) !important; max-height: 88vh; display: flex; flex-direction: column;">
       
-      <div class="modal-header text-white p-4" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-bottom: 3px solid #fd7e14;">
-        <h5 id="resultTitle" class="modal-title fw-extrabold text-white fs-5"><i class="fas fa-award text-warning me-2"></i> Quiz Assessment Scorecard</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" onclick="document.getElementById('resultsModal').style.display='none'"></button>
+      <!-- Compact Modal Header -->
+      <div class="modal-header text-white py-2.5 px-4" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-bottom: 2.5px solid #fd7e14;">
+        <div class="d-flex align-items-center gap-2">
+          <div class="scorecard-icon-wrap">
+            <i class="fas fa-award text-warning"></i>
+          </div>
+          <div>
+            <h6 id="resultTitle" class="modal-title fw-extrabold text-white mb-0 fs-6" style="letter-spacing: 0.3px;">
+              Quiz Assessment Scorecard
+            </h6>
+            <small class="text-white-50" style="font-size: 11px;">EduAiQ Verified Assessment Evaluation</small>
+          </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white" style="font-size: 12px;" data-bs-dismiss="modal" onclick="document.getElementById('resultsModal').style.display='none'"></button>
       </div>
       
-      <div class="modal-body p-4">
-        <div id="scoreDisplay" class="text-center mb-4 p-4 rounded-4" style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 1.5px solid #fd7e14;">
-          <h1 id="scorePercentage" class="display-3 fw-extrabold mb-2" style="color: #ea580c;">0%</h1>
-          <p id="scoreMarks" class="fw-bold text-dark fs-5 mb-1">0 / 0 marks</p>
-          <p id="timeTaken" class="text-muted small mb-0">Time taken: 0 minutes</p>
+      <!-- Compact Modal Body -->
+      <div class="modal-body p-3.5 px-4" style="overflow-y: auto; max-height: calc(88vh - 120px);">
+        
+        <!-- Compact Summary Score Card (Horizontal Split) -->
+        <div class="scorecard-hero-panel p-3 mb-3 rounded-3 d-flex align-items-center justify-content-between gap-3">
+          <!-- Left: Circular / Gradient Score Pill -->
+          <div class="d-flex align-items-center gap-3">
+            <div id="scoreCircleBadge" class="score-circle-pill shadow-xs">
+              <span id="scorePercentage" class="score-num">0%</span>
+              <span class="score-sub">Score</span>
+            </div>
+            <div>
+              <span id="statusPillBadge" class="badge bg-warning-subtle text-warning-emphasis px-2.5 py-1 rounded-pill fw-bold mb-1" style="font-size: 11px;">
+                Needs Review
+              </span>
+              <h6 id="scoreMarks" class="fw-extrabold text-dark mb-0 fs-6">0 / 0 marks</h6>
+              <span id="timeTaken" class="text-muted small" style="font-size: 11.5px;">Time: 0m</span>
+            </div>
+          </div>
+
+          <!-- Right: Mini Quick Metrics -->
+          <div class="d-flex flex-column gap-1 text-end">
+            <div class="mini-stat-chip">
+              <span class="text-muted text-xxs text-uppercase fw-bold">Evaluation</span>
+              <span id="evaluationTag" class="fw-bold text-dark text-xs d-block">Instant AI Graded</span>
+            </div>
+            <div class="mini-stat-chip">
+              <span class="text-muted text-xxs text-uppercase fw-bold">Accuracy</span>
+              <span id="accuracyRatio" class="fw-bold text-primary text-xs d-block">0% Accuracy</span>
+            </div>
+          </div>
         </div>
 
+        <!-- Motivational Alert Ribbon -->
+        <div id="feedbackAlertBanner" class="feedback-ribbon mb-3">
+          <!-- Injected dynamically -->
+        </div>
+
+        <!-- Solution Explanations Section (Scrollable & Compact) -->
         <div id="feedbackDisplay" class="feedback-section">
+          <!-- Injected dynamically -->
         </div>
       </div>
       
-      <div class="modal-footer bg-light p-3 border-0">
-        <button class="btn btn-brand-orange px-5 py-2.5 rounded-pill fw-extrabold" onclick="location.href='/my-learning/'">
-          <i class="fas fa-graduation-cap me-2"></i> Return to Learning Dashboard
+      <!-- Compact Modal Footer -->
+      <div class="modal-footer bg-light py-2.5 px-4 border-0 d-flex justify-content-between align-items-center">
+        <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 rounded-pill fw-bold text-xs" onclick="document.getElementById('resultsModal').style.display='none'">
+          <i class="fas fa-times me-1"></i> Close
+        </button>
+        <button class="btn btn-sm btn-brand-orange px-4 py-1.5 rounded-pill fw-extrabold text-xs" onclick="location.href='/my-learning/'">
+          <i class="fas fa-graduation-cap me-1.5"></i> Dashboard
         </button>
       </div>
 
@@ -213,6 +261,138 @@
   @keyframes pulseTimer {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.05); }
+  }
+
+  /* Compact Professional Scorecard Modal Styles */
+  .scorecard-modal-dialog {
+    max-width: 560px !important;
+    margin: 1.5rem auto !important;
+  }
+
+  .scorecard-icon-wrap {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(253, 126, 20, 0.2);
+    border: 1px solid rgba(253, 126, 20, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .scorecard-hero-panel {
+    background: linear-gradient(135deg, #f8fafc 0%, #fff7ed 100%);
+    border: 1px solid #fed7aa;
+  }
+
+  .score-circle-pill {
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+    border: 2px solid #fd7e14;
+    color: #ea580c;
+  }
+
+  .score-circle-pill.pass {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border-color: #10b981;
+    color: #047857;
+  }
+
+  .score-circle-pill .score-num {
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .score-circle-pill .score-sub {
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.75;
+  }
+
+  .mini-stat-chip {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    padding: 3px 9px;
+  }
+
+  .feedback-ribbon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 9px;
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+
+  .feedback-ribbon.pass {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+  }
+
+  .feedback-ribbon.retry {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+  }
+
+  .explanations-scroll-container {
+    max-height: 195px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .explanations-scroll-container::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .explanations-scroll-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+  }
+
+  .explanations-scroll-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+
+  .explanations-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+
+  .explanation-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 3.5px solid #fd7e14;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 7px;
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
+
+  .explanation-card.is-correct {
+    border-left-color: #10b981;
+    background: #fafdfb;
+  }
+
+  .explanation-card.is-incorrect {
+    border-left-color: #ea580c;
+    background: #fffdfb;
   }
 </style>
 
@@ -422,30 +602,95 @@
   }
 
   function showResults(attempt) {
-    document.getElementById('scorePercentage').textContent = (attempt.score_pct || 0) + '%';
-    document.getElementById('scoreMarks').textContent = `${attempt.score_marks || attempt.raw_score || 0} marks obtained`;
-    document.getElementById('timeTaken').textContent = `Time taken: ${attempt.time_taken_minutes || 1} minutes`;
+    const pct = Math.round(parseFloat(attempt.score_pct || 0));
+    const isPass = Boolean(attempt.passed || pct >= 50);
 
+    // Score Circle & Tag
+    const scoreCircle = document.getElementById('scoreCircleBadge');
+    if (scoreCircle) {
+      if (isPass) {
+        scoreCircle.classList.add('pass');
+      } else {
+        scoreCircle.classList.remove('pass');
+      }
+    }
+
+    document.getElementById('scorePercentage').textContent = `${pct}%`;
+    document.getElementById('accuracyRatio').textContent = `${pct}% Accuracy`;
+
+    // Status Pill Badge
+    const statusPill = document.getElementById('statusPillBadge');
+    if (statusPill) {
+      if (isPass) {
+        statusPill.className = 'badge bg-success-subtle text-success-emphasis border border-success-subtle px-2.5 py-1 rounded-pill fw-bold mb-1';
+        statusPill.innerHTML = '<i class="fas fa-check-circle me-1"></i> Passed Assessment';
+      } else {
+        statusPill.className = 'badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2.5 py-1 rounded-pill fw-bold mb-1';
+        statusPill.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i> Needs Revision';
+      }
+    }
+
+    // Marks and Time
+    const marksObtained = attempt.score_marks || attempt.raw_score || 0;
+    const totalPossible = attempt.max_marks || questions.length || 0;
+    document.getElementById('scoreMarks').textContent = `${marksObtained} / ${totalPossible} marks obtained`;
+    document.getElementById('timeTaken').textContent = `Time taken: ${attempt.time_taken_minutes || 1} min`;
+
+    // Motivational Alert Banner
+    const bannerEl = document.getElementById('feedbackAlertBanner');
+    if (bannerEl) {
+      if (isPass) {
+        bannerEl.className = 'feedback-ribbon pass mb-3';
+        bannerEl.innerHTML = `
+          <i class="fas fa-trophy fs-6 text-success"></i>
+          <span><strong>Great Job!</strong> You successfully passed the assessment criteria.</span>
+        `;
+      } else {
+        bannerEl.className = 'feedback-ribbon retry mb-3';
+        bannerEl.innerHTML = `
+          <i class="fas fa-book-reader fs-6 text-warning"></i>
+          <span><strong>Keep Learning!</strong> Review the solution breakdown below and retry.</span>
+        `;
+      }
+    }
+
+    // Explanations Section
     const feedbackDisplay = document.getElementById('feedbackDisplay');
-    let feedbackHTML = `
-      <div class="alert ${attempt.passed ? 'alert-success' : 'alert-warning'} text-center fw-bold fs-5 mb-4" style="border-radius: 14px;">
-        ${attempt.passed ? '🎉 Excellent Work! You Passed the Assessment!' : '📚 Keep Practicing! Review key concepts and retry.'}
-      </div>
-    `;
+    const feedbackEntries = attempt.feedback ? Object.entries(attempt.feedback) : [];
 
-    if (attempt.feedback && Object.keys(attempt.feedback).length > 0) {
-      feedbackHTML += `<h6 class="fw-bold text-dark mb-3"><i class="fas fa-lightbulb text-warning me-1"></i> Solution Explanations:</h6><div class="d-flex flex-column gap-2">`;
-      Object.entries(attempt.feedback).forEach(([qId, explanation]) => {
-        feedbackHTML += `
-          <div class="p-3 bg-light rounded-3 border">
-            <p class="mb-0 text-dark small fw-semibold">${explanation}</p>
+    if (feedbackEntries.length > 0) {
+      let html = `
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="text-xs fw-bold text-dark text-uppercase">
+            <i class="fas fa-lightbulb text-warning me-1.5"></i> Solution Insights (${feedbackEntries.length})
+          </span>
+          <span class="text-muted text-xxs"><i class="fas fa-info-circle me-1"></i>Scroll to view all</span>
+        </div>
+        <div class="explanations-scroll-container">
+      `;
+
+      feedbackEntries.forEach(([qId, explanation], idx) => {
+        const isCorrectExplanation = /correct!/i.test(explanation) && !/incorrect!/i.test(explanation);
+        const cardClass = isCorrectExplanation ? 'is-correct' : 'is-incorrect';
+        const badgeClass = isCorrectExplanation ? 'bg-success' : 'bg-danger';
+
+        html += `
+          <div class="explanation-card ${cardClass}">
+            <div class="d-flex align-items-start gap-2">
+              <span class="badge ${badgeClass} text-xxs px-1.5 py-0.5 rounded-pill fw-bold" style="font-size: 10px; min-width: 26px;">Q${idx + 1}</span>
+              <span class="text-dark" style="font-size: 12px; line-height: 1.45;">${explanation}</span>
+            </div>
           </div>
         `;
       });
-      feedbackHTML += `</div>`;
-    }
 
-    feedbackDisplay.innerHTML = feedbackHTML;
+      html += `</div>`;
+      feedbackDisplay.innerHTML = html;
+      feedbackDisplay.style.display = 'block';
+    } else {
+      feedbackDisplay.innerHTML = '';
+      feedbackDisplay.style.display = 'none';
+    }
 
     const modalEl = document.getElementById('resultsModal');
     modalEl.style.display = 'block';

@@ -604,6 +604,40 @@
                         <div class="progress-bar-fill" style="width: {{ item.progress_pct|floatformat:0 }}%"></div>
                       </div>
                     </div>
+
+                    <!-- 6-Month Challenge & 50% Off Reward Box -->
+                    {% if item.is_completed %}
+                      {% if item.qualified_50_off %}
+                        <div class="mb-3 p-2.5 rounded-3 border border-warning" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);">
+                          <div class="d-flex align-items-center justify-content-between mb-1">
+                            <span class="text-xs fw-bold text-dark"><i class="fas fa-gift text-warning me-1"></i> 50% Scholarship Reward</span>
+                            <span class="badge bg-success text-white" style="font-size: 10px;">Unlocked 🎉</span>
+                          </div>
+                          <div class="d-flex align-items-center justify-content-between bg-white p-1.5 rounded border border-warning-subtle">
+                            <code class="fw-bold text-primary small" id="voucherCode_{{ item.course.id }}">{{ item.coupon_code }}</code>
+                            <button class="btn btn-xs btn-outline-warning text-dark fw-bold px-2 py-0.5" style="font-size: 10.5px;" onclick="navigator.clipboard.writeText('{{ item.coupon_code }}'); alert('50% Off Voucher Code Copied: {{ item.coupon_code }}');">
+                              <i class="far fa-copy me-1"></i> Copy
+                            </button>
+                          </div>
+                        </div>
+                      {% else %}
+                        <div class="mb-3 p-2 rounded-3 border text-muted" style="background: #f8fafc; font-size: 11.5px;">
+                          <i class="fas fa-check-circle text-success me-1"></i> Completed (Standard Timeline)
+                        </div>
+                      {% endif %}
+                    {% else %}
+                      <div class="mb-3 p-2 rounded-3 border" style="background: linear-gradient(135deg, #f8fafc 0%, #fff7ed 100%); font-size: 12px; border-color: #ffedd5 !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                          <span class="text-dark fw-semibold" style="font-size: 11.5px;"><i class="fas fa-bolt text-warning me-1"></i> 6-Month Challenge</span>
+                          {% if item.days_remaining > 0 %}
+                            <span class="badge bg-warning text-dark fw-bold" style="font-size: 10.5px;">{{ item.days_remaining }}d left for 50% OFF</span>
+                          {% else %}
+                            <span class="badge bg-secondary text-white" style="font-size: 10px;">Challenge Expired</span>
+                          {% endif %}
+                        </div>
+                        <small class="text-muted d-block mt-1" style="font-size: 10.5px;">Finish chapters & assignments in 6 months to unlock 50% off.</small>
+                      </div>
+                    {% endif %}
                     
                     <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
                       <a href="/course/?slug={{ item.course.slug }}" class="btn btn-sm btn-primary rounded-pill px-4 fw-bold">

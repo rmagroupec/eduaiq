@@ -13,7 +13,7 @@
       <span class="text-secondary-light">/ Course List</span>
     </div>
   </div>
-  {% if user.is_superuser or user.role == 'admin' %}
+  {% if user.is_superuser or user.role == 'admin' or user.role == 'superadmin' or user.is_staff and user.role != 'institution' %}
   <a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/courses/add/">
     <span class="d-flex text-md">
       <i class="ri-add-large-line"></i>
@@ -61,7 +61,7 @@
 
 <script>
   const API_BASE_URL = window.location.origin;
-  const IS_SUPERADMIN = {% if user.is_superuser or user.role == 'admin' %}true{% else %}false{% endif %};
+  const IS_SUPERADMIN = {% if user.is_superuser or user.role == 'admin' or user.role == 'superadmin' or user.is_staff and user.role != 'institution' %}true{% else %}false{% endif %};
 
   async function loadAdminCourses() {
     const searchVal = document.getElementById('adminCourseSearch').value.trim();

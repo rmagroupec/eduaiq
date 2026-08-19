@@ -24,6 +24,13 @@
       margin: 0 auto !important;
       width: 100% !important;
     }
+    .certificate-watermark-bg,
+    .certificate-watermark-seal,
+    .certificate-security-pattern {
+      display: flex !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
   }
 
   .certificate-top-bar {
@@ -108,8 +115,93 @@
     border-radius: 1.15rem;
     padding: 1.75rem 2.25rem;
     position: relative;
+    overflow: hidden;
     box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.15);
     background-image: radial-gradient(circle at 50% 50%, rgba(255, 247, 237, 0.4) 0%, rgba(255, 255, 255, 1) 100%);
+  }
+
+  /* Official Watermark & Security Layers */
+  .certificate-security-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      radial-gradient(rgba(249, 115, 22, 0.05) 1.5px, transparent 1.5px),
+      radial-gradient(rgba(15, 23, 42, 0.04) 1.5px, transparent 1.5px);
+    background-size: 26px 26px;
+    background-position: 0 0, 13px 13px;
+    pointer-events: none;
+    z-index: 1;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .certificate-watermark-bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-12deg);
+    width: 520px;
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.085;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .certificate-watermark-bg img {
+    width: 440px;
+    max-width: 95%;
+    height: auto;
+    filter: grayscale(100%) contrast(140%);
+  }
+
+  .certificate-watermark-seal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    border: 5px dashed rgba(15, 23, 42, 0.55);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+    opacity: 0.05;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .certificate-watermark-seal .wm-icon {
+    font-size: 72px;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+
+  .certificate-watermark-seal .wm-text {
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: #0f172a;
+  }
+
+  .certificate-watermark-seal .wm-sub {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #ea580c;
+    margin-top: 3px;
   }
 
   .certificate-corner {
@@ -117,6 +209,7 @@
     width: 40px;
     height: 40px;
     border: 2.5px solid #f97316;
+    z-index: 2;
   }
 
   .corner-tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
@@ -124,16 +217,31 @@
   .corner-bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
   .corner-br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
 
+  /* Ensure All Content Remains Above Watermark */
+  .cert-header, 
+  .cert-recipient, 
+  .cert-body-text, 
+  .cert-meta-box, 
+  .cert-footer-row,
+  .cert-present-label {
+    position: relative;
+    z-index: 2;
+  }
+
   .cert-header {
     text-align: center;
     margin-bottom: 0.85rem;
   }
 
   .cert-logo {
-    font-size: 1.65rem;
-    font-weight: 900;
-    color: #0f172a;
-    letter-spacing: -0.03em;
+    margin-bottom: 0.65rem;
+  }
+
+  .cert-logo img {
+    height: 96px !important;
+    max-width: 320px !important;
+    object-fit: contain;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.07));
   }
 
   .cert-logo span {
@@ -215,14 +323,30 @@
 
 <div class="certificate-wrap">
   <div class="certificate-container text-center">
+    <!-- Security Guilloche Pattern Background -->
+    <div class="certificate-security-pattern"></div>
+
+    <!-- Official Brand Watermark -->
+    <div class="certificate-watermark-bg">
+      <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Watermark">
+    </div>
+
+    <!-- Circular Verified Security Stamp Watermark -->
+    <div class="certificate-watermark-seal">
+      <i class="fas fa-certificate wm-icon"></i>
+      <div class="wm-text">EDUAIQ AUTHENTIC</div>
+      <div class="wm-sub">ACADEMIC BOARD SEAL</div>
+    </div>
+
+    <!-- Ornate Corners -->
     <div class="certificate-corner corner-tl"></div>
     <div class="certificate-corner corner-tr"></div>
     <div class="certificate-corner corner-bl"></div>
     <div class="certificate-corner corner-br"></div>
 
     <div class="cert-header">
-      <div class="cert-logo text-center mb-1">
-        <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" style="height: 58px; max-width: 220px; object-fit: contain;">
+      <div class="cert-logo text-center mb-2">
+        <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" style="height: 96px; max-width: 320px; object-fit: contain;">
       </div>
       <div class="cert-subtitle">National Olympiad & Entrance Examination Controller</div>
       
@@ -230,7 +354,7 @@
       <p class="text-muted small mb-0 fs-7">Academic Session {{ exam.academic_year|default:"2026-27" }}</p>
     </div>
 
-    <p class="text-uppercase text-muted fw-bold small mb-0 fs-7" style="letter-spacing: 0.05em;">This official certificate is proudly presented to</p>
+    <p class="cert-present-label text-uppercase text-muted fw-bold small mb-0 fs-7" style="letter-spacing: 0.05em;">This official certificate is proudly presented to</p>
     
     <div class="cert-recipient">
       {{ registration.student.get_full_name|default:registration.student.username }}
@@ -258,7 +382,7 @@
       </div>
     </div>
 
-    <div class="row align-items-center mt-2 pt-2 border-top">
+    <div class="row align-items-center mt-2 pt-2 border-top cert-footer-row">
       <div class="col-4 text-start">
         <div class="cert-seal" title="Official Seal">
           <i class="fas fa-award"></i>

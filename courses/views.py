@@ -475,8 +475,12 @@ def _get_course_or_404(slug):
         return None
 
 
-def _can_manage_course(user, course):
-    return user.is_authenticated
+def _can_manage_course(user, course=None):
+    if not user or not user.is_authenticated:
+        return False
+    if getattr(user, 'role', '') == 'institution':
+        return False
+    return bool(user.is_superuser or getattr(user, 'role', '') in ['admin', 'superadmin'] or getattr(user, 'is_staff', False))
 
 
 @require_http_methods(['GET', 'PUT', 'PATCH', 'DELETE'])
@@ -1175,13 +1179,34 @@ def update_progress(request, pk):
 
     is_fully_done = enrollment.is_completed and enrollment.progress_pct >= 100
 
+    # 6-Month Fast-Track 50% Reward Logic (180 Days Limit)
+    now = timezone.now()
+    enrolled_dt = enrollment.enrollment_date or getattr(request.user, 'date_joined', now)
+    comp_dt = enrollment.completion_date or now
+    days_taken = (comp_dt - enrolled_dt).days if (comp_dt and enrolled_dt) else 0
+    days_remaining = max(0, 180 - days_taken)
+    qualified_50_off = is_fully_done and (days_taken <= 180)
+    coupon_code = f"EDUAIQ-50OFF-{enrollment.course_id}-{request.user.id}" if qualified_50_off else None
+
+    completion_msg = "🎉 Congratulations! All chapters and assignments have been successfully completed! Course 100% Complete & Certificate Unlocked!"
+    if qualified_50_off:
+        completion_msg = f"🎉 Incredible! You completed the course within 6 months! 50% Off Scholarship Voucher Unlocked: {coupon_code}"
+
     return JsonResponse({
         'success': True,
         'all_chapters_completed': enrollment.progress_pct >= 100,
         'all_assignments_completed': assignments_status['all_assignments_completed'],
         'is_completed': enrollment.is_completed,
         'pending_assignments': assignments_status['pending_assignments'],
-        'message': "🎉 Congratulations! All chapters and assignments have been successfully completed! Course 100% Complete & Certificate Unlocked!" if is_fully_done else "Progress updated successfully.",
+        'reward_50_off': {
+            'qualified': qualified_50_off,
+            'days_taken': days_taken,
+            'days_remaining': days_remaining,
+            'limit_days': 180,
+            'coupon_code': coupon_code,
+            'discount_pct': 50,
+        },
+        'message': completion_msg if is_fully_done else "Progress updated successfully.",
         'enrollment': {
             'id': enrollment.id,
             'progress_pct': str(enrollment.progress_pct),

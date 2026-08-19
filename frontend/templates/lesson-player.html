@@ -281,12 +281,33 @@
                         🏆
                     </div>
                     <h3 class="fw-bold text-dark mb-2">🎉 Congratulations!</h3>
-                    <p class="text-secondary mb-4">
+                    <p class="text-secondary mb-3">
                         You have successfully completed <strong>all chapters and all module assignments</strong>! Your course is now <strong>100% Complete</strong> and your Certificate is ready.
                     </p>
+
+                    <!-- 6-Month Fast-Track 50% Off Reward Box -->
+                    <div id="fastTrackRewardBox" class="mb-4 text-start p-3 rounded-3 border border-warning" style="display: none; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="fs-4">🎁</span>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0" style="font-size: 13.5px;">6-Month Fast-Track Reward Earned!</h6>
+                                <small class="text-muted" style="font-size: 11px;">You finished all chapters & assignments in under 180 days.</small>
+                            </div>
+                        </div>
+                        <div class="mt-2 p-2 bg-white rounded border border-warning-subtle d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="text-xxs text-muted d-block text-uppercase fw-bold">50% Off Voucher Code:</span>
+                                <code class="fw-bold text-primary fs-6" id="reward50CouponCode">EDUAIQ-50OFF</code>
+                            </div>
+                            <button class="btn btn-warning text-dark btn-sm fw-bold px-3" onclick="copyRewardCoupon()">
+                                <i class="far fa-copy me-1"></i> Copy Code
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="d-grid gap-2">
                         <a href="/my-learning/" class="btn btn-warning btn-lg fw-bold py-2.5 text-dark shadow-sm">
-                            <i class="fas fa-certificate me-2"></i> View My Certificate in Dashboard
+                            <i class="fas fa-certificate me-2"></i> View My Certificate & Dashboard
                         </a>
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
@@ -754,8 +775,7 @@
                 }
 
                 if (data.is_completed && data.all_assignments_completed) {
-                    const completedModal = new bootstrap.Modal(document.getElementById('courseCompletedModal'));
-                    completedModal.show();
+                    handleCourseCompletionUI(data);
                     return;
                 }
 
@@ -769,6 +789,28 @@
                 console.error(e);
                 alert('Error updating progress.');
             }
+        }
+
+        function handleCourseCompletionUI(data) {
+            const rewardBox = document.getElementById('fastTrackRewardBox');
+            const codeEl = document.getElementById('reward50CouponCode');
+            if (data.reward_50_off && data.reward_50_off.qualified) {
+                if (rewardBox) rewardBox.style.display = 'block';
+                if (codeEl) codeEl.textContent = data.reward_50_off.coupon_code || 'EDUAIQ-50OFF';
+            } else {
+                if (rewardBox) rewardBox.style.display = 'none';
+            }
+            const completedModal = new bootstrap.Modal(document.getElementById('courseCompletedModal'));
+            completedModal.show();
+        }
+
+        function copyRewardCoupon() {
+            const code = document.getElementById('reward50CouponCode')?.textContent || 'EDUAIQ-50OFF';
+            navigator.clipboard.writeText(code).then(() => {
+                alert('🎉 50% Off Reward Code Copied: ' + code);
+            }).catch(() => {
+                alert('Code: ' + code);
+            });
         }
 
         function renderMandatoryAssignmentsModal(pendingList) {
@@ -808,8 +850,7 @@
                 if (data.all_chapters_completed && !data.all_assignments_completed) {
                     renderMandatoryAssignmentsModal(data.pending_assignments);
                 } else if (data.is_completed) {
-                    const completedModal = new bootstrap.Modal(document.getElementById('courseCompletedModal'));
-                    completedModal.show();
+                    handleCourseCompletionUI(data);
                 }
             } catch (e) {}
         }

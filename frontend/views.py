@@ -381,15 +381,36 @@ def my_learning(request):
 
     assigned_courses_data = []
     total_progress_sum = 0.0
+    now = timezone.now()
+
     for c in assigned_courses:
         e = enrollment_map.get(c.id)
         pct = float(e.progress_pct) if e else 0.0
         total_progress_sum += pct
         is_comp = e.is_completed if e else False
+
+        # 6-Month (180 Days) Challenge Calculation
+        enrolled_dt = (e.enrollment_date if (e and e.enrollment_date) else None) or getattr(request.user, 'date_joined', now)
+        days_passed = (now - enrolled_dt).days if enrolled_dt else 0
+        days_remaining = max(0, 180 - days_passed)
+
+        if is_comp:
+            comp_dt = (e.completion_date if (e and e.completion_date) else None) or now
+            comp_days = (comp_dt - enrolled_dt).days if (comp_dt and enrolled_dt) else days_passed
+            qualified_50_off = (comp_days <= 180)
+            coupon_code = f"EDUAIQ-50OFF-{c.id}-{request.user.id}" if qualified_50_off else None
+        else:
+            qualified_50_off = False
+            coupon_code = None
+
         assigned_courses_data.append({
             'course': c,
             'progress_pct': pct,
             'is_completed': is_comp,
+            'days_passed': days_passed,
+            'days_remaining': days_remaining,
+            'qualified_50_off': qualified_50_off,
+            'coupon_code': coupon_code,
         })
 
     avg_progress = round(total_progress_sum / len(assigned_courses)) if assigned_courses else 0
@@ -597,10 +618,19 @@ def dashboard(request):
 
 
 
+def _is_main_admin(user):
+    """Checks if user is Main Admin / Superadmin (Not an institution-restricted account)."""
+    if not user or not user.is_authenticated:
+        return False
+    if getattr(user, 'role', '') == 'institution':
+        return False
+    return bool(user.is_superuser or getattr(user, 'role', '') in ['admin', 'superadmin'] or getattr(user, 'is_staff', False))
+
+
 @login_required(login_url='/admin-panel/login/')
 def users(request):
     """Admin users management - Superadmin Only"""
-    if not (request.user.is_superuser or request.user.role == 'admin'):
+    if not _is_main_admin(request.user):
         return redirect('admin_panel')
     return render(request, "admin_panel/users.html")
 
@@ -620,12 +650,16 @@ def admin_courses(request):
 @login_required(login_url='/admin-panel/login/')
 def admin_add_course(request):
     """Admin add new course page"""
+    if not _is_main_admin(request.user):
+        return redirect('/admin-panel/courses/')
     return render(request, "admin_panel/add-new-course.html")
 
 
 @login_required(login_url='/admin-panel/login/')
 def admin_edit_course(request):
     """Admin edit course page"""
+    if not _is_main_admin(request.user):
+        return redirect('/admin-panel/courses/')
     return render(request, "admin_panel/edit-course.html")
 
 
@@ -648,6 +682,8 @@ def admin_books(request):
 @login_required(login_url='/admin-panel/login/')
 def admin_add_book(request):
     """Admin add new AI Book page — POSTs to /courses/courses/ with category locked to ai-books."""
+    if not _is_main_admin(request.user):
+        return redirect('/admin-panel/courses/')
     return render(request, "admin_panel/add-book.html")
 
 
@@ -665,7 +701,8 @@ def admin_page_router(request, page_name):
         'users', 'add-new-institution', 'institution-list', 'edit-institution',
         'coaching-list', 'add-coaching', 'coaching-batches',
         'categories', 'role-permission', 'assign-role', 'general', 'company',
-        'notification-alert', 'payment-gateway', 'currencies', 'languages'
+        'notification-alert', 'payment-gateway', 'currencies', 'languages',
+        'edit-course', 'add-new-course', 'add-book'
     ]
 
     if request.user.role == 'institution' and page_name in superadmin_only_pages:

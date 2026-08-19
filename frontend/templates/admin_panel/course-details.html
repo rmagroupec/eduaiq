@@ -142,9 +142,11 @@
     <a class="btn btn-outline-secondary" href="/admin-panel/courses/">
       <i class="ri-arrow-left-line"></i> Back
     </a>
+    {% if user.is_superuser or user.role == 'admin' or user.role == 'superadmin' or user.is_staff and user.role != 'institution' %}
     <a id="editCourseBtn" class="btn btn-primary-600" href="#">
       <i class="ri-edit-line"></i> Edit Course
     </a>
+    {% endif %}
   </div>
 </div>
 
@@ -250,8 +252,11 @@
       return;
     }
 
-    // Set Edit course link
-    document.getElementById('editCourseBtn').href = `/admin-panel/courses/edit/?slug=${querySlug}`;
+    // Set Edit course link if superadmin
+    const editCourseBtn = document.getElementById('editCourseBtn');
+    if (editCourseBtn) {
+      editCourseBtn.href = `/admin-panel/courses/edit/?slug=${querySlug}`;
+    }
 
     try {
       const response = await fetch(`${API_BASE_URL}/courses/courses/${querySlug}/`);

@@ -13,12 +13,14 @@
       <span class="text-secondary-light">/ Books List</span>
     </div>
   </div>
+  {% if user.is_superuser or user.role == 'admin' or user.role == 'superadmin' or user.is_staff and user.role != 'institution' %}
   <a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/books/add/">
     <span class="d-flex text-md">
       <i class="ri-add-large-line"></i>
     </span>
     Add Book
   </a>
+  {% endif %}
 </div>
 
 <div class="mt-24">
@@ -62,7 +64,7 @@
 <script>
   const API_BASE_URL = window.location.origin;
   const AI_BOOKS_CATEGORY_SLUG = 'ai-books';
-  const IS_SUPERADMIN = "{{ user.is_superuser }}" === "True" || "{{ user.role }}" === "admin";
+  const IS_SUPERADMIN = {% if user.is_superuser or user.role == 'admin' or user.role == 'superadmin' or user.is_staff and user.role != 'institution' %}true{% else %}false{% endif %};
 
   async function loadAiBooks() {
     const searchVal = document.getElementById('adminBookSearch').value.trim();
@@ -100,10 +102,10 @@
               <a class="btn btn-sm btn-success text-white" href="/book-reader/${c.slug}/" target="_blank" title="Open Google Books style interactive reader">
                 <i class="ri-book-read-line"></i> Read Book
               </a>
+              ${IS_SUPERADMIN ? `
               <a class="btn btn-sm btn-outline-primary" href="/admin-panel/courses/edit/?slug=${c.slug}&next=/admin-panel/books/">
                 <i class="ri-edit-line"></i> Edit / Upload PDF
               </a>
-              ${IS_SUPERADMIN ? `
               <button class="btn btn-sm btn-outline-danger" onclick="deleteBook('${c.slug}', '${c.title}')">
                 <i class="ri-delete-bin-line"></i> Delete
               </button>
