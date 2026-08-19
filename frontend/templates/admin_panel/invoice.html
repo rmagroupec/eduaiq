@@ -1,0 +1,258 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Invoice #{{ invoice.invoice_no }} - EduAiQ{% endblock %}
+
+{% block content %}
+<!-- Top Action Bar for Screen Display -->
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24 print-hide">
+  <div class="d-flex align-items-center gap-12">
+    <button type="button" onclick="history.back()" class="btn btn-outline-neutral-400 radius-8 px-16 py-8 d-flex align-items-center gap-2">
+      <i class="ri-arrow-left-line"></i> Back
+    </button>
+    <div>
+      <h1 class="fw-semibold mb-2 h6 text-primary-light">Tax Invoice & Payment Receipt</h1>
+      <span class="text-secondary-light text-sm">Invoice No: <strong class="text-primary-600">#{{ invoice.invoice_no }}</strong></span>
+    </div>
+  </div>
+  <div class="d-flex align-items-center gap-12">
+    <button type="button" onclick="downloadInvoicePDF()" class="btn btn-outline-primary-600 radius-8 px-20 py-10 d-flex align-items-center gap-2 font-semibold">
+      <i class="ri-file-download-line text-lg"></i> Download PDF
+    </button>
+    <button type="button" onclick="window.print()" class="btn btn-primary-600 radius-8 px-20 py-10 d-flex align-items-center gap-2 font-semibold text-white shadow-sm">
+      <i class="ri-printer-line text-lg"></i> Print Invoice
+    </button>
+  </div>
+</div>
+
+<!-- Invoice Card Container -->
+<div class="mx-auto" style="max-width: 800px;">
+  <div class="card border-0 shadow-sm radius-12 overflow-hidden bg-base" id="printableInvoiceCard">
+    <div class="card-body p-20">
+
+      <!-- Invoice Header -->
+      <div class="d-flex flex-wrap align-items-start justify-content-between gap-16 border-bottom border-neutral-200 pb-16 mb-16">
+        <div>
+          <div class="d-flex align-items-center gap-12 mb-6">
+            <img src="{% static 'assets/img/eduaiq-logo.png' %}" onerror="this.src='{% static 'admin_assets/images/logo.png' %}'" alt="EduAiQ Logo" style="max-height: 42px; width: auto; object-fit: contain;" class="flex-shrink-0">
+            <div>
+              <h5 class="fw-bold text-dark mb-0 line-height-1 text-md">EduAiQ Systems</h5>
+              <span class="text-xs text-secondary-light">Education Management Platform</span>
+            </div>
+          </div>
+          <p class="text-xs text-secondary-light mb-0 line-height-1-4">102 Educational Tower, Knowledge Park, New Delhi - 110001<br>GSTIN: 07AAAEC1234F1Z9 | Phone: +91 98765 43210</p>
+        </div>
+
+        <div class="text-sm-end">
+          <h5 class="fw-bold text-primary-600 mb-4 text-uppercase tracking-wide text-md">TAX INVOICE</h5>
+          <span class="badge bg-{{ invoice.status_class }}-100 text-{{ invoice.status_class }}-600 px-12 py-4 radius-50 fw-bold text-xs mb-8 d-inline-block">
+            {{ invoice.status }}
+          </span>
+          <div class="text-xs text-secondary-light">
+            <div><strong>Invoice No:</strong> #{{ invoice.invoice_no }}</div>
+            <div><strong>Receipt No:</strong> #{{ invoice.receipt_no }}</div>
+            <div><strong>Date:</strong> {{ invoice.date }}</div>
+            <div><strong>Due Date:</strong> {{ invoice.due_date }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bill To & Bill From Cards -->
+      <div class="row g-16 mb-16">
+        <div class="col-sm-6">
+          <div class="p-12 radius-8 bg-neutral-50 border border-neutral-200 h-100">
+            <h6 class="text-xs fw-bold text-uppercase text-secondary-light tracking-wide mb-8">Billed To (Customer / Student)</h6>
+            <h6 class="fw-bold text-dark mb-2 text-sm">{{ invoice.customer_name }}</h6>
+            <p class="text-xs text-secondary-light mb-6">{{ invoice.customer_subtext }}</p>
+            <div class="text-xs text-secondary-light">
+              {% if invoice.customer_email %}<div><i class="ri-mail-line me-1"></i> {{ invoice.customer_email }}</div>{% endif %}
+              {% if invoice.customer_phone %}<div><i class="ri-phone-line me-1"></i> {{ invoice.customer_phone }}</div>{% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="p-12 radius-8 bg-neutral-50 border border-neutral-200 h-100">
+            <h6 class="text-xs fw-bold text-uppercase text-secondary-light tracking-wide mb-8">Payment Details</h6>
+            <div class="text-xs">
+              <div class="d-flex justify-content-between mb-4">
+                <span class="text-secondary-light">Payment Method:</span>
+                <span class="fw-semibold text-dark">{{ invoice.payment_method }}</span>
+              </div>
+              <div class="d-flex justify-content-between mb-4">
+                <span class="text-secondary-light">Reference / TRX ID:</span>
+                <span class="fw-semibold text-primary-600">{{ invoice.reference_no }}</span>
+              </div>
+              <div class="d-flex justify-content-between mb-4">
+                <span class="text-secondary-light">Authorized Collector:</span>
+                <span class="fw-semibold text-dark">{{ invoice.collector }}</span>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-secondary-light">Payment Date:</span>
+                <span class="fw-semibold text-dark">{{ invoice.date }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Items Table -->
+      <div class="table-responsive mb-16">
+        <table class="table bordered-table mb-0 radius-8 overflow-hidden text-xs">
+          <thead class="bg-neutral-100 text-dark">
+            <tr>
+              <th scope="col" class="w-40-px text-center py-8">#</th>
+              <th scope="col" class="py-8">Item Description</th>
+              <th scope="col" class="text-center w-80-px py-8">Qty</th>
+              <th scope="col" class="text-end w-120-px py-8">Rate (₹)</th>
+              <th scope="col" class="text-end w-120-px py-8">Amount (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in invoice.items %}
+            <tr>
+              <td class="text-center fw-medium py-8">{{ forloop.counter }}</td>
+              <td class="py-8">
+                <h6 class="text-xs fw-semibold text-dark mb-0">{{ item.description }}</h6>
+              </td>
+              <td class="text-center py-8">{{ item.qty }}</td>
+              <td class="text-end py-8">₹{{ item.rate|floatformat:2 }}</td>
+              <td class="text-end fw-semibold text-dark py-8">₹{{ item.amount|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td class="text-center fw-medium py-8">1</td>
+              <td class="py-8"><h6 class="text-xs fw-semibold text-dark mb-0">{{ invoice.type }}</h6></td>
+              <td class="text-center py-8">1</td>
+              <td class="text-end py-8">₹{{ invoice.total_amount|floatformat:2 }}</td>
+              <td class="text-end fw-semibold text-dark py-8">₹{{ invoice.total_amount|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Financial Breakdown -->
+      <div class="row g-16 justify-content-end mb-20">
+        <div class="col-md-5 col-sm-7">
+          <div class="p-12 radius-8 bg-neutral-50 border border-neutral-200 text-xs">
+            <div class="d-flex justify-content-between mb-6">
+              <span class="text-secondary-light">Subtotal:</span>
+              <span class="fw-semibold text-dark">₹{{ invoice.subtotal|floatformat:2 }}</span>
+            </div>
+            {% if invoice.tax_amount > 0 %}
+            <div class="d-flex justify-content-between mb-6">
+              <span class="text-secondary-light">GST / Taxes:</span>
+              <span class="fw-semibold text-dark">₹{{ invoice.tax_amount|floatformat:2 }}</span>
+            </div>
+            {% endif %}
+            {% if invoice.discount_amount > 0 %}
+            <div class="d-flex justify-content-between mb-6">
+              <span class="text-secondary-light">Discount:</span>
+              <span class="fw-semibold text-success-600">- ₹{{ invoice.discount_amount|floatformat:2 }}</span>
+            </div>
+            {% endif %}
+            <div class="d-flex justify-content-between text-sm fw-bold border-top border-neutral-300 pt-6 mb-6">
+              <span class="text-dark">Total Amount:</span>
+              <span class="text-primary-600">₹{{ invoice.total_amount|floatformat:2 }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-4">
+              <span class="text-secondary-light">Amount Paid:</span>
+              <span class="fw-bold text-success-600">₹{{ invoice.amount_paid|floatformat:2 }}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="text-secondary-light">Balance Due:</span>
+              <span class="fw-bold {% if invoice.balance_due > 0 %}text-danger-600{% else %}text-dark{% endif %}">₹{{ invoice.balance_due|floatformat:2 }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Terms & Signatures -->
+      <div class="border-top border-neutral-200 pt-16 mt-16">
+        <div class="row align-items-end g-16">
+          <div class="col-sm-7">
+            <h6 class="text-xs fw-bold text-uppercase text-secondary-light tracking-wide mb-4">Notes / Remarks</h6>
+            <p class="text-xs text-secondary-light mb-0 line-height-1-4">{{ invoice.remarks }}</p>
+            <span class="text-xs text-neutral-400 d-block mt-4" style="font-size: 11px;">Thank you for choosing EduAiQ. Computer-generated tax invoice — no signature required.</span>
+          </div>
+          <div class="col-sm-5 text-sm-end">
+            <div class="d-inline-block text-center">
+              <div class="w-100-px h-40-px mx-auto border-bottom border-neutral-300 mb-4 d-flex align-items-center justify-content-center">
+                <span class="text-xs text-primary-600 fw-bold italic opacity-75">EduAiQ Finance</span>
+              </div>
+              <h6 class="text-xs fw-bold text-dark mb-0">Authorized Signatory</h6>
+              <span class="text-xs text-secondary-light" style="font-size: 11px;">EduAiQ ERP Accounts Dept.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block css %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .sidebar, .dashboard-main header, .breadcrumb, .print-hide, nav, .theme-customizer {
+    display: none !important;
+  }
+  .dashboard-main {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+  .dashboard-main-body {
+    padding: 0 !important;
+  }
+  .card {
+    border: none !important;
+    box-shadow: none !important;
+  }
+  #printableInvoiceCard {
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+</style>
+{% endblock %}
+
+{% block js %}
+<script>
+function downloadInvoicePDF() {
+  const element = document.getElementById('printableInvoiceCard');
+  const opt = {
+    margin:       [10, 10, 10, 10],
+    filename:     'Invoice_{{ invoice.invoice_no }}.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  if (window.showToast) window.showToast('Generating PDF file...', 'info');
+  html2pdf().set(opt).from(element).save().then(function() {
+    if (window.showToast) window.showToast('Invoice PDF downloaded successfully!', 'success');
+  });
+}
+
+// Auto-trigger print if URL contains print=true or download=pdf
+$(document).ready(function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('print') === 'true') {
+    setTimeout(function() { window.print(); }, 500);
+  } else if (urlParams.get('download') === 'pdf') {
+    setTimeout(function() { downloadInvoicePDF(); }, 500);
+  }
+});
+</script>
+{% endblock %}

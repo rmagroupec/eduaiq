@@ -484,15 +484,25 @@
             <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
                 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
             </button>
-            <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+            <ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
+                <li>
+                    <button onclick="window.open('/payments/invoice/trx/1/?download=pdf', '_blank')" class="dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+                        <i class="ri-file-download-line text-lg"></i> Download Invoice
+                    </button>
+                </li>
+                <li>
+                    <button onclick="window.open('/payments/invoice/trx/1/', '_blank')" class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+                        <i class="ri-eye-line"></i> View Receipt
+                    </button>
+                </li>
                 <li>
                     <button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-                        <i class="ri-edit-2-line"></i>Edit
+                        <i class="ri-edit-2-line"></i> Edit
                     </button>
                 </li>
                 <li>
                     <button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
-                        <i class="ri-delete-bin-6-line"></i>Delete
+                        <i class="ri-delete-bin-6-line"></i> Delete
                     </button>
                 </li>
             </ul>

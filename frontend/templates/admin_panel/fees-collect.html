@@ -160,52 +160,7 @@
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">
-                                                01
-                                            </label>
-</div>
-</td>
-<td>
-<span class="text-primary-600">AD52365</span>
-</td>
-<td>
-<div class="d-flex align-items-center">
-<img alt="Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/avatar-img1.png' %}"/>
-<div class="">
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Kathryn Murphy</h6>
-</div>
-</div>
-</td>
-<td>12</td>
-<td>Class 1 (A)</td>
-<td>₹700.50</td>
-<td>₹700.50</td>
-<td>₹0</td>
-<td>12 May 2025</td>
-<td>
-<span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Paid</span>
-</td>
-<td>
-<div class="btn-group">
-<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-</button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-<li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
-<i class="ri-eye-line"></i>
-                                                        View Details
-                                                    </button>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-<tr>
+<tr data-db-id="1">
 <td>
 <div class="form-check style-check d-flex align-items-center">
 <input class="form-check-input" type="checkbox"/>
@@ -223,29 +178,43 @@
 </td>
 <td>12</td>
 <td>Class 1 (A)</td>
-<td>₹700.50</td>
-<td>₹700.50</td>
-<td>₹0</td>
+<td class="fw-bold text-dark">₹700.50</td>
+<td class="text-success-600 fw-bold">₹700.50</td>
+<td class="text-secondary-light">₹0</td>
 <td>12 May 2025</td>
-<td><span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Paid</span>
-</td>
+<td><span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Paid</span></td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
-<i class="ri-eye-line"></i>
-                                                        View Details
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
 </td>
 </tr>
-<tr>
+
+<tr data-db-id="2">
 <td>
 <div class="form-check style-check d-flex align-items-center">
 <input class="form-check-input" type="checkbox"/>
@@ -263,29 +232,43 @@
 </td>
 <td>08</td>
 <td>Class 2 (B)</td>
-<td>₹850.00</td>
-<td>₹450.00</td>
-<td>₹400.00</td>
+<td class="fw-bold text-dark">₹850.00</td>
+<td class="text-success-600 fw-bold">₹450.00</td>
+<td class="text-danger-600 fw-bold">₹400.00</td>
 <td>10 May 2025</td>
-<td><span class="bg-warning-100 text-warning-600 px-16 py-2 radius-4 fw-medium text-sm">Partial</span>
-</td>
+<td><span class="bg-warning-100 text-warning-600 px-16 py-2 radius-4 fw-medium text-sm">Partial</span></td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
-<i class="ri-eye-line"></i>
-                                                        View Details
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
 </td>
 </tr>
-<tr>
+
+<tr data-db-id="3">
 <td>
 <div class="form-check style-check d-flex align-items-center">
 <input class="form-check-input" type="checkbox"/>
@@ -303,29 +286,43 @@
 </td>
 <td>19</td>
 <td>Class 3 (A)</td>
-<td>₹920.75</td>
-<td>₹0</td>
-<td>₹920.75</td>
+<td class="fw-bold text-dark">₹920.75</td>
+<td class="text-success-600 fw-bold">₹0</td>
+<td class="text-danger-600 fw-bold">₹920.75</td>
 <td>08 May 2025</td>
-<td><span class="bg-danger-100 text-danger-600 px-16 py-2 radius-4 fw-medium text-sm">Unpaid</span>
-</td>
+<td><span class="bg-danger-100 text-danger-600 px-16 py-2 radius-4 fw-medium text-sm">Unpaid</span></td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
-<i class="ri-eye-line"></i>
-                                                        View Details
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
 </td>
 </tr>
-<tr>
+
+<tr data-db-id="4">
 <td>
 <div class="form-check style-check d-flex align-items-center">
 <input class="form-check-input" type="checkbox"/>
@@ -343,29 +340,43 @@
 </td>
 <td>10</td>
 <td>Class 4 (C)</td>
-<td>₹750.00</td>
-<td>₹750.00</td>
-<td>₹0</td>
+<td class="fw-bold text-dark">₹750.00</td>
+<td class="text-success-600 fw-bold">₹750.00</td>
+<td class="text-secondary-light">₹0</td>
 <td>05 May 2025</td>
-<td><span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Paid</span>
-</td>
+<td><span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Paid</span></td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
-<i class="ri-eye-line"></i>
-                                                        View Details
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
 </td>
 </tr>
-<tr>
+
+<tr data-db-id="5">
 <td>
 <div class="form-check style-check d-flex align-items-center">
 <input class="form-check-input" type="checkbox"/>
@@ -383,29 +394,43 @@
 </td>
 <td>16</td>
 <td>Class 5 (B)</td>
-<td>₹630.20</td>
-<td>₹500.00</td>
-<td>₹130.20</td>
+<td class="fw-bold text-dark">₹630.20</td>
+<td class="text-success-600 fw-bold">₹500.00</td>
+<td class="text-danger-600 fw-bold">₹130.20</td>
 <td>03 May 2025</td>
-<td><span class="bg-warning-100 text-warning-600 px-16 py-2 radius-4 fw-medium text-sm">Partial</span>
-</td>
+<td><span class="bg-warning-100 text-warning-600 px-16 py-2 radius-4 fw-medium text-sm">Partial</span></td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
-<i class="ri-eye-line"></i>
-                                                        View Details
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
 </td>
 </tr>
-<tr>
+
+<tr data-db-id="6">
 <td>
 <div class="form-check style-check d-flex align-items-center">
 <input class="form-check-input" type="checkbox"/>
@@ -423,29 +448,43 @@
 </td>
 <td>09</td>
 <td>Class 6 (A)</td>
-<td>₹800.00</td>
-<td>₹800.00</td>
-<td>₹0</td>
+<td class="fw-bold text-dark">₹800.00</td>
+<td class="text-success-600 fw-bold">₹800.00</td>
+<td class="text-secondary-light">₹0</td>
 <td>01 May 2025</td>
-<td><span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Paid</span>
-</td>
+<td><span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Paid</span></td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
-<i class="ri-eye-line"></i>
-                                                        View Details
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
 </td>
 </tr>
-<tr>
+
+<tr data-db-id="7">
 <td>
 <div class="form-check style-check d-flex align-items-center">
 <input class="form-check-input" type="checkbox"/>
@@ -463,29 +502,43 @@
 </td>
 <td>11</td>
 <td>Class 7 (A)</td>
-<td>₹950.00</td>
-<td>₹400.00</td>
-<td>₹550.00</td>
+<td class="fw-bold text-dark">₹950.00</td>
+<td class="text-success-600 fw-bold">₹400.00</td>
+<td class="text-danger-600 fw-bold">₹550.00</td>
 <td>28 Apr 2025</td>
-<td><span class="bg-warning-100 text-warning-600 px-16 py-2 radius-4 fw-medium text-sm">Partial</span>
-</td>
+<td><span class="bg-warning-100 text-warning-600 px-16 py-2 radius-4 fw-medium text-sm">Partial</span></td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
-<i class="ri-eye-line"></i>
-                                                        View Details
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
 </td>
 </tr>
-<tr>
+
+<tr data-db-id="8">
 <td>
 <div class="form-check style-check d-flex align-items-center">
 <input class="form-check-input" type="checkbox"/>
@@ -503,29 +556,43 @@
 </td>
 <td>18</td>
 <td>Class 8 (B)</td>
-<td>₹880.00</td>
-<td>₹880.00</td>
-<td>₹0</td>
+<td class="fw-bold text-dark">₹880.00</td>
+<td class="text-success-600 fw-bold">₹880.00</td>
+<td class="text-secondary-light">₹0</td>
 <td>25 Apr 2025</td>
-<td><span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Paid</span>
-</td>
+<td><span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Paid</span></td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
-<i class="ri-eye-line"></i>
-                                                        View Details
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
 </td>
 </tr>
-<tr>
+
+<tr data-db-id="9">
 <td>
 <div class="form-check style-check d-flex align-items-center">
 <input class="form-check-input" type="checkbox"/>
@@ -543,29 +610,43 @@
 </td>
 <td>13</td>
 <td>Class 9 (C)</td>
-<td>₹990.00</td>
-<td>₹0</td>
-<td>₹990.00</td>
+<td class="fw-bold text-dark">₹990.00</td>
+<td class="text-success-600 fw-bold">₹0</td>
+<td class="text-danger-600 fw-bold">₹990.00</td>
 <td>22 Apr 2025</td>
-<td><span class="bg-danger-100 text-danger-600 px-16 py-2 radius-4 fw-medium text-sm">Unpaid</span>
-</td>
+<td><span class="bg-danger-100 text-danger-600 px-16 py-2 radius-4 fw-medium text-sm">Unpaid</span></td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
-<i class="ri-eye-line"></i>
-                                                        View Details
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
 </td>
 </tr>
-<tr>
+
+<tr data-db-id="10">
 <td>
 <div class="form-check style-check d-flex align-items-center">
 <input class="form-check-input" type="checkbox"/>
@@ -583,23 +664,36 @@
 </td>
 <td>15</td>
 <td>Class 10 (A)</td>
-<td>₹1020.00</td>
-<td>₹1020.00</td>
-<td>₹0</td>
+<td class="fw-bold text-dark">₹1020.00</td>
+<td class="text-success-600 fw-bold">₹1020.00</td>
+<td class="text-secondary-light">₹0</td>
 <td>20 Apr 2025</td>
-<td><span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Paid</span>
-</td>
+<td><span class="bg-success-100 text-success-600 px-16 py-2 radius-4 fw-medium text-sm">Paid</span></td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
-<i class="ri-eye-line"></i>
-                                                        View Details
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
@@ -671,13 +765,46 @@
     </div>
   </div>
 </div>
+
+<!-- Invoice Preview Modal -->
+<div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content radius-16 border-0 shadow">
+      <div class="modal-header border-bottom px-24 py-16 bg-base">
+        <h6 class="modal-title fw-bold text-primary-light d-flex align-items-center gap-2" id="invoiceModalLabel">
+          <i class="ri-file-text-line text-primary-600 text-xl"></i> Tax Invoice & Fee Receipt Preview
+        </h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-24" id="invoiceModalBody">
+        <!-- Rendered dynamically via JS -->
+      </div>
+      <div class="modal-footer border-top px-24 py-16 bg-base d-flex justify-content-between">
+        <a href="#" id="invoiceFullViewBtn" target="_blank" class="btn btn-outline-neutral-400 radius-8 px-16">
+          <i class="ri-external-link-line me-1"></i> Full Page View
+        </a>
+        <div class="d-flex align-items-center gap-12">
+          <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Close</button>
+          <button type="button" onclick="printInvoiceModalContent()" class="btn btn-outline-primary-600 radius-8 px-20 font-semibold">
+            <i class="ri-printer-line me-1"></i> Print
+          </button>
+          <button type="button" onclick="downloadInvoiceModalPDF()" class="btn btn-primary-600 radius-8 px-20 text-white shadow-sm font-semibold">
+            <i class="ri-file-download-line me-1"></i> Download PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
 
     let table;
     let editingFeeRow = null;
+    let currentInvoiceData = null;
 
     document.getElementById('feeDate').valueAsDate = new Date();
 
@@ -686,23 +813,242 @@
             <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
                 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
             </button>
-            <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+            <ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
+                <li>
+                    <button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+                        <i class="ri-file-download-line text-lg"></i> Download Invoice
+                    </button>
+                </li>
+                <li>
+                    <button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+                        <i class="ri-eye-line"></i> View Receipt
+                    </button>
+                </li>
                 <li>
                     <button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-                        <i class="ri-edit-2-line"></i>Edit
+                        <i class="ri-edit-2-line"></i> Edit
                     </button>
                 </li>
                 <li>
                     <button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
-                        <i class="ri-delete-bin-6-line"></i>Delete
+                        <i class="ri-delete-bin-6-line"></i> Delete
                     </button>
                 </li>
             </ul>
         </div>
     `;
 
+    // Download Invoice Listener
+    $(document).on('click', '.download-invoice-btn', function (e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        const dbId = $row.attr('data-db-id') || 1;
+        window.open(`/payments/invoice/fee/${dbId}/?download=pdf`, '_blank');
+    });
+
+    // View Invoice Listener
+    $(document).on('click', '.view-invoice-btn, .edit-sidebar-btn[data-bs-target="#payslipModal"]', function (e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        const dbId = $row.attr('data-db-id') || 1;
+        openInvoiceModal('fee', dbId, $row);
+    });
+
+    async function openInvoiceModal(type, id, $row) {
+        let invData = null;
+        try {
+            const res = await fetch(`/payments/api/invoice/${type}/${id}/`);
+            const json = await res.json();
+            if (json.status === 'success') {
+                invData = json.data;
+            }
+        } catch(e) {}
+
+        if (!invData && $row) {
+            const admNo = $row.find('td:nth-child(2)').text().trim();
+            const studentName = $row.find('td:nth-child(3)').text().trim();
+            const className = $row.find('td:nth-child(5)').text().trim();
+            const total = parseFloat($row.find('td:nth-child(6)').text().replace(/[^0-9.]/g, '')) || 700.50;
+            const paid = parseFloat($row.find('td:nth-child(7)').text().replace(/[^0-9.]/g, '')) || total;
+            const date = $row.find('td:nth-child(9)').text().trim();
+
+            invData = {
+                invoice_no: `INV-FEE-${String(id).padStart(5, '0')}`,
+                receipt_no: `REC-${String(id).padStart(5, '0')}`,
+                date: date || '12 May 2025',
+                due_date: date || '12 May 2025',
+                type: 'Student Fee Collection Receipt',
+                status: paid >= total ? 'Paid' : 'Partial',
+                status_class: paid >= total ? 'success' : 'warning',
+                customer_name: studentName || 'Kathryn Murphy',
+                customer_subtext: `Admission No: ${admNo || 'AD52365'} | Class: ${className || 'Class 1 (A)'}`,
+                customer_email: 'student@eduaiq.com',
+                customer_phone: '+91 98765 43210',
+                payment_method: 'Cash / Online UPI',
+                reference_no: `REF-FEE-${id}`,
+                items: [{'description': `Academic & Tuition Fee (${className || 'Class 1'})`, 'qty': 1, 'rate': total, 'amount': total}],
+                subtotal: total,
+                tax_amount: 0,
+                discount_amount: 0,
+                total_amount: total,
+                amount_paid: paid,
+                balance_due: Math.max(0, total - paid),
+                remarks: 'Official fee collection tax receipt.',
+                collector: 'EduAiQ Finance Office'
+            };
+        }
+
+        currentInvoiceData = invData;
+        renderInvoiceModalHTML(invData, type, id);
+
+        const modalEl = document.getElementById('invoiceModal');
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modalInstance.show();
+    }
+
+    function renderInvoiceModalHTML(inv, type, id) {
+        $('#invoiceFullViewBtn').attr('href', `/payments/invoice/${type}/${id}/`);
+        
+        let itemsHtml = '';
+        if (inv.items && inv.items.length > 0) {
+            inv.items.forEach((item, index) => {
+                itemsHtml += `
+                    <tr>
+                        <td class="text-center">${index + 1}</td>
+                        <td class="fw-semibold text-dark">${item.description}</td>
+                        <td class="text-center">${item.qty}</td>
+                        <td class="text-end">₹${parseFloat(item.rate).toFixed(2)}</td>
+                        <td class="text-end fw-bold text-dark">₹${parseFloat(item.amount).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        const html = `
+            <div id="invoiceModalCard" class="p-16 radius-12 bg-white border border-neutral-200">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-16 border-bottom pb-16 mb-16">
+                    <div>
+                        <div class="d-flex align-items-center gap-10 mb-4">
+                            <img src="{% static 'assets/img/eduaiq-logo.png' %}" onerror="this.src='/static/admin_assets/images/logo.png'" alt="EduAiQ Logo" style="max-height: 36px; width: auto; object-fit: contain;">
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0 text-sm">EduAiQ Systems</h6>
+                                <span class="text-xs text-secondary-light" style="font-size: 11px;">Education Management Platform</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-secondary-light mb-0" style="font-size: 11px;">102 Educational Tower, Knowledge Park, New Delhi</p>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-${inv.status_class}-100 text-${inv.status_class}-600 px-12 py-4 radius-50 fw-bold text-xs mb-4 d-inline-block">${inv.status}</span>
+                        <div class="text-xs text-secondary-light"><strong>Invoice:</strong> #${inv.invoice_no}</div>
+                        <div class="text-xs text-secondary-light"><strong>Date:</strong> ${inv.date}</div>
+                    </div>
+                </div>
+
+                <div class="row g-12 mb-16">
+                    <div class="col-6">
+                        <div class="p-12 radius-8 bg-neutral-50 border text-xs">
+                            <span class="text-secondary-light d-block text-uppercase fw-bold mb-4">Billed To:</span>
+                            <strong class="text-dark d-block text-sm">${inv.customer_name}</strong>
+                            <span class="text-secondary-light">${inv.customer_subtext}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-12 radius-8 bg-neutral-50 border text-xs">
+                            <span class="text-secondary-light d-block text-uppercase fw-bold mb-4">Payment Method:</span>
+                            <strong class="text-dark d-block text-sm">${inv.payment_method}</strong>
+                            <span class="text-primary-600">Ref: ${inv.reference_no}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive mb-16">
+                    <table class="table bordered-table mb-0 text-xs">
+                        <thead class="bg-neutral-100">
+                            <tr>
+                                <th class="w-40-px text-center">#</th>
+                                <th>Description</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-end">Rate</th>
+                                <th class="text-end">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHtml}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row justify-content-end mb-16">
+                    <div class="col-sm-6">
+                        <div class="p-12 radius-8 bg-neutral-50 border text-xs">
+                            <div class="d-flex justify-content-between mb-4">
+                                <span>Subtotal:</span>
+                                <strong>₹${parseFloat(inv.subtotal).toFixed(2)}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-4 border-top pt-4 fw-bold">
+                                <span>Total Amount:</span>
+                                <strong class="text-primary-600">₹${parseFloat(inv.total_amount).toFixed(2)}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-4 text-success-600 fw-bold">
+                                <span>Amount Paid:</span>
+                                <strong>₹${parseFloat(inv.amount_paid).toFixed(2)}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Balance Due:</span>
+                                <strong class="${inv.balance_due > 0 ? 'text-danger-600' : 'text-dark'}">₹${parseFloat(inv.balance_due).toFixed(2)}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-top pt-12 text-center text-xs text-secondary-light">
+                    <span>Official computer-generated receipt. Thank you for your payment!</span>
+                </div>
+            </div>
+        `;
+        $('#invoiceModalBody').html(html);
+    }
+
+    function printInvoiceModalContent() {
+        const element = document.getElementById('invoiceModalCard');
+        const printWindow = window.open('', '_blank', 'width=800,height=900');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Print Invoice</title>
+                    <link rel="stylesheet" href="/static/admin_assets/css/lib/bootstrap.min.css">
+                    <link rel="stylesheet" href="/static/admin_assets/css/style.css">
+                    <style>body { padding: 24px; background: white; }</style>
+                </head>
+                <body>
+                    ${element.innerHTML}
+                    <script>
+                        window.onload = function() { window.print(); window.close(); }
+                    <\/script>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+    }
+
+    function downloadInvoiceModalPDF() {
+        const element = document.getElementById('invoiceModalCard');
+        const opt = {
+            margin:       [10, 10, 10, 10],
+            filename:     currentInvoiceData ? `Invoice_${currentInvoiceData.invoice_no}.pdf` : 'Invoice.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        if (window.showToast) window.showToast('Generating PDF download...', 'info');
+        html2pdf().set(opt).from(element).save().then(function() {
+            if (window.showToast) window.showToast('Invoice PDF downloaded successfully!', 'success');
+        });
+    }
+
     // Global Delete Delegate
     $(document).on('click', '.delete-row-btn, [data-bs-target="#exampleModalDelete"]', function (e) {
+
         e.preventDefault();
         const $row = $(this).closest('tr');
         window.showConfirmModal({

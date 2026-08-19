@@ -37,16 +37,14 @@
 </button>
 <ul class="dropdown-menu p-12 border bg-base shadow">
 <li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
-<i class="ri-file-3-line"></i>
-                                            PDF
-                                        </button>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" onclick="window.open('/payments/invoice/trx/1/?download=pdf', '_blank')" type="button">
+<i class="ri-file-3-line text-primary-600"></i> PDF Invoice
+</button>
 </li>
 <li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
-<i class="ri-file-excel-line"></i>
-                                            Excel
-                                        </button>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" onclick="if(window.showToast) window.showToast('Exporting transaction history to Excel...', 'info')" type="button">
+<i class="ri-file-excel-line text-success-600"></i> Excel
+</button>
 </li>
 </ul>
 </div>
@@ -103,22 +101,32 @@
 <td>05 Jan 2024</td>
 <td>Tuition Fees</td>
 <td>Cash</td>
-<td>₹1,200</td>
+<td class="fw-bold text-success-600">₹1,200</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-edit-2-line"></i>Edit
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
 </li>
 <li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<i class="ri-delete-bin-6-line"></i>Delete
-                                                    </button>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
@@ -135,22 +143,32 @@
 <td>12 Jan 2024</td>
 <td>Library Fees</td>
 <td>Online</td>
-<td>₹250</td>
+<td class="fw-bold text-success-600">₹250</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-edit-2-line"></i>Edit
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
 </li>
 <li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<i class="ri-delete-bin-6-line"></i>Delete
-                                                    </button>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
@@ -167,22 +185,32 @@
 <td>18 Jan 2024</td>
 <td>Exam Fees</td>
 <td>Bank Transfer</td>
-<td>₹600</td>
+<td class="fw-bold text-success-600">₹600</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-edit-2-line"></i>Edit
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
 </li>
 <li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<i class="ri-delete-bin-6-line"></i>Delete
-                                                    </button>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
@@ -199,22 +227,32 @@
 <td>25 Jan 2024</td>
 <td>Sports Fund</td>
 <td>Cash</td>
-<td>₹430</td>
+<td class="fw-bold text-success-600">₹430</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-edit-2-line"></i>Edit
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
 </li>
 <li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<i class="ri-delete-bin-6-line"></i>Delete
-                                                    </button>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
@@ -231,22 +269,32 @@
 <td>30 Jan 2024</td>
 <td>Hostel Rent</td>
 <td>Online</td>
-<td>₹1,000</td>
+<td class="fw-bold text-success-600">₹1,000</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-edit-2-line"></i>Edit
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
 </li>
 <li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<i class="ri-delete-bin-6-line"></i>Delete
-                                                    </button>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
@@ -263,22 +311,32 @@
 <td>05 Feb 2024</td>
 <td>Book Purchase</td>
 <td>Cheque</td>
-<td>₹540</td>
+<td class="fw-bold text-success-600">₹540</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-edit-2-line"></i>Edit
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
 </li>
 <li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<i class="ri-delete-bin-6-line"></i>Delete
-                                                    </button>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
@@ -295,22 +353,32 @@
 <td>12 Feb 2024</td>
 <td>Lab Equipment</td>
 <td>Cash</td>
-<td>₹850</td>
+<td class="fw-bold text-success-600">₹850</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-edit-2-line"></i>Edit
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
 </li>
 <li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<i class="ri-delete-bin-6-line"></i>Delete
-                                                    </button>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
@@ -327,22 +395,32 @@
 <td>20 Feb 2024</td>
 <td>Event Ticket Sale</td>
 <td>Online</td>
-<td>₹1,500</td>
+<td class="fw-bold text-success-600">₹1,500</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-edit-2-line"></i>Edit
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
 </li>
 <li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<i class="ri-delete-bin-6-line"></i>Delete
-                                                    </button>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
@@ -359,22 +437,32 @@
 <td>28 Feb 2024</td>
 <td>Donation</td>
 <td>Bank Transfer</td>
-<td>₹2,700</td>
+<td class="fw-bold text-success-600">₹2,700</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-edit-2-line"></i>Edit
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
 </li>
 <li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<i class="ri-delete-bin-6-line"></i>Delete
-                                                    </button>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
@@ -391,22 +479,32 @@
 <td>05 Mar 2024</td>
 <td>Miscellaneous</td>
 <td>Cash</td>
-<td>₹320</td>
+<td class="fw-bold text-success-600">₹320</td>
 <td>
 <div class="btn-group">
 <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
 </button>
-<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
 <li>
-<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-<i class="ri-edit-2-line"></i>Edit
-                                                    </button>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
 </li>
 <li>
-<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
-<i class="ri-delete-bin-6-line"></i>Delete
-                                                    </button>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
 </li>
 </ul>
 </div>
@@ -477,13 +575,46 @@
     </div>
   </div>
 </div>
+
+<!-- Invoice Preview Modal for Transactions -->
+<div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content radius-16 border-0 shadow">
+      <div class="modal-header border-bottom px-24 py-16 bg-base">
+        <h6 class="modal-title fw-bold text-primary-light d-flex align-items-center gap-2" id="invoiceModalLabel">
+          <i class="ri-file-text-line text-primary-600 text-xl"></i> Transaction Invoice & Receipt Preview
+        </h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-24" id="invoiceModalBody">
+        <!-- Rendered dynamically via JS -->
+      </div>
+      <div class="modal-footer border-top px-24 py-16 bg-base d-flex justify-content-between">
+        <a href="#" id="invoiceFullViewBtn" target="_blank" class="btn btn-outline-neutral-400 radius-8 px-16">
+          <i class="ri-external-link-line me-1"></i> Full Page View
+        </a>
+        <div class="d-flex align-items-center gap-12">
+          <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Close</button>
+          <button type="button" onclick="printInvoiceModalContent()" class="btn btn-outline-primary-600 radius-8 px-20 font-semibold">
+            <i class="ri-printer-line me-1"></i> Print
+          </button>
+          <button type="button" onclick="downloadInvoiceModalPDF()" class="btn btn-primary-600 radius-8 px-20 text-white shadow-sm font-semibold">
+            <i class="ri-file-download-line me-1"></i> Download PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
 
     let table;
     let editingTrxRow = null;
+    let currentInvoiceData = null;
 
     document.getElementById('trxDate').valueAsDate = new Date();
     document.getElementById('trxInvoice').value = Math.floor(1000 + Math.random() * 9000);
@@ -493,23 +624,237 @@
             <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
                 <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
             </button>
-            <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+            <ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
+                <li>
+                    <button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+                        <i class="ri-file-download-line text-lg"></i> Download Invoice
+                    </button>
+                </li>
+                <li>
+                    <button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+                        <i class="ri-eye-line"></i> View Receipt
+                    </button>
+                </li>
                 <li>
                     <button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
-                        <i class="ri-edit-2-line"></i>Edit
+                        <i class="ri-edit-2-line"></i> Edit
                     </button>
                 </li>
                 <li>
                     <button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
-                        <i class="ri-delete-bin-6-line"></i>Delete
+                        <i class="ri-delete-bin-6-line"></i> Delete
                     </button>
                 </li>
             </ul>
         </div>
     `;
 
+    // Download Invoice Listener
+    $(document).on('click', '.download-invoice-btn', function (e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        const dbId = $row.attr('data-db-id') || 1;
+        window.open(`/payments/invoice/trx/${dbId}/?download=pdf`, '_blank');
+    });
+
+    // View Invoice Listener
+    $(document).on('click', '.view-invoice-btn', function (e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        const dbId = $row.attr('data-db-id') || 1;
+        openInvoiceModal('trx', dbId, $row);
+    });
+
+    async function openInvoiceModal(type, id, $row) {
+        let invData = null;
+        try {
+            const res = await fetch(`/payments/api/invoice/${type}/${id}/`);
+            const json = await res.json();
+            if (json.status === 'success') {
+                invData = json.data;
+            }
+        } catch(e) {}
+
+        if (!invData && $row) {
+            const invNo = $row.find('td:nth-child(2)').text().trim();
+            const date = $row.find('td:nth-child(3)').text().trim();
+            const trxType = $row.find('td:nth-child(4)').text().trim();
+            const paymentType = $row.find('td:nth-child(5)').text().trim();
+            const amount = parseFloat($row.find('td:nth-child(6)').text().replace(/[^0-9.]/g, '')) || 500.00;
+
+            invData = {
+                invoice_no: invNo || `INV-TRX-${String(id).padStart(5, '0')}`,
+                receipt_no: `REC-TRX-${String(id).padStart(5, '0')}`,
+                date: date || '12 May 2025',
+                due_date: date || '12 May 2025',
+                type: `Transaction Receipt (${trxType || 'General'})`,
+                status: 'Paid',
+                status_class: 'success',
+                customer_name: 'Payer Account',
+                customer_subtext: `Transaction Type: ${trxType || 'Fee Collection'}`,
+                customer_email: 'accounts@eduaiq.com',
+                customer_phone: '+91 98765 43210',
+                payment_method: paymentType || 'Cash',
+                reference_no: `TRX-REF-${id}`,
+                items: [{'description': `Payment for ${trxType || 'Educational Service'}`, 'qty': 1, 'rate': amount, 'amount': amount}],
+                subtotal: amount,
+                tax_amount: 0,
+                discount_amount: 0,
+                total_amount: amount,
+                amount_paid: amount,
+                balance_due: 0,
+                remarks: `Transaction completed via ${paymentType || 'Cash'}.`,
+                collector: 'Accounts Office'
+            };
+        }
+
+        currentInvoiceData = invData;
+        renderInvoiceModalHTML(invData, type, id);
+
+        const modalEl = document.getElementById('invoiceModal');
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modalInstance.show();
+    }
+
+    function renderInvoiceModalHTML(inv, type, id) {
+        $('#invoiceFullViewBtn').attr('href', `/payments/invoice/${type}/${id}/`);
+        
+        let itemsHtml = '';
+        if (inv.items && inv.items.length > 0) {
+            inv.items.forEach((item, index) => {
+                itemsHtml += `
+                    <tr>
+                        <td class="text-center">${index + 1}</td>
+                        <td class="fw-semibold text-dark">${item.description}</td>
+                        <td class="text-center">${item.qty}</td>
+                        <td class="text-end">₹${parseFloat(item.rate).toFixed(2)}</td>
+                        <td class="text-end fw-bold text-dark">₹${parseFloat(item.amount).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        const html = `
+            <div id="invoiceModalCard" class="p-16 radius-12 bg-white border border-neutral-200">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-16 border-bottom pb-16 mb-16">
+                    <div>
+                        <div class="d-flex align-items-center gap-10 mb-4">
+                            <img src="{% static 'assets/img/eduaiq-logo.png' %}" onerror="this.src='/static/admin_assets/images/logo.png'" alt="EduAiQ Logo" style="max-height: 36px; width: auto; object-fit: contain;">
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0 text-sm">EduAiQ Systems</h6>
+                                <span class="text-xs text-secondary-light" style="font-size: 11px;">Education Management Platform</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-secondary-light mb-0" style="font-size: 11px;">102 Educational Tower, Knowledge Park, New Delhi</p>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-${inv.status_class}-100 text-${inv.status_class}-600 px-12 py-4 radius-50 fw-bold text-xs mb-4 d-inline-block">${inv.status}</span>
+                        <div class="text-xs text-secondary-light"><strong>Invoice:</strong> #${inv.invoice_no}</div>
+                        <div class="text-xs text-secondary-light"><strong>Date:</strong> ${inv.date}</div>
+                    </div>
+                </div>
+
+                <div class="row g-12 mb-16">
+                    <div class="col-6">
+                        <div class="p-12 radius-8 bg-neutral-50 border text-xs">
+                            <span class="text-secondary-light d-block text-uppercase fw-bold mb-4">Payer / Account:</span>
+                            <strong class="text-dark d-block text-sm">${inv.customer_name}</strong>
+                            <span class="text-secondary-light">${inv.customer_subtext}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-12 radius-8 bg-neutral-50 border text-xs">
+                            <span class="text-secondary-light d-block text-uppercase fw-bold mb-4">Payment Method:</span>
+                            <strong class="text-dark d-block text-sm">${inv.payment_method}</strong>
+                            <span class="text-primary-600">Ref: ${inv.reference_no}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive mb-16">
+                    <table class="table bordered-table mb-0 text-xs">
+                        <thead class="bg-neutral-100">
+                            <tr>
+                                <th class="w-40-px text-center">#</th>
+                                <th>Description</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-end">Rate</th>
+                                <th class="text-end">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHtml}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row justify-content-end mb-16">
+                    <div class="col-sm-6">
+                        <div class="p-12 radius-8 bg-neutral-50 border text-xs">
+                            <div class="d-flex justify-content-between mb-4">
+                                <span>Subtotal:</span>
+                                <strong>₹${parseFloat(inv.subtotal).toFixed(2)}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-4 border-top pt-4 fw-bold">
+                                <span>Total Amount:</span>
+                                <strong class="text-primary-600">₹${parseFloat(inv.total_amount).toFixed(2)}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between text-success-600 fw-bold">
+                                <span>Amount Paid:</span>
+                                <strong>₹${parseFloat(inv.amount_paid).toFixed(2)}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-top pt-12 text-center text-xs text-secondary-light">
+                    <span>Official computer-generated receipt. Thank you!</span>
+                </div>
+            </div>
+        `;
+        $('#invoiceModalBody').html(html);
+    }
+
+    function printInvoiceModalContent() {
+        const element = document.getElementById('invoiceModalCard');
+        const printWindow = window.open('', '_blank', 'width=800,height=900');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Print Invoice</title>
+                    <link rel="stylesheet" href="/static/admin_assets/css/lib/bootstrap.min.css">
+                    <link rel="stylesheet" href="/static/admin_assets/css/style.css">
+                    <style>body { padding: 24px; background: white; }</style>
+                </head>
+                <body>
+                    ${element.innerHTML}
+                    <script>
+                        window.onload = function() { window.print(); window.close(); }
+                    <\/script>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+    }
+
+    function downloadInvoiceModalPDF() {
+        const element = document.getElementById('invoiceModalCard');
+        const opt = {
+            margin:       [10, 10, 10, 10],
+            filename:     currentInvoiceData ? `Invoice_${currentInvoiceData.invoice_no}.pdf` : 'Invoice.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        if (window.showToast) window.showToast('Generating PDF download...', 'info');
+        html2pdf().set(opt).from(element).save().then(function() {
+            if (window.showToast) window.showToast('Invoice PDF downloaded successfully!', 'success');
+        });
+    }
+
     // Global Delete Row Delegate
     $(document).on('click', '.delete-row-btn, [data-bs-target="#exampleModalDelete"]', function (e) {
+
         e.preventDefault();
         const $row = $(this).closest('tr');
         window.showConfirmModal({

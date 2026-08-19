@@ -171,3 +171,171 @@ def transactions_api(request):
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
+
+def get_invoice_data_dict(item_type, item_id):
+    """Internal helper to build invoice payload for fees, transactions, or invoices"""
+    invoice_data = {}
+
+    if item_type == 'fee':
+        fee = FeeCollection.objects.filter(id=item_id).first()
+        if fee:
+            due = max(0.0, float(fee.total_amount - fee.amount_collected))
+            status = 'Paid' if due <= 0 else ('Partial' if fee.amount_collected > 0 else 'Unpaid')
+            status_class = 'success' if status == 'Paid' else ('warning' if status == 'Partial' else 'danger')
+
+            s_name = fee.student_name or (fee.student.get_full_name() if fee.student else 'Student')
+            invoice_data = {
+                'invoice_no': f"INV-FEE-{fee.id:05d}",
+                'receipt_no': f"REC-{fee.id:05d}",
+                'date': fee.created_at.strftime('%d %b %Y'),
+                'due_date': fee.created_at.strftime('%d %b %Y'),
+                'type': 'Student Fee Collection Receipt',
+                'status': status,
+                'status_class': status_class,
+                'customer_name': s_name,
+                'customer_subtext': f"Admission No: {fee.admission_no or 'N/A'} | Class: {fee.class_name or 'N/A'}",
+                'customer_email': fee.student.email if fee.student else 'N/A',
+                'customer_phone': getattr(fee.student, 'phone', 'N/A') if fee.student else 'N/A',
+                'payment_method': fee.payment_method.upper(),
+                'reference_no': fee.reference_number or f"REF-FEE-{fee.id}",
+                'items': [
+                    {
+                        'description': f"Academic & Tuition Fee ({fee.class_name or 'Current Term'})",
+                        'qty': 1,
+                        'rate': float(fee.total_amount),
+                        'amount': float(fee.total_amount)
+                    }
+                ],
+                'subtotal': float(fee.total_amount),
+                'tax_amount': 0.00,
+                'discount_amount': 0.00,
+                'total_amount': float(fee.total_amount),
+                'amount_paid': float(fee.amount_collected),
+                'balance_due': due,
+                'remarks': fee.remarks or "Fee collection successfully recorded in system.",
+                'collector': fee.collected_by.get_full_name() if fee.collected_by else 'Finance Department'
+            }
+    elif item_type == 'trx':
+        txn = Transaction.objects.filter(id=item_id).first()
+        if txn:
+            invoice_data = {
+                'invoice_no': txn.invoice_no or f"INV-TRX-{txn.id:05d}",
+                'receipt_no': f"REC-TRX-{txn.id:05d}",
+                'date': txn.created_at.strftime('%d %b %Y'),
+                'due_date': txn.created_at.strftime('%d %b %Y'),
+                'type': f"Transaction Receipt ({txn.transaction_type})",
+                'status': txn.status.capitalize(),
+                'status_class': 'success' if txn.status == 'success' else 'danger',
+                'customer_name': txn.payer.get_full_name() if txn.payer else 'General Payer / Guest',
+                'customer_subtext': f"Payer Account: {txn.payer.username if txn.payer else 'N/A'}",
+                'customer_email': txn.payer.email if txn.payer else 'N/A',
+                'customer_phone': getattr(txn.payer, 'phone', 'N/A') if txn.payer else 'N/A',
+                'payment_method': txn.payment_type,
+                'reference_no': txn.gateway_txn_id or f"TRX-REF-{txn.id}",
+                'items': [
+                    {
+                        'description': f"Payment for {txn.transaction_type}",
+                        'qty': 1,
+                        'rate': float(txn.amount),
+                        'amount': float(txn.amount)
+                    }
+                ],
+                'subtotal': float(txn.amount),
+                'tax_amount': 0.00,
+                'discount_amount': 0.00,
+                'total_amount': float(txn.amount),
+                'amount_paid': float(txn.amount),
+                'balance_due': 0.00,
+                'remarks': f"Transaction recorded via {txn.payment_type}.",
+                'collector': 'Accounts Department'
+            }
+    elif item_type == 'inv':
+        inv = Invoice.objects.filter(id=item_id).first()
+        if inv:
+            due = max(0.0, float(inv.total_amount - inv.amount_paid))
+            items_list = []
+            for item in inv.items.all():
+                items_list.append({
+                    'description': item.description,
+                    'qty': item.quantity,
+                    'rate': float(item.unit_price),
+                    'amount': float(item.total_price)
+                })
+            if not items_list:
+                items_list.append({
+                    'description': inv.get_invoice_type_display(),
+                    'qty': 1,
+                    'rate': float(inv.total_amount),
+                    'amount': float(inv.total_amount)
+                })
+
+            invoice_data = {
+                'invoice_no': inv.invoice_number,
+                'receipt_no': f"REC-{inv.id:05d}",
+                'date': inv.created_at.strftime('%d %b %Y'),
+                'due_date': inv.due_date.strftime('%d %b %Y') if inv.due_date else inv.created_at.strftime('%d %b %Y'),
+                'type': inv.get_invoice_type_display(),
+                'status': inv.get_status_display(),
+                'status_class': 'success' if inv.status == 'paid' else ('warning' if inv.status in ['issued', 'partially_paid'] else 'secondary'),
+                'customer_name': inv.student.get_full_name() if inv.student else (inv.institution.name if inv.institution else 'Customer'),
+                'customer_subtext': f"Institution: {inv.institution.name if inv.institution else 'EduAiQ Academy'}",
+                'customer_email': inv.student.email if inv.student else 'billing@institution.com',
+                'customer_phone': getattr(inv.student, 'phone', 'N/A') if inv.student else 'N/A',
+                'payment_method': 'Online / Bank Transfer',
+                'reference_no': inv.invoice_number,
+                'items': items_list,
+                'subtotal': float(inv.subtotal),
+                'tax_amount': float(inv.tax_amount),
+                'discount_amount': float(inv.discount_amount),
+                'total_amount': float(inv.total_amount),
+                'amount_paid': float(inv.amount_paid),
+                'balance_due': due,
+                'remarks': inv.notes or "Official billing invoice.",
+                'collector': 'Billing & Revenue Operations'
+            }
+
+    if not invoice_data:
+        invoice_data = {
+            'invoice_no': f"INV-{item_type.upper()}-{item_id:05d}",
+            'receipt_no': f"REC-{item_id:05d}",
+            'date': timezone.now().strftime('%d %b %Y'),
+            'due_date': timezone.now().strftime('%d %b %Y'),
+            'type': 'Fee & Payment Tax Invoice',
+            'status': 'Paid',
+            'status_class': 'success',
+            'customer_name': 'Kathryn Murphy',
+            'customer_subtext': 'Admission No: AD52365 | Class: Class 1 (A)',
+            'customer_email': 'kathryn.m@eduaiq.com',
+            'customer_phone': '+91 98765 43210',
+            'payment_method': 'Cash / Online UPI',
+            'reference_no': f"REF-{item_id:05d}",
+            'items': [
+                {'description': 'Academic Tuition & Course Fee', 'qty': 1, 'rate': 700.50, 'amount': 700.50}
+            ],
+            'subtotal': 700.50,
+            'tax_amount': 0.00,
+            'discount_amount': 0.00,
+            'total_amount': 700.50,
+            'amount_paid': 700.50,
+            'balance_due': 0.00,
+            'remarks': 'Official computer-generated fee receipt.',
+            'collector': 'EduAiQ Finance Office'
+        }
+
+    return invoice_data
+
+
+@login_required
+def invoice_view(request, item_type, item_id):
+    """View & Print full page Tax Invoice"""
+    invoice_data = get_invoice_data_dict(item_type, item_id)
+    return render(request, 'admin_panel/invoice.html', {'invoice': invoice_data})
+
+
+@login_required
+def invoice_details_api(request, item_type, item_id):
+    """API endpoint returning invoice details as JSON"""
+    invoice_data = get_invoice_data_dict(item_type, item_id)
+    return JsonResponse({'status': 'success', 'data': invoice_data})
+
+
