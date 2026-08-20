@@ -21,6 +21,10 @@ class Institution(models.Model):
                                     related_name='managed_institution')
     onboarded_by_partner = models.ForeignKey('partners.Partner', null=True, blank=True,
                                               on_delete=models.SET_NULL)
+    created_by = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True,
+                                    related_name='created_institutions')
+    assigned_employee = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True,
+                                           related_name='assigned_institutions')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     allowed_categories = models.ManyToManyField('courses.CourseCategory', blank=True, related_name='institutions')
     allowed_courses = models.ManyToManyField('courses.Course', blank=True, related_name='institutions')

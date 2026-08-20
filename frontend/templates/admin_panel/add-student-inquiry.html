@@ -66,6 +66,9 @@
             <option value="new">New</option>
             <option value="contacted">Contacted</option>
             <option value="trial">Trial / Demo Class</option>
+            <option value="talent_hunt_exam">Talent Hunt Exam</option>
+            <option value="ai_quotient">AI Quotient</option>
+            <option value="entrance_exam_ug_pg">Entrance Exam for UG/PG Admission</option>
             <option value="admission_offered">Admission Offered</option>
           </select>
         </div>
@@ -81,6 +84,14 @@
           <label class="text-sm fw-semibold text-primary-light mb-8" for="next_follow_up_date">Next Follow-up Date</label>
           <input type="date" class="form-control radius-8" id="next_follow_up_date" name="next_follow_up_date">
         </div>
+        {% if request.user.is_superuser or request.user.role == 'admin' %}
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="owner">Assigned Sales Rep</label>
+          <select class="form-control form-select radius-8" id="owner" name="owner">
+            <option value="">-- Unassigned --</option>
+          </select>
+        </div>
+        {% endif %}
         <div class="col-md-4 d-flex align-items-center mt-32">
           <div class="form-check">
             <input class="form-check-input" type="checkbox" id="interested_in_olympiad" name="interested_in_olympiad">
@@ -114,6 +125,21 @@ $(document).ready(function() {
     return match ? match[1] : null;
   }
 
+  function loadUsers() {
+    $.ajax({
+      url: '/accounts/users/?is_employee=true&page_size=200', type: 'GET', xhrFields: { withCredentials: true },
+      success: function(response) {
+        const select = $('#owner').empty().append('<option value="">-- Unassigned --</option>');
+        (response.results || []).forEach(user => {
+          const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ').trim();
+          const displayName = fullName ? `${fullName} (${user.username})` : user.username;
+          const roleTag = user.role ? ` — [${user.role.toUpperCase()}]` : '';
+          select.append(`<option value="${user.id}">${displayName}${roleTag}</option>`);
+        });
+      }
+    });
+  }
+
   $('#addInquiryForm').on('submit', function(e) {
     e.preventDefault();
     $('#submitBtn').prop('disabled', true).html('Saving...');
@@ -130,6 +156,7 @@ $(document).ready(function() {
       stage: $('#stage').val(),
       priority: $('#priority').val(),
       next_follow_up_date: $('#next_follow_up_date').val() || null,
+      owner: $('#owner').val() || null,
       interested_in_olympiad: $('#interested_in_olympiad').is(':checked'),
       notes: $('#notes').val(),
     };
@@ -145,11 +172,21 @@ $(document).ready(function() {
       error: function(xhr) {
         $('#submitBtn').prop('disabled', false).html('Save Inquiry');
         let msg = 'Failed to save inquiry.';
-        if (xhr.responseJSON && xhr.responseJSON.errors) msg = JSON.stringify(xhr.responseJSON.errors, null, 2);
+        if (xhr.responseJSON && xhr.responseJSON.errors) {
+          if (typeof xhr.responseJSON.errors === 'object') {
+            msg = Object.entries(xhr.responseJSON.errors).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : v}`).join('\n');
+          } else {
+            msg = JSON.stringify(xhr.responseJSON.errors);
+          }
+        }
         showToast(msg, 'error');
       }
     });
   });
+
+  if ($('#owner').length) {
+    loadUsers();
+  }
 });
 </script>
 {% endblock %}

@@ -1,17 +1,17 @@
 {% extends 'admin_panel/base.html' %}
 {% load static %}
 
-{% block title %}{% if request.user.is_superuser or request.user.role == 'admin' %}Admin Profile{% else %}My Profile{% endif %} - EduAiQ{% endblock %}
+{% block title %}{% if profile_user and profile_user != request.user %}{{ profile_user.get_full_name|default:profile_user.username|title }}'s Profile{% elif request.user.is_superuser or request.user.role == 'admin' %}Admin Profile{% else %}My Profile{% endif %} - EduAiQ{% endblock %}
 
 {% block description %}User profile and account details.{% endblock %}
 
 {% block content %}
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
   <div>
-    <h1 class="fw-semibold mb-4 h6 text-primary-light">{% if request.user.is_superuser or request.user.role == 'admin' %}Admin Profile{% else %}My Profile{% endif %}</h1>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">{% if profile_user and profile_user != request.user %}{{ profile_user.get_full_name|default:profile_user.username|title }}'s Profile{% elif request.user.is_superuser or request.user.role == 'admin' %}Admin Profile{% else %}My Profile{% endif %}</h1>
     <div>
       <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
-      <span class="text-secondary-light">/ My Profile</span>
+      <span class="text-secondary-light">/ {% if profile_user and profile_user != request.user %}{{ profile_user.get_full_name|default:profile_user.username|title }}{% else %}My Profile{% endif %}</span>
     </div>
   </div>
 </div>
@@ -24,25 +24,53 @@
         <!-- Profile Image & Quick Details -->
         <div class="max-w-300-px w-100 text-center p-24 bg-neutral-50 radius-12 border border-neutral-200">
           <figure class="mb-20 w-120-px h-120-px mx-auto rounded-circle position-relative border border-3 border-primary-600 shadow-sm" style="width: 120px; height: 120px;">
-            <img id="userProfileAvatar" src="{% if request.user.profile_image %}{{ request.user.profile_image.url }}{% else %}{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}{% endif %}" alt="User Avatar"
+            <img id="userProfileAvatar" src="{% if profile_user.profile_image %}{{ profile_user.profile_image.url }}{% else %}{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}{% endif %}" alt="User Avatar"
               class="w-100 h-100 object-fit-cover rounded-circle">
+            {% if profile_user == request.user or request.user.is_superuser or request.user.role == 'admin' %}
             <label for="userAvatarInput" class="position-absolute bottom-0 end-0 bg-primary-600 text-white rounded-circle d-flex align-items-center justify-content-center cursor-pointer shadow hover-bg-primary-700" style="width: 34px; height: 34px; right: 0; bottom: 0;" title="Change Profile Picture">
               <i class="ri-camera-fill text-lg"></i>
             </label>
             <input type="file" id="userAvatarInput" accept="image/*" class="d-none">
+            {% endif %}
           </figure>
-          <h2 class="h5 text-primary-light mb-8 fw-bold">{% if request.user.is_authenticated %}{{ request.user.get_full_name|default:request.user.username|title }}{% else %}User Account{% endif %}</h2>
+          <h2 class="h5 text-primary-light mb-8 fw-bold">{% if profile_user %}{{ profile_user.get_full_name|default:profile_user.username|title }}{% else %}User Account{% endif %}</h2>
           <span class="badge bg-primary-600 text-white px-16 py-6 radius-20 text-sm fw-semibold mb-12">
-            {% if emp_profile and emp_profile.designation %}{{ emp_profile.designation.title }}{% elif request.user.employee_profile and request.user.employee_profile.designation %}{{ request.user.employee_profile.designation.title }}{% elif request.user.is_superuser or request.user.role == 'admin' %}System Administrator{% elif request.user.role == 'sales' or request.user.role == 'crm' %}Sales Executive{% elif request.user.role == 'teacher' %}Faculty / Educator{% else %}{{ request.user.role|default:"Executive"|title }}{% endif %}
+            {% if is_inst_user %}
+              {{ institution_obj.get_type_display|default:profile_user.role|title }} Administrator
+            {% elif is_student_user %}
+              Student Learner
+            {% elif is_admin_user %}
+              System Administrator
+            {% elif emp_profile and emp_profile.designation %}
+              {{ emp_profile.designation.title }}
+            {% elif profile_user.employee_profile and profile_user.employee_profile.designation %}
+              {{ profile_user.employee_profile.designation.title }}
+            {% else %}
+              {{ profile_user.role|default:"Executive"|title }}
+            {% endif %}
           </span>
-          <p class="mb-0 text-sm text-secondary-light">Department: <span class="text-primary-600 fw-semibold">{% if emp_profile and emp_profile.department %}{{ emp_profile.department.name }}{% elif request.user.employee_profile and request.user.employee_profile.department %}{{ request.user.employee_profile.department.name }}{% elif request.user.is_superuser or request.user.role == 'admin' %}Administration & Operations{% elif request.user.role == 'sales' or request.user.role == 'crm' %}CRM & Sales{% elif request.user.role == 'teacher' %}Academics{% elif request.user.school_name %}{{ request.user.school_name }}{% else %}Human Resources (HR){% endif %}</span></p>
+          <p class="mb-0 text-sm text-secondary-light">
+            {% if is_inst_user %}
+              Institution: <span class="text-primary-600 fw-semibold">{{ institution_obj.name|default:profile_user.username }}</span>
+            {% elif is_student_user %}
+              Grade / Class: <span class="text-primary-600 fw-semibold">{{ student_profile.class_grade|default:"Registered Student" }}</span>
+            {% elif is_admin_user %}
+              Department: <span class="text-primary-600 fw-semibold">Administration & Operations</span>
+            {% elif emp_profile and emp_profile.department %}
+              Department: <span class="text-primary-600 fw-semibold">{{ emp_profile.department.name }}</span>
+            {% else %}
+              Department: <span class="text-primary-600 fw-semibold">CRM & Operations</span>
+            {% endif %}
+          </p>
           <p class="mb-0 text-sm text-secondary-light">Platform: <span class="text-primary-light fw-semibold">EduAiQ Portal</span></p>
           
+          {% if profile_user == request.user or request.user.is_superuser or request.user.role == 'admin' %}
           <div class="mt-16">
             <label for="userAvatarInput" class="btn btn-sm btn-outline-primary radius-8 px-16 py-6 text-xs d-inline-flex align-items-center gap-1 cursor-pointer" id="uploadAvatarBtnLabel">
               <i class="ri-upload-2-line"></i> Upload Photo
             </label>
           </div>
+          {% endif %}
         </div>
 
         <span class="h-100 w-1-px bg-neutral-200 d-none d-md-block"></span>
@@ -51,45 +79,130 @@
         <div class="flex-grow-1 w-100">
           <div class="pb-16 border-bottom d-flex align-items-center justify-content-between gap-20">
             <h3 class="h6 text-primary-light text-lg mb-0 fw-semibold"><i class="ri-user-settings-line me-2 text-primary-600"></i> Account Information</h3>
-            <span class="bg-success-100 text-success-600 px-16 py-4 radius-4 fw-medium text-sm d-inline-flex align-items-center gap-1">
-              <i class="ri-checkbox-circle-fill"></i> Active
-            </span>
+            <div class="d-flex align-items-center gap-12">
+              {% if request.user.is_superuser or request.user.role == 'admin' %}
+              <a href="/admin-panel/add-new-employee/?user_id={% if emp_profile %}{{ emp_profile.user.id }}{% else %}{{ profile_user.id }}{% endif %}&emp_id={% if emp_profile %}{{ emp_profile.id }}{% else %}{{ profile_user.id }}{% endif %}" class="btn btn-sm btn-primary-600 radius-8 px-16 py-6 text-sm d-inline-flex align-items-center gap-2 text-white font-semibold">
+                <i class="ri-edit-line"></i> Edit Profile
+              </a>
+              {% endif %}
+              <span class="bg-success-100 text-success-600 px-16 py-6 radius-8 fw-medium text-sm d-inline-flex align-items-center gap-1">
+                <i class="ri-checkbox-circle-fill"></i> Active
+              </span>
+            </div>
           </div>
 
           <div class="mt-20 d-flex flex-column gap-16">
             <div class="d-flex flex-wrap gap-4 align-items-center">
               <span class="fw-semibold text-sm text-primary-light w-140-px">Username</span>
-              <span class="fw-medium text-sm text-secondary-light">: {% if request.user.is_authenticated %}{{ request.user.username }}{% else %}N/A{% endif %}</span>
+              <span class="fw-medium text-sm text-secondary-light">: {% if profile_user %}{{ profile_user.username }}{% else %}N/A{% endif %}</span>
             </div>
             
             <div class="d-flex flex-wrap gap-4 align-items-center">
               <span class="fw-semibold text-sm text-primary-light w-140-px">Official Email</span>
-              <span class="fw-medium text-sm text-primary-600">: <a href="mailto:{{ request.user.email }}">{{ request.user.email|default:"N/A" }}</a></span>
+              <span class="fw-medium text-sm text-primary-600">: <a id="userOfficialEmail" href="mailto:{{ profile_user.email }}">{{ profile_user.email|default:"N/A" }}</a></span>
             </div>
 
             <div class="d-flex flex-wrap gap-4 align-items-center">
               <span class="fw-semibold text-sm text-primary-light w-140-px">Contact Number</span>
-              <span class="fw-medium text-sm text-primary-600">: {{ request.user.phone|default:"N/A" }}</span>
+              <span class="fw-medium text-sm text-primary-600" id="userContactPhone">: {{ profile_user.phone|default:"N/A" }}</span>
+            </div>
+
+            {% if is_inst_user %}
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Institution Name</span>
+              <span class="fw-medium text-sm text-secondary-light">: {{ institution_obj.name|default:profile_user.username }}</span>
             </div>
 
             <div class="d-flex flex-wrap gap-4 align-items-center">
-              <span class="fw-semibold text-sm text-primary-light w-140-px">Designation</span>
-              <span class="fw-medium text-sm text-secondary-light">: {% if emp_profile and emp_profile.designation %}{{ emp_profile.designation.title }}{% elif request.user.employee_profile and request.user.employee_profile.designation %}{{ request.user.employee_profile.designation.title }}{% elif request.user.is_superuser or request.user.role == 'admin' %}System Administrator{% elif request.user.role == 'sales' or request.user.role == 'crm' %}Sales Executive{% elif request.user.role == 'teacher' %}Faculty / Educator{% else %}{{ request.user.role|default:"Executive"|title }}{% endif %}</span>
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Institution Type</span>
+              <span class="fw-medium text-sm text-secondary-light">: {{ institution_obj.get_type_display|default:profile_user.role|title }}</span>
             </div>
 
             <div class="d-flex flex-wrap gap-4 align-items-center">
-              <span class="fw-semibold text-sm text-primary-light w-140-px">Department</span>
-              <span class="fw-medium text-sm text-secondary-light">: {% if emp_profile and emp_profile.department %}{{ emp_profile.department.name }}{% elif request.user.employee_profile and request.user.employee_profile.department %}{{ request.user.employee_profile.department.name }}{% elif request.user.is_superuser or request.user.role == 'admin' %}Administration & Operations{% elif request.user.role == 'sales' or request.user.role == 'crm' %}CRM & Sales{% elif request.user.role == 'teacher' %}Academics{% elif request.user.school_name %}{{ request.user.school_name }}{% else %}Human Resources (HR){% endif %}</span>
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Location</span>
+              <span class="fw-medium text-sm text-secondary-light">: {{ institution_obj.city|default:"N/A" }}{% if institution_obj.state %}, {{ institution_obj.state }}{% endif %}</span>
             </div>
 
             <div class="d-flex flex-wrap gap-4 align-items-center">
               <span class="fw-semibold text-sm text-primary-light w-140-px">Access Level</span>
-              <span class="fw-medium text-sm text-secondary-light">: {% if request.user.is_superuser %}Full Admin Permissions (All Modules){% else %}Sales & Staff Portal Access{% endif %}</span>
+              <span class="fw-medium text-sm text-secondary-light">: 
+                <span class="badge bg-primary-100 text-primary-700 px-10 py-4 radius-4 fw-semibold">Institution Management Portal Access</span>
+              </span>
+            </div>
+
+            {% elif is_student_user %}
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Admission No</span>
+              <span class="fw-medium text-sm text-secondary-light">: {{ student_profile.admission_no|default:"STD-N/A" }}</span>
             </div>
 
             <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Roll Number</span>
+              <span class="fw-medium text-sm text-secondary-light">: {{ student_profile.roll_number|default:"N/A" }}</span>
+            </div>
+
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Class / Grade</span>
+              <span class="fw-medium text-sm text-secondary-light">: {{ student_profile.class_grade|default:"General" }}</span>
+            </div>
+
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Institution</span>
+              <span class="fw-medium text-sm text-secondary-light">: {{ student_profile.institution.name|default:"EduAiQ Online Portal" }}</span>
+            </div>
+
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Access Level</span>
+              <span class="fw-medium text-sm text-secondary-light">: 
+                <span class="badge bg-success-100 text-success-700 px-10 py-4 radius-4 fw-semibold">Student Learning Portal Access</span>
+              </span>
+            </div>
+
+            {% else %}
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Designation</span>
+              <span class="fw-medium text-sm text-secondary-light">: {% if emp_profile and emp_profile.designation %}{{ emp_profile.designation.title }}{% elif profile_user.employee_profile and profile_user.employee_profile.designation %}{{ profile_user.employee_profile.designation.title }}{% elif profile_user.is_superuser or profile_user.role == 'admin' %}System Administrator{% elif profile_user.role == 'sales' or profile_user.role == 'crm' %}Sales Executive{% elif profile_user.role == 'teacher' %}Faculty / Educator{% else %}{{ profile_user.role|default:"Executive"|title }}{% endif %}</span>
+            </div>
+
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Department</span>
+              <span class="fw-medium text-sm text-secondary-light">: {% if emp_profile and emp_profile.department %}{{ emp_profile.department.name }}{% elif profile_user.employee_profile and profile_user.employee_profile.department %}{{ profile_user.employee_profile.department.name }}{% elif profile_user.is_superuser or profile_user.role == 'admin' %}Administration & Operations{% elif profile_user.role == 'sales' or profile_user.role == 'crm' %}CRM & Sales{% elif profile_user.role == 'teacher' %}Academics{% elif profile_user.school_name %}{{ profile_user.school_name }}{% else %}Human Resources (HR){% endif %}</span>
+            </div>
+
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Access Level</span>
+              <span class="fw-medium text-sm text-secondary-light">: 
+                {% if profile_user.is_superuser or profile_user.role == 'superadmin' %}
+                  <span class="badge bg-danger-100 text-danger-600 px-10 py-4 radius-4 fw-semibold">Super Admin (All Modules)</span>
+                {% elif profile_user.role == 'admin' %}
+                  <span class="badge bg-warning-100 text-warning-600 px-10 py-4 radius-4 fw-semibold">HR / Operational Admin Access</span>
+                {% elif profile_user.role == 'sales' or profile_user.role == 'crm' %}
+                  <span class="badge bg-primary-50 text-primary-600 px-10 py-4 radius-4 fw-semibold">Sales & CRM Portal Access</span>
+                {% elif profile_user.role == 'teacher' %}
+                  <span class="badge bg-info-100 text-info-600 px-10 py-4 radius-4 fw-semibold">Faculty / Educator Access</span>
+                {% else %}
+                  <span class="badge bg-secondary-100 text-secondary-600 px-10 py-4 radius-4 fw-semibold">{{ profile_user.role|default:"Staff Employee"|title }} Access</span>
+                {% endif %}
+              </span>
+            </div>
+
+            <div class="d-flex flex-wrap gap-4 align-items-center">
+              <span class="fw-semibold text-sm text-primary-light w-140-px">Reporting Manager</span>
+              <span class="fw-medium text-sm text-primary-600">: 
+                {% if emp_profile and emp_profile.reporting_manager %}
+                  <i class="ri-user-star-line me-1"></i>{{ emp_profile.reporting_manager.get_full_name|default:emp_profile.reporting_manager.username }} ({{ emp_profile.reporting_manager.role|title }})
+                {% elif profile_user.employee_profile and profile_user.employee_profile.reporting_manager %}
+                  <i class="ri-user-star-line me-1"></i>{{ profile_user.employee_profile.reporting_manager.get_full_name|default:profile_user.employee_profile.reporting_manager.username }} ({{ profile_user.employee_profile.reporting_manager.role|title }})
+                {% else %}
+                  <span class="text-secondary-light"><i class="ri-shield-user-line me-1"></i>Direct Super Admin</span>
+                {% endif %}
+              </span>
+            </div>
+            {% endif %}
+
+            <div class="d-flex flex-wrap gap-4 align-items-center">
               <span class="fw-semibold text-sm text-primary-light w-140-px">Status</span>
-              <span class="fw-medium text-sm text-success-600">: {% if request.user.is_active %}Active Account{% else %}Inactive Account{% endif %}</span>
+              <span class="fw-medium text-sm text-success-600">: {% if profile_user.is_active %}Active Account{% else %}Inactive Account{% endif %}</span>
             </div>
           </div>
         </div>
@@ -97,6 +210,48 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content radius-16 border-0 shadow-lg">
+            <div class="modal-header border-bottom px-24 py-16 bg-base">
+                <h6 class="modal-title fw-bold text-primary-light d-flex align-items-center gap-2" id="editProfileModalLabel">
+                    <i class="ri-user-edit-line text-primary-600 text-xl"></i> Edit Profile Details
+                </h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editProfileForm">
+                <div class="modal-body p-24">
+                    <div class="row gy-3">
+                        <div class="col-6">
+                            <label class="form-label text-sm font-semibold mb-6">First Name <span class="text-danger-600">*</span></label>
+                            <input type="text" class="form-control radius-8" id="editFirstName" value="{{ profile_user.first_name }}" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label text-sm font-semibold mb-6">Last Name</label>
+                            <input type="text" class="form-control radius-8" id="editLastName" value="{{ profile_user.last_name|default:'' }}">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-sm font-semibold mb-6">Official Email <span class="text-danger-600">*</span></label>
+                            <input type="email" class="form-control radius-8" id="editEmail" value="{{ profile_user.email }}" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-sm font-semibold mb-6">Contact Phone Number</label>
+                            <input type="text" class="form-control radius-8" id="editPhone" value="{{ profile_user.phone|default:'' }}" placeholder="e.g. +91 9876543210">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top px-24 py-16 bg-base">
+                    <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary-600 text-white radius-8 px-20 font-semibold" id="saveProfileBtn">
+                        <i class="ri-save-line me-1"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -139,8 +294,9 @@
           if (res.status === 'success') {
             if (res.image_url) {
               $('#userProfileAvatar').attr('src', res.image_url);
-              // Also update navbar header avatar if present
+              // Also update navbar header avatar and sidebar avatar if present
               $('.navbar-header img[alt="Admin"]').attr('src', res.image_url);
+              $('.profile-dropdown__button img, .sidebar img[alt="Profile Picture"]').attr('src', res.image_url);
             }
             if (window.showToast) {
               window.showToast('Profile picture saved permanently! 🎉', 'success');
@@ -155,6 +311,56 @@
           if (window.showToast) window.showToast(msg, 'error');
         }
       });
+    });
+
+    // Handle Edit Profile Form Submission
+    $('#editProfileForm').on('submit', function(e) {
+        e.preventDefault();
+        const $btn = $('#saveProfileBtn');
+        const origText = $btn.html();
+
+        const payload = {
+            first_name: $('#editFirstName').val(),
+            last_name: $('#editLastName').val(),
+            email: $('#editEmail').val(),
+            phone: $('#editPhone').val()
+        };
+
+        $btn.prop('disabled', true).html('<i class="ri-loader-4-line spinner me-1"></i> Saving...');
+
+        $.ajax({
+            url: '/accounts/api/profile/update-info/',
+            type: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            data: JSON.stringify(payload),
+            contentType: 'application/json',
+            success: function(resp) {
+                $btn.prop('disabled', false).html(origText);
+                if (resp.status === 'success') {
+                    const modalEl = document.getElementById('editProfileModal');
+                    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                    if (modalInstance) modalInstance.hide();
+
+                    if (typeof showToast === 'function') {
+                        showToast(resp.message, 'success');
+                    }
+
+                    // Reload page after a brief delay so changes reflect everywhere
+                    setTimeout(function() {
+                        location.reload();
+                    }, 800);
+                } else {
+                    alert(resp.message || 'Failed to update profile.');
+                }
+            },
+            error: function(err) {
+                $btn.prop('disabled', false).html(origText);
+                const msg = err.responseJSON && err.responseJSON.message ? err.responseJSON.message : 'Error updating profile.';
+                alert(msg);
+            }
+        });
     });
   });
 </script>

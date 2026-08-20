@@ -1,623 +1,967 @@
 {% extends 'admin_panel/base.html' %}
 {% load static %}
 
-{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
+{% block title %}Employee Attendance | EduAiQ Portal{% endblock %}
 
-{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+{% block description %}Manage daily employee attendance, self punch-in/out, monthly attendance overview matrix, and leave tracking for staff and administrators.{% endblock %}
 
 {% block content %}
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-<div class="">
-<h1 class="fw-semibold mb-4 h6 text-primary-light">Employee Attendance</h1>
-<div class="">
-<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
-<a class="text-secondary-light hover-text-primary hover-underline d-none" href="javascript:void(0)"> /
-        Employee Attendance</a>
-<span class="text-secondary-light">/ Employee Attendance</span>
-</div>
-</div>
-<a class="btn btn-primary-600 d-flex align-items-center gap-6 d-none" href="add-new-teacher">
-<span class="d-flex text-md">
-<i class="ri-add-large-line"></i>
-</span>
-    Add Teacher
-  </a>
-</div>
-<div class="mt-24">
-<div class="card h-100">
-<div class="card-body p-0 dataTable-wrapper">
-<div class="d-flex align-items-center justify-content-between flex-wrap gap-16 px-20 py-12 border-bottom border-neutral-200">
-<div class="d-flex flex-wrap align-items-center gap-16">
-<div class="dropdown">
-<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
-<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
-<i class="ri-file-upload-line text-md line-height-1"></i>
-                                        Export
-                                    </span>
-<span class="">
-<i class="ri-arrow-down-s-line"></i>
-</span>
-</button>
-<ul class="dropdown-menu p-12 border bg-base shadow">
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
-<i class="ri-file-3-line"></i>
-                                            PDF
-                                        </button>
-</li>
-<li>
-<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
-<i class="ri-file-excel-line"></i>
-                                            Excel
-                                        </button>
-</li>
-</ul>
-</div>
-<form class="navbar-search dt-search m-0">
-    {% csrf_token %}
-<input aria-controls="dataTable" class="dt-input bg-transparent radius-4" name="search" placeholder="Search..." type="text"/>
-<iconify-icon class="icon" icon="ion:search-outline"></iconify-icon>
-</form>
-<div class="dropdown">
-<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
-<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
-                                        Filter
-                                    </span>
-<span class="">
-<i class="ri-arrow-down-s-line"></i>
-</span>
-</button>
-<div class="dropdown-menu border bg-base shadow dropdown-menu-lg p-0">
-<div class="d-flex align-items-center justify-content-between border-bottom py-8 px-16">
-<span class="fw-semibold text-lg text-primary-light">Filter</span>
-<button type="button">
-<i class="ri-close-large-line"></i>
-</button>
-</div>
-<form action="#" class="p-16">
-    {% csrf_token %}
-<div class="row g-3">
-<div class="col-6">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="departments">Departments</label>
-<select class="form-control form-select" id="departments">
-<option value="Principal">Principal</option>
-<option value="Senior Teacher">Senior Teacher</option>
-<option value="Subject Teacher">Subject Teacher</option>
-<option value="Assistant Teacher">Assistant Teacher</option>
-<option value="Librarian">Librarian</option>
-</select>
-</div>
-<div class="col-6">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="designation">Designation</label>
-<select class="form-control form-select" id="designation">
-<option value="English">English</option>
-<option value="Bangla">Bangla</option>
-<option value="Math">Mathematics</option>
-<option value="Physics">Physics</option>
-<option value="Chemistry">Chemistry</option>
-</select>
-</div>
-<div class="col-12">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="date">Date</label>
-<input class="form-control" id="date" type="date"/>
-</div>
-<div class="col-6">
-<button class="btn btn-danger-200 text-danger-600 w-100" type="reset">Reset</button>
-</div>
-<div class="col-6">
-<button class="btn btn-primary-600 w-100" type="submit">Apply</button>
-</div>
-</div>
-</form>
-</div>
-</div>
-</div>
-<div class="d-flex align-items-center gap-8 text-secondary-light">
-<span class="">
-                                Rows per page:
-                            </span>
-<div class="dt-length">
-<select aria-controls="dataTable" class="dt-input form-control form-select" name="dataTable_length">
-<option value="5">5</option>
-<option selected="" value="10">10</option>
-<option value="25">25</option>
-<option value="50">50</option>
-<option value="100">100</option>
-</select>
-</div>
-</div>
-</div>
-<div class="p-0">
-<table class="table bordered-table mb-0 data-table" data-page-length="10" id="dataTable">
-<thead>
-<tr>
-<th scope="col">
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">
-                                                S.L
-                                            </label>
-</div>
-</th>
-<th scope="col">Admission No</th>
-<th scope="col">Name</th>
-<th scope="col">Departments</th>
-<th scope="col">Designation</th>
-<th scope="col">Attendance</th>
-<th scope="col">Note</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">01</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52365</span></td>
-<td>
-<div class="d-flex align-items-center flex-grow-1">
-<img alt="Marvin McKinney Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img1.png' %}"/>
-<div class="">
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Marvin McKinney</h6>
-</div>
-</div>
-</td>
-<td>Mathematics</td>
-<td>Principal</td>
-<td>
-<div class="d-flex align-items-center flex-wrap gap-28">
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="p1" name="radio1" type="radio"/>
-<label class="form-check-label" for="p1">Present</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="l1" name="radio1" type="radio"/>
-<label class="form-check-label" for="l1">Late</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="a1" name="radio1" type="radio"/>
-<label class="form-check-label" for="a1">Absent</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="h1" name="radio1" type="radio"/>
-<label class="form-check-label" for="h1">Halfday</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="ho1" name="radio1" type="radio"/>
-<label class="form-check-label" for="ho1">Holiday</label>
-</div>
-</div>
-</td>
-<td><input class="form-control" placeholder="Write note..." type="text"/></td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">02</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52366</span></td>
-<td>
-<div class="d-flex align-items-center flex-grow-1">
-<img alt="Cody Fisher Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img2.png' %}"/>
-<div class="">
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Cody Fisher</h6>
-</div>
-</div>
-</td>
-<td>Physics</td>
-<td>Senior Teacher</td>
-<td>
-<div class="d-flex align-items-center flex-wrap gap-28">
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="p2" name="radio2" type="radio"/>
-<label class="form-check-label" for="p2">Present</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="l2" name="radio2" type="radio"/>
-<label class="form-check-label" for="l2">Late</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="a2" name="radio2" type="radio"/>
-<label class="form-check-label" for="a2">Absent</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="h2" name="radio2" type="radio"/>
-<label class="form-check-label" for="h2">Halfday</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="ho2" name="radio2" type="radio"/>
-<label class="form-check-label" for="ho2">Holiday</label>
-</div>
-</div>
-</td>
-<td><input class="form-control" placeholder="Write note..." type="text"/></td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">03</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52367</span></td>
-<td>
-<div class="d-flex align-items-center flex-grow-1">
-<img alt="Jenny Wilson Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img3.png' %}"/>
-<div class="">
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Jenny Wilson</h6>
-</div>
-</div>
-</td>
-<td>Biology</td>
-<td>Subject Teacher</td>
-<td>
-<div class="d-flex align-items-center flex-wrap gap-28">
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="p3" name="radio3" type="radio"/>
-<label class="form-check-label" for="p3">Present</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="l3" name="radio3" type="radio"/>
-<label class="form-check-label" for="l3">Late</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="a3" name="radio3" type="radio"/>
-<label class="form-check-label" for="a3">Absent</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="h3" name="radio3" type="radio"/>
-<label class="form-check-label" for="h3">Halfday</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="ho3" name="radio3" type="radio"/>
-<label class="form-check-label" for="ho3">Holiday</label>
-</div>
-</div>
-</td>
-<td><input class="form-control" placeholder="Write note..." type="text"/></td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">04</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52368</span></td>
-<td>
-<div class="d-flex align-items-center flex-grow-1">
-<img alt="Guy Hawkins Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img4.png' %}"/>
-<div class="">
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Guy Hawkins</h6>
-</div>
-</div>
-</td>
-<td>English</td>
-<td>Assistant Teacher</td>
-<td>
-<div class="d-flex align-items-center flex-wrap gap-28">
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="p4" name="radio4" type="radio"/>
-<label class="form-check-label" for="p4">Present</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="l4" name="radio4" type="radio"/>
-<label class="form-check-label" for="l4">Late</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="a4" name="radio4" type="radio"/>
-<label class="form-check-label" for="a4">Absent</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="h4" name="radio4" type="radio"/>
-<label class="form-check-label" for="h4">Halfday</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="ho4" name="radio4" type="radio"/>
-<label class="form-check-label" for="ho4">Holiday</label>
-</div>
-</div>
-</td>
-<td><input class="form-control" placeholder="Write note..." type="text"/></td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">05</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52369</span></td>
-<td>
-<div class="d-flex align-items-center flex-grow-1">
-<img alt="Esther Howard Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img5.png' %}"/>
-<div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Esther Howard</h6>
-</div>
-</div>
-</td>
-<td>Math</td>
-<td>Pre-Primary Teacher</td>
-<td>
-<div class="d-flex align-items-center flex-wrap gap-28">
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="p5" name="radio5" type="radio"/>
-<label class="form-check-label" for="p5">Present</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="l5" name="radio5" type="radio"/>
-<label class="form-check-label" for="l5">Late</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="a5" name="radio5" type="radio"/>
-<label class="form-check-label" for="a5">Absent</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="h5" name="radio5" type="radio"/>
-<label class="form-check-label" for="h5">Halfday</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="ho5" name="radio5" type="radio"/>
-<label class="form-check-label" for="ho5">Holiday</label>
-</div>
-</div>
-</td>
-<td><input class="form-control" placeholder="Write note..." type="text"/></td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">06</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52370</span></td>
-<td>
-<div class="d-flex align-items-center flex-grow-1">
-<img alt="Jane Cooper Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img6.png' %}"/>
-<div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Jane Cooper</h6>
-</div>
-</div>
-</td>
-<td>Chemistry</td>
-<td>Librarian</td>
-<td>
-<div class="d-flex align-items-center flex-wrap gap-28">
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="p6" name="radio6" type="radio"/>
-<label class="form-check-label" for="p6">Present</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="l6" name="radio6" type="radio"/>
-<label class="form-check-label" for="l6">Late</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="a6" name="radio6" type="radio"/>
-<label class="form-check-label" for="a6">Absent</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="h6" name="radio6" type="radio"/>
-<label class="form-check-label" for="h6">Halfday</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="ho6" name="radio6" type="radio"/>
-<label class="form-check-label" for="ho6">Holiday</label>
-</div>
-</div>
-</td>
-<td><input class="form-control" placeholder="Write note..." type="text"/></td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">07</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52371</span></td>
-<td>
-<div class="d-flex align-items-center flex-grow-1">
-<img alt="Robert Fox Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img7.png' %}"/>
-<div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Robert Fox</h6>
-</div>
-</div>
-</td>
-<td>Biology</td>
-<td>Lab Assistant</td>
-<td>
-<div class="d-flex align-items-center flex-wrap gap-28">
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="p7" name="radio7" type="radio"/>
-<label class="form-check-label" for="p7">Present</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="l7" name="radio7" type="radio"/>
-<label class="form-check-label" for="l7">Late</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="a7" name="radio7" type="radio"/>
-<label class="form-check-label" for="a7">Absent</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="h7" name="radio7" type="radio"/>
-<label class="form-check-label" for="h7">Halfday</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="ho7" name="radio7" type="radio"/>
-<label class="form-check-label" for="ho7">Holiday</label>
-</div>
-</div>
-</td>
-<td><input class="form-control" placeholder="Write note..." type="text"/></td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">08</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52372</span></td>
-<td>
-<div class="d-flex align-items-center flex-grow-1">
-<img alt="Theresa Webb Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img8.png' %}"/>
-<div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Theresa Webb</h6>
-</div>
-</div>
-</td>
-<td>Mathematics</td>
-<td>Senior Teacher</td>
-<td>
-<div class="d-flex align-items-center flex-wrap gap-28">
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="p8" name="radio8" type="radio"/>
-<label class="form-check-label" for="p8">Present</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="l8" name="radio8" type="radio"/>
-<label class="form-check-label" for="l8">Late</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="a8" name="radio8" type="radio"/>
-<label class="form-check-label" for="a8">Absent</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="h8" name="radio8" type="radio"/>
-<label class="form-check-label" for="h8">Halfday</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="ho8" name="radio8" type="radio"/>
-<label class="form-check-label" for="ho8">Holiday</label>
-</div>
-</div>
-</td>
-<td><input class="form-control" placeholder="Write note..." type="text"/></td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">09</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52373</span></td>
-<td>
-<div class="d-flex align-items-center flex-grow-1">
-<img alt="Courtney Henry Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img9.png' %}"/>
-<div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Courtney Henry</h6>
-</div>
-</div>
-</td>
-<td>Physics</td>
-<td>Senior Teacher</td>
-<td>
-<div class="d-flex align-items-center flex-wrap gap-28">
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="p9" name="radio9" type="radio"/>
-<label class="form-check-label" for="p9">Present</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="l9" name="radio9" type="radio"/>
-<label class="form-check-label" for="l9">Late</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="a9" name="radio9" type="radio"/>
-<label class="form-check-label" for="a9">Absent</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="h9" name="radio9" type="radio"/>
-<label class="form-check-label" for="h9">Halfday</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="ho9" name="radio9" type="radio"/>
-<label class="form-check-label" for="ho9">Holiday</label>
-</div>
-</div>
-</td>
-<td><input class="form-control" placeholder="Write note..." type="text"/></td>
-</tr>
-<tr>
-<td>
-<div class="form-check style-check d-flex align-items-center">
-<input class="form-check-input" type="checkbox"/>
-<label class="form-check-label">10</label>
-</div>
-</td>
-<td><span class="text-primary-600">AD52374</span></td>
-<td>
-<div class="d-flex align-items-center flex-grow-1">
-<img alt="Wade Warren Image" class="flex-shrink-0 me-12 radius-8" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img6.png' %}"/>
-<div>
-<h6 class="text-md mb-0 fw-medium flex-grow-1">Wade Warren</h6>
-</div>
-</div>
-</td>
-<td>Biology</td>
-<td>Subject Teacher</td>
-<td>
-<div class="d-flex align-items-center flex-wrap gap-28">
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="p10" name="radio10" type="radio"/>
-<label class="form-check-label" for="p10">Present</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="l10" name="radio10" type="radio"/>
-<label class="form-check-label" for="l10">Late</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="a10" name="radio10" type="radio"/>
-<label class="form-check-label" for="a10">Absent</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="h10" name="radio10" type="radio"/>
-<label class="form-check-label" for="h10">Halfday</label>
-</div>
-<div class="form-check checked-primary d-flex align-items-center gap-2">
-<input class="form-check-input" id="ho10" name="radio10" type="radio"/>
-<label class="form-check-label" for="ho10">Holiday</label>
-</div>
-</div>
-</td>
-<td><input class="form-control" placeholder="Write note..." type="text"/></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Employee Attendance</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/ Employee Attendance</span>
+    </div>
+  </div>
+</div>
+
+<!-- 1. Live Punch Card Banner -->
+<div class="card radius-12 bg-base mb-24 border shadow-sm">
+  <div class="card-body p-24">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-20">
+      <div class="d-flex align-items-center gap-16">
+        <div class="w-56-px h-56-px bg-primary-50 text-primary-600 radius-12 d-flex justify-content-center align-items-center text-2xl flex-shrink-0">
+          <i class="ri-fingerprint-line"></i>
+        </div>
+        <div>
+          <h5 class="text-lg fw-bold mb-4 text-primary-light" id="empLiveWelcome">Daily Self Punch Attendance</h5>
+          <p class="text-sm text-secondary-light mb-0" id="empPunchStatusText">
+            <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span> Loading today's punch status...
+          </p>
+        </div>
+      </div>
+      
+      <div class="d-flex align-items-center flex-wrap gap-12">
+        <button type="button" id="empPunchInBtn" class="btn btn-success radius-8 d-inline-flex align-items-center gap-2 font-medium px-20 py-10 shadow-sm">
+          <i class="ri-fingerprint-line text-lg"></i> Punch In
+        </button>
+        <button type="button" id="empPunchOutBtn" class="btn btn-warning text-white radius-8 d-inline-flex align-items-center gap-2 font-medium px-20 py-10 shadow-sm d-none">
+          <i class="ri-logout-box-r-line text-lg"></i> Punch Out
+        </button>
+        <a href="/admin-panel/wfh-requests/" class="btn btn-outline-primary radius-8 d-inline-flex align-items-center gap-2 font-medium px-16 py-10">
+          <i class="ri-home-wifi-line text-lg"></i> Apply WFH / Leave
+        </a>
+        <button type="button" id="openAttSettingsBtn" class="btn btn-neutral-100 text-neutral-700 hover-bg-neutral-200 radius-8 d-inline-flex align-items-center gap-2 font-medium px-16 py-10 d-none" data-bs-toggle="modal" data-bs-target="#attSettingsModal">
+          <i class="ri-settings-4-line text-lg text-primary-600"></i> Timing & Location Settings
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. Attendance Summary Statistics -->
+<div class="row row-cols-xxl-5 row-cols-lg-5 row-cols-sm-2 row-cols-1 g-3 mb-24">
+  <div class="col">
+    <div class="card p-16 radius-12 border bg-base shadow-sm h-100" style="border-bottom: 3px solid #22c55e !important;">
+      <div class="d-flex align-items-center justify-content-between mb-8">
+        <span class="w-36-px h-36-px bg-success-50 text-success-600 radius-8 d-flex justify-content-center align-items-center text-lg">
+          <i class="ri-user-3-line"></i>
+        </span>
+        <h4 class="fw-bold mb-0 text-neutral-800" id="statPresentCount" style="font-size: 22px;">0</h4>
+      </div>
+      <span class="fw-medium text-secondary-light text-xs">Present</span>
+    </div>
+  </div>
+  
+  <div class="col">
+    <div class="card p-16 radius-12 border bg-base shadow-sm h-100" style="border-bottom: 3px solid #ef4444 !important;">
+      <div class="d-flex align-items-center justify-content-between mb-8">
+        <span class="w-36-px h-36-px bg-danger-50 text-danger-600 radius-8 d-flex justify-content-center align-items-center text-lg">
+          <i class="ri-close-circle-line"></i>
+        </span>
+        <h4 class="fw-bold mb-0 text-neutral-800" id="statAbsentCount" style="font-size: 22px;">0</h4>
+      </div>
+      <span class="fw-medium text-secondary-light text-xs">Absent</span>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card p-16 radius-12 border bg-base shadow-sm h-100" style="border-bottom: 3px solid #f59e0b !important;">
+      <div class="d-flex align-items-center justify-content-between mb-8">
+        <span class="w-36-px h-36-px bg-warning-50 text-warning-600 radius-8 d-flex justify-content-center align-items-center text-lg">
+          <i class="ri-time-line"></i>
+        </span>
+        <h4 class="fw-bold mb-0 text-neutral-800" id="statLateCount" style="font-size: 22px;">0</h4>
+      </div>
+      <span class="fw-medium text-secondary-light text-xs">Late</span>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card p-16 radius-12 border bg-base shadow-sm h-100" style="border-bottom: 3px solid #a855f7 !important;">
+      <div class="d-flex align-items-center justify-content-between mb-8">
+        <span class="w-36-px h-36-px bg-purple-50 text-purple-600 radius-8 d-flex justify-content-center align-items-center text-lg">
+          <i class="ri-contrast-2-line"></i>
+        </span>
+        <h4 class="fw-bold mb-0 text-neutral-800" id="statHalfDayCount" style="font-size: 22px;">0</h4>
+      </div>
+      <span class="fw-medium text-secondary-light text-xs">Half Day</span>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card p-16 radius-12 border bg-base shadow-sm h-100" style="border-bottom: 3px solid #3b82f6 !important;">
+      <div class="d-flex align-items-center justify-content-between mb-8">
+        <span class="w-36-px h-36-px bg-info-50 text-info-600 radius-8 d-flex justify-content-center align-items-center text-lg">
+          <i class="ri-calendar-event-line"></i>
+        </span>
+        <h4 class="fw-bold mb-0 text-neutral-800" id="statHolidayCount" style="font-size: 22px;">0</h4>
+      </div>
+      <span class="fw-medium text-secondary-light text-xs">Holidays</span>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Attendance Records Table Card (Identical to Screenshot) -->
+<div class="card radius-16 bg-base mb-24 border shadow-sm">
+  <div class="card-header border-bottom bg-base py-16 px-24 d-flex flex-wrap align-items-center justify-content-between gap-16">
+    <div class="d-flex align-items-center gap-12">
+      <div class="w-40-px h-40-px bg-primary-50 text-primary-600 radius-10 d-flex justify-content-center align-items-center text-xl">
+        <i class="ri-survey-line"></i>
+      </div>
+      <div>
+        <h6 class="text-lg fw-bold mb-2 text-primary-light">Attendance Records</h6>
+        <p class="text-xs text-secondary-light mb-0">Daily attendance log of employees</p>
+      </div>
+    </div>
+    
+    <div class="d-flex align-items-center gap-12 flex-nowrap">
+      <div class="input-group input-group-sm" style="width: 170px;">
+        <span class="input-group-text bg-base border-end-0 text-secondary-light"><i class="ri-calendar-line"></i></span>
+        <input type="date" id="filterRecordDate" class="form-control form-control-sm border-start-0 radius-8 ps-0 text-sm">
+      </div>
+
+      <select class="form-select form-select-sm radius-8 text-sm w-auto" id="filterRecordStatus" style="min-width: 130px;">
+        <option value="ALL" selected>All Status</option>
+        <option value="P">Present</option>
+        <option value="L">Late</option>
+        <option value="A">Absent</option>
+        <option value="F">Half Day</option>
+        <option value="H">Holiday</option>
+        <option value="WFH">Work From Home</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table bordered-table mb-0 align-middle">
+        <thead>
+          <tr class="bg-neutral-50 text-secondary-light text-xs fw-bold border-bottom">
+            <th class="py-14 px-20">Date</th>
+            <th class="py-14 px-20">Day</th>
+            <th class="py-14 px-20">Status</th>
+            <th class="py-14 px-20">Punch In</th>
+            <th class="py-14 px-20">Punch Out</th>
+            <th class="py-14 px-20">Work Duration</th>
+            <th class="py-14 px-20">Remarks / Location</th>
+            <th class="py-14 px-20 text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody id="dayWiseTableBody">
+          <tr>
+            <td colspan="8" class="text-center py-24 text-secondary-light">
+              <span class="spinner-border spinner-border-sm me-2 text-primary"></span> Loading daily attendance log...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card-footer border-top bg-base py-16 px-24 pe-lg-64 d-flex flex-wrap align-items-center justify-content-between gap-16">
+    <span class="text-xs text-secondary-light fw-medium" id="tablePaginationInfo">Showing 0 to 0 of 0 entries</span>
+    
+    <div class="d-flex align-items-center gap-12">
+      <div class="d-flex align-items-center gap-6" id="paginationControls">
+        <button class="btn btn-sm btn-outline-neutral-300 radius-6 px-10 py-4" id="prevPageBtn" disabled><i class="ri-arrow-left-s-line"></i></button>
+        <span class="badge bg-primary-600 text-white px-12 py-6 radius-6 text-xs" id="currentPageBadge">1</span>
+        <button class="btn btn-sm btn-outline-neutral-300 radius-6 px-10 py-4" id="nextPageBtn" disabled><i class="ri-arrow-right-s-line"></i></button>
+      </div>
+      
+      <div class="d-flex align-items-center gap-8 ms-12">
+        <span class="text-xs text-secondary-light">Rows per page:</span>
+        <select id="rowsPerPageSelect" class="form-select form-select-sm w-auto text-xs radius-6">
+          <option value="10" selected>10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% if request.user.is_superuser or request.user.role == 'admin' %}
+<!-- 4. Staff Daily Attendance Sheet (Admin / HR Management) -->
+<div class="card radius-12 bg-base border">
+  <div class="card-header border-bottom bg-base py-16 px-24 d-flex flex-wrap align-items-center justify-content-between gap-16">
+    <div>
+      <h6 class="text-lg fw-semibold mb-2"><i class="ri-user-follow-line me-2 text-primary-600"></i> Mark Staff Attendance (Admin Control)</h6>
+      <p class="text-xs text-secondary-light mb-0">Record or update daily attendance statuses for all employees.</p>
+    </div>
+    <div class="d-flex align-items-center gap-12">
+      <input type="date" id="adminMarkDate" class="form-control form-control-sm" value="{% now 'Y-m-d' %}">
+    </div>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table bordered-table mb-0 align-middle" id="adminStaffTable">
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Department</th>
+            <th>Role</th>
+            <th>Status Selection</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="adminStaffTbody">
+          <tr>
+            <td colspan="5" class="text-center py-20 text-secondary-light">Loading employee roster...</td>
+          </tr>
+        </tbody>
+      </table>
+    <!-- Admin Attendance Shift Timing & Location Settings Modal -->
+<div class="modal fade" id="attSettingsModal" tabindex="-1" aria-labelledby="attSettingsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content radius-16 border-0 shadow">
+      <div class="modal-header border-bottom px-24 py-16 bg-neutral-50">
+        <h5 class="modal-title font-semibold text-lg text-primary-light" id="attSettingsModalLabel">
+          <i class="ri-time-line text-primary-600 me-2"></i> Attendance Shift Timing & Location Settings
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="attSettingsForm">
+        <div class="modal-body p-24">
+          <div class="alert alert-info border-0 radius-8 p-12 mb-20 d-flex align-items-center gap-2">
+            <i class="ri-information-fill text-xl text-info-600"></i>
+            <div class="text-xs text-secondary-700">
+              Configure office shift hours, grace period for automatic Late marking, and optional Geofence radius for location validation.
+            </div>
+          </div>
+          
+          <h6 class="text-md fw-bold mb-12 text-primary-600"><i class="ri-time-fill me-1"></i> Shift Timing Configuration</h6>
+          <div class="row g-3 mb-20">
+            <div class="col-md-4">
+              <label class="form-label text-sm fw-semibold text-primary-light">Office Check-In Time</label>
+              <input type="time" class="form-control radius-8" id="cfgCheckInTime" required>
+              <span class="text-xs text-secondary-light">Expected shift start time</span>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-sm fw-semibold text-primary-light">Grace Period (Minutes)</label>
+              <input type="number" class="form-control radius-8" id="cfgGraceMinutes" min="0" max="120" placeholder="15" required>
+              <span class="text-xs text-secondary-light">Mark as LATE after this grace</span>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-sm fw-semibold text-primary-light">Office Check-Out Time</label>
+              <input type="time" class="form-control radius-8" id="cfgCheckOutTime" required>
+              <span class="text-xs text-secondary-light">Expected shift end time</span>
+            </div>
+          </div>
+
+          <hr class="my-20">
+
+          <h6 class="text-md fw-bold mb-12 text-primary-600"><i class="ri-map-pin-2-fill me-1"></i> Office Location & Geofence Settings</h6>
+          <div class="row g-3 mb-16">
+            <div class="col-md-6">
+              <label class="form-label text-sm fw-semibold text-primary-light">Office Location Name</label>
+              <input type="text" class="form-control radius-8" id="cfgLocName" placeholder="e.g. Main Head Office - Jaipur" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-sm fw-semibold text-primary-light">Geofence Radius (Meters)</label>
+              <input type="number" class="form-control radius-8" id="cfgGeoRadius" min="50" max="50000" placeholder="500" required>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-16">
+            <div class="col-md-6">
+              <label class="form-label text-sm fw-semibold text-primary-light">Office Latitude</label>
+              <input type="number" step="any" class="form-control radius-8" id="cfgOfficeLat" placeholder="e.g. 26.9124">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-sm fw-semibold text-primary-light">Office Longitude</label>
+              <input type="number" step="any" class="form-control radius-8" id="cfgOfficeLng" placeholder="e.g. 75.7873">
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-16 bg-neutral-50 p-12 radius-8 border">
+            <div>
+              <span class="text-xs fw-semibold text-primary-light">Auto-Detect Current GPS Coordinates</span>
+              <p class="text-xs text-secondary-light mb-0">Set office coordinates using your device's current location</p>
+            </div>
+            <button type="button" id="useCurrentGpsBtn" class="btn btn-sm btn-outline-primary radius-8 px-12 py-6">
+              <i class="ri-crosshair-2-line me-1"></i> Use My GPS Location
+            </button>
+          </div>
+
+          <div class="form-check form-switch mt-12">
+            <input class="form-check-input" type="checkbox" id="cfgEnforceGeofence">
+            <label class="form-check-input-label text-sm fw-semibold text-primary-light ms-2" for="cfgEnforceGeofence">
+              Enforce Geofence Validation (Reject Punch-In if outside location radius)
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer border-top px-24 py-16 bg-neutral-50">
+          <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" id="saveAttSettingsBtn" class="btn btn-primary-600 text-white radius-8 px-20 font-semibold">
+            <i class="ri-save-line me-1"></i> Save Shift & Location Settings
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block js %}
-    <script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+$(document).ready(function() {
+  var csrfToken = '{{ csrf_token }}';
 
-    let table = new DataTable('#dataTable');
+  // Helper function to capture browser Geolocation & address
+  function getBrowserLocation(callback) {
+    if (!navigator.geolocation) {
+      callback(null, null, "Geolocation Not Supported by Browser");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      function(pos) {
+        var lat = pos.coords.latitude;
+        var lng = pos.coords.longitude;
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+          .then(function(res) { return res.json(); })
+          .then(function(data) {
+            var address = data.display_name || `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+            callback(lat, lng, address);
+          })
+          .catch(function() {
+            callback(lat, lng, `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`);
+          });
+      },
+      function(err) {
+        console.warn("Geolocation permission error:", err);
+        callback(null, null, "Location Permission Denied / Unavailable");
+      },
+      { timeout: 7000, maximumAge: 60000, enableHighAccuracy: true }
+    );
+  }
 
-    // ✅ Data Table start
-    $('.data-table').each(function () {
-        const $table = $(this);
-        const tableInstance = new DataTable(this);
+  // 1. Fetch Today's Punch Status
+  function loadTodayStatus() {
+    $.ajax({
+      url: '/accounts/api/attendance/today-status/',
+      type: 'GET',
+      success: function(resp) {
+        if (resp.status === 'success') {
+          var emp = resp.employee || {};
+          var st = resp.shift_settings || {};
+          
+          if (st.is_admin) {
+            $('#openAttSettingsBtn').removeClass('d-none');
+          }
 
-        // Handle search input (inside same wrapper)
-        $table.closest('.dataTable-wrapper').find('.dt-search .dt-input').on('keyup', function () {
-            tableInstance.search(this.value).draw();
-        });
+          if (emp.full_name) {
+            $('#empLiveWelcome').text(`Daily Self Punch Attendance - ${emp.full_name} (${emp.employee_id || 'ID: N/A'})`);
+          }
+          
+          var shiftText = st.office_check_in_time ? `<div class="text-xs text-secondary-light mt-1"><i class="ri-time-line me-1"></i> Expected Shift: ${st.office_check_in_time} - ${st.office_check_out_time} (Grace: ${st.grace_period_minutes}m)</div>` : '';
 
-        // Handle page length change (inside same wrapper)
-        $table.closest('.dataTable-wrapper').find('.dt-length .dt-input').on('change', function () {
-            const value = $(this).val();
-            tableInstance.page.len(value).draw();
-        });
+          if (resp.has_checked_out) {
+            var locInfo = resp.check_out_location ? ` | <i class="ri-map-pin-line me-1"></i>${resp.check_out_location}` : '';
+            var ipInfo = resp.check_out_ip ? ` | IP: ${resp.check_out_ip}` : '';
+            $('#empPunchStatusText').html(`
+              <span class="badge bg-secondary-100 text-secondary-700 px-10 py-6 radius-4 fw-semibold text-sm">
+                <i class="ri-checkbox-circle-fill me-1 text-success-600"></i> Checked Out at ${resp.check_out_time || ''}${ipInfo}${locInfo}
+              </span>
+              ${shiftText}
+            `);
+            $('#empPunchInBtn').addClass('d-none');
+            $('#empPunchOutBtn').addClass('d-none');
+          } else if (resp.has_checked_in) {
+            var locInfo = resp.check_in_location ? ` | <i class="ri-map-pin-line me-1"></i>${resp.check_in_location}` : '';
+            var ipInfo = resp.check_in_ip ? ` | IP: ${resp.check_in_ip}` : '';
+            
+            var badgeClass = resp.attendance_status === 'L' ? 'bg-danger-100 text-danger-700' : 'bg-success-100 text-success-600';
+            var badgeIcon = resp.attendance_status === 'L' ? 'ri-alarm-warning-fill text-danger-600' : 'ri-time-fill';
+            var statusTag = resp.attendance_status === 'L' ? ' [LATE]' : '';
+
+            $('#empPunchStatusText').html(`
+              <span class="badge ${badgeClass} px-10 py-6 radius-4 fw-semibold text-sm">
+                <i class="${badgeIcon} me-1"></i> Checked In at ${resp.check_in_time || ''}${statusTag}${ipInfo}${locInfo}
+              </span>
+              ${shiftText}
+            `);
+            $('#empPunchInBtn').addClass('d-none');
+            $('#empPunchOutBtn').removeClass('d-none');
+          } else {
+            $('#empPunchStatusText').html(`
+              <span class="badge bg-warning-100 text-warning-700 px-10 py-6 radius-4 fw-semibold text-sm">
+                <i class="ri-alert-line me-1"></i> Not Checked In Today
+              </span>
+              ${shiftText}
+            `);
+            $('#empPunchInBtn').removeClass('d-none');
+            $('#empPunchOutBtn').addClass('d-none');
+          }
+        }
+      }
     });
-    // ✅ Data Table end
+  }
 
-    </script>
+  loadTodayStatus();
+
+  // Load Admin Settings into Modal
+  $('#attSettingsModal').on('show.bs.modal', function() {
+    $.ajax({
+      url: '/accounts/api/attendance/settings/',
+      type: 'GET',
+      success: function(resp) {
+        if (resp.status === 'success' && resp.settings) {
+          var s = resp.settings;
+          $('#cfgCheckInTime').val(s.office_check_in_time);
+          $('#cfgGraceMinutes').val(s.grace_period_minutes);
+          $('#cfgCheckOutTime').val(s.office_check_out_time);
+          $('#cfgLocName').val(s.office_location_name);
+          $('#cfgGeoRadius').val(s.geofence_radius_meters);
+          $('#cfgOfficeLat').val(s.office_latitude || '');
+          $('#cfgOfficeLng').val(s.office_longitude || '');
+          $('#cfgEnforceGeofence').prop('checked', s.enforce_geofence);
+        }
+      }
+    });
+  });
+
+  // Auto GPS for Admin Location setting
+  $('#useCurrentGpsBtn').on('click', function() {
+    var $b = $(this);
+    $b.prop('disabled', true).html('<i class="ri-loader-4-line ri-spin me-1"></i> Detecting...');
+    getBrowserLocation(function(lat, lng, address) {
+      $b.prop('disabled', false).html('<i class="ri-crosshair-2-line me-1"></i> Use My GPS Location');
+      if (lat && lng) {
+        $('#cfgOfficeLat').val(lat);
+        $('#cfgOfficeLng').val(lng);
+        if (!$('#cfgLocName').val()) {
+          $('#cfgLocName').val(address);
+        }
+        Swal.fire({ icon: 'success', title: 'GPS Coordinates Filled!', text: `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`, timer: 1500, showConfirmButton: false });
+      } else {
+        Swal.fire({ icon: 'error', title: 'GPS Failed', text: address });
+      }
+    });
+  });
+
+  // Submit Admin Attendance Shift Settings Form
+  $('#attSettingsForm').on('submit', function(e) {
+    e.preventDefault();
+    var $btn = $('#saveAttSettingsBtn');
+    $btn.prop('disabled', true).html('<i class="ri-loader-4-line ri-spin me-1"></i> Saving...');
+
+    var payload = {
+      office_check_in_time: $('#cfgCheckInTime').val(),
+      grace_period_minutes: $('#cfgGraceMinutes').val(),
+      office_check_out_time: $('#cfgCheckOutTime').val(),
+      office_location_name: $('#cfgLocName').val(),
+      geofence_radius_meters: $('#cfgGeoRadius').val(),
+      office_latitude: $('#cfgOfficeLat').val(),
+      office_longitude: $('#cfgOfficeLng').val(),
+      enforce_geofence: $('#cfgEnforceGeofence').is(':checked')
+    };
+
+    $.ajax({
+      url: '/accounts/api/attendance/settings/',
+      type: 'POST',
+      headers: { 'X-CSRFToken': csrfToken },
+      contentType: 'application/json',
+      data: JSON.stringify(payload),
+      success: function(resp) {
+        $btn.prop('disabled', false).html('<i class="ri-save-line me-1"></i> Save Shift & Location Settings');
+        $('#attSettingsModal').modal('hide');
+        Swal.fire({ icon: 'success', title: 'Settings Saved! ⚙️', text: resp.message, timer: 2000, showConfirmButton: false });
+        loadTodayStatus();
+      },
+      error: function(xhr) {
+        $btn.prop('disabled', false).html('<i class="ri-save-line me-1"></i> Save Shift & Location Settings');
+        Swal.fire({ icon: 'error', title: 'Save Failed', text: (xhr.responseJSON ? xhr.responseJSON.message : 'Error saving settings.') });
+      }
+    });
+  });
+
+  // 2. Punch In Click
+  $('#empPunchInBtn').on('click', function() {
+    var $btn = $(this);
+    $btn.prop('disabled', true).html('<i class="ri-loader-4-line ri-spin me-1"></i> Fetching Location...');
+    
+    getBrowserLocation(function(lat, lng, address) {
+      $btn.html('<i class="ri-loader-4-line ri-spin me-1"></i> Punching In...');
+      $.ajax({
+        url: '/accounts/api/attendance/check-in/',
+        type: 'POST',
+        headers: { 'X-CSRFToken': csrfToken },
+        contentType: 'application/json',
+        data: JSON.stringify({
+          latitude: lat,
+          longitude: lng,
+          location: address
+        }),
+        success: function(resp) {
+          $btn.prop('disabled', false).html('<i class="ri-fingerprint-line text-lg"></i> Punch In');
+          var emp = resp.employee || {};
+          var statusBadge = resp.is_late 
+            ? `<span class="badge bg-danger-100 text-danger-700 font-mono fw-bold px-8 py-4">LATE</span>`
+            : `<span class="badge bg-success-100 text-success-600 font-mono fw-bold px-8 py-4">ON-TIME</span>`;
+
+          Swal.fire({
+            icon: resp.is_late ? 'warning' : 'success',
+            title: resp.is_late ? 'Punch In Recorded (LATE) ⏰' : 'Punch In Recorded! 🎉',
+            html: `
+              <div class="text-start mt-3 p-12 bg-neutral-50 radius-8 border">
+                <p class="mb-2 text-sm"><strong>Status:</strong> ${statusBadge}</p>
+                <p class="mb-2 text-sm"><strong>Employee:</strong> ${emp.full_name || 'Staff'} (${emp.employee_id || 'N/A'})</p>
+                <p class="mb-2 text-sm"><strong>Department/Role:</strong> ${emp.department || 'N/A'} | ${emp.designation || 'Staff'}</p>
+                <p class="mb-2 text-sm"><strong>Punch-In Time:</strong> ${resp.check_in_time}</p>
+                <p class="mb-2 text-sm"><strong>IP Address:</strong> <span class="badge bg-primary-100 text-primary-700 px-8 py-2">${resp.ip_address}</span></p>
+                <p class="mb-0 text-sm"><strong>Location:</strong> <span class="text-success-600 fw-medium">${resp.location}</span></p>
+              </div>
+            `,
+            confirmButtonText: 'OK, Continue'
+          });
+          loadTodayStatus();
+          loadAttendanceMatrix();
+        },
+        error: function(xhr) {
+          $btn.prop('disabled', false).html('<i class="ri-fingerprint-line text-lg"></i> Punch In');
+          Swal.fire({ icon: 'error', title: 'Punch In Failed', text: (xhr.responseJSON ? xhr.responseJSON.message : 'Error checking in.') });
+        }
+      });
+    });
+  });
+
+  // 3. Punch Out Click
+  $('#empPunchOutBtn').on('click', function() {
+    var $btn = $(this);
+    $btn.prop('disabled', true).html('<i class="ri-loader-4-line ri-spin me-1"></i> Fetching Location...');
+    
+    getBrowserLocation(function(lat, lng, address) {
+      $btn.html('<i class="ri-loader-4-line ri-spin me-1"></i> Punching Out...');
+      $.ajax({
+        url: '/accounts/api/attendance/check-out/',
+        type: 'POST',
+        headers: { 'X-CSRFToken': csrfToken },
+        contentType: 'application/json',
+        data: JSON.stringify({
+          latitude: lat,
+          longitude: lng,
+          location: address
+        }),
+        success: function(resp) {
+          $btn.prop('disabled', false).html('<i class="ri-logout-box-r-line text-lg"></i> Punch Out');
+          var emp = resp.employee || {};
+          Swal.fire({
+            icon: 'success',
+            title: 'Punch Out Recorded! 👋',
+            html: `
+              <div class="text-start mt-3 p-12 bg-neutral-50 radius-8 border">
+                <p class="mb-2 text-sm"><strong>Employee:</strong> ${emp.full_name || 'Staff'} (${emp.employee_id || 'N/A'})</p>
+                <p class="mb-2 text-sm"><strong>Department/Role:</strong> ${emp.department || 'N/A'} | ${emp.designation || 'Staff'}</p>
+                <p class="mb-2 text-sm"><strong>Punch-Out Time:</strong> ${resp.check_out_time}</p>
+                <p class="mb-2 text-sm"><strong>IP Address:</strong> <span class="badge bg-primary-100 text-primary-700 px-8 py-2">${resp.ip_address}</span></p>
+                <p class="mb-0 text-sm"><strong>Location:</strong> <span class="text-success-600 fw-medium">${resp.location}</span></p>
+              </div>
+            `,
+            confirmButtonText: 'OK, Completed'
+          });
+          loadTodayStatus();
+          loadAttendanceMatrix();
+        },
+        error: function(xhr) {
+          $btn.prop('disabled', false).html('<i class="ri-logout-box-r-line text-lg"></i> Punch Out');
+          Swal.fire({ icon: 'error', title: 'Punch Out Failed', text: (xhr.responseJSON ? xhr.responseJSON.message : 'Error checking out.') });
+        }
+      });
+    });
+  });
+
+  // 4. Monthly & Weekly Day-Wise Attendance Grid Matrix
+  var currentDailyRecords = [];
+
+  function renderWeeklyCalendar(dailyRecords, monthIdxVal) {
+    var $tbody = $('#weeklySundayToSaturdayTbody');
+    if (!$tbody.length) return;
+
+    var monthIdx = (monthIdxVal !== undefined && monthIdxVal !== null && monthIdxVal !== '') ? parseInt(monthIdxVal) : new Date().getMonth();
+
+    var recordMap = {};
+    (dailyRecords || []).forEach(function(r) {
+      if (r.date) {
+        recordMap[r.date] = r;
+      }
+    });
+
+    var now = new Date();
+    var year = now.getFullYear();
+
+    var sessionVal = $('#attendanceSessionSelect').val() || '';
+    if (sessionVal.includes('2025/2026')) {
+      year = (monthIdx >= 5) ? 2025 : 2026;
+    } else if (sessionVal.includes('2026/2027')) {
+      year = (monthIdx >= 5) ? 2026 : 2027;
+    }
+
+    var firstDayOfMonth = new Date(year, monthIdx, 1);
+    var lastDayOfMonth = new Date(year, monthIdx + 1, 0);
+    var totalDays = lastDayOfMonth.getDate();
+    var startDayOfWeek = firstDayOfMonth.getDay(); // 0 = Sunday, 6 = Saturday
+
+    var currentDay = 1;
+    var html = '';
+
+    while (currentDay <= totalDays) {
+      html += '<tr>';
+      for (var dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+        if ((currentDay === 1 && dayOfWeek < startDayOfWeek) || currentDay > totalDays) {
+          html += '<td class="bg-neutral-50 py-16"></td>';
+        } else {
+          var mStr = String(monthIdx + 1).padStart(2, '0');
+          var dStr = String(currentDay).padStart(2, '0');
+          var dateKey = `${year}-${mStr}-${dStr}`;
+          var rec = recordMap[dateKey];
+
+          var badgeHtml = '<span class="badge bg-neutral-200 text-neutral-600 radius-4 text-xs">-</span>';
+          if (rec) {
+            var badgeClass = 'bg-success-100 text-success-600';
+            if (rec.status === 'A') badgeClass = 'bg-danger-100 text-danger-600';
+            else if (rec.status === 'H') badgeClass = 'bg-warning-100 text-warning-600';
+            else if (rec.status === 'F') badgeClass = 'bg-purple-100 text-purple-600';
+            else if (rec.status === 'L') badgeClass = 'bg-info-100 text-info-600';
+            else if (rec.status === 'WFH') badgeClass = 'bg-cyan-100 text-cyan-600';
+
+            var stName = rec.status_display || rec.status;
+            badgeHtml = `<span class="badge ${badgeClass} px-8 py-4 radius-4 text-xs font-bold me-1">${stName}</span>`;
+          }
+
+          var isSun = (dayOfWeek === 0);
+          var isSat = (dayOfWeek === 6);
+          var cellBg = isSun ? 'bg-danger-50' : (isSat ? 'bg-warning-50' : '');
+
+          html += `
+            <td class="${cellBg} py-12 px-8 text-center align-middle">
+              <div class="fw-semibold text-sm mb-4 text-neutral-800">${currentDay}</div>
+              <div>${badgeHtml}</div>
+            </td>
+          `;
+          currentDay++;
+        }
+      }
+      html += '</tr>';
+    }
+
+    $tbody.html(html);
+  }
+
+  var recordTableState = {
+    records: [],
+    currentPage: 1,
+    rowsPerPage: 10
+  };
+
+  function renderDailyRecordsList(dailyRecords) {
+    recordTableState.records = dailyRecords || [];
+    applyTableFiltersAndRender();
+  }
+
+  function applyTableFiltersAndRender() {
+    var $tbody = $('#dayWiseTableBody');
+    if (!$tbody.length) return;
+
+    var statusFilter = $('#filterRecordStatus').val() || 'ALL';
+    var dateFilter = $('#filterRecordDate').val();
+
+    var filtered = recordTableState.records.filter(function(rec) {
+      if (statusFilter !== 'ALL' && rec.status !== statusFilter) {
+        return false;
+      }
+      if (dateFilter && rec.date !== dateFilter) {
+        return false;
+      }
+      return true;
+    });
+
+    var totalEntries = filtered.length;
+    var rowsPerPage = parseInt($('#rowsPerPageSelect').val() || recordTableState.rowsPerPage);
+    recordTableState.rowsPerPage = rowsPerPage;
+
+    var maxPages = Math.ceil(totalEntries / rowsPerPage) || 1;
+    if (recordTableState.currentPage > maxPages) recordTableState.currentPage = maxPages;
+    if (recordTableState.currentPage < 1) recordTableState.currentPage = 1;
+
+    var startIdx = (recordTableState.currentPage - 1) * rowsPerPage;
+    var endIdx = Math.min(startIdx + rowsPerPage, totalEntries);
+    var pageRecords = filtered.slice(startIdx, endIdx);
+
+    if (totalEntries === 0) {
+      $tbody.html('<tr><td colspan="8" class="text-center py-24 text-secondary-light">No attendance records found matching filters.</td></tr>');
+      $('#tablePaginationInfo').text('Showing 0 to 0 of 0 entries');
+      $('#prevPageBtn').prop('disabled', true);
+      $('#nextPageBtn').prop('disabled', true);
+      $('#currentPageBadge').text('1');
+      return;
+    }
+
+    $('#tablePaginationInfo').text(`Showing ${startIdx + 1} to ${endIdx} of ${totalEntries} entries`);
+    $('#currentPageBadge').text(recordTableState.currentPage);
+    $('#prevPageBtn').prop('disabled', recordTableState.currentPage <= 1);
+    $('#nextPageBtn').prop('disabled', recordTableState.currentPage >= maxPages);
+
+    var html = '';
+    pageRecords.forEach(function(rec) {
+      var badgeClass = 'bg-success-50 text-success-600 border border-success-200';
+      var statusLabel = rec.status_display || 'Present';
+      
+      if (rec.status === 'A') {
+        badgeClass = 'bg-danger-50 text-danger-600 border border-danger-200';
+        statusLabel = 'Absent';
+      } else if (rec.status === 'H') {
+        if (rec.day_name === 'Sunday' || rec.remarks === 'Weekly Off') {
+          badgeClass = 'bg-purple-50 text-purple-700 border border-purple-200';
+          statusLabel = 'Weekly Off';
+        } else {
+          badgeClass = 'bg-info-50 text-info-600 border border-info-200';
+          statusLabel = 'Holiday';
+        }
+      } else if (rec.status === 'F') {
+        badgeClass = 'bg-purple-50 text-purple-600 border border-purple-200';
+        statusLabel = 'Half Day';
+      } else if (rec.status === 'L') {
+        badgeClass = 'bg-warning-50 text-warning-700 border border-warning-200';
+        statusLabel = 'Late';
+      } else if (rec.status === 'WFH') {
+        badgeClass = 'bg-cyan-50 text-cyan-600 border border-cyan-200';
+        statusLabel = 'Work From Home';
+      }
+
+      var inHtml = (rec.check_in && rec.check_in !== '-') 
+        ? `<span class="text-success-600 text-sm font-medium d-inline-flex align-items-center gap-1"><i class="ri-time-line text-sm"></i> ${rec.check_in}</span>`
+        : '<span class="text-secondary-light text-sm">-</span>';
+
+      var outHtml = (rec.check_out && rec.check_out !== '-') 
+        ? `<span class="text-danger-600 text-sm font-medium d-inline-flex align-items-center gap-1"><i class="ri-time-line text-sm"></i> ${rec.check_out}</span>`
+        : '<span class="text-secondary-light text-sm">-</span>';
+
+      html += `
+        <tr class="hover-bg-neutral-50 transition-1">
+          <td class="py-14 px-20 fw-medium text-sm text-neutral-800">${rec.formatted_date || rec.date}</td>
+          <td class="py-14 px-20 text-sm text-neutral-600">${rec.day_name || '-'}</td>
+          <td class="py-14 px-20">
+            <span class="badge ${badgeClass} px-12 py-4 radius-6 font-medium text-xs">${statusLabel}</span>
+          </td>
+          <td class="py-14 px-20">${inHtml}</td>
+          <td class="py-14 px-20">${outHtml}</td>
+          <td class="py-14 px-20 text-sm font-medium text-neutral-700">${rec.work_duration || '-'}</td>
+          <td class="py-14 px-20 text-xs text-neutral-600">${rec.remarks || '-'}</td>
+          <td class="py-14 px-20 text-center">
+            <button class="btn btn-sm btn-icon text-secondary-light hover-text-primary border-0 bg-transparent p-4" type="button">
+              <i class="ri-more-2-fill text-lg"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+
+    $tbody.html(html);
+  }
+
+  $(document).on('change', '#filterRecordStatus, #filterRecordDate, #rowsPerPageSelect', function() {
+    recordTableState.currentPage = 1;
+    applyTableFiltersAndRender();
+  });
+
+  $(document).on('click', '#prevPageBtn', function() {
+    if (recordTableState.currentPage > 1) {
+      recordTableState.currentPage--;
+      applyTableFiltersAndRender();
+    }
+  });
+
+  $(document).on('click', '#nextPageBtn', function() {
+    recordTableState.currentPage++;
+    applyTableFiltersAndRender();
+  });
+
+  function loadAttendanceMatrix() {
+    var acadYear = $('#attendanceSessionSelect').val() || 'Jun 2025/2026';
+    $.ajax({
+      url: `/accounts/api/attendance/?academic_year=${encodeURIComponent(acadYear)}`,
+      type: 'GET',
+      success: function(resp) {
+        if (resp.status === 'success') {
+          currentDailyRecords = resp.daily_records || [];
+
+          // 1. Render Monthly Matrix
+          if (resp.attendance_matrix) {
+            var matrix = resp.attendance_matrix;
+            var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            var html = '';
+
+            var pCount = 0, aCount = 0, fCount = 0, lCount = 0, hCount = 0;
+
+            months.forEach(function(m) {
+              html += `<tr><td class="fw-semibold text-start text-primary-light bg-neutral-50 px-12 py-8">${m}</td>`;
+              var monthData = matrix[m] || {};
+
+              for (var d = 1; d <= 31; d++) {
+                var st = monthData[d] || monthData[String(d)] || '';
+                var badgeHtml = '-';
+                if (st === 'P') {
+                  pCount++;
+                  badgeHtml = `<span class="badge bg-success-100 text-success-600 p-4 font-mono fw-bold radius-4">P</span>`;
+                } else if (st === 'A') {
+                  aCount++;
+                  badgeHtml = `<span class="badge bg-danger-100 text-danger-600 p-4 font-mono fw-bold radius-4">A</span>`;
+                } else if (st === 'L') {
+                  lCount++;
+                  badgeHtml = `<span class="badge bg-info-100 text-info-600 p-4 font-mono fw-bold radius-4">L</span>`;
+                } else if (st === 'F' || st === 'H_DAY') {
+                  fCount++;
+                  badgeHtml = `<span class="badge bg-purple-100 text-purple-600 p-4 font-mono fw-bold radius-4">F</span>`;
+                } else if (st === 'H' || st === 'HOLIDAY') {
+                  hCount++;
+                  badgeHtml = `<span class="badge bg-warning-100 text-warning-600 p-4 font-mono fw-bold radius-4">H</span>`;
+                }
+                html += `<td class="px-4 py-8">${badgeHtml}</td>`;
+              }
+              html += `</tr>`;
+            });
+
+            $('#attendanceMatrixBody').html(html);
+          }
+
+          // 2. Render Weekly Calendar Grid
+          var curMonth = $('#weeklyMonthSelect').val();
+          if (!curMonth) {
+            curMonth = new Date().getMonth();
+            $('#weeklyMonthSelect').val(curMonth);
+          }
+          renderWeeklyCalendar(currentDailyRecords, curMonth);
+
+          // 3. Render Day-Wise Records List
+          renderDailyRecordsList(currentDailyRecords);
+
+          // 4. Update stats from API summary if available
+          if (resp.summary) {
+            $('#statPresentCount').text(resp.summary.present || 0);
+            $('#statAbsentCount').text(resp.summary.absent || 0);
+            $('#statHalfDayCount').text(resp.summary.half_day || 0);
+            $('#statLateCount').text(resp.summary.late || 0);
+            $('#statHolidayCount').text(resp.summary.holiday || 0);
+          }
+        } else {
+          $('#attendanceMatrixBody').html(`<tr><td colspan="32" class="text-center py-20 text-secondary-light">No attendance records found.</td></tr>`);
+        }
+      }
+    });
+  }
+
+  // Set default current month in dropdown
+  $('#weeklyMonthSelect').val(new Date().getMonth());
+
+  loadAttendanceMatrix();
+  $('#attendanceSessionSelect').on('change', loadAttendanceMatrix);
+  $('#weeklyMonthSelect').on('change', function() {
+    renderWeeklyCalendar(currentDailyRecords, $(this).val());
+  });
+
+  // 5. Admin Staff Roster Attendance Mark
+  if ($('#adminStaffTbody').length) {
+    function loadAdminStaffList() {
+      $.ajax({
+        url: '/accounts/api/employee/onboard/',
+        type: 'GET',
+        success: function(resp) {
+          if (resp.status === 'success' && resp.data) {
+            var html = '';
+            resp.data.forEach(function(emp, idx) {
+              html += `
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center gap-12">
+                      <div class="w-36-px h-36-px radius-circle bg-primary-100 text-primary-600 d-flex justify-content-center align-items-center fw-bold text-sm">
+                        ${emp.full_name.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <h6 class="text-sm fw-semibold mb-0 text-primary-light">${emp.full_name}</h6>
+                        <span class="text-xs text-secondary-light">${emp.email}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-sm text-secondary-light">${emp.department || 'CRM & Sales'}</td>
+                  <td><span class="badge bg-neutral-100 text-secondary-600 px-8 py-4 radius-4">${emp.designation || emp.role.toUpperCase()}</span></td>
+                  <td>
+                    <select class="form-control form-select form-select-sm staff-status-select" data-user-id="${emp.id}" id="status_sel_${emp.id}">
+                      <option value="P">Present (P)</option>
+                      <option value="L">Late (L)</option>
+                      <option value="A">Absent (A)</option>
+                      <option value="F">Half Day (F)</option>
+                      <option value="H">Holiday (H)</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-sm btn-primary-600 mark-staff-att-btn px-12 py-6 radius-8 text-xs" data-user-id="${emp.id}">
+                      Save Status
+                    </button>
+                  </td>
+                </tr>
+              `;
+            });
+            $('#adminStaffTbody').html(html);
+          }
+        }
+      });
+    }
+
+    loadAdminStaffList();
+
+    $(document).on('click', '.mark-staff-att-btn', function() {
+      var userId = $(this).data('user-id');
+      var dateStr = $('#adminMarkDate').val();
+      var statusVal = $(`#status_sel_${userId}`).val();
+      var $btn = $(this);
+
+      if (!dateStr) {
+        Swal.fire({ icon: 'warning', title: 'Select Date', text: 'Please choose a date.' });
+        return;
+      }
+
+      $btn.prop('disabled', true).text('Saving...');
+
+      $.ajax({
+        url: '/accounts/api/attendance/',
+        type: 'POST',
+        headers: { 'X-CSRFToken': csrfToken },
+        contentType: 'application/json',
+        data: JSON.stringify({
+          user_id: userId,
+          date: dateStr,
+          status: statusVal,
+          academic_year: $('#attendanceSessionSelect').val() || 'Jun 2025/2026'
+        }),
+        success: function(resp) {
+          $btn.prop('disabled', false).text('Save Status');
+          Swal.fire({ icon: 'success', title: 'Saved!', text: 'Attendance updated successfully.', timer: 1500, showConfirmButton: false });
+          loadAttendanceMatrix();
+        },
+        error: function(xhr) {
+          $btn.prop('disabled', false).text('Save Status');
+          Swal.fire({ icon: 'error', title: 'Save Failed', text: (xhr.responseJSON ? xhr.responseJSON.message : 'Error updating attendance.') });
+        }
+      });
+    });
+  }
+});
+</script>
 {% endblock %}

@@ -31,6 +31,32 @@
           <span class="text-sm text-secondary-light">Credentials created here will be used by the student to log in to the Student Portal.</span>
         </div>
         <div class="card-body p-24">
+          <!-- Student Profile Photo Upload Row -->
+          <div class="row mb-24 align-items-center pb-20 border-bottom">
+            <div class="col-12">
+              <label class="text-sm fw-semibold text-primary-light d-block mb-12">Student Profile Picture / Photo</label>
+              <div class="d-flex align-items-center gap-24">
+                <div class="position-relative d-inline-block">
+                  <img id="studentPhotoPreview" src="{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}" alt="Student Photo" class="w-90-px h-90-px rounded-circle object-fit-cover border border-2 border-primary-600 shadow-sm" style="width: 90px; height: 90px;" />
+                  <label for="studentPhotoInput" class="position-absolute bottom-0 end-0 bg-primary-600 text-white rounded-circle d-flex align-items-center justify-content-center cursor-pointer shadow hover-bg-primary-700" style="width: 30px; height: 30px; right: -2px; bottom: -2px;" title="Upload Photo">
+                    <i class="ri-camera-fill text-sm"></i>
+                  </label>
+                  <input type="file" id="studentPhotoInput" name="profile_photo" accept="image/*" class="d-none" />
+                </div>
+                <div>
+                  <h6 class="text-md fw-semibold mb-4 text-primary-light">Upload Student Photo</h6>
+                  <p class="text-xs text-secondary-light mb-8">Allowed formats: JPG, PNG, WEBP (Max 5MB)</p>
+                  <div class="d-flex align-items-center gap-2">
+                    <label for="studentPhotoInput" class="btn btn-sm btn-primary-50 text-primary-600 border border-primary-200 radius-8 d-inline-flex align-items-center gap-1 cursor-pointer fw-medium px-14 py-6 text-xs">
+                      <i class="ri-upload-cloud-2-line text-sm"></i> Choose Image
+                    </label>
+                    <button type="button" id="removeStudentPhotoBtn" class="btn btn-sm btn-outline-danger radius-8 px-12 py-6 text-xs d-none">Remove</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="row gy-3">
             <div class="col-md-3">
               <label class="text-sm fw-semibold text-primary-light mb-8" for="username">Login Username <span class="text-danger-600">*</span></label>
@@ -52,6 +78,7 @@
         </div>
       </div>
     </div>
+
 
     <!-- Section 2: Student Academic Info -->
     <div class="col-lg-12">
@@ -77,13 +104,19 @@
               <label class="text-sm fw-semibold text-primary-light mb-8" for="class_grade">Class / Grade / Target Exam</label>
               <input type="text" class="form-control radius-8" id="class_grade" name="class_grade" placeholder="e.g. Class 10, NEET 2027, JEE Main" value="Class 10">
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="institution_id">Select Institution</label>
+              <select class="form-control form-select radius-8" id="institution_id" name="institution_id">
+                <option value="">-- Select Institution (Optional) --</option>
+              </select>
+            </div>
+            <div class="col-md-4">
               <label class="text-sm fw-semibold text-primary-light mb-8" for="batch_id">Assign Target Batch (Optional)</label>
               <select class="form-control form-select radius-8" id="batch_id" name="batch_id">
                 <option value="">-- No Specific Batch / General --</option>
               </select>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <label class="text-sm fw-semibold text-primary-light mb-8" for="section">Section</label>
               <input type="text" class="form-control radius-8" id="section" name="section" placeholder="e.g. A, Morning, Batch-1" value="A">
             </div>
@@ -122,9 +155,44 @@
 <script>
   const API_BASE_URL = window.location.origin;
 
+  const defaultStudentAvatar = "{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}";
+
   document.addEventListener('DOMContentLoaded', function() {
+    loadInstitutionsDropdown();
     loadAllowedCoursesChecklist();
     loadAvailableBatches();
+
+    // Profile photo upload preview listener
+    const photoInput = document.getElementById('studentPhotoInput');
+    const photoPreview = document.getElementById('studentPhotoPreview');
+    const removeBtn = document.getElementById('removeStudentPhotoBtn');
+
+    if (photoInput) {
+      photoInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+          if (file.size > 5 * 1024 * 1024) {
+            alert('Profile picture must be less than 5MB.');
+            this.value = '';
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            if (photoPreview) photoPreview.src = e.target.result;
+            if (removeBtn) removeBtn.classList.remove('d-none');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    if (removeBtn) {
+      removeBtn.addEventListener('click', function() {
+        if (photoInput) photoInput.value = '';
+        if (photoPreview) photoPreview.src = defaultStudentAvatar;
+        this.classList.add('d-none');
+      });
+    }
 
     document.getElementById('addInstitutionStudentForm').addEventListener('submit', async function(e) {
       e.preventDefault();
@@ -133,35 +201,39 @@
       const password = document.getElementById('password').value.trim();
       const admission_no = document.getElementById('admission_no').value.trim();
       const batchId = document.getElementById('batch_id').value;
+      const selectedInstId = document.getElementById('institution_id').value;
 
       const selectedCourses = Array.from(document.querySelectorAll('input[name="course_ids"]:checked')).map(cb => cb.value);
 
       const urlParams = new URLSearchParams(window.location.search);
-      const instId = urlParams.get('institution_id');
+      const paramInstId = urlParams.get('institution_id');
+      const instId = selectedInstId || paramInstId;
 
-      const payload = {
-        username: username,
-        password: password,
-        email: document.getElementById('email').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        first_name: document.getElementById('first_name').value.trim(),
-        last_name: document.getElementById('last_name').value.trim(),
-        admission_no: admission_no,
-        class_grade: document.getElementById('class_grade').value.trim(),
-        section: document.getElementById('section').value.trim(),
-        batch_id: batchId ? parseInt(batchId) : null,
-        institution: instId ? parseInt(instId) : null,
-        course_ids: selectedCourses
-      };
+      const formData = new FormData();
+      formData.append('username', username);
+      formData.append('password', password);
+      formData.append('email', document.getElementById('email').value.trim());
+      formData.append('phone', document.getElementById('phone').value.trim());
+      formData.append('first_name', document.getElementById('first_name').value.trim());
+      formData.append('last_name', document.getElementById('last_name').value.trim());
+      formData.append('admission_no', admission_no);
+      formData.append('class_grade', document.getElementById('class_grade').value.trim());
+      formData.append('section', document.getElementById('section').value.trim());
+      if (batchId) formData.append('batch_id', batchId);
+      if (instId) formData.append('institution', instId);
+      formData.append('course_ids', JSON.stringify(selectedCourses));
+
+      if (photoInput && photoInput.files && photoInput.files[0]) {
+        formData.append('profile_photo', photoInput.files[0]);
+      }
 
       try {
         const response = await fetch(`${API_BASE_URL}/api/students/create/`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
           },
-          body: JSON.stringify(payload)
+          body: formData
         });
 
         const data = await response.json();
@@ -177,6 +249,8 @@
             </div>
           `;
           document.getElementById('addInstitutionStudentForm').reset();
+          if (photoPreview) photoPreview.src = defaultStudentAvatar;
+          if (removeBtn) removeBtn.classList.add('d-none');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
           document.getElementById('alertContainer').innerHTML = `
@@ -185,6 +259,7 @@
             </div>
           `;
         }
+
       } catch (err) {
         document.getElementById('alertContainer').innerHTML = `
           <div class="alert alert-danger radius-12 p-16 mb-24">
@@ -194,6 +269,31 @@
       }
     });
   });
+
+  async function loadInstitutionsDropdown() {
+    const select = document.getElementById('institution_id');
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramInstId = urlParams.get('institution_id');
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/institutions/?page_size=100`, { credentials: 'include' });
+      const data = await response.json();
+      const list = data.results || [];
+
+      list.forEach(inst => {
+        const opt = document.createElement('option');
+        opt.value = inst.id;
+        opt.textContent = `${inst.name} (${inst.type || 'Institution'})`;
+        select.appendChild(opt);
+      });
+
+      if (paramInstId) {
+        select.value = paramInstId;
+      }
+    } catch (e) {
+      console.warn("Could not load institutions:", e);
+    }
+  }
 
   async function loadAvailableBatches() {
     const batchSelect = document.getElementById('batch_id');
@@ -250,5 +350,6 @@
       container.innerHTML = `<div class="col-12 text-danger text-center py-3">Failed to load courses.</div>`;
     }
   }
+
 </script>
 {% endblock %}

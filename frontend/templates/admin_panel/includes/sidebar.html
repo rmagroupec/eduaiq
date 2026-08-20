@@ -23,7 +23,7 @@
         class="profile-dropdown__button d-flex align-items-center justify-content-between p-10 w-100 overflow-hidden bg-neutral-50 radius-12 "
         data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
         <span class="d-flex align-items-start gap-10">
-          <img src="{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}" alt="Thumbnail"
+          <img src="{% if request.user.profile_image %}{{ request.user.profile_image.url }}{% else %}{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}{% endif %}" alt="Profile Picture"
             class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0">
           <span class="profile-dropdown__contents">
             <span class="h6 mb-0 text-md d-block text-primary-light">{% if request.user.is_authenticated %}{{ request.user.first_name|default:request.user.username|title }}{% else %}Admin User{% endif %}</span>
@@ -177,11 +177,11 @@
         </a>
       </li>
 
-      <!-- COURSES CATALOG -->
+      <!-- ATTENDANCE -->
       <li>
-        <a href="/admin-panel/courses/">
-          <i class="ri-book-open-line"></i>
-          <span>Course Catalog</span>
+        <a href="/admin-panel/employee-attendance/">
+          <i class="ri-calendar-check-line"></i>
+          <span>Attendance</span>
         </a>
       </li>
 

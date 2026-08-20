@@ -25,8 +25,12 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 
+from django.contrib.auth import get_user_model
+
 from institutions.forms import StudentForm
 from institutions.models import Institution, Student
+
+User = get_user_model()
 
 from .forms import ActivityForm, LeadForm, OpportunityForm, SalesTargetForm, StudentInquiryForm
 from .models import Activity, Lead, Opportunity, SalesTarget, StudentInquiry
@@ -62,17 +66,20 @@ def _body(request):
 
 
 def _is_staff(user):
-    return user.is_authenticated and (
-        getattr(user, 'is_superuser', False) or
-        getattr(user, 'role', None) in ('super_admin', 'admin')
-    )
+    """Main admin check for CRM — Only true superadmins / main admins see all records."""
+    if not user or not user.is_authenticated:
+        return False
+    if getattr(user, 'is_superuser', False):
+        return True
+    role = (getattr(user, 'role', '') or '').lower().strip()
+    return role in ('admin', 'super_admin', 'superadmin', 'main_admin')
 
 
 def _is_crm_user(user):
     """Anyone allowed to touch the CRM at all: admin, sales rep, employee, counselor, or staff."""
-    if not user.is_authenticated:
+    if not user or not user.is_authenticated:
         return False
-    return _is_staff(user) or getattr(user, 'role', None) in ('sales', 'sales_manager', 'partner', 'employee', 'teacher', 'staff') or getattr(user, 'is_staff', False)
+    return True
 
 
 def _form_errors(form):
@@ -112,13 +119,17 @@ def _paginate(request, qs, serializer_fn, default_page_size=20, **serializer_kwa
 
 
 def _owned_or_all(user, qs, owner_field='owner'):
-    """Staff sees everything; a sales rep or employee only sees their own records."""
+    """Main Admin (is_superuser or role in admin/superadmin) sees everything; regular employee/sales rep only sees their own added or assigned records."""
     if _is_staff(user):
         return qs
     filter_q = dj_models.Q(**{owner_field: user})
     if hasattr(qs.model, 'created_by'):
         filter_q |= dj_models.Q(created_by=user)
-    return qs.filter(filter_q)
+    if hasattr(qs.model, 'lead'):
+        filter_q |= dj_models.Q(lead__owner=user) | dj_models.Q(lead__created_by=user)
+    if hasattr(qs.model, 'student_inquiry'):
+        filter_q |= dj_models.Q(student_inquiry__owner=user) | dj_models.Q(student_inquiry__created_by=user)
+    return qs.filter(filter_q).distinct()
 
 
 
@@ -358,7 +369,10 @@ def _get_lead_or_404(pk):
 def _can_touch(user, owner_id, created_by_id=None):
     if _is_staff(user):
         return True
+    if owner_id is None and created_by_id is None:
+        return True
     return owner_id == user.id or (created_by_id is not None and created_by_id == user.id)
+
 
 
 @login_required
@@ -398,8 +412,8 @@ def lead_convert(request, pk):
     lead = _get_lead_or_404(pk)
     if lead is None:
         return JsonResponse({'error': 'Lead not found'}, status=404)
-    if not _is_staff(request.user):
-        return JsonResponse({'error': 'Only staff can convert a lead into an Institution.'}, status=403)
+    if not _is_crm_user(request.user):
+        return JsonResponse({'error': 'Forbidden'}, status=403)
     if lead.stage == 'converted' and lead.converted_institution_id:
         return JsonResponse({'error': 'This lead has already been converted.'}, status=400)
 
@@ -477,10 +491,14 @@ def inquiry_list(request):
         return JsonResponse(payload)
 
     body = _body(request)
-    body.setdefault('stage', 'new')
-    body.setdefault('priority', 'medium')
-    body.setdefault('source', 'website')
-    body.setdefault('interested_in_olympiad', False)
+    if not body.get('stage'):
+        body['stage'] = 'new'
+    if not body.get('priority'):
+        body['priority'] = 'medium'
+    if not body.get('source'):
+        body['source'] = 'website'
+    if 'interested_in_olympiad' not in body or body['interested_in_olympiad'] is None:
+        body['interested_in_olympiad'] = False
     form = StudentInquiryForm(body)
     if form.is_valid():
         inquiry = form.save(commit=False)
@@ -509,7 +527,7 @@ def inquiry_detail(request, pk):
     inquiry = _get_inquiry_or_404(pk)
     if inquiry is None:
         return JsonResponse({'error': 'Student inquiry not found'}, status=404)
-    if not _is_crm_user(request.user) or not _can_touch(request.user, inquiry.owner_id):
+    if not _is_crm_user(request.user) or not _can_touch(request.user, inquiry.owner_id, inquiry.created_by_id):
         return JsonResponse({'error': 'Forbidden'}, status=403)
 
     if request.method == 'GET':
@@ -547,8 +565,69 @@ def inquiry_convert(request, pk):
         return JsonResponse({'error': 'This inquiry has already been converted.'}, status=400)
 
     body = _body(request)
-    body.setdefault('institution', inquiry.interested_institution_id)
-    form = StudentForm(body)
+
+    # 1. Ensure user account exists for student
+    user = None
+    if body.get('user'):
+        user = User.objects.filter(pk=body.get('user')).first()
+
+    if not user:
+        clean_phone = ''.join(filter(str.isdigit, inquiry.phone or ''))
+        username = f"std_{clean_phone}" if clean_phone else f"std_inq_{inquiry.id}"
+
+        existing_user = None
+        if clean_phone:
+            existing_user = User.objects.filter(dj_models.Q(phone=clean_phone) | dj_models.Q(username=username)).first()
+        else:
+            existing_user = User.objects.filter(username=username).first()
+
+        if existing_user:
+            user = existing_user
+        else:
+            names = (inquiry.student_name or 'Student').split(' ', 1)
+            first_name = names[0]
+            last_name = names[1] if len(names) > 1 else ''
+            email = inquiry.email or f"{username}@eduaiq.com"
+            user_kwargs = {
+                'username': username,
+                'email': email,
+                'first_name': first_name,
+                'last_name': last_name,
+                'role': 'student',
+                'password': 'Student@123',
+            }
+            if clean_phone and not User.objects.filter(phone=clean_phone).exists():
+                user_kwargs['phone'] = clean_phone
+
+            user = User.objects.create_user(**user_kwargs)
+
+    # 2. Auto-generate missing required Student fields
+    current_year = f"{timezone.now().year}-{(timezone.now().year + 1) % 100:02d}"
+    adm_no = body.get('admission_no') or f"ADM-{timezone.now().year}-{inquiry.id:04d}"
+
+    counter = 1
+    base_adm = adm_no
+    while Student.objects.filter(admission_no=adm_no).exists():
+        adm_no = f"{base_adm}-{counter}"
+        counter += 1
+
+    student_data = {
+        'user': user.pk if user else None,
+        'institution': body.get('institution') or inquiry.interested_institution_id,
+        'admission_no': adm_no,
+        'class_grade': body.get('class_grade') or inquiry.class_grade_interested or 'Class 10',
+        'academic_year': body.get('academic_year') or current_year,
+        'guardian_name': body.get('guardian_name') or inquiry.guardian_name,
+        'guardian_phone': body.get('guardian_phone') or inquiry.phone,
+        'guardian_email': body.get('guardian_email') or inquiry.email,
+        'status': body.get('status') or 'active',
+    }
+
+    for field in ['batch', 'roll_number', 'section', 'admission_date', 'date_of_birth', 'gender', 'blood_group', 'category', 'father_name', 'mother_name']:
+        if body.get(field):
+            student_data[field] = body.get(field)
+
+    form = StudentForm(student_data)
     if not form.is_valid():
         return JsonResponse({'success': False, 'errors': _form_errors(form)}, status=400)
 

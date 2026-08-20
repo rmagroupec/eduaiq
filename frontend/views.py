@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from django.utils import timezone
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -548,12 +548,153 @@ def lesson_player(request):
 # ==========================
 # Admin Panel Views
 # ==========================
-
 @login_required(login_url='/admin-panel/login/')
 def dashboard(request):
     """
-    Real-World Admin Dashboard - Computes live counts, graphical metrics, and recent records across platform entities.
+    Real-World Multi-Role Dashboard - Renders specific portals for Main Admin, Institution Admin, Student, and Employee.
     """
+    user = request.user
+    is_admin = _is_main_admin(user)
+
+    user_role = (getattr(user, 'role', '') or '').lower().strip()
+    is_institution = False
+    is_student = False
+    is_employee = False
+
+    if not is_admin:
+        if user_role in ['institution', 'college', 'school', 'institute', 'partner']:
+            is_institution = True
+        elif user_role in ['student', 'parent']:
+            is_student = True
+        else:
+            is_employee = True
+
+    emp_data = {
+        'is_employee': is_employee,
+        'total_leads': 0,
+        'new_leads_today': 0,
+        'in_progress_leads': 0,
+        'won_leads': 0,
+        'recent_leads': [],
+        'today_attendance': None,
+        'pending_wfh': 0
+    }
+
+    if is_employee or is_admin:
+        try:
+            from django.db.models import Q
+            from leads.models import Lead, StudentInquiry
+
+            if is_admin:
+                user_leads = Lead.objects.all()
+                user_inquiries = StudentInquiry.objects.all()
+            else:
+                leads_q = Q(owner=user) | Q(created_by=user)
+                user_leads = Lead.objects.filter(leads_q)
+                user_inquiries = StudentInquiry.objects.filter(leads_q)
+
+            today = date.today()
+
+            total_leads_cnt = user_leads.count() + user_inquiries.count()
+            new_today_cnt = user_leads.filter(created_at__date=today).count() + user_inquiries.filter(created_at__date=today).count()
+
+            in_progress_cnt = (
+                user_leads.exclude(stage__in=['converted', 'lost']).count() +
+                user_inquiries.exclude(stage__in=['enrolled', 'lost']).count()
+            )
+
+            won_cnt = (
+                user_leads.filter(stage='converted').count() +
+                user_inquiries.filter(stage='enrolled').count()
+            )
+
+            recent_items = []
+            for l in user_leads.order_by('-created_at')[:6]:
+                recent_items.append({
+                    'full_name': l.lead_name + (f" ({l.institution_name})" if l.institution_name else ""),
+                    'phone_number': l.phone,
+                    'email': l.email,
+                    'course_interested': l.institution_name or (l.get_institution_type_display() if hasattr(l, 'get_institution_type_display') else "B2B Institution Lead"),
+                    'status': l.get_stage_display() if hasattr(l, 'get_stage_display') else l.stage,
+                    'created_at': l.created_at,
+                })
+
+            for i in user_inquiries.order_by('-created_at')[:6]:
+                recent_items.append({
+                    'full_name': i.student_name + (f" (Guardian: {i.guardian_name})" if i.guardian_name else ""),
+                    'phone_number': i.phone,
+                    'email': i.email,
+                    'course_interested': i.class_grade_interested or "Student Admission Inquiry",
+                    'status': i.get_stage_display() if hasattr(i, 'get_stage_display') else i.stage,
+                    'created_at': i.created_at,
+                })
+
+            recent_items.sort(key=lambda x: x['created_at'] if x['created_at'] else timezone.now(), reverse=True)
+
+            emp_data['total_leads'] = total_leads_cnt
+            emp_data['new_leads_today'] = new_today_cnt
+            emp_data['in_progress_leads'] = in_progress_cnt
+            emp_data['won_leads'] = won_cnt
+            emp_data['recent_leads'] = recent_items[:6]
+        except Exception:
+            pass
+
+        try:
+            from accounts.models import Attendance, WFHRequest
+            emp_data['today_attendance'] = Attendance.objects.filter(user=user, date=date.today()).first()
+            emp_data['pending_wfh'] = WFHRequest.objects.filter(user=user, status='pending').count()
+        except Exception:
+            pass
+
+    inst_data = {
+        'institution_obj': None,
+        'students_count': 0,
+        'courses_count': 0,
+        'batches_count': 0,
+        'students_list': [],
+        'allowed_courses_list': [],
+    }
+    if is_institution or is_admin:
+        try:
+            from institutions.models import Institution, Student
+            from django.db.models import Q
+            if is_institution:
+                inst = Institution.objects.filter(Q(admin_user=user) | Q(created_by=user)).first()
+            else:
+                inst = Institution.objects.first()
+
+            if inst:
+                inst_data['institution_obj'] = inst
+                students_qs = Student.objects.filter(institution=inst)
+                inst_data['students_count'] = students_qs.count()
+                inst_data['courses_count'] = inst.allowed_courses.count() if inst.allowed_courses.exists() else Course.objects.count()
+                inst_data['batches_count'] = inst.batches.count()
+                inst_data['students_list'] = list(students_qs.select_related('user', 'batch')[:10])
+                inst_data['allowed_courses_list'] = list(inst.allowed_courses.select_related('category')[:8]) if inst.allowed_courses.exists() else list(Course.objects.select_related('category')[:8])
+        except Exception:
+            pass
+
+    student_data = {
+        'student_profile': None,
+        'enrolled_courses_count': 0,
+        'olympiads_count': 0,
+        'attempts_count': 0,
+        'recent_registrations': [],
+        'enrolled_courses': [],
+    }
+    if is_student or is_admin:
+        try:
+            from institutions.models import Student
+            st_prof = getattr(user, 'student_profile', None) or Student.objects.filter(user=user).first()
+            student_data['student_profile'] = st_prof
+            student_data['enrolled_courses'] = list(Course.objects.filter(status='published')[:6])
+            student_data['enrolled_courses_count'] = len(student_data['enrolled_courses'])
+            student_data['olympiads_count'] = Olympiad.objects.filter(is_active=True).count()
+            student_data['attempts_count'] = OlympiadAttempt.objects.filter(student=user).count()
+            student_data['recent_registrations'] = list(OlympiadRegistration.objects.filter(student=user).select_related('olympiad')[:5])
+        except Exception:
+            pass
+
     total_students = User.objects.filter(role='student').count() or User.objects.count()
     colleges_count = 0
     schools_count = 0
@@ -561,12 +702,24 @@ def dashboard(request):
     pending_institutions = 0
     try:
         from institutions.models import Institution
-        total_institutions = Institution.objects.count()
-        colleges_count = Institution.objects.filter(type='college').count()
-        schools_count = Institution.objects.filter(type='school').count()
-        active_institutions = Institution.objects.filter(status='active').count()
-        pending_institutions = Institution.objects.filter(status='pending').count()
-        recent_institutions = Institution.objects.order_by('-created_at')[:6]
+        from django.db.models import Q
+        if is_employee:
+            emp_inst_qs = Institution.objects.filter(Q(created_by=user) | Q(assigned_employee=user))
+            total_institutions = emp_inst_qs.count()
+            colleges_count = emp_inst_qs.filter(type='college').count()
+            schools_count = emp_inst_qs.filter(type='school').count()
+            active_institutions = emp_inst_qs.filter(status='active').count()
+            pending_institutions = emp_inst_qs.filter(status='pending').count()
+            recent_institutions = emp_inst_qs.order_by('-created_at')[:6]
+            emp_data['recent_institutions'] = recent_institutions
+            emp_data['total_institutions'] = total_institutions
+        else:
+            total_institutions = Institution.objects.count()
+            colleges_count = Institution.objects.filter(type='college').count()
+            schools_count = Institution.objects.filter(type='school').count()
+            active_institutions = Institution.objects.filter(status='active').count()
+            pending_institutions = Institution.objects.filter(status='pending').count()
+            recent_institutions = Institution.objects.order_by('-created_at')[:6]
     except Exception:
         total_institutions = 0
         recent_institutions = []
@@ -604,6 +757,13 @@ def dashboard(request):
     recent_blogs = BlogPost.objects.select_related('category').order_by('-created_at')[:5]
 
     return render(request, "admin_panel/index.html", {
+        'is_main_admin': is_admin,
+        'is_institution': is_institution,
+        'is_student': is_student,
+        'is_employee': is_employee,
+        'inst_data': inst_data,
+        'student_data': student_data,
+        'emp_data': emp_data,
         'total_students': total_students,
         'total_institutions': total_institutions,
         'colleges_count': colleges_count,
@@ -630,15 +790,14 @@ def dashboard(request):
     })
 
 
-
-
 def _is_main_admin(user):
-    """Checks if user is Main Admin / Superadmin (Not an institution-restricted account)."""
+    """Checks if user is Main Admin / Superadmin (Not an institution, student, or employee account)."""
     if not user or not user.is_authenticated:
         return False
-    if getattr(user, 'role', '') == 'institution':
-        return False
-    return bool(user.is_superuser or getattr(user, 'role', '') in ['admin', 'superadmin'] or getattr(user, 'is_staff', False))
+    if user.is_superuser:
+        return True
+    role = (getattr(user, 'role', '') or '').lower().strip()
+    return role in ['admin', 'superadmin', 'super_admin', 'main_admin']
 
 
 @login_required(login_url='/admin-panel/login/')
@@ -649,16 +808,58 @@ def users(request):
     return render(request, "admin_panel/users.html")
 
 
+def _get_profile_context(request):
+    emp_profile = None
+    institution_obj = None
+    student_profile = None
+    profile_user = request.user
+    target_id = request.GET.get('user_id') or request.GET.get('emp_id') or request.GET.get('id')
+
+    try:
+        from accounts.models import EmployeeProfile, User
+        from institutions.models import Institution, Student
+        from django.db.models import Q
+
+        if target_id:
+            target_str = str(target_id).strip()
+            if target_str.isdigit():
+                u = User.objects.filter(id=int(target_str)).first()
+                if u:
+                    profile_user = u
+
+        role = (getattr(profile_user, 'role', '') or '').lower().strip()
+        is_admin_user = profile_user.is_superuser or role in ['admin', 'superadmin', 'super_admin']
+        is_inst_user = not is_admin_user and role in ['institution', 'college', 'school', 'institute', 'partner']
+        is_student_user = not is_admin_user and role in ['student', 'parent']
+
+        emp_profile = EmployeeProfile.objects.select_related('department', 'designation', 'reporting_manager', 'user').filter(user=profile_user).first()
+        if is_inst_user or is_admin_user:
+            institution_obj = Institution.objects.filter(Q(admin_user=profile_user) | Q(created_by=profile_user)).first()
+        if is_student_user or is_admin_user:
+            student_profile = Student.objects.filter(user=profile_user).select_related('institution', 'batch').first()
+
+    except Exception:
+        profile_user = request.user
+        is_inst_user = False
+        is_student_user = False
+        is_admin_user = False
+
+    return {
+        'emp_profile': emp_profile,
+        'institution_obj': institution_obj,
+        'student_profile': student_profile,
+        'profile_user': profile_user or request.user,
+        'is_inst_user': is_inst_user,
+        'is_student_user': is_student_user,
+        'is_admin_user': is_admin_user,
+    }
+
+
 @login_required(login_url='/admin-panel/login/')
 def admin_profile(request):
     """Admin profile details page"""
-    emp_profile = None
-    try:
-        from accounts.models import EmployeeProfile
-        emp_profile = EmployeeProfile.objects.select_related('department', 'designation').filter(user=request.user).first()
-    except Exception:
-        pass
-    return render(request, "admin_panel/view-profile.html", {'emp_profile': emp_profile})
+    context = _get_profile_context(request)
+    return render(request, "admin_panel/view-profile.html", context)
 
 
 @login_required(login_url='/admin-panel/login/')
@@ -671,7 +872,7 @@ def admin_courses(request):
 def admin_add_course(request):
     """Admin add new course page"""
     if not _is_main_admin(request.user):
-        return redirect('/admin-panel/courses/')
+        return redirect('admin_panel')
     return render(request, "admin_panel/add-new-course.html")
 
 
@@ -679,7 +880,7 @@ def admin_add_course(request):
 def admin_edit_course(request):
     """Admin edit course page"""
     if not _is_main_admin(request.user):
-        return redirect('/admin-panel/courses/')
+        return redirect('admin_panel')
     return render(request, "admin_panel/edit-course.html")
 
 
@@ -691,19 +892,15 @@ def admin_course_details(request):
 
 @login_required(login_url='/admin-panel/login/')
 def admin_books(request):
-    """
-    Admin AI Books list page. All data (title, status, is_live/is_coming_soon,
-    etc.) is fetched client-side from /courses/courses/?category=ai-books —
-    same pattern as admin_courses + course-list.html.
-    """
+    """Admin AI Books list page."""
     return render(request, "admin_panel/books-list.html")
 
 
 @login_required(login_url='/admin-panel/login/')
 def admin_add_book(request):
-    """Admin add new AI Book page — POSTs to /courses/courses/ with category locked to ai-books."""
+    """Admin add new AI Book page."""
     if not _is_main_admin(request.user):
-        return redirect('/admin-panel/courses/')
+        return redirect('admin_panel')
     return render(request, "admin_panel/add-book.html")
 
 
@@ -715,27 +912,25 @@ def admin_page_router(request, page_name):
     """
     from django.template.loader import get_template
     from django.template import TemplateDoesNotExist
+    from django.db.models import Q
 
-    # Superadmin-only pages restricted for Institution Admins
-    superadmin_only_pages = [
-        'users', 'add-new-institution', 'institution-list', 'edit-institution',
-        'coaching-list', 'add-coaching', 'coaching-batches',
+    # Admin-only pages restricted for non-admin accounts
+    admin_only_pages = [
+        'users', 'edit-institution',
+        'coaching-list', 'add-coaching', 'coaching-batches', 'department', 'designation',
         'categories', 'role-permission', 'assign-role', 'general', 'company',
         'notification-alert', 'payment-gateway', 'currencies', 'languages',
-        'edit-course', 'add-new-course', 'add-book'
+        'edit-course', 'add-new-course', 'add-book', 'expenses', 'add-new-employee',
+        'employee-details'
     ]
 
-    if request.user.role == 'institution' and page_name in superadmin_only_pages:
+    is_admin = _is_main_admin(request.user)
+    if not is_admin and page_name in admin_only_pages:
         return redirect('admin_panel')
 
     if page_name in ['view-profile', 'profile']:
-        emp_profile = None
-        try:
-            from accounts.models import EmployeeProfile
-            emp_profile = EmployeeProfile.objects.select_related('department', 'designation').filter(user=request.user).first()
-        except Exception:
-            pass
-        return render(request, 'admin_panel/view-profile.html', {'emp_profile': emp_profile})
+        context = _get_profile_context(request)
+        return render(request, 'admin_panel/view-profile.html', context)
 
     mapping = {
         'courses': 'admin_panel/course-list.html',
@@ -757,7 +952,7 @@ def admin_page_router(request, page_name):
         except TemplateDoesNotExist:
             continue
 
-    return render(request, "admin_panel/index.html")
+    return redirect('admin_panel')
 
 
 # ==========================

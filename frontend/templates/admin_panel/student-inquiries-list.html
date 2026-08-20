@@ -23,19 +23,22 @@
   <div class="card-body p-24">
     <!-- Filters -->
     <div class="row gy-3 mb-24 align-items-end">
-      <div class="col-md-3">
+      <div class="col-md-2">
         <label class="text-sm fw-semibold text-primary-light mb-8" for="stageFilter">Stage</label>
         <select class="form-control form-select radius-8" id="stageFilter">
           <option value="">All Stages</option>
           <option value="new">New</option>
           <option value="contacted">Contacted</option>
           <option value="trial">Trial / Demo Class</option>
+          <option value="talent_hunt_exam">Talent Hunt Exam</option>
+          <option value="ai_quotient">AI Quotient</option>
+          <option value="entrance_exam_ug_pg">Entrance Exam for UG/PG Admission</option>
           <option value="admission_offered">Admission Offered</option>
           <option value="enrolled">Enrolled</option>
           <option value="lost">Lost</option>
         </select>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-2">
         <label class="text-sm fw-semibold text-primary-light mb-8" for="priorityFilter">Priority</label>
         <select class="form-control form-select radius-8" id="priorityFilter">
           <option value="">All Priorities</option>
@@ -44,10 +47,19 @@
           <option value="low">Low</option>
         </select>
       </div>
+      {% if request.user.is_superuser or request.user.role == 'admin' %}
       <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="ownerFilter">Assigned Employee</label>
+        <select class="form-control form-select radius-8" id="ownerFilter">
+          <option value="">All Assigned Employees</option>
+        </select>
+      </div>
+      {% endif %}
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="searchQuery">Search</label>
         <input type="text" class="form-control radius-8" id="searchQuery" placeholder="Student, guardian, or phone">
       </div>
-      <div class="col-md-3">
+      <div class="col-md-2">
         <button class="btn btn-outline-primary-600 w-100 radius-8" id="clearFiltersBtn">Clear Filters</button>
       </div>
     </div>
@@ -68,7 +80,11 @@
           </tr>
         </thead>
         <tbody id="inquiriesTableBody">
-          <tr><td colspan="9" class="text-center py-40"><div class="spinner-border text-primary"></div></td></tr>
+          <tr>
+            <td colspan="9" class="text-center py-40">
+              <div class="spinner-border text-primary"></div>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -81,80 +97,206 @@
     </div>
   </div>
 </div>
+
+<!-- Edit / Reassign Inquiry Modal -->
+<div class="modal fade" id="editInquiryModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content radius-16">
+      <div class="modal-header border-bottom py-16 px-24">
+        <h6 class="modal-title fw-semibold text-lg">Edit / Assign Student Inquiry</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-24">
+        <form id="editInquiryForm">
+          <input type="hidden" id="editInquiryId">
+          <div class="row gy-3">
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editStudentName">Student Name <span
+                  class="text-danger-600">*</span></label>
+              <input type="text" class="form-control radius-8" id="editStudentName" required>
+            </div>
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editGuardianName">Guardian Name</label>
+              <input type="text" class="form-control radius-8" id="editGuardianName">
+            </div>
+            {% if request.user.is_superuser or request.user.role == 'admin' %}
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editOwner">Assigned Employee / Sales
+                Rep</label>
+              <select class="form-control form-select radius-8" id="editOwner"></select>
+            </div>
+            {% endif %}
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editPhone">Phone <span
+                  class="text-danger-600">*</span></label>
+              <input type="text" class="form-control radius-8" id="editPhone" required>
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editClassInterested">Class / Course
+                Interest</label>
+              <input type="text" class="form-control radius-8" id="editClassInterested">
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editStage">Stage</label>
+              <select class="form-control form-select radius-8" id="editStage">
+                <option value="new">New</option>
+                <option value="contacted">Contacted</option>
+                <option value="trial">Trial / Demo Class</option>
+                <option value="talent_hunt_exam">Talent Hunt Exam</option>
+                <option value="ai_quotient">AI Quotient</option>
+                <option value="entrance_exam_ug_pg">Entrance Exam for UG/PG Admission</option>
+                <option value="admission_offered">Admission Offered</option>
+                <option value="enrolled">Enrolled</option>
+                <option value="lost">Lost</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editPriority">Priority</label>
+              <select class="form-control form-select radius-8" id="editPriority">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editNextFollowUp">Next Follow-up
+                Date</label>
+              <input type="date" class="form-control radius-8" id="editNextFollowUp">
+            </div>
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editEmail">Email</label>
+              <input type="email" class="form-control radius-8" id="editEmail">
+            </div>
+            <div class="col-md-12">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editNotes">Notes</label>
+              <textarea class="form-control radius-8" id="editNotes" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end gap-12 mt-24">
+            <button type="button" class="btn btn-outline-neutral-400 radius-8" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary-600 radius-8" id="saveEditInquiryBtn">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block js %}
 <script>
-$(document).ready(function() {
-  let currentPage = 1;
+  $(document).ready(function () {
+    let currentPage = 1;
+    let cachedInquiries = {};
 
-  function getCsrfToken() {
-    const match = document.cookie.match(/csrftoken=([^;]+)/);
-    return match ? match[1] : null;
-  }
-
-  function stageBadge(stage) {
-    const map = {
-      new: 'bg-info-100 text-info-600', contacted: 'bg-primary-100 text-primary-600',
-      trial: 'bg-warning-100 text-warning-600', admission_offered: 'bg-orange-100 text-orange-600',
-      enrolled: 'bg-success-100 text-success-600', lost: 'bg-danger-100 text-danger-600',
-    };
-    return `<span class="px-16 py-4 radius-4 fw-medium text-sm ${map[stage] || 'bg-neutral-100'}">${stage.toUpperCase().replace('_', ' ')}</span>`;
-  }
-
-  function loadInquiries(page = 1) {
-    currentPage = page;
-    const stage = $('#stageFilter').val();
-    const priority = $('#priorityFilter').val();
-    const q = $('#searchQuery').val();
-
-    let url = `/api/crm/student-inquiries/?page=${page}&page_size=20&detailed=true`;
-    if (stage) url += `&stage=${stage}`;
-    if (priority) url += `&priority=${priority}`;
-    if (q) url += `&q=${encodeURIComponent(q)}`;
-
-    $.ajax({
-      url: url, type: 'GET', xhrFields: { withCredentials: true },
-      success: function(response) { renderTable(response); renderPagination(response); },
-      error: function() {
-        $('#inquiriesTableBody').html(`<tr><td colspan="9" class="text-center py-40 text-danger-600">Failed to load inquiries.</td></tr>`);
-      }
-    });
-  }
-
-  function renderTable(data) {
-    const tbody = $('#inquiriesTableBody');
-    tbody.empty();
-    if (!data.results || data.results.length === 0) {
-      tbody.html(`<tr><td colspan="9" class="text-center py-40 text-secondary-light">No inquiries found.</td></tr>`);
-      $('#tableInfoSpan').text('Showing 0 to 0 of 0 entries');
-      return;
+    function getCsrfToken() {
+      const match = document.cookie.match(/csrftoken=([^;]+)/);
+      return match ? match[1] : null;
     }
-    data.results.forEach(i => {
-      let ownerHtml = '';
-      const ownerName = i.owner ? i.owner.name : null;
-      const ownerDesig = (i.owner && i.owner.designation) ? i.owner.designation : null;
-      const createdByName = i.created_by ? i.created_by.name : null;
 
-      if (i.owner) {
-        ownerHtml = `<div>
+    function stageBadge(stage) {
+      const map = {
+        new: 'bg-info-100 text-info-600', contacted: 'bg-primary-100 text-primary-600',
+        trial: 'bg-warning-100 text-warning-600',
+        talent_hunt_exam: 'bg-purple-100 text-purple-600',
+        ai_quotient: 'bg-indigo-100 text-indigo-600',
+        entrance_exam_ug_pg: 'bg-cyan-100 text-cyan-600',
+        admission_offered: 'bg-orange-100 text-orange-600',
+        enrolled: 'bg-success-100 text-success-600', lost: 'bg-danger-100 text-danger-600',
+      };
+      const labelMap = {
+        talent_hunt_exam: 'Talent Hunt Exam',
+        ai_quotient: 'AI Quotient',
+        entrance_exam_ug_pg: 'Entrance Exam for UG/PG Admission',
+        trial: 'Trial / Demo Class',
+        admission_offered: 'Admission Offered',
+      };
+      const label = labelMap[stage] || stage.toUpperCase().replace(/_/g, ' ');
+      return `<span class="px-16 py-4 radius-4 fw-medium text-sm ${map[stage] || 'bg-neutral-100'}">${label}</span>`;
+    }
+
+    function loadEmployeeDropdowns() {
+      $.ajax({
+        url: '/accounts/users/?is_employee=true&page_size=200', type: 'GET', xhrFields: { withCredentials: true },
+        success: function (response) {
+          const filterSel = $('#ownerFilter').empty().append('<option value="">All Assigned Employees</option>');
+          const editSel = $('#editOwner').empty().append('<option value="">-- Unassigned --</option>');
+          (response.results || []).forEach(user => {
+            const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ').trim();
+            const displayName = fullName ? `${fullName} (${user.username})` : user.username;
+            const roleTag = user.role ? ` — [${user.role.toUpperCase()}]` : '';
+            filterSel.append(`<option value="${user.id}">${displayName}${roleTag}</option>`);
+            editSel.append(`<option value="${user.id}">${displayName}${roleTag}</option>`);
+          });
+        }
+      });
+    }
+
+    function loadInquiries(page = 1) {
+      currentPage = page;
+      const stage = $('#stageFilter').val();
+      const priority = $('#priorityFilter').val();
+      const owner = $('#ownerFilter').val();
+      const q = $('#searchQuery').val();
+
+      let url = `/api/crm/student-inquiries/?page=${page}&page_size=20&detailed=true`;
+      if (stage) url += `&stage=${stage}`;
+      if (priority) url += `&priority=${priority}`;
+      if (owner) url += `&owner=${owner}`;
+      if (q) url += `&q=${encodeURIComponent(q)}`;
+
+      $.ajax({
+        url: url, type: 'GET', cache: false, xhrFields: { withCredentials: true },
+        success: function (response) { renderTable(response); renderPagination(response); },
+        error: function () {
+          $('#inquiriesTableBody').html(`<tr><td colspan="9" class="text-center py-40 text-danger-600">Failed to load inquiries.</td></tr>`);
+        }
+      });
+    }
+
+    function renderTable(data) {
+      const tbody = $('#inquiriesTableBody');
+      tbody.empty();
+      cachedInquiries = {};
+      if (!data.results || data.results.length === 0) {
+        if (currentPage > 1) {
+          loadInquiries(currentPage - 1);
+          return;
+        }
+        tbody.html(`<tr><td colspan="9" class="text-center py-40 text-secondary-light">No inquiries found.</td></tr>`);
+        $('#tableInfoSpan').text('Showing 0 to 0 of 0 entries');
+        return;
+      }
+      data.results.forEach(i => {
+        cachedInquiries[i.id] = i;
+        const convertBtn = (i.stage !== 'enrolled')
+          ? `<button class="btn btn-sm btn-outline-success px-8 py-4 radius-8 convert-inquiry-btn" data-id="${i.id}" title="Convert to Student"><i class="ri-arrow-right-circle-line text-md"></i></button>`
+          : `<span class="badge bg-success-50 text-success-600 border border-success-200">Enrolled</span>`;
+
+        let ownerHtml = '';
+        const ownerName = i.owner ? i.owner.name : null;
+        const ownerDesig = (i.owner && i.owner.designation) ? i.owner.designation : null;
+        const createdByName = i.created_by ? i.created_by.name : null;
+
+        if (i.owner) {
+          ownerHtml = `<div>
           <span class="fw-semibold text-neutral-800 text-sm d-block mb-2"><i class="ri-user-3-line me-1 text-primary-600"></i>${ownerName}</span>
           ${ownerDesig ? `<span class="badge bg-primary-50 text-primary-600 border border-primary-100 radius-4 px-6 py-2 text-xs d-inline-block">${ownerDesig}</span>` : ''}
           ${i.created_by ? (i.created_by.id !== i.owner.id ? `<div class="text-xs text-secondary-light mt-4"><i class="ri-user-shared-line me-1 text-primary-500"></i>Assigned by ${createdByName}</div>` : '') : `<div class="text-xs text-info-600 mt-4"><i class="ri-global-line me-1"></i>Added via Website</div>`}
         </div>`;
-      } else if (i.created_by) {
-        ownerHtml = `<div>
+        } else if (i.created_by) {
+          ownerHtml = `<div>
           <span class="badge bg-neutral-100 text-neutral-600 radius-4 px-8 py-4 mb-2 d-inline-block">Unassigned</span>
           <div class="text-xs text-secondary-light"><i class="ri-user-add-line me-1"></i>Added by ${createdByName}</div>
         </div>`;
-      } else {
-        ownerHtml = `<div>
+        } else {
+          ownerHtml = `<div>
           <span class="badge bg-info-50 text-info-600 border border-info-200 radius-4 px-8 py-4 mb-2 d-inline-block"><i class="ri-global-line me-1"></i>Website Direct</span>
           <div class="text-xs text-secondary-light"><i class="ri-user-add-line me-1"></i>Added via Website</div>
         </div>`;
-      }
+        }
 
-      tbody.append(`
+        tbody.append(`
         <tr>
           <td><span class="text-secondary-light fw-medium">${i.id}</span></td>
           <td>
@@ -168,62 +310,177 @@ $(document).ready(function() {
           <td>${i.priority ? i.priority.toUpperCase() : '-'}</td>
           <td>${i.next_follow_up_date || '-'}</td>
           <td class="text-center">
-            <button class="btn btn-sm btn-outline-danger px-8 py-4 radius-8 delete-inquiry-btn" data-id="${i.id}" title="Delete"><i class="ri-delete-bin-line text-md"></i></button>
+            <div class="d-flex align-items-center justify-content-center gap-8">
+              <button class="btn btn-sm btn-outline-primary px-8 py-4 radius-8 edit-inquiry-btn" data-id="${i.id}" title="Edit / Reassign"><i class="ri-edit-line text-md"></i></button>
+              ${convertBtn}
+              <button class="btn btn-sm btn-outline-danger px-8 py-4 radius-8 delete-inquiry-btn" data-id="${i.id}" title="Delete"><i class="ri-delete-bin-line text-md"></i></button>
+            </div>
           </td>
         </tr>
       `);
-    });
-    const startEntry = (data.page - 1) * data.page_size + 1;
-    const endEntry = Math.min(data.page * data.page_size, data.count);
-    $('#tableInfoSpan').text(`Showing ${startEntry} to ${endEntry} of ${data.count} entries`);
-  }
-
-  function renderPagination(data) {
-    const nav = $('#paginationNav'); const ul = $('#paginationUl'); ul.empty();
-    if (data.total_pages <= 1) { nav.addClass('d-none'); return; }
-    nav.removeClass('d-none');
-    const prevDisabled = data.page === 1 ? 'disabled' : '';
-    ul.append(`<li class="page-item ${prevDisabled}"><button class="page-link py-6 px-12" data-page="${data.page - 1}" ${prevDisabled}>Previous</button></li>`);
-    for (let i = 1; i <= data.total_pages; i++) {
-      ul.append(`<li class="page-item ${i === data.page ? 'active' : ''}"><button class="page-link py-6 px-12" data-page="${i}">${i}</button></li>`);
+      });
+      const startEntry = (data.page - 1) * data.page_size + 1;
+      const endEntry = Math.min(data.page * data.page_size, data.count);
+      $('#tableInfoSpan').text(`Showing ${startEntry} to ${endEntry} of ${data.count} entries`);
     }
-    const nextDisabled = data.page === data.total_pages ? 'disabled' : '';
-    ul.append(`<li class="page-item ${nextDisabled}"><button class="page-link py-6 px-12" data-page="${data.page + 1}" ${nextDisabled}>Next</button></li>`);
-  }
 
-  $('#stageFilter, #priorityFilter').on('change', function() { loadInquiries(1); });
-  $('#searchQuery').on('keyup', function() { loadInquiries(1); });
-  $('#clearFiltersBtn').on('click', function() {
-    $('#stageFilter').val(''); $('#priorityFilter').val(''); $('#searchQuery').val('');
-    loadInquiries(1);
-  });
-  $(document).on('click', '#paginationUl .page-link', function() {
-    const page = $(this).data('page'); if (page) loadInquiries(page);
-  });
-
-  $(document).on('click', '.delete-inquiry-btn', function() {
-    const id = $(this).data('id');
-    showConfirmModal({
-      title: 'Delete Student Inquiry',
-      message: 'Are you sure you want to delete this student inquiry? This action cannot be undone.',
-      icon: 'ri-delete-bin-line',
-      iconBgClass: 'bg-danger-50',
-      iconColorClass: 'text-danger-600',
-      confirmText: 'Delete Inquiry',
-      confirmBtnClass: 'btn-danger-600',
-      onConfirm: function() {
-        const token = getCsrfToken();
-        $.ajax({
-          url: `/api/crm/student-inquiries/${id}/`, type: 'DELETE',
-          headers: { 'X-CSRFToken': token }, xhrFields: { withCredentials: true },
-          success: function() { showToast('Inquiry deleted.', 'success'); loadInquiries(currentPage); },
-          error: function() { showToast('Failed to delete inquiry.', 'error'); }
-        });
+    function renderPagination(data) {
+      const nav = $('#paginationNav'); const ul = $('#paginationUl'); ul.empty();
+      if (data.total_pages <= 1) { nav.addClass('d-none'); return; }
+      nav.removeClass('d-none');
+      const prevDisabled = data.page === 1 ? 'disabled' : '';
+      ul.append(`<li class="page-item ${prevDisabled}"><button class="page-link py-6 px-12" data-page="${data.page - 1}" ${prevDisabled}>Previous</button></li>`);
+      for (let i = 1; i <= data.total_pages; i++) {
+        ul.append(`<li class="page-item ${i === data.page ? 'active' : ''}"><button class="page-link py-6 px-12" data-page="${i}">${i}</button></li>`);
       }
-    });
-  });
+      const nextDisabled = data.page === data.total_pages ? 'disabled' : '';
+      ul.append(`<li class="page-item ${nextDisabled}"><button class="page-link py-6 px-12" data-page="${data.page + 1}" ${nextDisabled}>Next</button></li>`);
+    }
 
-  loadInquiries();
-});
+    $('#stageFilter, #priorityFilter, #ownerFilter').on('change', function () { loadInquiries(1); });
+    $('#searchQuery').on('keyup', function () { loadInquiries(1); });
+    $('#clearFiltersBtn').on('click', function () {
+      $('#stageFilter').val(''); $('#priorityFilter').val(''); $('#ownerFilter').val(''); $('#searchQuery').val('');
+      loadInquiries(1);
+    });
+    $(document).on('click', '#paginationUl .page-link', function () {
+      const page = $(this).data('page'); if (page) loadInquiries(page);
+    });
+
+    $(document).on('click', '.edit-inquiry-btn', function () {
+      const id = $(this).data('id');
+      const inquiry = cachedInquiries[id];
+      if (!inquiry) return;
+
+      $('#editInquiryId').val(inquiry.id);
+      $('#editStudentName').val(inquiry.student_name);
+      $('#editGuardianName').val(inquiry.guardian_name || '');
+      $('#editPhone').val(inquiry.phone || '');
+      $('#editEmail').val(inquiry.email || '');
+      $('#editClassInterested').val(inquiry.class_grade_interested || '');
+      $('#editStage').val(inquiry.stage || 'new');
+      $('#editPriority').val(inquiry.priority || 'medium');
+      $('#editNextFollowUp').val(inquiry.next_follow_up_date || '');
+      $('#editOwner').val(inquiry.owner ? inquiry.owner.id : '');
+      $('#editNotes').val(inquiry.notes || '');
+
+      const modal = new bootstrap.Modal(document.getElementById('editInquiryModal'));
+      modal.show();
+    });
+
+    $('#editInquiryForm').on('submit', function (e) {
+      e.preventDefault();
+      const id = $('#editInquiryId').val();
+      const token = getCsrfToken();
+      $('#saveEditInquiryBtn').prop('disabled', true).text('Saving...');
+
+      const payload = {
+        student_name: $('#editStudentName').val(),
+        guardian_name: $('#editGuardianName').val(),
+        phone: $('#editPhone').val(),
+        email: $('#editEmail').val(),
+        class_grade_interested: $('#editClassInterested').val(),
+        stage: $('#editStage').val(),
+        priority: $('#editPriority').val(),
+        next_follow_up_date: $('#editNextFollowUp').val() || null,
+        owner: $('#editOwner').val() || null,
+        notes: $('#editNotes').val()
+      };
+
+      $.ajax({
+        url: `/api/crm/student-inquiries/${id}/`, type: 'PATCH',
+        headers: { 'X-CSRFToken': token }, contentType: 'application/json', data: JSON.stringify(payload),
+        xhrFields: { withCredentials: true },
+        success: function () {
+          $('#saveEditInquiryBtn').prop('disabled', false).text('Save Changes');
+          const modalEl = document.getElementById('editInquiryModal');
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) modal.hide();
+          showToast('Student Inquiry updated successfully!', 'success');
+          loadInquiries(currentPage);
+        },
+        error: function (err) {
+          $('#saveEditInquiryBtn').prop('disabled', false).text('Save Changes');
+          let msg = 'Failed to update inquiry.';
+          if (err.responseJSON && err.responseJSON.errors) msg = JSON.stringify(err.responseJSON.errors);
+          showToast(msg, 'error');
+        }
+      });
+    });
+
+    $(document).on('click', '.convert-inquiry-btn', function () {
+      const id = $(this).data('id');
+      showConfirmModal({
+        title: 'Convert Inquiry to Student',
+        message: 'Convert this inquiry into an enrolled Student record? This will update the inquiry stage to Enrolled.',
+        icon: 'ri-user-star-line',
+        iconBgClass: 'bg-success-50',
+        iconColorClass: 'text-success-600',
+        confirmText: 'Convert Now',
+        confirmBtnClass: 'btn-success-600',
+        onConfirm: function () {
+          const token = getCsrfToken();
+          $.ajax({
+            url: `/api/crm/student-inquiries/${id}/convert/`, type: 'POST',
+            headers: { 'X-CSRFToken': token }, contentType: 'application/json', data: JSON.stringify({}),
+            xhrFields: { withCredentials: true },
+            success: function () { showToast('Inquiry converted to Enrolled Student!', 'success'); loadInquiries(currentPage); },
+            error: function (err) {
+              let msg = 'Failed to convert inquiry.';
+              if (err.responseJSON && err.responseJSON.error) msg = err.responseJSON.error;
+              else if (err.responseJSON && err.responseJSON.errors) {
+                if (typeof err.responseJSON.errors === 'object') {
+                  msg = Object.entries(err.responseJSON.errors).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : v}`).join('\n');
+                } else {
+                  msg = JSON.stringify(err.responseJSON.errors);
+                }
+              }
+              showToast(msg, 'error');
+            }
+          });
+        }
+      });
+    });
+
+    $(document).on('click', '.delete-inquiry-btn', function () {
+      const id = $(this).data('id');
+      const $row = $(this).closest('tr');
+      showConfirmModal({
+        title: 'Delete Student Inquiry',
+        message: 'Are you sure you want to delete this student inquiry? This action cannot be undone.',
+        icon: 'ri-delete-bin-line',
+        iconBgClass: 'bg-danger-50',
+        iconColorClass: 'text-danger-600',
+        confirmText: 'Delete Inquiry',
+        confirmBtnClass: 'btn-danger-600',
+        onConfirm: function () {
+          $row.stop(true, true).fadeOut(200, function () {
+            $(this).remove();
+            if ($('#inquiriesTableBody tr').length === 0) {
+              loadInquiries(Math.max(1, currentPage - 1));
+            }
+          });
+          const token = getCsrfToken();
+          $.ajax({
+            url: `/api/crm/student-inquiries/${id}/`, type: 'DELETE',
+            headers: { 'X-CSRFToken': token }, xhrFields: { withCredentials: true },
+            success: function () {
+              showToast('Inquiry deleted successfully.', 'success');
+            },
+            error: function (xhr) {
+              $row.show();
+              const msg = (xhr.responseJSON && xhr.responseJSON.error) ? xhr.responseJSON.error : 'Failed to delete inquiry.';
+              showToast(msg, 'error');
+            }
+          });
+        }
+      });
+    });
+
+    if ($('#ownerFilter').length || $('#editOwner').length) {
+      loadEmployeeDropdowns();
+    }
+    loadInquiries();
+  });
 </script>
 {% endblock %}

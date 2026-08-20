@@ -28,7 +28,7 @@
       <div class="col-md-3">
         <label class="text-sm fw-semibold text-primary-light mb-8" for="institutionSelect">Select Institution <span class="text-danger-600">*</span></label>
         <select class="form-control form-select radius-8" id="institutionSelect">
-          <option value="" disabled selected>-- Choose Institution --</option>
+          <option value="all" selected>All Institutions / All Students</option>
         </select>
       </div>
       <div class="col-md-3">
@@ -71,7 +71,7 @@
       </div>
       <div class="d-flex align-items-center gap-16">
         <div class="position-relative">
-          <input type="text" class="form-control form-control-sm ps-32 radius-8" id="searchQuery" placeholder="Search Admission No...">
+          <input type="text" class="form-control form-control-sm ps-32 radius-8" id="searchQuery" placeholder="Search Admission No, Name, Username...">
           <i class="ri-search-line position-absolute start-12 top-50 translate-middle-y text-secondary-light"></i>
         </div>
       </div>
@@ -94,8 +94,8 @@
         <tbody id="studentTableBody">
           <tr>
             <td colspan="7" class="text-center py-40 text-secondary-light">
-              <i class="ri-information-line text-xxl d-block mb-8"></i>
-              Please select an Institution to view students.
+              <i class="ri-loader-4-line ri-spin text-xxl d-block mb-8"></i>
+              Loading students...
             </td>
           </tr>
         </tbody>
@@ -119,7 +119,7 @@
 {% block js %}
 <script>
 $(document).ready(function() {
-  let selectedInstitutionId = "";
+  let selectedInstitutionId = "all";
   let currentPage = 1;
 
   // Read cookies for CSRF
@@ -137,49 +137,46 @@ $(document).ready(function() {
     $.ajax({
       url: '/api/institutions/?page_size=100',
       type: 'GET',
+      cache: false,
       xhrFields: { withCredentials: true },
       success: function(response) {
         const select = $('#institutionSelect');
         select.find('option:not(:first)').remove();
         if (response.results && response.results.length > 0) {
           response.results.forEach(inst => {
-            select.append(`<option value="${inst.id}">${inst.name} (${inst.type})</option>`);
+            select.append(`<option value="${inst.id}">${inst.name} (${inst.type || 'Institution'})</option>`);
           });
-
-          // Pre-select if param exists, otherwise default to first institution
-          if (paramInstId) {
-            select.val(paramInstId);
-          } else if (response.results.length > 0) {
-            select.val(response.results[0].id);
-          }
-
-          selectedInstitutionId = select.val();
-
-          if (selectedInstitutionId) {
-            updateAddBtnLink();
-            loadStudents();
-          }
         }
+
+        if (paramInstId) {
+          select.val(paramInstId);
+        } else {
+          select.val('all');
+        }
+
+        selectedInstitutionId = select.val();
+        updateAddBtnLink();
+        loadStudents();
       },
       error: function(err) {
         console.error('Failed to load institutions:', err);
+        selectedInstitutionId = 'all';
+        loadStudents();
       }
     });
   }
 
   // Update Add Student button link to pass institution context
   function updateAddBtnLink() {
-    if (selectedInstitutionId) {
+    if (selectedInstitutionId && selectedInstitutionId !== 'all') {
       $('#addStudentBtn').attr('href', `/admin-panel/add-new-student/?institution_id=${selectedInstitutionId}`);
     } else {
       $('#addStudentBtn').attr('href', `/admin-panel/add-new-student/`);
     }
   }
 
-  // Load students for chosen institution
+  // Load students for chosen institution or all
   function loadStudents(page = 1) {
-    if (!selectedInstitutionId) return;
-
     currentPage = page;
     const classGrade = $('#classGradeFilter').val();
     const section = $('#sectionFilter').val();
@@ -187,7 +184,12 @@ $(document).ready(function() {
     const q = $('#searchQuery').val();
     const pageSize = $('#pageSizeSelect').val();
 
-    let url = `/api/institutions/${selectedInstitutionId}/students/?page=${page}&page_size=${pageSize}`;
+    let url = '/api/students/';
+    if (selectedInstitutionId && selectedInstitutionId !== 'all') {
+      url = `/api/institutions/${selectedInstitutionId}/students/`;
+    }
+
+    url += `?page=${page}&page_size=${pageSize}`;
     if (classGrade) url += `&class_grade=${encodeURIComponent(classGrade)}`;
     if (section) url += `&section=${encodeURIComponent(section)}`;
     if (status) url += `&status=${encodeURIComponent(status)}`;
@@ -207,6 +209,7 @@ $(document).ready(function() {
     $.ajax({
       url: url,
       type: 'GET',
+      cache: false,
       xhrFields: { withCredentials: true },
       success: function(response) {
         renderTable(response);
@@ -225,6 +228,7 @@ $(document).ready(function() {
       }
     });
   }
+
 
   function renderTable(data) {
     const tbody = $('#studentTableBody');
@@ -249,7 +253,8 @@ $(document).ready(function() {
       const secText = student.section ? `(${student.section})` : '';
       const classSecText = `${student.class_grade || '-'} ${secText}`;
       const name = student.student_name || 'Unnamed Student';
-      const photo = student.profile_photo || '/static/admin_assets/images/avatar-default.png';
+      const photo = student.profile_photo || student.profile_image || '{% static "admin_assets/images/thumbs/leave-request-img2.png" %}';
+      const defaultImg = '{% static "admin_assets/images/thumbs/leave-request-img2.png" %}';
 
       // Status styling
       let badgeClass = 'bg-success-100 text-success-600';
@@ -266,7 +271,7 @@ $(document).ready(function() {
           <td><span class="text-primary-600 fw-medium">${admissionNo}</span></td>
           <td>
             <div class="d-flex align-items-center">
-              <img src="${photo}" alt="" class="flex-shrink-0 me-12 radius-8 object-fit-cover" style="width:40px; height:40px;">
+              <img src="${photo}" onerror="this.onerror=null; this.src='${defaultImg}';" alt="${name}" class="flex-shrink-0 me-12 radius-8 object-fit-cover" style="width:40px; height:40px;">
               <div>
                 <h6 class="text-md mb-0 fw-medium text-neutral-800">${name}</h6>
               </div>
@@ -284,6 +289,9 @@ $(document).ready(function() {
               <a href="/admin-panel/edit-student/?id=${student.id}" class="btn btn-sm btn-outline-primary-600 text-primary-600 px-8 py-4 radius-8" title="Edit Student">
                 <i class="ri-edit-2-line text-md"></i>
               </a>
+              <button class="btn btn-sm btn-outline-danger text-danger-600 px-8 py-4 radius-8 delete-student-btn" data-id="${student.id}" title="Delete Student">
+                <i class="ri-delete-bin-line text-md"></i>
+              </button>
               <div class="dropdown">
                 <button class="btn btn-sm btn-outline-neutral-300 text-secondary-light px-8 py-4 radius-8" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                   <i class="ri-more-2-line text-md"></i>
@@ -317,6 +325,7 @@ $(document).ready(function() {
         </tr>
       `);
     });
+
 
     // Update entries text
     const page = data.page;
@@ -427,22 +436,43 @@ $(document).ready(function() {
   // Delete Action
   $(document).on('click', '.delete-student-btn', function() {
     const studentId = $(this).data('id');
-    if (!confirm('Are you sure you want to delete this student profile? This action is permanent.')) {
-      return;
-    }
+    const $row = $(this).closest('tr');
     const token = getCsrfToken();
 
-    $.ajax({
-      url: `/api/students/${studentId}/`,
-      type: 'DELETE',
-      headers: { 'X-CSRFToken': token },
-      xhrFields: { withCredentials: true },
-      success: function(res) {
-        showToast('Student profile deleted successfully!', 'success');
-        loadStudents(currentPage);
+    Swal.fire({
+      title: 'Delete Student Profile?',
+      text: 'Are you sure you want to delete this student profile? This action is permanent and cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: '<i class="ri-delete-bin-line me-1"></i> Yes, Delete',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        popup: 'radius-16 border-0 shadow-lg',
+        confirmButton: 'btn btn-danger radius-8 px-20 py-8 text-sm me-2',
+        cancelButton: 'btn btn-secondary radius-8 px-20 py-8 text-sm'
       },
-      error: function(err) {
-        showToast('Failed to delete student.', 'error');
+      buttonsStyling: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $row.remove();
+        if ($('#studentTableBody tr').length === 0) {
+          loadStudents(Math.max(1, currentPage - 1));
+        }
+        $.ajax({
+          url: `/api/students/${studentId}/`,
+          type: 'DELETE',
+          headers: { 'X-CSRFToken': token },
+          xhrFields: { withCredentials: true },
+          success: function(res) {
+            Swal.fire({ icon: 'success', title: 'Deleted!', text: 'Student profile deleted successfully.', timer: 1500, showConfirmButton: false });
+          },
+          error: function(err) {
+            loadStudents(currentPage);
+            Swal.fire({ icon: 'error', title: 'Deletion Failed', text: 'Failed to delete student.' });
+          }
+        });
       }
     });
   });

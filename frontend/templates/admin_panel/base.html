@@ -680,6 +680,39 @@
         window.downloadDocument(filename, fileUrl);
       });
 
+      // Global delegate handler for table row deletions across all admin panel views
+      $(document).on('click', '[data-bs-target="#exampleModalDelete"], .delete-row-btn', function(e) {
+        e.preventDefault();
+        const $btn = $(this);
+        if ($btn.hasClass('delete-lead-btn') || $btn.hasClass('delete-inquiry-btn') || $btn.hasClass('delete-opp-btn')) {
+          return; // Allow page-specific API handlers to process their custom AJAX calls
+        }
+        const $row = $btn.closest('tr');
+        if (!$row.length) return;
+
+        const itemName = $row.find('td:nth-child(2), td:nth-child(3)').first().text().trim() || 'record';
+        
+        window.showConfirmModal({
+          title: 'Delete Confirmation',
+          message: `Are you sure you want to delete this record (${itemName})? This action cannot be undone.`,
+          icon: 'ri-delete-bin-line',
+          iconBgClass: 'bg-danger-50',
+          iconColorClass: 'text-danger-600',
+          confirmText: 'Delete',
+          confirmBtnClass: 'btn-danger-600',
+          onConfirm: function() {
+            $row.hide();
+            const $table = $row.closest('table');
+            if ($table.length && $.fn.DataTable && $.fn.DataTable.isDataTable($table)) {
+              $table.DataTable().row($row).remove().draw(false);
+            } else {
+              $row.remove();
+            }
+            if (window.showToast) window.showToast('Item deleted successfully.', 'info');
+          }
+        });
+      });
+
       // Password Visibility Toggle Handler
       $(document).on('click', '.toggle-modal-password-btn', function() {
         const $input = $('#loginModalPassword');
@@ -723,17 +756,24 @@
         $('#pwdToggleIcon').removeClass('ri-eye-off-line').addClass('ri-eye-line');
 
         const trigger = e.relatedTarget;
-        let profileName = trigger ? ($(trigger).data('username') || $(trigger).attr('data-username')) : null;
-        let profileRole = trigger ? ($(trigger).data('role') || $(trigger).attr('data-role')) : null;
+        let profileName = trigger ? ($(trigger).attr('data-username') || $(trigger).data('username')) : null;
+        let profileRole = trigger ? ($(trigger).attr('data-role') || $(trigger).data('role')) : null;
+        let profilePwd = trigger ? ($(trigger).attr('data-password') || $(trigger).data('password')) : null;
 
-        if (!profileName) {
-          const pageTitle = $('h2.h6, h1.h6, h4.h6').first().text().trim();
-          if (pageTitle && pageTitle !== 'Student Details' && pageTitle !== 'Employee Details') {
-            profileName = pageTitle.toLowerCase().replace(/[^a-z0-9]/g, '.') + '@eduaiq.com';
+        if (!profileName && trigger) {
+          const $row = $(trigger).closest('tr');
+          if ($row.length) {
+            profileName = $row.find('td:eq(5)').text().trim() || $row.find('td:eq(2) h6').text().trim();
           }
         }
+
         if (profileName) {
           $('#loginModalUsername').val(profileName);
+        }
+        if (profilePwd) {
+          $('#loginModalPassword').val(profilePwd);
+        } else {
+          $('#loginModalPassword').val('Employee@123');
         }
         if (profileRole) {
           $('#loginProfileRole').text(profileRole + ' Login Credentials');
@@ -745,10 +785,34 @@
       // Global click delegate for any button containing "Login Details"
       $(document).on('click', '.my-sidebar-btn:contains("Login Details"), .login-details-btn', function(e) {
         e.preventDefault();
+        const $btn = $(this);
+        let username = $btn.attr('data-username') || $btn.data('username');
+        let role = $btn.attr('data-role') || $btn.data('role');
+        let password = $btn.attr('data-password') || $btn.data('password') || 'Employee@123';
+
+        if (!username) {
+          const $row = $btn.closest('tr');
+          if ($row.length) {
+            username = $row.find('td:eq(5)').text().trim() || $row.find('td:eq(2) h6').text().trim();
+          }
+        }
+
+        if (username) {
+          $('#loginModalUsername').val(username);
+        }
+        if (password) {
+          $('#loginModalPassword').val(password);
+        }
+        if (role) {
+          $('#loginProfileRole').text(role + ' Login Credentials');
+        } else {
+          $('#loginProfileRole').text('System Account Credentials');
+        }
+
         const modalEl = document.getElementById('loginDetailsModal');
         if (modalEl) {
           const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
-          modalInstance.show();
+          modalInstance.show(this);
         }
       });
     </script>
@@ -809,7 +873,7 @@
               <label class="form-label text-xs fw-semibold text-secondary-light uppercase mb-6">Default Password</label>
               <div class="input-group">
                 <span class="input-group-text bg-base border-end-0 text-secondary-light"><i class="ri-lock-line"></i></span>
-                <input type="password" class="form-control radius-8 border-start-0 border-end-0" id="loginModalPassword" value="EduAiQ@2026" readonly>
+                <input type="password" class="form-control radius-8 border-start-0 border-end-0" id="loginModalPassword" value="Employee@123" readonly>
                 <button class="btn btn-outline-neutral-300 toggle-modal-password-btn" type="button" title="Show/Hide Password">
                   <i class="ri-eye-line text-secondary-light" id="pwdToggleIcon"></i>
                 </button>
@@ -1178,6 +1242,7 @@
       })();
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     {% block js %}{% endblock %}
 
 </body>

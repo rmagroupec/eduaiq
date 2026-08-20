@@ -311,6 +311,7 @@ class EmployeeProfile(models.Model):
     employee_id = models.CharField(_('Employee ID'), max_length=30, unique=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     designation = models.ForeignKey(Designation, on_delete=models.SET_NULL, null=True, blank=True)
+    reporting_manager = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='subordinates', verbose_name=_('Reporting Manager'))
     joining_date = models.DateField(_('Joining Date'), null=True, blank=True)
     probation_end_date = models.DateField(_('Probation End Date'), null=True, blank=True)
     
@@ -403,9 +404,29 @@ class Attendance(models.Model):
     academic_year = models.CharField(_('Academic Year'), max_length=20, default='2025/2026')
     check_in = models.TimeField(_('Check In Time'), null=True, blank=True)
     check_out = models.TimeField(_('Check Out Time'), null=True, blank=True)
+    check_in_ip = models.GenericIPAddressField(_('Check In IP'), null=True, blank=True)
+    check_out_ip = models.GenericIPAddressField(_('Check Out IP'), null=True, blank=True)
+    check_in_location = models.CharField(_('Check In Location'), max_length=255, blank=True)
+    check_out_location = models.CharField(_('Check Out Location'), max_length=255, blank=True)
+    check_in_latitude = models.FloatField(_('Check In Latitude'), null=True, blank=True)
+    check_in_longitude = models.FloatField(_('Check In Longitude'), null=True, blank=True)
+    check_out_latitude = models.FloatField(_('Check Out Latitude'), null=True, blank=True)
+    check_out_longitude = models.FloatField(_('Check Out Longitude'), null=True, blank=True)
     remarks = models.CharField(_('Remarks'), max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def employee_details(self):
+        emp = getattr(self.user, 'employee_profile', None)
+        return {
+            'employee_id': emp.employee_id if emp else 'N/A',
+            'full_name': self.user.get_full_name() or self.user.username,
+            'email': self.user.email or 'N/A',
+            'department': emp.department.name if emp and emp.department else 'N/A',
+            'designation': emp.designation.title if emp and emp.designation else 'N/A',
+            'role': getattr(self.user, 'role', 'employee')
+        }
 
     class Meta:
         verbose_name = _('Attendance')
@@ -459,5 +480,41 @@ class WFHRequest(models.Model):
 
     def __str__(self):
         return f"{self.user.get_full_name() or self.user.username} ({self.start_date} to {self.end_date}) - {self.get_status_display()}"
+
+
+class AttendanceSetting(models.Model):
+    """
+    Global / Institution Attendance Shift & Location Settings managed by Admin.
+    """
+    office_check_in_time = models.TimeField(_('Office Check-In Time'), default='09:30:00')
+    grace_period_minutes = models.PositiveIntegerField(_('Grace Period (Minutes)'), default=15)
+    office_check_out_time = models.TimeField(_('Office Check-Out Time'), default='18:30:00')
+    
+    office_location_name = models.CharField(_('Office Location Name'), max_length=255, default='Main Head Office')
+    office_latitude = models.FloatField(_('Office Latitude'), null=True, blank=True)
+    office_longitude = models.FloatField(_('Office Longitude'), null=True, blank=True)
+    geofence_radius_meters = models.PositiveIntegerField(_('Geofence Radius (Meters)'), default=500)
+    enforce_geofence = models.BooleanField(_('Enforce Geofence Validation'), default=False)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = _('Attendance Setting')
+        verbose_name_plural = _('Attendance Settings')
+
+    def __str__(self):
+        return f"Attendance Setting (Check-In: {self.office_check_in_time}, Grace: {self.grace_period_minutes}m)"
+
+    @classmethod
+    def get_settings(cls):
+        settings_obj = cls.objects.first()
+        if not settings_obj:
+            settings_obj = cls.objects.create(
+                office_check_in_time='09:30:00',
+                grace_period_minutes=15,
+                office_check_out_time='18:30:00',
+                office_location_name='Main Head Office'
+            )
+        return settings_obj
 
 

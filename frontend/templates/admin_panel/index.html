@@ -6,6 +6,8 @@
 {% block description %}EduAiQ Platform Administration Dashboard - Real-time metrics for Institutions, Courses, Students, and Olympiad Exams.{% endblock %}
 
 {% block content %}
+{% if is_main_admin %}
+<!-- ADMIN DASHBOARD CONTENT -->
 <!-- Top Header / Breadcrumb -->
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
   <div>
@@ -590,6 +592,530 @@
   </div>
 
 </div>
+{% elif is_institution %}
+<!-- INSTITUTION PORTAL DASHBOARD -->
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h5 class="fw-bold text-dark mb-1">
+      <i class="ri-building-3-line text-primary-600 me-2"></i>Institution Management Portal
+    </h5>
+    <p class="text-neutral-600 text-sm mb-0">Welcome back, <strong class="text-dark">{{ inst_data.institution_obj.name|default:request.user.username }}</strong>! Manage your institution students, enrolled courses, and academic operations.</p>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="badge bg-primary-100 text-primary-700 px-12 py-8 font-weight-bold text-sm radius-8">
+      <i class="ri-government-line me-1"></i> Role: {{ inst_data.institution_obj.get_type_display|default:request.user.role|title }} Admin
+    </span>
+  </div>
+</div>
+
+<!-- INSTITUTION KPI STAT CARDS -->
+<div class="row gy-4 mb-24">
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-primary-100 text-primary-600">
+          <i class="ri-graduation-cap-line"></i>
+        </span>
+        <span class="badge bg-primary-50 text-primary-600 text-xs px-2 py-1 radius-6">Enrolled</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Students</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ inst_data.students_count|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-success-100 text-success-600">
+          <i class="ri-book-open-line"></i>
+        </span>
+        <span class="badge bg-success-50 text-success-600 text-xs px-2 py-1 radius-6">Active</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Allowed Courses</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ inst_data.courses_count|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-info-100 text-info-600">
+          <i class="ri-group-line"></i>
+        </span>
+        <span class="badge bg-info-50 text-info-600 text-xs px-2 py-1 radius-6">Academic</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Active Batches</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ inst_data.batches_count|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-warning-100 text-warning-600">
+          <i class="ri-verified-badge-line"></i>
+        </span>
+        <span class="badge bg-warning-50 text-warning-600 text-xs px-2 py-1 radius-6">Status</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Institution Status</span>
+      <h3 class="mb-0 fw-bold text-success-600 text-lg">{{ inst_data.institution_obj.status|default:"Active"|title }}</h3>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK ACTION SHORTCUTS -->
+<div class="card radius-12 border border-neutral-200 p-20 mb-24 bg-base">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-16">
+    <h6 class="fw-bold text-dark mb-0"><i class="ri-flashlight-fill text-warning me-2"></i>Institution Portal Shortcuts</h6>
+    <span class="text-xs text-neutral-500">Quick management actions</span>
+  </div>
+  <div class="d-flex flex-wrap gap-12">
+    <a href="/admin-panel/courses/" class="btn btn-outline-primary radius-8 px-16 py-8 text-sm d-inline-flex align-items-center gap-2">
+      <i class="ri-book-3-line"></i> My Allowed Courses
+    </a>
+    <a href="/admin-panel/view-profile/" class="btn btn-outline-secondary radius-8 px-16 py-8 text-sm d-inline-flex align-items-center gap-2">
+      <i class="ri-user-settings-line"></i> Institution Profile
+    </a>
+  </div>
+</div>
+
+<!-- STUDENTS LIST TABLE -->
+<div class="card radius-16 border border-neutral-200 bg-base shadow-xs mb-24 p-24">
+  <div class="d-flex align-items-center justify-content-between mb-20">
+    <div>
+      <h6 class="fw-bold text-dark mb-1"><i class="ri-user-follow-line text-primary-600 me-2"></i>Institution Enrolled Students</h6>
+      <p class="text-neutral-500 text-sm mb-0">Roster of students registered under your institution portal</p>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table align-middle text-left mb-0">
+      <thead class="bg-neutral-100 text-neutral-600 text-xs fw-bold">
+        <tr>
+          <th class="ps-12">Student Name</th>
+          <th>Admission No</th>
+          <th>Roll No</th>
+          <th>Class / Grade</th>
+          <th>Batch</th>
+          <th>Email / Phone</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for st in inst_data.students_list %}
+        <tr>
+          <td class="ps-12 fw-semibold text-dark text-sm">
+            {{ st.user.get_full_name|default:st.user.username }}
+          </td>
+          <td><span class="badge bg-neutral-100 text-neutral-700 text-xs">{{ st.admission_no }}</span></td>
+          <td class="text-xs text-neutral-600">{{ st.roll_number|default:"-" }}</td>
+          <td class="text-xs font-medium text-primary-600">{{ st.class_grade }}</td>
+          <td class="text-xs text-neutral-500">{{ st.batch.name|default:"General" }}</td>
+          <td class="text-xs text-secondary-light">{{ st.user.email|default:st.guardian_phone }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center py-20 text-secondary-light text-sm">No students currently linked to this institution.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% elif is_student %}
+<!-- STUDENT LEARNING PORTAL DASHBOARD -->
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h5 class="fw-bold text-dark mb-1">
+      <i class="ri-graduation-cap-line text-warning me-2"></i>Student Learning Portal
+    </h5>
+    <p class="text-neutral-600 text-sm mb-0">Welcome back, <strong class="text-dark">{{ request.user.get_full_name|default:request.user.username }}</strong>! Access your learning modules, courses, and Olympiad exams.</p>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="badge bg-success-100 text-success-700 px-12 py-8 font-weight-bold text-sm radius-8">
+      <i class="ri-user-smile-line me-1"></i> Role: Student Portal
+    </span>
+  </div>
+</div>
+
+<!-- STUDENT KPI CARDS -->
+<div class="row gy-4 mb-24">
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-primary-100 text-primary-600">
+          <i class="ri-book-open-line"></i>
+        </span>
+        <span class="badge bg-primary-50 text-primary-600 text-xs px-2 py-1 radius-6">Enrolled</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">My Enrolled Courses</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ student_data.enrolled_courses_count|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-warning-100 text-warning-600">
+          <i class="ri-trophy-line"></i>
+        </span>
+        <span class="badge bg-warning-50 text-warning-600 text-xs px-2 py-1 radius-6">Active</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Olympiad Exams</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ student_data.olympiads_count|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-info-100 text-info-600">
+          <i class="ri-award-line"></i>
+        </span>
+        <span class="badge bg-info-50 text-info-600 text-xs px-2 py-1 radius-6">Attempts</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Exam Attempts</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ student_data.attempts_count|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-success-100 text-success-600">
+          <i class="ri-verified-badge-line"></i>
+        </span>
+        <span class="badge bg-success-50 text-success-600 text-xs px-2 py-1 radius-6">Status</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Account Status</span>
+      <h3 class="mb-0 fw-bold text-success-600 text-lg">Active Learner</h3>
+    </div>
+  </div>
+</div>
+
+<!-- STUDENT SHORTCUTS -->
+<div class="card radius-12 border border-neutral-200 p-20 mb-24 bg-base">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-16">
+    <h6 class="fw-bold text-dark mb-0"><i class="ri-flashlight-fill text-warning me-2"></i>My Learning Shortcuts</h6>
+  </div>
+  <div class="d-flex flex-wrap gap-12">
+    <a href="/my-learning/" class="btn btn-primary-600 text-white radius-8 px-16 py-8 text-sm d-inline-flex align-items-center gap-2">
+      <i class="ri-play-circle-line"></i> My Learning Dashboard
+    </a>
+    <a href="/olympiad-entrance/" class="btn btn-outline-warning radius-8 px-16 py-8 text-sm d-inline-flex align-items-center gap-2 text-warning-700">
+      <i class="ri-trophy-line"></i> Olympiad Entrance Exams
+    </a>
+    <a href="/admin-panel/view-profile/" class="btn btn-outline-secondary radius-8 px-16 py-8 text-sm d-inline-flex align-items-center gap-2">
+      <i class="ri-user-3-line"></i> My Profile
+    </a>
+  </div>
+</div>
+
+{% else %}
+<!-- EMPLOYEE / SALES WORKSPACE DASHBOARD -->
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h5 class="fw-bold text-dark mb-1">
+      <i class="ri-user-star-line text-warning me-2"></i>Employee Workspace Dashboard
+    </h5>
+    <p class="text-neutral-600 text-sm mb-0">Welcome back, <strong class="text-dark">{{ request.user.get_full_name|default:request.user.username }}</strong>! Here is your daily work portal overview.</p>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="badge bg-warning-100 text-warning-700 px-12 py-8 font-weight-bold text-sm radius-8">
+      <i class="ri-shield-user-line me-1"></i> Role: {{ request.user.role|default:"Employee"|title }}
+    </span>
+  </div>
+</div>
+
+<!-- EMPLOYEE KPI STAT CARDS -->
+<div class="row gy-4 mb-24">
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq">
+          <i class="ri-contacts-line"></i>
+        </span>
+        <span class="badge-orange-single">Assigned</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total CRM Leads</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ emp_data.total_leads|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-primary-100 text-primary-600">
+          <i class="ri-user-add-line"></i>
+        </span>
+        <span class="badge bg-primary-50 text-primary-600 text-xs px-2 py-1 radius-6">Today</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">New Leads Today</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ emp_data.new_leads_today|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-info-100 text-info-600">
+          <i class="ri-time-line"></i>
+        </span>
+        <span class="badge bg-info-50 text-info-600 text-xs px-2 py-1 radius-6">In Progress</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Pipeline Deals</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ emp_data.in_progress_leads|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-warning-100 text-warning-600">
+          <i class="ri-building-line"></i>
+        </span>
+        <span class="badge bg-warning-50 text-warning-600 text-xs px-2 py-1 radius-6">Active</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Institutions</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ total_institutions|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-success-100 text-success-600">
+          <i class="ri-fingerprint-line"></i>
+        </span>
+        <span class="badge bg-success-50 text-success-600 text-xs px-2 py-1 radius-6">Attendance</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Shift Status</span>
+      <h5 class="mb-0 fw-bold text-dark text-sm mt-2">
+        {% if emp_data.today_attendance %}
+          <span class="text-success"><i class="ri-checkbox-circle-fill me-1"></i>Punched In</span>
+        {% else %}
+          <span class="text-neutral-500"><i class="ri-time-line me-1"></i>Not Punched</span>
+        {% endif %}
+      </h5>
+    </div>
+  </div>
+
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-secondary-100 text-secondary-600">
+          <i class="ri-hotel-bed-line"></i>
+        </span>
+        <span class="badge bg-secondary-50 text-secondary-600 text-xs px-2 py-1 radius-6">Pending</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">WFH / Leave Requests</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ emp_data.pending_wfh|default:0 }}</h3>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK EMPLOYEE SHORTCUTS -->
+<div class="card radius-16 border border-neutral-200 p-20 mb-24 bg-base shadow-xs">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-16">
+    <h6 class="fw-bold text-dark mb-0"><i class="ri-flashlight-line text-warning me-2"></i>My Workspace Shortcuts</h6>
+    <span class="text-neutral-500 text-xs">Direct access to your assigned daily actions</span>
+  </div>
+  <div class="d-flex flex-wrap gap-3">
+    <a href="/admin-panel/leads/" class="btn-eduaiq-primary">
+      <i class="ri-contacts-book-line me-1.5"></i> My Leads Pipeline
+    </a>
+    <a href="/admin-panel/add-new-lead/" class="btn-eduaiq-outline">
+      <i class="ri-add-circle-line me-1.5"></i> + Add New Lead
+    </a>
+    <a href="/admin-panel/institution-list/" class="btn-eduaiq-outline">
+      <i class="ri-building-line me-1.5"></i> Institutions List
+    </a>
+    <a href="/admin-panel/employee-attendance/" class="btn-eduaiq-outline">
+      <i class="ri-fingerprint-line me-1.5"></i> My Attendance
+    </a>
+    <a href="/admin-panel/wfh-requests/" class="btn-eduaiq-outline">
+      <i class="ri-hotel-bed-line me-1.5"></i> Apply WFH / Leave
+    </a>
+    <a href="/admin-panel/view-profile/" class="btn-eduaiq-outline">
+      <i class="ri-user-settings-line me-1.5"></i> My Profile
+    </a>
+  </div>
+</div>
+
+
+<!-- EMPLOYEE DATA GRID: RECENT LEADS & TODAY'S PUNCH STATUS -->
+<div class="row gy-4 mb-24">
+  <!-- Left Column: Recent Assigned Leads -->
+  <div class="col-xxl-8 col-xl-7 col-lg-12">
+    <div class="card radius-16 border border-neutral-200 h-100 bg-base shadow-xs">
+      <div class="card-header border-bottom border-neutral-200 p-20 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-contacts-book-2-line me-2 text-warning"></i>Recent Assigned Leads
+          </h6>
+          <span class="text-neutral-500 text-xs">Your latest CRM leads & inquiries</span>
+        </div>
+        <a href="/admin-panel/leads/" class="btn-view-all-pill">
+          View All Pipeline <i class="ri-arrow-right-line ms-1"></i>
+        </a>
+      </div>
+      <div class="card-body p-20">
+        <div class="table-responsive">
+          <table class="table border-neutral-200 table-hover align-middle radius-8">
+            <thead class="bg-neutral-50">
+              <tr>
+                <th scope="col">Lead Name</th>
+                <th scope="col">Contact Info</th>
+                <th scope="col">Course / Interest</th>
+                <th scope="col">Status</th>
+                <th scope="col" class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for lead in emp_data.recent_leads %}
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="w-32-px h-32-px bg-orange-soft text-warning rounded-circle d-flex align-items-center justify-content-center fw-bold text-xs">
+                      {{ lead.full_name|slice:":2"|upper }}
+                    </div>
+                    <span class="fw-semibold text-dark text-sm">{{ lead.full_name }}</span>
+                  </div>
+                </td>
+                <td class="text-xs text-secondary-light">
+                  <div><i class="ri-phone-line me-1"></i>{{ lead.phone_number|default:"-" }}</div>
+                  <div><i class="ri-mail-line me-1"></i>{{ lead.email|default:"-" }}</div>
+                </td>
+                <td class="text-xs fw-medium text-neutral-700">{{ lead.course_interested|default:"General Inquiry" }}</td>
+                <td>
+                  <span class="badge bg-warning-50 text-warning-700 text-xs px-8 py-4 radius-6 text-capitalize">
+                    {{ lead.status }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <a href="/admin-panel/leads/" class="btn btn-sm btn-outline-primary radius-8 px-8 py-4">
+                    <i class="ri-eye-line me-1"></i> View
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="5" class="text-center py-30 text-secondary-light text-sm">
+                  <i class="ri-inbox-line text-2xl d-block mb-8 text-neutral-400"></i>
+                  No leads assigned to you yet. Click <a href="/admin-panel/add-new-lead/" class="text-warning fw-bold">Add New Lead</a> to create one!
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Today's Punch In / Attendance Status -->
+  <div class="col-xxl-4 col-xl-5 col-lg-12">
+    <div class="card radius-16 border border-neutral-200 h-100 bg-base shadow-xs p-24">
+      <div class="d-flex align-items-center justify-content-between mb-20">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-fingerprint-line text-warning me-2"></i>Today's Attendance Status
+          </h6>
+          <span class="text-neutral-500 text-xs">Live shift activity & punch logs</span>
+        </div>
+      </div>
+
+      <div class="p-20 radius-12 bg-neutral-50 border border-neutral-100 text-center mb-20">
+        {% if emp_data.today_attendance %}
+          <div class="w-50-px h-50-px bg-success-100 text-success-600 rounded-circle mx-auto d-flex align-items-center justify-content-center text-2xl mb-12">
+            <i class="ri-checkbox-circle-fill"></i>
+          </div>
+          <h6 class="fw-bold text-success mb-4">Checked In Today</h6>
+          <p class="text-xs text-neutral-600 mb-0">Punch In Time: <strong class="text-dark">{{ emp_data.today_attendance.check_in_time|date:"h:i A"|default:"Recorded" }}</strong></p>
+          {% if emp_data.today_attendance.check_out_time %}
+          <p class="text-xs text-neutral-600 mb-0">Punch Out Time: <strong class="text-dark">{{ emp_data.today_attendance.check_out_time|date:"h:i A" }}</strong></p>
+          {% endif %}
+        {% else %}
+          <div class="w-50-px h-50-px bg-warning-100 text-warning-600 rounded-circle mx-auto d-flex align-items-center justify-content-center text-2xl mb-12">
+            <i class="ri-time-line"></i>
+          </div>
+          <h6 class="fw-bold text-dark mb-4">Not Punched In Yet</h6>
+          <p class="text-xs text-neutral-500 mb-0">Don't forget to mark your daily shift attendance.</p>
+        {% endif %}
+      </div>
+
+      <a href="/admin-panel/employee-attendance/" class="btn btn-primary-600 w-100 radius-8 py-10 fw-bold d-flex align-items-center justify-content-center gap-2">
+        <i class="ri-fingerprint-line text-lg"></i>
+        <span>Go to Attendance Portal</span>
+      </a>
+  </div>
+</div>
+
+<!-- MY ADDED & MANAGED INSTITUTIONS -->
+<div class="card radius-16 border border-neutral-200 bg-base shadow-xs mb-24 p-24">
+  <div class="d-flex align-items-center justify-content-between mb-20 flex-wrap gap-2">
+    <div>
+      <h6 class="fw-bold text-dark mb-1">
+        <i class="ri-building-line text-warning me-2"></i>My Added & Managed Institutions
+      </h6>
+      <p class="text-neutral-500 text-sm mb-0">Institutions created by you or assigned to you for onboarding & management</p>
+    </div>
+    <a href="/admin-panel/add-new-institution/" class="btn-eduaiq-outline">
+      <i class="ri-building-line me-1.5"></i> + Add Institution
+    </a>
+  </div>
+  <div class="table-responsive">
+    <table class="table align-middle text-left mb-0 border-neutral-200">
+      <thead class="bg-neutral-100 text-neutral-600 text-xs fw-bold">
+        <tr>
+          <th class="ps-12">Institution Name</th>
+          <th>Type</th>
+          <th>Location</th>
+          <th>Status</th>
+          <th>Date Added</th>
+          <th class="text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for inst in recent_institutions %}
+        <tr>
+          <td class="ps-12 fw-semibold text-dark text-sm">
+            <div class="d-flex align-items-center gap-2">
+              <div class="w-32-px h-32-px bg-orange-soft text-warning rounded-circle d-flex align-items-center justify-content-center fw-bold text-xs">
+                <i class="ri-building-2-line"></i>
+              </div>
+              {{ inst.name }}
+            </div>
+          </td>
+          <td><span class="badge bg-neutral-200 text-neutral-800 text-capitalize text-xs">{{ inst.get_type_display }}</span></td>
+          <td class="text-secondary-light text-xs">{{ inst.city }}, {{ inst.state }}</td>
+          <td>
+            {% if inst.status == 'active' %}
+              <span class="badge-orange-single text-xs">Active</span>
+            {% else %}
+              <span class="badge bg-neutral-200 text-neutral-700 text-xs text-capitalize">{{ inst.status }}</span>
+            {% endif %}
+          </td>
+          <td class="text-secondary-light text-xs">{{ inst.created_at|date:"d M Y" }}</td>
+          <td class="text-center">
+            <a href="/admin-panel/institution-list/" class="btn btn-sm btn-outline-primary radius-8 px-8 py-4">
+              <i class="ri-eye-line me-1"></i> View List
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center py-24 text-secondary-light text-sm">
+            <i class="ri-building-4-line text-2xl d-block mb-8 text-neutral-400"></i>
+            No institutions added by or assigned to you yet. Click <a href="/admin-panel/add-new-institution/" class="text-warning fw-bold">+ Add Institution</a> to onboard your first institution!
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
 
 <!-- CUSTOM GRAPHICAL DASHBOARD CSS -->
 <style>

@@ -252,7 +252,10 @@ $(document).ready(function() {
       tbody.append(`
         <tr>
           <td><span class="text-secondary-light fw-medium">${inst.id}</span></td>
-          <td><h6 class="text-md mb-0 fw-semibold text-neutral-800">${inst.name}</h6></td>
+          <td>
+            <h6 class="text-md mb-0 fw-semibold text-neutral-800">${inst.name}</h6>
+            <span class="text-xs text-secondary-light">Added by: ${inst.created_by ? inst.created_by.name : 'Admin'}</span>
+          </td>
           <td>${typeBadge}</td>
           <td><span class="text-sm text-neutral-700">${inst.board_affiliation || '-'}</span></td>
           <td>${inst.city}</td>
@@ -324,11 +327,13 @@ $(document).ready(function() {
 
   // Filter triggers
   $('#typeFilter, #statusFilter, #pageSizeSelect').on('change', function() {
-    loadInstitutions(1);
+    currentPage = 1;
+    fetchInstitutions();
   });
 
   $('#cityFilter, #searchQuery').on('keyup', function() {
-    loadInstitutions(1);
+    currentPage = 1;
+    fetchInstitutions();
   });
 
   $('#clearFiltersBtn').on('click', function() {
@@ -336,39 +341,87 @@ $(document).ready(function() {
     $('#statusFilter').val('');
     $('#cityFilter').val('');
     $('#searchQuery').val('');
-    loadInstitutions(1);
+    currentFilters = {
+      type: '',
+      status: '',
+      city: '',
+      q: '',
+      page_size: $('#pageSizeSelect').val()
+    };
+    currentPage = 1;
+    fetchInstitutions();
   });
 
   $(document).on('click', '#paginationUl .page-link', function(e) {
     e.preventDefault();
     const page = $(this).data('page');
-    if (page) loadInstitutions(page);
+    if (page) {
+      currentPage = page;
+      fetchInstitutions();
+    }
   });
 
-  // Delete Action
+  // Delete Action with Modern SweetAlert2 UI
   $(document).on('click', '.delete-inst-btn', function() {
     const instId = $(this).data('id');
-    if (!confirm('Are you sure you want to delete this institution? This will fail if there are dependent records.')) {
-      return;
-    }
-    const token = getCsrfToken();
+    const token = typeof getCsrfToken === 'function' ? getCsrfToken() : $('[name=csrfmiddlewaretoken]').val();
 
-    $.ajax({
-      url: `/api/institutions/${instId}/`,
-      type: 'DELETE',
-      headers: { 'X-CSRFToken': token },
-      xhrFields: { withCredentials: true },
-      success: function(res) {
-        showToast('Institution deleted successfully!', 'success');
-        loadInstitutions(currentPage);
+    Swal.fire({
+      title: 'Delete Institution?',
+      text: 'Are you sure you want to delete this institution? This will fail if there are active dependent records.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: '<i class="ri-delete-bin-line me-1"></i> Yes, Delete',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        popup: 'radius-16 border-0 shadow-lg',
+        confirmButton: 'btn btn-danger radius-8 px-20 py-8 text-sm fw-medium me-2',
+        cancelButton: 'btn btn-secondary radius-8 px-20 py-8 text-sm fw-medium'
       },
-      error: function(err) {
-        showToast('Failed to delete institution. Note: Only staff roles can delete, and only if there are no related active records.', 'error');
+      buttonsStyling: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `/api/institutions/${instId}/`,
+          type: 'DELETE',
+          headers: { 'X-CSRFToken': token },
+          xhrFields: { withCredentials: true },
+          success: function(res) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Deleted Successfully!',
+              text: 'The institution record has been permanently removed.',
+              timer: 1800,
+              showConfirmButton: false
+            });
+            fetchInstitutions();
+          },
+          error: function(err) {
+            let msg = 'Failed to delete institution. Only admin staff can delete institutions without active linked dependencies.';
+            if (err.responseJSON && err.responseJSON.detail) {
+              msg = err.responseJSON.detail;
+            } else if (err.responseJSON && err.responseJSON.error) {
+              msg = err.responseJSON.error;
+            }
+            Swal.fire({
+              icon: 'error',
+              title: 'Deletion Blocked',
+              text: msg,
+              customClass: {
+                popup: 'radius-16 border-0 shadow-lg',
+                confirmButton: 'btn btn-primary-600 radius-8 px-20 py-8 text-sm fw-medium'
+              },
+              buttonsStyling: false
+            });
+          }
+        });
       }
     });
   });
 
-  loadInstitutions();
+  fetchInstitutions();
 });
 </script>
 {% endblock %}

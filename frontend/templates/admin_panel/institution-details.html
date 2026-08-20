@@ -288,28 +288,26 @@
 <script>
 $(document).ready(function() {
   const urlParams = new URLSearchParams(window.location.search);
-  const instId = urlParams.get('id');
-
-  if (!instId) {
-    showToast("No institution ID specified.", "error");
-    setTimeout(() => {
-      window.location.href = "/admin-panel/institution-list/";
-    }, 1500);
-    return;
-  }
+  const rawInstId = urlParams.get('id') || urlParams.get('institution_id') || urlParams.get('pk');
+  let instId = (rawInstId && rawInstId !== 'null' && rawInstId !== 'undefined' && !isNaN(parseInt(rawInstId))) ? parseInt(rawInstId) : null;
 
   // Load details
   function loadInstitutionDetails() {
+    const apiUrl = instId ? `/api/institutions/${instId}/` : '/api/institutions/me/';
+
     $.ajax({
-      url: `/api/institutions/${instId}/`,
+      url: apiUrl,
       type: 'GET',
       xhrFields: { withCredentials: true },
       success: function(response) {
         const inst = response.institution;
         if (!inst) {
           showToast("Institution details not found.", "error");
+          $('#instName').text("Institution Not Found");
           return;
         }
+
+        instId = inst.id;
 
         // Action links
         $('#editInstBtn').attr('href', `/admin-panel/edit-institution/?id=${inst.id}`);
@@ -317,37 +315,42 @@ $(document).ready(function() {
         $('#viewAllStudentsLink').attr('href', `/admin-panel/student-list/?institution_id=${inst.id}`);
 
         // Left Card info
-        $('#instName').text(inst.name);
-        $('#instType').text(inst.type);
+        $('#instName').text(inst.name || 'Unnamed Institution');
         $('#instBoard').text(inst.board_affiliation || '-');
-        $('#instCity').text(inst.city);
-        $('#instState').text(inst.state);
+        $('#instCity').text(inst.city || '-');
+        $('#instState').text(inst.state || '-');
         $('#instStudentsCount').text(inst.total_students || 0);
         $('#instPartner').text(inst.onboarded_by_partner_id || '-');
         
         if (inst.created_at) {
           const date = new Date(inst.created_at);
           $('#instCreated').text(date.toLocaleDateString());
+        } else {
+          $('#instCreated').text('-');
         }
 
         // Status badge color
+        const statusText = inst.status || 'active';
         let badgeClass = 'bg-success-100 text-success-600 border border-success-200';
-        if (inst.status === 'pending') badgeClass = 'bg-warning-100 text-warning-600 border border-warning-200';
-        else if (inst.status === 'suspended') badgeClass = 'bg-danger-100 text-danger-600 border border-danger-200';
+        if (statusText === 'pending') badgeClass = 'bg-warning-100 text-warning-600 border border-warning-200';
+        else if (statusText === 'suspended') badgeClass = 'bg-danger-100 text-danger-600 border border-danger-200';
         
-        let typeBadge = `<span class="badge bg-primary-100 text-primary-600 text-xs px-8 py-4 radius-4 fw-bold text-uppercase">${inst.type}</span>`;
-        if (inst.type === 'coaching') {
+        const typeStr = (inst.type || 'school').toLowerCase();
+        let typeBadge = `<span class="badge bg-primary-100 text-primary-600 text-xs px-8 py-4 radius-4 fw-bold text-uppercase">${typeStr}</span>`;
+        if (typeStr === 'coaching') {
           typeBadge = `<span class="badge bg-warning-100 text-warning-700 text-xs px-8 py-4 radius-4 fw-bold"><i class="ri-focus-2-line me-1"></i>COACHING</span>`;
+        } else if (typeStr === 'school') {
+          typeBadge = `<span class="badge bg-info-100 text-info-700 text-xs px-8 py-4 radius-4 fw-bold"><i class="ri-building-line me-1"></i>SCHOOL</span>`;
         }
         $('#instType').html(typeBadge);
-        $('#instStatusBadge').text(inst.status).attr('class', `px-12 py-4 radius-20 fw-bold text-xs text-uppercase ${badgeClass}`);
+        $('#instStatusBadge').text(statusText).attr('class', `px-12 py-4 radius-20 fw-bold text-xs text-uppercase ${badgeClass}`);
 
         // Overview tab
-        $('#instAddress').text(inst.address);
+        $('#instAddress').text(inst.address || '-');
         if (inst.admin_user) {
-          $('#adminUsername').text(inst.admin_user.username);
-          $('#adminEmail').text(inst.admin_user.email);
-          $('#adminId').text(inst.admin_user.id);
+          $('#adminUsername').text(inst.admin_user.username || '-');
+          $('#adminEmail').text(inst.admin_user.email || '-');
+          $('#adminId').text(inst.admin_user.id || '-');
         } else {
           $('#adminUsername').text('-');
           $('#adminEmail').text('-');
@@ -363,7 +366,16 @@ $(document).ready(function() {
         loadAllotmentCourses();
       },
       error: function(err) {
-        showToast("Failed to load details.", "error");
+        let msg = "Failed to load institution details.";
+        if (err.responseJSON && err.responseJSON.error) {
+          msg = err.responseJSON.error;
+        } else if (err.status === 404) {
+          msg = "Institution record not found.";
+        } else if (err.status === 401) {
+          msg = "Authentication required. Please log in.";
+        }
+        showToast(msg, "error");
+        $('#instName').text("Institution Profile");
       }
     });
   }
@@ -464,22 +476,38 @@ $(document).ready(function() {
   // Delete Batch Handler
   $(document).on('click', '.delete-batch-btn', function() {
     const batchId = $(this).data('id');
-    if (!confirm("Are you sure you want to delete this batch?")) return;
-
     const match = document.cookie.match(/csrftoken=([^;]+)/);
     const token = match ? match[1] : '';
 
-    $.ajax({
-      url: `/api/batches/${batchId}/`,
-      type: 'DELETE',
-      headers: { 'X-CSRFToken': token },
-      xhrFields: { withCredentials: true },
-      success: function() {
-        showToast("Batch deleted successfully.", "success");
-        loadBatches();
+    Swal.fire({
+      title: 'Delete Batch?',
+      text: 'Are you sure you want to delete this target batch?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Yes, Delete',
+      customClass: {
+        popup: 'radius-16 border-0 shadow-lg',
+        confirmButton: 'btn btn-danger radius-8 px-20 py-8 text-sm me-2',
+        cancelButton: 'btn btn-secondary radius-8 px-20 py-8 text-sm'
       },
-      error: function() {
-        showToast("Failed to delete batch.", "error");
+      buttonsStyling: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `/api/batches/${batchId}/`,
+          type: 'DELETE',
+          headers: { 'X-CSRFToken': token },
+          xhrFields: { withCredentials: true },
+          success: function() {
+            Swal.fire({ icon: 'success', title: 'Batch Deleted', timer: 1500, showConfirmButton: false });
+            loadBatches();
+          },
+          error: function() {
+            Swal.fire({ icon: 'error', title: 'Delete Failed', text: 'Failed to delete batch.' });
+          }
+        });
       }
     });
   });

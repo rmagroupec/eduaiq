@@ -114,7 +114,8 @@
 <script>
 $(document).ready(function() {
   const urlParams = new URLSearchParams(window.location.search);
-  const instId = urlParams.get('id');
+  const rawInstId = urlParams.get('id') || urlParams.get('institution_id') || urlParams.get('pk');
+  const instId = (rawInstId && rawInstId !== 'null' && rawInstId !== 'undefined' && !isNaN(parseInt(rawInstId))) ? parseInt(rawInstId) : null;
 
   if (!instId) {
     showToast("No institution ID specified.", "error");

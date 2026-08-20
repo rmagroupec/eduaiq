@@ -22,7 +22,8 @@
 <div class="card h-100 mt-24">
   <div class="card-body p-24">
     <!-- Pipeline total summary banner -->
-    <div class="alert alert-primary-100 text-primary-800 radius-8 p-16 mb-24 d-flex align-items-center justify-content-between">
+    <div
+      class="alert alert-primary-100 text-primary-800 radius-8 p-16 mb-24 d-flex align-items-center justify-content-between">
       <div>
         <i class="ri-money-dollar-circle-line text-xl me-2 align-middle"></i>
         <span class="fw-semibold">Active Pipeline Total:</span>
@@ -33,7 +34,7 @@
 
     <!-- Filters -->
     <div class="row gy-3 mb-24 align-items-end">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <label class="text-sm fw-semibold text-primary-light mb-8" for="stageFilter">Stage Filter</label>
         <select class="form-control form-select radius-8" id="stageFilter">
           <option value="">All Stages</option>
@@ -45,7 +46,19 @@
           <option value="lost">Lost</option>
         </select>
       </div>
-      <div class="col-md-4">
+      {% if request.user.is_superuser or request.user.role == 'admin' %}
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="ownerFilter">Assigned Employee</label>
+        <select class="form-control form-select radius-8" id="ownerFilter">
+          <option value="">All Assigned Employees</option>
+        </select>
+      </div>
+      {% endif %}
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="searchQuery">Search</label>
+        <input type="text" class="form-control radius-8" id="searchQuery" placeholder="Deal name or prospect">
+      </div>
+      <div class="col-md-3">
         <button class="btn btn-outline-primary-600 w-100 radius-8" id="clearFiltersBtn">Clear Filters</button>
       </div>
     </div>
@@ -67,7 +80,11 @@
           </tr>
         </thead>
         <tbody id="oppsTableBody">
-          <tr><td colspan="10" class="text-center py-40"><div class="spinner-border text-primary"></div></td></tr>
+          <tr>
+            <td colspan="10" class="text-center py-40">
+              <div class="spinner-border text-primary"></div>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -80,71 +97,155 @@
     </div>
   </div>
 </div>
+
+<!-- Edit Opportunity Modal -->
+<div class="modal fade" id="editOppModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content radius-16">
+      <div class="modal-header border-bottom py-16 px-24">
+        <h6 class="modal-title fw-semibold text-lg">Edit Opportunity (Deal)</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-24">
+        <form id="editOppForm">
+          <input type="hidden" id="editOppId">
+          <div class="row gy-3">
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editOppName">Deal Name <span
+                  class="text-danger-600">*</span></label>
+              <input type="text" class="form-control radius-8" id="editOppName" required>
+            </div>
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editOppAmount">Deal Amount (INR) <span
+                  class="text-danger-600">*</span></label>
+              <input type="number" min="0" step="0.01" class="form-control radius-8" id="editOppAmount" required>
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editOppProb">Win Probability %</label>
+              <input type="number" min="0" max="100" class="form-control radius-8" id="editOppProb">
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editOppStage">Stage</label>
+              <select class="form-control form-select radius-8" id="editOppStage">
+                <option value="prospecting">Prospecting</option>
+                <option value="qualification">Qualification</option>
+                <option value="proposal">Proposal Sent</option>
+                <option value="negotiation">Negotiation</option>
+                <option value="won">Won</option>
+                <option value="lost">Lost</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editOppCloseDate">Expected Close
+                Date</label>
+              <input type="date" class="form-control radius-8" id="editOppCloseDate">
+            </div>
+            <div class="col-md-12">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="editOppNotes">Notes</label>
+              <textarea class="form-control radius-8" id="editOppNotes" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end gap-12 mt-24">
+            <button type="button" class="btn btn-outline-neutral-400 radius-8" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary-600 radius-8" id="saveEditOppBtn">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block js %}
 <script>
-$(document).ready(function() {
-  let currentPage = 1;
+  $(document).ready(function () {
+    let currentPage = 1;
+    let cachedOpps = {};
 
-  function getCsrfToken() {
-    const match = document.cookie.match(/csrftoken=([^;]+)/);
-    return match ? match[1] : null;
-  }
-
-  function loadOpps(page = 1) {
-    currentPage = page;
-    const stage = $('#stageFilter').val();
-    let url = `/api/crm/opportunities/?page=${page}&page_size=20&detailed=true`;
-    if (stage) url += `&stage=${stage}`;
-
-    $.ajax({
-      url: url, type: 'GET', xhrFields: { withCredentials: true },
-      success: function(response) {
-        $('#pipelineTotalSpan').text('₹ ' + Math.round(Number(response.pipeline_total || 0)).toLocaleString('en-IN'));
-        renderTable(response);
-        renderPagination(response);
-      },
-      error: function() {
-        $('#oppsTableBody').html(`<tr><td colspan="10" class="text-center py-40 text-danger-600">Failed to load opportunities.</td></tr>`);
-      }
-    });
-  }
-
-  function renderTable(data) {
-    const tbody = $('#oppsTableBody');
-    tbody.empty();
-    if (!data.results || data.results.length === 0) {
-      tbody.html(`<tr><td colspan="10" class="text-center py-40 text-secondary-light">No opportunities found.</td></tr>`);
-      $('#tableInfoSpan').text('Showing 0 to 0 of 0 entries');
-      return;
+    function getCsrfToken() {
+      const match = document.cookie.match(/csrftoken=([^;]+)/);
+      return match ? match[1] : null;
     }
-    data.results.forEach(o => {
-      let linked = '-';
-      const creatorInfo = o.lead_created_by || o.inquiry_created_by;
 
-      if (o.lead_id) {
-        linked = `<div>
+    function loadEmployeeDropdowns() {
+      $.ajax({
+        url: '/accounts/users/?is_employee=true&page_size=200', type: 'GET', xhrFields: { withCredentials: true },
+        success: function (response) {
+          const filterSel = $('#ownerFilter').empty().append('<option value="">All Assigned Employees</option>');
+          (response.results || []).forEach(user => {
+            const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ').trim();
+            const displayName = fullName ? `${fullName} (${user.username})` : user.username;
+            const roleTag = user.role ? ` — [${user.role.toUpperCase()}]` : '';
+            filterSel.append(`<option value="${user.id}">${displayName}${roleTag}</option>`);
+          });
+        }
+      });
+    }
+
+    function loadOpps(page = 1) {
+      currentPage = page;
+      const stage = $('#stageFilter').val();
+      const owner = $('#ownerFilter').val();
+      const q = $('#searchQuery').val();
+
+      let url = `/api/crm/opportunities/?page=${page}&page_size=20&detailed=true`;
+      if (stage) url += `&stage=${stage}`;
+      if (owner) url += `&owner=${owner}`;
+      if (q) url += `&q=${encodeURIComponent(q)}`;
+
+      $.ajax({
+        url: url, type: 'GET', cache: false, xhrFields: { withCredentials: true },
+        success: function (response) {
+          $('#pipelineTotalSpan').text('₹ ' + Math.round(Number(response.pipeline_total || 0)).toLocaleString('en-IN'));
+          renderTable(response);
+          renderPagination(response);
+        },
+        error: function () {
+          $('#oppsTableBody').html(`<tr><td colspan="10" class="text-center py-40 text-danger-600">Failed to load opportunities.</td></tr>`);
+        }
+      });
+    }
+
+    function renderTable(data) {
+      const tbody = $('#oppsTableBody');
+      tbody.empty();
+      cachedOpps = {};
+      if (!data.results || data.results.length === 0) {
+        if (currentPage > 1) {
+          loadOpps(currentPage - 1);
+          return;
+        }
+        tbody.html(`<tr><td colspan="10" class="text-center py-40 text-secondary-light">No opportunities found.</td></tr>`);
+        $('#tableInfoSpan').text('Showing 0 to 0 of 0 entries');
+        return;
+      }
+      data.results.forEach(o => {
+        cachedOpps[o.id] = o;
+        let linked = '-';
+        const creatorInfo = o.lead_created_by || o.inquiry_created_by;
+
+        if (o.lead_id) {
+          linked = `<div>
           <span class="badge bg-primary-50 text-primary-600 border border-primary-200">Lead: ${o.lead_name}</span>
           ${creatorInfo ? `<div class="text-xs text-secondary-light mt-4"><i class="ri-user-add-line me-1"></i>Added by ${creatorInfo.name}</div>` : ''}
         </div>`;
-      } else if (o.student_inquiry_id) {
-        linked = `<div>
+        } else if (o.student_inquiry_id) {
+          linked = `<div>
           <span class="badge bg-info-50 text-info-600 border border-info-200">Inquiry: ${o.student_inquiry_name}</span>
           ${creatorInfo ? `<div class="text-xs text-secondary-light mt-4"><i class="ri-user-add-line me-1"></i>Added by ${creatorInfo.name}</div>` : ''}
         </div>`;
-      }
+        }
 
-      let ownerHtml = '-';
-      const ownerObj = o.owner;
-      if (ownerObj) {
-        ownerHtml = `<div>
+        let ownerHtml = '-';
+        const ownerObj = o.owner;
+        if (ownerObj) {
+          ownerHtml = `<div>
           <span class="fw-semibold text-neutral-800 text-sm d-block mb-2"><i class="ri-user-3-line me-1 text-primary-600"></i>${ownerObj.name}</span>
           ${ownerObj.designation ? `<span class="badge bg-primary-50 text-primary-600 border border-primary-100 radius-4 px-6 py-2 text-xs d-inline-block">${ownerObj.designation}</span>` : ''}
         </div>`;
-      }
+        }
 
-      tbody.append(`
+        tbody.append(`
         <tr>
           <td><span class="text-secondary-light fw-medium">${o.id}</span></td>
           <td><h6 class="text-md mb-0 fw-semibold text-neutral-800">${o.name}</h6></td>
@@ -165,70 +266,143 @@ $(document).ready(function() {
           </td>
           <td>${o.expected_close_date || '-'}</td>
           <td class="text-center">
-            <button class="btn btn-sm btn-outline-danger px-8 py-4 radius-8 delete-opp-btn" data-id="${o.id}" title="Delete"><i class="ri-delete-bin-line text-md"></i></button>
+            <div class="d-flex align-items-center justify-content-center gap-8">
+              <button class="btn btn-sm btn-outline-primary px-8 py-4 radius-8 edit-opp-btn" data-id="${o.id}" title="Edit Deal"><i class="ri-edit-line text-md"></i></button>
+              <button class="btn btn-sm btn-outline-danger px-8 py-4 radius-8 delete-opp-btn" data-id="${o.id}" title="Delete"><i class="ri-delete-bin-line text-md"></i></button>
+            </div>
           </td>
         </tr>
       `);
-    });
-    const startEntry = (data.page - 1) * data.page_size + 1;
-    const endEntry = Math.min(data.page * data.page_size, data.count);
-    $('#tableInfoSpan').text(`Showing ${startEntry} to ${endEntry} of ${data.count} entries`);
-  }
-
-  function renderPagination(data) {
-    const nav = $('#paginationNav'); const ul = $('#paginationUl'); ul.empty();
-    if (data.total_pages <= 1) { nav.addClass('d-none'); return; }
-    nav.removeClass('d-none');
-    const prevDisabled = data.page === 1 ? 'disabled' : '';
-    ul.append(`<li class="page-item ${prevDisabled}"><button class="page-link py-6 px-12" data-page="${data.page - 1}" ${prevDisabled}>Previous</button></li>`);
-    for (let i = 1; i <= data.total_pages; i++) {
-      ul.append(`<li class="page-item ${i === data.page ? 'active' : ''}"><button class="page-link py-6 px-12" data-page="${i}">${i}</button></li>`);
+      });
+      const startEntry = (data.page - 1) * data.page_size + 1;
+      const endEntry = Math.min(data.page * data.page_size, data.count);
+      $('#tableInfoSpan').text(`Showing ${startEntry} to ${endEntry} of ${data.count} entries`);
     }
-    const nextDisabled = data.page === data.total_pages ? 'disabled' : '';
-    ul.append(`<li class="page-item ${nextDisabled}"><button class="page-link py-6 px-12" data-page="${data.page + 1}" ${nextDisabled}>Next</button></li>`);
-  }
 
-  $('#stageFilter').on('change', function() { loadOpps(1); });
-  $('#clearFiltersBtn').on('click', function() { $('#stageFilter').val(''); loadOpps(1); });
-  $(document).on('click', '#paginationUl .page-link', function() {
-    const page = $(this).data('page'); if (page) loadOpps(page);
-  });
-
-  $(document).on('change', '.stage-select', function() {
-    const id = $(this).data('id'); const newStage = $(this).val();
-    const token = getCsrfToken();
-    $.ajax({
-      url: `/api/crm/opportunities/${id}/`, type: 'PATCH',
-      headers: { 'X-CSRFToken': token }, contentType: 'application/json',
-      data: JSON.stringify({ stage: newStage }), xhrFields: { withCredentials: true },
-      success: function() { showToast('Deal stage updated.', 'success'); loadOpps(currentPage); },
-      error: function() { showToast('Failed to update stage.', 'error'); }
-    });
-  });
-
-  $(document).on('click', '.delete-opp-btn', function() {
-    const id = $(this).data('id');
-    showConfirmModal({
-      title: 'Delete Opportunity',
-      message: 'Are you sure you want to delete this sales opportunity? This action cannot be undone.',
-      icon: 'ri-delete-bin-line',
-      iconBgClass: 'bg-danger-50',
-      iconColorClass: 'text-danger-600',
-      confirmText: 'Delete Opportunity',
-      confirmBtnClass: 'btn-danger-600',
-      onConfirm: function() {
-        const token = getCsrfToken();
-        $.ajax({
-          url: `/api/crm/opportunities/${id}/`, type: 'DELETE',
-          headers: { 'X-CSRFToken': token }, xhrFields: { withCredentials: true },
-          success: function() { showToast('Opportunity deleted.', 'success'); loadOpps(currentPage); },
-          error: function() { showToast('Failed to delete opportunity.', 'error'); }
-        });
+    function renderPagination(data) {
+      const nav = $('#paginationNav'); const ul = $('#paginationUl'); ul.empty();
+      if (data.total_pages <= 1) { nav.addClass('d-none'); return; }
+      nav.removeClass('d-none');
+      const prevDisabled = data.page === 1 ? 'disabled' : '';
+      ul.append(`<li class="page-item ${prevDisabled}"><button class="page-link py-6 px-12" data-page="${data.page - 1}" ${prevDisabled}>Previous</button></li>`);
+      for (let i = 1; i <= data.total_pages; i++) {
+        ul.append(`<li class="page-item ${i === data.page ? 'active' : ''}"><button class="page-link py-6 px-12" data-page="${i}">${i}</button></li>`);
       }
-    });
-  });
+      const nextDisabled = data.page === data.total_pages ? 'disabled' : '';
+      ul.append(`<li class="page-item ${nextDisabled}"><button class="page-link py-6 px-12" data-page="${data.page + 1}" ${nextDisabled}>Next</button></li>`);
+    }
 
-  loadOpps();
-});
+    $('#stageFilter, #ownerFilter').on('change', function () { loadOpps(1); });
+    $('#searchQuery').on('keyup', function () { loadOpps(1); });
+    $('#clearFiltersBtn').on('click', function () { $('#stageFilter').val(''); $('#ownerFilter').val(''); $('#searchQuery').val(''); loadOpps(1); });
+    $(document).on('click', '#paginationUl .page-link', function () {
+      const page = $(this).data('page'); if (page) loadOpps(page);
+    });
+
+    $(document).on('change', '.stage-select', function () {
+      const id = $(this).data('id'); const newStage = $(this).val();
+      const token = getCsrfToken();
+      $.ajax({
+        url: `/api/crm/opportunities/${id}/`, type: 'PATCH',
+        headers: { 'X-CSRFToken': token }, contentType: 'application/json',
+        data: JSON.stringify({ stage: newStage }), xhrFields: { withCredentials: true },
+        success: function () { showToast('Deal stage updated.', 'success'); loadOpps(currentPage); },
+        error: function () { showToast('Failed to update stage.', 'error'); }
+      });
+    });
+
+    $(document).on('click', '.edit-opp-btn', function () {
+      const id = $(this).data('id');
+      const opp = cachedOpps[id];
+      if (!opp) return;
+
+      $('#editOppId').val(opp.id);
+      $('#editOppName').val(opp.name);
+      $('#editOppAmount').val(opp.amount);
+      $('#editOppProb').val(opp.probability_pct);
+      $('#editOppStage').val(opp.stage);
+      $('#editOppCloseDate').val(opp.expected_close_date || '');
+      $('#editOppNotes').val(opp.notes || '');
+
+      const modal = new bootstrap.Modal(document.getElementById('editOppModal'));
+      modal.show();
+    });
+
+    $('#editOppForm').on('submit', function (e) {
+      e.preventDefault();
+      const id = $('#editOppId').val();
+      const token = getCsrfToken();
+      $('#saveEditOppBtn').prop('disabled', true).text('Saving...');
+
+      const payload = {
+        name: $('#editOppName').val(),
+        amount: $('#editOppAmount').val(),
+        probability_pct: $('#editOppProb').val(),
+        stage: $('#editOppStage').val(),
+        expected_close_date: $('#editOppCloseDate').val() || null,
+        notes: $('#editOppNotes').val()
+      };
+
+      $.ajax({
+        url: `/api/crm/opportunities/${id}/`, type: 'PATCH',
+        headers: { 'X-CSRFToken': token }, contentType: 'application/json', data: JSON.stringify(payload),
+        xhrFields: { withCredentials: true },
+        success: function () {
+          $('#saveEditOppBtn').prop('disabled', false).text('Save Changes');
+          const modalEl = document.getElementById('editOppModal');
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) modal.hide();
+          showToast('Opportunity updated successfully!', 'success');
+          loadOpps(currentPage);
+        },
+        error: function (err) {
+          $('#saveEditOppBtn').prop('disabled', false).text('Save Changes');
+          let msg = 'Failed to update opportunity.';
+          if (err.responseJSON && err.responseJSON.errors) msg = JSON.stringify(err.responseJSON.errors);
+          showToast(msg, 'error');
+        }
+      });
+    });
+
+    $(document).on('click', '.delete-opp-btn', function () {
+      const id = $(this).data('id');
+      const $row = $(this).closest('tr');
+      showConfirmModal({
+        title: 'Delete Opportunity',
+        message: 'Are you sure you want to delete this sales opportunity? This action cannot be undone.',
+        icon: 'ri-delete-bin-line',
+        iconBgClass: 'bg-danger-50',
+        iconColorClass: 'text-danger-600',
+        confirmText: 'Delete Opportunity',
+        confirmBtnClass: 'btn-danger-600',
+        onConfirm: function () {
+          $row.stop(true, true).fadeOut(200, function () {
+            $(this).remove();
+            if ($('#oppsTableBody tr').length === 0) {
+              loadOpps(Math.max(1, currentPage - 1));
+            }
+          });
+          const token = getCsrfToken();
+          $.ajax({
+            url: `/api/crm/opportunities/${id}/`, type: 'DELETE',
+            headers: { 'X-CSRFToken': token }, xhrFields: { withCredentials: true },
+            success: function () {
+              showToast('Opportunity deleted successfully.', 'success');
+            },
+            error: function (xhr) {
+              $row.show();
+              const msg = (xhr.responseJSON && xhr.responseJSON.error) ? xhr.responseJSON.error : 'Failed to delete opportunity.';
+              showToast(msg, 'error');
+            }
+          });
+        }
+      });
+    });
+
+    if ($('#ownerFilter').length) {
+      loadEmployeeDropdowns();
+    }
+    loadOpps();
+  });
 </script>
 {% endblock %}

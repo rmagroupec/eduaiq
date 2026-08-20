@@ -60,7 +60,7 @@ def _body(request):
 
 def _is_staff(user):
     return user.is_authenticated and (
-        getattr(user, 'role', None) in ('staff', 'super_admin', 'teacher', 'admin') or
+        getattr(user, 'role', None) in ('staff', 'super_admin', 'superadmin', 'teacher', 'admin', 'employee', 'sales', 'institution_admin', 'institution') or
         getattr(user, 'is_staff', False) or
         getattr(user, 'is_superuser', False)
     )
@@ -186,20 +186,28 @@ def serialize_institution(inst, detailed=False):
         'id': inst.id,
         'name': inst.name,
         'type': inst.type,
-        'board_affiliation': inst.board_affiliation,
-        'city': inst.city,
-        'state': inst.state,
-        'status': inst.status,
+        'board_affiliation': inst.board_affiliation or '',
+        'city': inst.city or '',
+        'state': inst.state or '',
+        'status': inst.status or 'pending',
+        'address': inst.address or '',
+        'created_by': {
+            'id': inst.created_by.id,
+            'name': inst.created_by.get_full_name() or inst.created_by.username,
+        } if inst.created_by else None,
+        'assigned_employee': {
+            'id': inst.assigned_employee.id,
+            'name': inst.assigned_employee.get_full_name() or inst.assigned_employee.username,
+        } if inst.assigned_employee else None,
     }
     if detailed:
         data.update({
-            'address': inst.address,
             'admin_user': {
                 'id': inst.admin_user.id,
                 'username': inst.admin_user.username,
                 'email': inst.admin_user.email or 'info@eduaiq.co.in',
             } if inst.admin_user else None,
-            'onboarded_by_partner_id': inst.onboarded_by_partner_id,
+            'onboarded_by_partner_id': inst.onboarded_by_partner_id or '',
             'total_students': inst.students.count(),
             'total_batches': inst.batches.count(),
             'batches': [serialize_batch(b) for b in inst.batches.all()],
@@ -285,6 +293,12 @@ def institution_list(request):
     if request.method == 'GET':
         qs = Institution.objects.all().order_by('-created_at')
 
+        if request.user.is_authenticated:
+            is_admin = getattr(request.user, 'is_superuser', False) or getattr(request.user, 'role', '') in ['admin', 'superadmin']
+            if not is_admin:
+                from django.db.models import Q
+                qs = qs.filter(Q(assigned_employee=request.user) | Q(created_by=request.user))
+
         inst_type = request.GET.get('type')
         if inst_type:
             qs = qs.filter(type=inst_type)
@@ -311,6 +325,10 @@ def institution_list(request):
     form = InstitutionForm(body)
     if form.is_valid():
         institution = form.save(commit=False)
+        if not institution.created_by:
+            institution.created_by = request.user
+        if not institution.assigned_employee and request.user.role in ['employee', 'sales', 'teacher']:
+            institution.assigned_employee = request.user
         try:
             institution.full_clean()
             institution.save()
@@ -340,6 +358,25 @@ def _get_institution_or_404(pk):
         return None
 
 
+@require_GET
+def my_institution_detail(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Authentication required. Please log in.'}, status=401)
+
+    inst = Institution.objects.filter(admin_user=request.user).first()
+    if not inst:
+        inst = Institution.objects.filter(assigned_employee=request.user).first()
+    if not inst:
+        inst = Institution.objects.filter(created_by=request.user).first()
+    if not inst:
+        inst = Institution.objects.first()
+
+    if not inst:
+        return JsonResponse({'error': 'No institution record found in database.'}, status=404)
+
+    return JsonResponse({'institution': serialize_institution(inst, detailed=True)})
+
+
 @require_http_methods(['GET', 'PUT', 'PATCH', 'DELETE'])
 def institution_detail(request, pk):
     institution = _get_institution_or_404(pk)
@@ -347,7 +384,7 @@ def institution_detail(request, pk):
         return JsonResponse({'error': 'Institution not found'}, status=404)
 
     if request.method == 'GET':
-        detailed = request.user.is_authenticated and _can_manage_institution(request.user, institution)
+        detailed = request.user.is_authenticated
         return JsonResponse({'institution': serialize_institution(institution, detailed=detailed)})
 
     if not _can_manage_institution(request.user, institution):
@@ -387,17 +424,23 @@ def institution_detail(request, pk):
 # ============================================================================
 
 @require_http_methods(['GET', 'POST'])
-def student_list(request, institution_pk):
-    institution = _get_institution_or_404(institution_pk)
-    if institution is None:
-        return JsonResponse({'error': 'Institution not found'}, status=404)
+def student_list(request, institution_pk=None):
+    from django.db.models import Q
+
+    institution = None
+    if institution_pk and str(institution_pk) not in ('0', 'all', ''):
+        institution = _get_institution_or_404(institution_pk)
+        if institution is None:
+            return JsonResponse({'error': 'Institution not found'}, status=404)
 
     if request.method == 'GET':
-        qs = (
-            Student.objects.select_related('user', 'institution')
-            .filter(institution=institution)
-            .order_by('class_grade', 'section', 'roll_number')
-        )
+        qs = Student.objects.select_related('user', 'institution', 'batch')
+        if institution:
+            qs = qs.filter(institution=institution)
+        else:
+            inst_filter = request.GET.get('institution') or request.GET.get('institution_id')
+            if inst_filter and inst_filter not in ('all', '', '0'):
+                qs = qs.filter(institution_id=inst_filter)
 
         class_grade = request.GET.get('class_grade')
         if class_grade:
@@ -410,13 +453,20 @@ def student_list(request, institution_pk):
             qs = qs.filter(status=status)
         search = request.GET.get('q', '').strip()
         if search:
-            qs = qs.filter(admission_no__icontains=search)
+            qs = qs.filter(
+                Q(admission_no__icontains=search) |
+                Q(user__first_name__icontains=search) |
+                Q(user__last_name__icontains=search) |
+                Q(user__username__icontains=search)
+            )
+
+        qs = qs.order_by('-created_at')
 
         viewer = request.user if request.user.is_authenticated else None
         payload = _paginate(
-            request, qs, serialize_student, default_page_size=20, viewer=viewer, request=request
+            request, qs, serialize_student, default_page_size=20, viewer=viewer
         )
-        payload['institution_id'] = institution.id
+        payload['institution_id'] = institution.id if institution else None
         return JsonResponse(payload)
 
     if not request.user.is_authenticated:
@@ -462,8 +512,15 @@ def student_detail(request, pk):
         return JsonResponse({'error': 'Forbidden'}, status=403)
 
     if request.method == 'DELETE':
+        user_obj = student.user
         student.delete()
+        if user_obj:
+            try:
+                user_obj.delete()
+            except Exception:
+                pass
         return JsonResponse({'success': True})
+
 
     body = _body(request)
     form = _bind_form_for_update(StudentForm, student, request, body)
@@ -582,15 +639,17 @@ def create_institution_student(request):
     if phone and User.objects.filter(phone=phone).exists():
         return JsonResponse({'success': False, 'error': 'Phone number already exists.'}, status=400)
 
-    # Get institution linked to logged in user or selected institution
+    # Get institution selected in form or linked to logged in user
     inst = None
-    if request.user.is_authenticated:
-        inst = Institution.objects.filter(admin_user=request.user).first()
+    inst_id = data.get('institution') or data.get('institution_id')
+    if inst_id:
+        try:
+            inst = Institution.objects.filter(id=int(inst_id)).first()
+        except (ValueError, TypeError):
+            pass
 
-    if not inst:
-        inst_id = data.get('institution')
-        if inst_id:
-            inst = Institution.objects.filter(id=inst_id).first()
+    if not inst and request.user.is_authenticated:
+        inst = Institution.objects.filter(admin_user=request.user).first()
 
     batch_id = data.get('batch') or data.get('batch_id')
     batch_obj = None
@@ -603,6 +662,8 @@ def create_institution_student(request):
             batch_obj = None
 
     try:
+        photo_file = request.FILES.get('profile_photo') or request.FILES.get('profile_picture') or request.FILES.get('photo') or request.FILES.get('image')
+
         # Create User
         user = User.objects.create_user(
             username=username,
@@ -614,6 +675,10 @@ def create_institution_student(request):
             role='student'
         )
 
+        if photo_file:
+            user.profile_image = photo_file
+            user.save()
+
         # Create Student Profile
         student = Student.objects.create(
             user=user,
@@ -622,8 +687,10 @@ def create_institution_student(request):
             admission_no=admission_no,
             class_grade=class_grade,
             section=section,
-            academic_year=academic_year
+            academic_year=academic_year,
+            profile_photo=photo_file if photo_file else None
         )
+
 
         # Create Enrollments for selected courses
         enrolled_courses = []

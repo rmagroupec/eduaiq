@@ -388,6 +388,9 @@ $(document).ready(function() {
     contacted: '#6366f1',
     demo: '#f59e0b',
     trial: '#f59e0b',
+    talent_hunt_exam: '#a855f7',
+    ai_quotient: '#6366f1',
+    entrance_exam_ug_pg: '#06b6d4',
     negotiation: '#fb923c',
     admission_offered: '#fb923c',
     prospecting: '#38bdf8',
@@ -811,6 +814,7 @@ $(document).ready(function() {
     $.ajax({
       url: '/api/crm/dashboard/',
       type: 'GET',
+      cache: false,
       xhrFields: { withCredentials: true },
       success: function(d) {
         // KPI Stat Cards

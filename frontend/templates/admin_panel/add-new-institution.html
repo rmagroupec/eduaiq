@@ -70,7 +70,8 @@
           <textarea class="form-control radius-8" id="address" name="address" rows="3" placeholder="Enter physical street address..." required></textarea>
         </div>
 
-        <!-- Section: Purchased Courses & AI Books Allotment -->
+        <!-- Section: Purchased Courses & AI Books Allotment (Admin Only) -->
+        {% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'superadmin' %}
         <div class="col-12 mt-24">
           <div class="card border border-neutral-200 radius-12 overflow-hidden">
             <div class="card-header bg-neutral-50 py-16 px-24 border-bottom">
@@ -99,6 +100,14 @@
             </div>
           </div>
         </div>
+        {% else %}
+        <div class="col-12 mt-16">
+          <div class="alert alert-info radius-8 d-flex align-items-center gap-2 mb-0">
+            <i class="ri-information-line text-xl"></i>
+            <span>Course & Category Allotments will be configured and approved by the Super Admin after registration.</span>
+          </div>
+        </div>
+        {% endif %}
 
         <div class="col-12 mt-24">
           <div class="d-flex align-items-center gap-16 justify-content-end">
@@ -253,8 +262,8 @@ $(document).ready(function() {
   });
 
   loadUsers();
-  loadCourses();
-  loadCategories();
+  if ($('#courseAllotmentContainer').length > 0) loadCourses();
+  if ($('#categoryAllotmentContainer').length > 0) loadCategories();
 });
 </script>
 {% endblock %}

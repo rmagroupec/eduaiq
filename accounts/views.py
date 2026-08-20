@@ -13,7 +13,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
-from django.views.decorators.http import require_GET, require_http_methods
+from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
 from .forms import DeleteAccountForm, ProfileForm, SignUpForm, UserEditForm
 from .models import Profile, Role, User
@@ -438,6 +438,12 @@ def designation_api(request):
 @login_required
 def employee_onboarding_api(request):
     """API for onboarding a new employee and viewing employee profiles"""
+    def clean_id(val):
+        if not val: return None
+        s = str(val).strip()
+        if s.lower() in ['null', 'undefined', 'none', '', '0']: return None
+        return s
+
     if request.method == 'GET':
         # Ensure all employee role users have EmployeeProfiles
         emp_users = User.objects.filter(
@@ -453,22 +459,186 @@ def employee_onboarding_api(request):
                     defaults={'employee_id': emp_id, 'onboarding_status': 'active'}
                 )
 
-        employees = EmployeeProfile.objects.select_related('user', 'department', 'designation').prefetch_related('documents').order_by('-created_at')
+        user_id_query = request.GET.get('user_id')
+        emp_id_query = request.GET.get('emp_id') or request.GET.get('id')
+
+        u_param = clean_id(user_id_query)
+        e_param = clean_id(emp_id_query)
+
+        if u_param or e_param:
+            emp = None
+
+            # 1. Try lookup by emp_id / id as EmployeeProfile PK or code
+            if e_param:
+                if e_param.isdigit():
+                    emp = EmployeeProfile.objects.select_related('user', 'department', 'designation', 'reporting_manager').filter(id=int(e_param)).first()
+                if not emp:
+                    emp = EmployeeProfile.objects.select_related('user', 'department', 'designation', 'reporting_manager').filter(employee_id=e_param).first()
+                if not emp and e_param.isdigit():
+                    emp = EmployeeProfile.objects.select_related('user', 'department', 'designation', 'reporting_manager').filter(user_id=int(e_param)).first()
+
+            # 2. Try lookup by user_id
+            if not emp and u_param:
+                if u_param.isdigit():
+                    emp = EmployeeProfile.objects.select_related('user', 'department', 'designation', 'reporting_manager').filter(user_id=int(u_param)).first()
+                if not emp and u_param.isdigit():
+                    emp = EmployeeProfile.objects.select_related('user', 'department', 'designation', 'reporting_manager').filter(id=int(u_param)).first()
+                if not emp:
+                    emp = EmployeeProfile.objects.select_related('user', 'department', 'designation', 'reporting_manager').filter(employee_id=u_param).first()
+
+            # 3. Fallback: Auto-create/get EmployeeProfile if User exists
+            if not emp:
+                target_u = None
+                for param in [u_param, e_param]:
+                    if param and param.isdigit():
+                        target_u = User.objects.filter(id=int(param)).first()
+                        if target_u: break
+                if target_u:
+                    emp, _ = EmployeeProfile.objects.get_or_create(
+                        user=target_u,
+                        defaults={'employee_id': f"EMP-{target_u.id:04d}", 'onboarding_status': 'active'}
+                    )
+                    emp = EmployeeProfile.objects.select_related('user', 'department', 'designation', 'reporting_manager').filter(pk=emp.pk).first()
+            
+            if emp:
+                u = emp.user
+                extra_meta = {}
+                if emp.notes:
+                    if isinstance(emp.notes, dict):
+                        extra_meta = emp.notes
+                    elif isinstance(emp.notes, str) and emp.notes.strip():
+                        try:
+                            extra_meta = json.loads(emp.notes)
+                        except Exception:
+                            try:
+                                import ast
+                                extra_meta = ast.literal_eval(emp.notes)
+                            except Exception:
+                                pass
+
+                dob_str = ''
+                if getattr(u, 'date_of_birth', None):
+                    try:
+                        dob_str = u.date_of_birth.strftime('%Y-%m-%d')
+                    except Exception:
+                        dob_str = str(u.date_of_birth)
+                elif extra_meta.get('date_of_birth'):
+                    dob_str = extra_meta.get('date_of_birth')
+
+                join_date_str = ''
+                if emp.joining_date:
+                    try: join_date_str = emp.joining_date.strftime('%Y-%m-%d')
+                    except Exception: join_date_str = str(emp.joining_date)
+                elif u.joining_date:
+                    try: join_date_str = u.joining_date.strftime('%Y-%m-%d')
+                    except Exception: join_date_str = str(u.joining_date)
+
+                bg_val = extra_meta.get('blood_group', '') or extra_meta.get('bloodGroup', '')
+                h_val = extra_meta.get('medical_height', '') or extra_meta.get('medicalHeight', '')
+                w_val = extra_meta.get('medical_weight', '') or extra_meta.get('medicalWeight', '')
+                d_val = extra_meta.get('medical_date', '') or extra_meta.get('medicalDate', '')
+                acc_val = emp.bank_account_number or extra_meta.get('bank_account_number', '') or extra_meta.get('bankAccountNumber', '')
+                bname_val = emp.bank_name or extra_meta.get('bank_name', '') or extra_meta.get('bankName', '')
+                ifsc_val = emp.bank_ifsc or extra_meta.get('ifsc_code', '') or extra_meta.get('iFSCCode', '')
+                nat_val = extra_meta.get('national_id', '') or extra_meta.get('nationalIdentificationNumber', '')
+                epf_val = extra_meta.get('epf_no', '') or extra_meta.get('epfNo', '')
+                sal_val = extra_meta.get('basic_salary', '') or extra_meta.get('basicSalary', '')
+                curr_addr = extra_meta.get('current_address', '') or extra_meta.get('currentAddress', '')
+                perm_addr = extra_meta.get('permanent_address', '') or extra_meta.get('permanentAddress', '')
+
+                pwd_val = extra_meta.get('initial_password', '') or extra_meta.get('password', '') or 'Employee@123'
+
+                return JsonResponse({
+                    'status': 'success',
+                    'employee': {
+                        'id': emp.id,
+                        'user_id': u.id,
+                        'employee_id': emp.employee_id,
+                        'full_name': u.get_full_name() or u.username,
+                        'first_name': u.first_name or '',
+                        'last_name': u.last_name or '',
+                        'email': u.email or '',
+                        'phone': u.phone or '',
+                        'password': pwd_val,
+                        'role': u.role or 'employee',
+                        'department': emp.department.name if emp.department else '',
+                        'department_id': emp.department_id,
+                        'designation': emp.designation.title if emp.designation else '',
+                        'designation_id': emp.designation_id,
+                        'reporting_manager_id': emp.reporting_manager_id if emp.reporting_manager else '',
+                        'joining_date': join_date_str,
+                        'date_of_birth': dob_str,
+                        'gender': u.gender or 'prefer_not_to_say',
+                        'father_name': u.father_name or extra_meta.get('father_name', ''),
+                        'mother_name': u.mother_name or extra_meta.get('mother_name', ''),
+                        'marital_status': u.marital_status or 'single',
+                        'contract_type': u.contract_type or 'full_time',
+                        'shift': u.shift or 'morning',
+                        'work_location': u.school_name or extra_meta.get('work_location', ''),
+                        'facebook': u.facebook or '',
+                        'linkedin': u.linkedin or '',
+                        'instagram': u.instagram or '',
+                        'blood_group': bg_val,
+                        'bloodGroup': bg_val,
+                        'medical_height': h_val,
+                        'medicalHeight': h_val,
+                        'medical_weight': w_val,
+                        'medicalWeight': w_val,
+                        'medical_date': d_val,
+                        'medicalDate': d_val,
+                        'bank_account_number': acc_val,
+                        'bankAccountNumber': acc_val,
+                        'bank_name': bname_val,
+                        'bankName': bname_val,
+                        'ifsc_code': ifsc_val,
+                        'iFSCCode': ifsc_val,
+                        'national_id': nat_val,
+                        'nationalIdentificationNumber': nat_val,
+                        'epf_no': epf_val,
+                        'epfNo': epf_val,
+                        'basic_salary': sal_val,
+                        'basicSalary': sal_val,
+                        'current_address': curr_addr,
+                        'currentAddress': curr_addr,
+                        'permanent_address': perm_addr,
+                        'permanentAddress': perm_addr,
+                        'profile_image': u.profile_image.url if u.profile_image else None
+                    }
+                })
+            return JsonResponse({'status': 'error', 'message': 'Employee not found.'}, status=404)
+
+        employees = EmployeeProfile.objects.select_related('user', 'department', 'designation', 'reporting_manager').prefetch_related('documents').order_by('-created_at')
         data = []
         for emp in employees:
             dept_name = emp.department.name if emp.department else (emp.user.school_name or 'CRM & Sales')
             desig_title = emp.designation.title if emp.designation else (emp.user.role.title() if emp.user.role else 'Employee')
             join_str = emp.joining_date.strftime('%d %b %Y') if emp.joining_date else (emp.user.joining_date.strftime('%d %b %Y') if emp.user.joining_date else '19 Aug 2026')
+            mgr_name = (emp.reporting_manager.get_full_name() or emp.reporting_manager.username) if emp.reporting_manager else 'Direct Super Admin'
             
+            notes_dict = {}
+            if emp.notes:
+                if isinstance(emp.notes, dict):
+                    notes_dict = emp.notes
+                elif isinstance(emp.notes, str) and emp.notes.strip():
+                    try:
+                        notes_dict = json.loads(emp.notes)
+                    except Exception:
+                        pass
+            raw_pwd = notes_dict.get('initial_password') or notes_dict.get('password') or 'Employee@123'
+
             data.append({
                 'id': emp.id,
+                'user_id': emp.user.id,
                 'employee_id': emp.employee_id,
                 'full_name': emp.user.get_full_name() or emp.user.username,
                 'email': emp.user.email or 'N/A',
                 'phone': emp.user.phone or 'N/A',
+                'password': raw_pwd,
                 'role': emp.user.role or 'employee',
                 'department': dept_name,
                 'designation': desig_title,
+                'reporting_manager_id': emp.reporting_manager_id if emp.reporting_manager else None,
+                'reporting_manager_name': mgr_name,
                 'joining_date': join_str,
                 'onboarding_status': emp.onboarding_status,
                 'onboarding_status_display': emp.get_onboarding_status_display() if hasattr(emp, 'get_onboarding_status_display') else 'Active',
@@ -488,6 +658,7 @@ def employee_onboarding_api(request):
                 except Exception:
                     data = request.POST
             
+            target_emp_id = data.get('emp_id') or data.get('id')
             full_name = data.get('fullName') or data.get('full_name') or ''
             first_name = data.get('first_name', '').strip()
             last_name = data.get('last_name', '').strip()
@@ -504,9 +675,13 @@ def employee_onboarding_api(request):
 
             department_val = data.get('employeeDepartment') or data.get('department')
             designation_val = data.get('employeeDesignation') or data.get('designation')
+            access_role_input = data.get('employeeRole') or data.get('role') or data.get('access_level')
+            reporting_manager_input = data.get('reportingManager') or data.get('reporting_manager') or data.get('reports_to')
             joining_date = data.get('joinDate') or data.get('joining_date') or None
-            if joining_date == '': 
-                joining_date = None
+            if joining_date == '': joining_date = None
+
+            date_of_birth = data.get('dateOfBirth') or data.get('date_of_birth') or None
+            if date_of_birth == '': date_of_birth = None
 
             gender = data.get('gender') or 'prefer_not_to_say'
             father_name = data.get('fathersName') or data.get('father_name') or ''
@@ -516,16 +691,174 @@ def employee_onboarding_api(request):
             shift = data.get('employeeShift') or data.get('shift') or 'morning'
             work_location = data.get('workLocation') or data.get('work_location') or ''
             
+            blood_group = data.get('bloodGroup') or data.get('blood_group') or ''
+            medical_height = data.get('medicalHeight') or data.get('medical_height') or ''
+            medical_weight = data.get('medicalWeight') or data.get('medical_weight') or ''
+            medical_date = data.get('medicalDate') or data.get('medical_date') or ''
+            bank_account_number = data.get('bankAccountNumber') or data.get('bank_account_number') or ''
+            bank_name = data.get('bankName') or data.get('bank_name') or ''
+            ifsc_code = data.get('iFSCCode') or data.get('ifsc_code') or ''
+            national_id = data.get('nationalIdentificationNumber') or data.get('national_id') or ''
+            epf_no = data.get('epfNo') or data.get('companyName') or data.get('epf_no') or ''
+            basic_salary = data.get('basicSalary') or data.get('Address') or data.get('basic_salary') or ''
+            current_address = data.get('currentAddress') or data.get('current_address') or ''
+            permanent_address = data.get('permanentAddress') or data.get('permanent_address') or ''
+
             facebook = data.get('facebookLink') or data.get('facebook') or ''
             linkedin = data.get('linkedInLink') or data.get('linkedin') or ''
             instagram = data.get('instagramLink') or data.get('instagram') or ''
+
+            def norm_choice(val, choices_tuple):
+                if not val: return choices_tuple[0][0]
+                v_clean = str(val).strip().lower().replace(' ', '_').replace('/', '_')
+                for k, lbl in choices_tuple:
+                    if v_clean == k.lower() or v_clean in k.lower() or k.lower() in v_clean:
+                        return k
+                    if str(lbl).strip().lower() == str(val).strip().lower():
+                        return k
+                return val
 
             if not email:
                 return JsonResponse({'status': 'error', 'message': 'Email address is required.'}, status=400)
             if not first_name:
                 return JsonResponse({'status': 'error', 'message': 'Employee full name is required.'}, status=400)
+
+            # Check if this is an EDIT / UPDATE operation for an existing employee
+            user_id_input = data.get('user_id') or request.GET.get('user_id')
+            emp_id_input = target_emp_id or data.get('emp_id') or data.get('id') or request.GET.get('emp_id') or request.GET.get('id')
+
+            u_p = clean_id(user_id_input)
+            e_p = clean_id(emp_id_input)
+            existing_emp = None
+
+            if e_p:
+                if e_p.isdigit():
+                    existing_emp = EmployeeProfile.objects.filter(id=int(e_p)).first()
+                if not existing_emp:
+                    existing_emp = EmployeeProfile.objects.filter(employee_id=e_p).first()
+                if not existing_emp and e_p.isdigit():
+                    existing_emp = EmployeeProfile.objects.filter(user_id=int(e_p)).first()
+
+            if not existing_emp and u_p:
+                if u_p.isdigit():
+                    existing_emp = EmployeeProfile.objects.filter(user_id=int(u_p)).first()
+                if not existing_emp and u_p.isdigit():
+                    existing_emp = EmployeeProfile.objects.filter(id=int(u_p)).first()
+                if not existing_emp:
+                    existing_emp = EmployeeProfile.objects.filter(employee_id=u_p).first()
+
+            if existing_emp:
+                user = existing_emp.user
+                # Check email and phone conflicts excluding current user
+                if User.objects.filter(email__iexact=email).exclude(pk=user.pk).exists():
+                    return JsonResponse({'status': 'error', 'message': f'An account with email {email} already exists.'}, status=400)
+                if phone and User.objects.filter(phone=phone).exclude(pk=user.pk).exists():
+                    return JsonResponse({'status': 'error', 'message': f'An account with phone number {phone} already exists.'}, status=400)
+                
+                user.first_name = first_name or ''
+                user.last_name = last_name or ''
+                user.email = email or ''
+                user.phone = phone if phone else (user.phone or '')
+                if access_role_input: user.role = str(access_role_input).strip().lower()
+                
+                user.gender = norm_choice(gender, User.GenderChoices.choices)
+                user.father_name = father_name or ''
+                user.mother_name = mother_name or ''
+                user.marital_status = norm_choice(marital_status, User.MaritalStatusChoices.choices)
+                user.contract_type = norm_choice(contract_type, User.ContractTypeChoices.choices)
+                user.shift = norm_choice(shift, User.ShiftChoices.choices)
+                if joining_date: user.joining_date = joining_date
+                if date_of_birth:
+                    try: user.date_of_birth = date_of_birth
+                    except Exception: pass
+
+                user.school_name = work_location
+                user.facebook = facebook
+                user.linkedin = linkedin
+                user.instagram = instagram
+
+                if password:
+                    user.set_password(password)
+
+                profile_pic_file = request.FILES.get('profile_picture') or request.FILES.get('profile_image') or request.FILES.get('myFile')
+                if profile_pic_file:
+                    user.profile_image = profile_pic_file
+
+                user.save()
+
+                if employee_id_input:
+                    existing_emp.employee_id = employee_id_input
+                if joining_date:
+                    existing_emp.joining_date = joining_date
+                existing_emp.bank_account_number = bank_account_number
+                existing_emp.bank_name = bank_name
+                existing_emp.bank_ifsc = ifsc_code
+
+                meta_dict = {
+                    'date_of_birth': str(date_of_birth) if date_of_birth else '',
+                    'father_name': father_name,
+                    'mother_name': mother_name,
+                    'work_location': work_location,
+                    'blood_group': blood_group,
+                    'medical_height': medical_height,
+                    'medical_weight': medical_weight,
+                    'medical_date': medical_date,
+                    'bank_account_number': bank_account_number,
+                    'bankAccountNumber': bank_account_number,
+                    'bank_name': bank_name,
+                    'bankName': bank_name,
+                    'ifsc_code': ifsc_code,
+                    'iFSCCode': ifsc_code,
+                    'national_id': national_id,
+                    'nationalIdentificationNumber': national_id,
+                    'epf_no': epf_no,
+                    'epfNo': epf_no,
+                    'basic_salary': basic_salary,
+                    'basicSalary': basic_salary,
+                    'current_address': current_address,
+                    'currentAddress': current_address,
+                    'permanent_address': permanent_address,
+                    'permanentAddress': permanent_address,
+                }
+                if password:
+                    meta_dict['initial_password'] = password
+                existing_emp.notes = json.dumps(meta_dict)
+
+                # Department & Designation
+                if department_val and department_val != 'Select':
+                    if str(department_val).isdigit():
+                        existing_emp.department = Department.objects.filter(id=department_val).first()
+                    else:
+                        dept_obj, _ = Department.objects.get_or_create(name=department_val.strip(), defaults={'code': str(department_val)[:10].upper()})
+                        existing_emp.department = dept_obj
+
+                if designation_val and designation_val != 'Select':
+                    if str(designation_val).isdigit():
+                        existing_emp.designation = Designation.objects.filter(id=designation_val).first()
+                    else:
+                        desig_obj = Designation.objects.filter(title__iexact=designation_val.strip()).first()
+                        if not desig_obj:
+                            desig_obj = Designation.objects.create(title=designation_val.strip(), department=existing_emp.department or Department.objects.first())
+                        existing_emp.designation = desig_obj
+
+                if reporting_manager_input:
+                    mgr = User.objects.filter(id=reporting_manager_input).first()
+                    if mgr:
+                        existing_emp.reporting_manager = mgr
+
+                existing_emp.save()
+
+                return JsonResponse({
+                    'status': 'success',
+                    'message': f'Employee profile for {user.get_full_name()} updated successfully!',
+                    'employee_id': existing_emp.employee_id,
+                    'username': user.username,
+                    'email': user.email
+                })
+
+            # New Employee Creation
             if not password:
-                return JsonResponse({'status': 'error', 'message': 'Password is required.'}, status=400)
+                return JsonResponse({'status': 'error', 'message': 'Password is required for new employee.'}, status=400)
 
             # Check if email is already registered
             if User.objects.filter(email__iexact=email).exists():
@@ -544,13 +877,16 @@ def employee_onboarding_api(request):
             elif User.objects.filter(phone=phone).exists():
                 return JsonResponse({'status': 'error', 'message': f'An account with phone number {phone} already exists.'}, status=400)
 
-            # Determine role from department if specified
+            # Determine role explicitly or fallback from department
             role = 'employee'
-            dept_str = str(department_val).lower() if department_val else ''
-            if 'sales' in dept_str or 'crm' in dept_str:
-                role = 'sales'
-            elif 'teacher' in dept_str or 'faculty' in dept_str:
-                role = 'teacher'
+            if access_role_input and str(access_role_input).strip():
+                role = str(access_role_input).strip().lower()
+            else:
+                dept_str = str(department_val).lower() if department_val else ''
+                if 'sales' in dept_str or 'crm' in dept_str:
+                    role = 'sales'
+                elif 'teacher' in dept_str or 'faculty' in dept_str:
+                    role = 'teacher'
 
             user = User(
                 username=username,
@@ -610,9 +946,41 @@ def employee_onboarding_api(request):
                             department=dept_obj
                         )
 
+            # Lookup Reporting Manager User if provided
+            reporting_mgr_user = None
+            if reporting_manager_input and str(reporting_manager_input).strip():
+                if str(reporting_manager_input).isdigit():
+                    reporting_mgr_user = User.objects.filter(id=reporting_manager_input).first()
+                else:
+                    reporting_mgr_user = User.objects.filter(
+                        Q(username__iexact=reporting_manager_input.strip()) |
+                        Q(email__iexact=reporting_manager_input.strip())
+                    ).first()
+
             emp_id = employee_id_input if employee_id_input else f"EMP-{user.id:04d}"
             if EmployeeProfile.objects.filter(employee_id=emp_id).exists():
                 emp_id = f"EMP-{user.id:04d}-{User.objects.count()}"
+
+            meta_dict = {
+                'date_of_birth': str(date_of_birth) if date_of_birth else '',
+                'father_name': father_name,
+                'mother_name': mother_name,
+                'work_location': work_location,
+                'blood_group': blood_group,
+                'medical_height': medical_height,
+                'medical_weight': medical_weight,
+                'medical_date': medical_date,
+                'bank_account_number': bank_account_number,
+                'bank_name': bank_name,
+                'ifsc_code': ifsc_code,
+                'national_id': national_id,
+                'epf_no': epf_no,
+                'basic_salary': basic_salary,
+                'current_address': current_address,
+                'permanent_address': permanent_address,
+            }
+            if password:
+                meta_dict['initial_password'] = password
 
             emp_profile, created = EmployeeProfile.objects.get_or_create(
                 user=user,
@@ -620,12 +988,22 @@ def employee_onboarding_api(request):
                     'employee_id': emp_id,
                     'department': dept_obj,
                     'designation': desig_obj,
+                    'reporting_manager': reporting_mgr_user,
                     'joining_date': joining_date,
-                    'onboarding_status': 'active'
+                    'onboarding_status': 'active',
+                    'bank_account_number': bank_account_number,
+                    'bank_name': bank_name,
+                    'bank_ifsc': ifsc_code,
+                    'notes': json.dumps(meta_dict)
                 }
             )
             emp_profile.department = dept_obj
             emp_profile.designation = desig_obj
+            emp_profile.reporting_manager = reporting_mgr_user
+            emp_profile.bank_account_number = bank_account_number
+            emp_profile.bank_name = bank_name
+            emp_profile.bank_ifsc = ifsc_code
+            emp_profile.notes = json.dumps(meta_dict)
             emp_profile.save()
 
             # Assign default checklist tasks
@@ -645,8 +1023,8 @@ def employee_onboarding_api(request):
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
 
-from .models import Attendance
-from datetime import datetime
+from .models import Attendance, AttendanceSetting
+from datetime import date, datetime, timedelta
 
 @csrf_exempt
 def attendance_api(request):
@@ -690,19 +1068,76 @@ def attendance_api(request):
             7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'
         }
 
-        # Initialize matrix for 12 months
         matrix = {month_name: {} for month_name in month_map.values()}
+        daily_records = []
 
-        for rec in records:
+        present_count = 0
+        absent_count = 0
+        half_day_count = 0
+        late_count = 0
+        holiday_count = 0
+        wfh_count = 0
+
+        for rec in records.order_by('-date'):
             m_name = month_map.get(rec.date.month)
             if m_name:
                 matrix[m_name][rec.date.day] = rec.status
+            
+            st = rec.status
+            if st == 'P': present_count += 1
+            elif st == 'A': absent_count += 1
+            elif st == 'F': half_day_count += 1
+            elif st == 'L': late_count += 1
+            elif st == 'H': holiday_count += 1
+            elif st == 'WFH': wfh_count += 1
+
+            c_in = rec.check_in.strftime('%I:%M %p') if rec.check_in else '-'
+            c_out = rec.check_out.strftime('%I:%M %p') if rec.check_out else '-'
+
+            work_duration = '-'
+            if rec.check_in and rec.check_out:
+                dt_in = datetime.combine(rec.date, rec.check_in)
+                dt_out = datetime.combine(rec.date, rec.check_out)
+                if dt_out > dt_in:
+                    diff_sec = int((dt_out - dt_in).total_seconds())
+                    hrs = diff_sec // 3600
+                    mins = (diff_sec % 3600) // 60
+                    if hrs > 0:
+                        work_duration = f"{hrs}h {mins:02d}m" if mins > 0 else f"{hrs}h 00m"
+                    else:
+                        work_duration = f"{mins}m"
+
+            st_display = rec.get_status_display()
+            if rec.date.weekday() == 6 and st == 'H':
+                st_display = 'Weekly Off'
+
+            daily_records.append({
+                'id': rec.id,
+                'date': rec.date.strftime('%Y-%m-%d'),
+                'formatted_date': rec.date.strftime('%d %b %Y'),
+                'day_name': rec.date.strftime('%A'),
+                'status': st,
+                'status_display': st_display,
+                'check_in': c_in,
+                'check_out': c_out,
+                'work_duration': work_duration,
+                'remarks': rec.remarks or ('Weekly Off' if rec.date.weekday() == 6 else 'On Time')
+            })
 
         return JsonResponse({
             'status': 'success',
             'user_id': user.id,
             'user_name': user.get_full_name() or user.username,
             'academic_year': academic_year,
+            'summary': {
+                'present': present_count,
+                'absent': absent_count,
+                'half_day': half_day_count,
+                'late': late_count,
+                'holiday': holiday_count,
+                'wfh': wfh_count
+            },
+            'daily_records': daily_records,
             'attendance_matrix': matrix
         })
 
@@ -1066,6 +1501,437 @@ def update_profile_image_api(request):
             })
         return JsonResponse({'status': 'error', 'message': 'No profile picture file provided.'}, status=400)
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
+
+
+@csrf_exempt
+@login_required
+def delete_employee_api(request, emp_id=None):
+    """API for deleting an employee profile and associated User account"""
+    if request.method not in ['POST', 'DELETE']:
+        return JsonResponse({'status': 'error', 'message': 'POST or DELETE method required'}, status=405)
+
+    if not _is_hr_or_admin(request.user):
+        return JsonResponse({'status': 'error', 'message': 'Permission denied. Only HR and Admin can delete employees.'}, status=403)
+
+    try:
+        if not emp_id:
+            data = _body(request)
+            emp_id = data.get('id') or data.get('employee_id')
+
+        if not emp_id:
+            return JsonResponse({'status': 'error', 'message': 'Employee ID is required.'}, status=400)
+
+        # Try fetching by EmployeeProfile PK or employee_id string or User PK
+        emp = EmployeeProfile.objects.filter(
+            Q(id=emp_id) if str(emp_id).isdigit() else Q(employee_id=emp_id)
+        ).first()
+
+        if not emp and str(emp_id).isdigit():
+            user = User.objects.filter(id=emp_id).first()
+            if user and hasattr(user, 'employee_profile'):
+                emp = user.employee_profile
+
+        if not emp:
+            return JsonResponse({'status': 'error', 'message': 'Employee profile not found.'}, status=404)
+
+        user = emp.user
+        emp_name = user.get_full_name() or user.username if user else 'Employee'
+        
+        # Prevent self deletion of logged in admin
+        if user and user == request.user:
+            return JsonResponse({'status': 'error', 'message': 'You cannot delete your own active account.'}, status=400)
+
+        emp.delete()
+        if user:
+            user.delete()
+
+        return JsonResponse({
+            'status': 'success',
+            'message': f'Employee {emp_name} deleted successfully.'
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@csrf_exempt
+@login_required
+@require_POST
+def update_profile_info_api(request):
+    """API to update logged-in user's profile details (first_name, last_name, email, phone)"""
+    try:
+        data = _body(request)
+        user = request.user
+        
+        first_name = data.get('first_name', '').strip()
+        last_name = data.get('last_name', '').strip()
+        email = data.get('email', '').strip()
+        phone = data.get('phone', '').strip()
+
+        if first_name:
+            user.first_name = first_name
+        if last_name is not None:
+            user.last_name = last_name
+        if email:
+            # Check unique email excluding current user
+            if User.objects.filter(email__iexact=email).exclude(pk=user.pk).exists():
+                return JsonResponse({'status': 'error', 'message': 'Email address is already in use by another account.'}, status=400)
+            user.email = email
+        if phone is not None:
+            user.phone = phone
+
+        user.save()
+
+        # Sync EmployeeProfile phone if present
+        if hasattr(user, 'employee_profile') and user.employee_profile:
+            emp = user.employee_profile
+            if phone:
+                emp.phone = phone
+            emp.save()
+
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Profile details updated successfully!',
+            'user': {
+                'full_name': user.get_full_name() or user.username,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'phone': user.phone
+            }
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+def _get_client_ip(request):
+    """Extract client IP address from request META headers"""
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0].strip()
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    if not ip or ip in ('127.0.0.1', '::1'):
+        ip = request.META.get('HTTP_X_REAL_IP', '127.0.0.1')
+    return ip
+
+
+import math
+
+def _calculate_distance_meters(lat1, lon1, lat2, lon2):
+    """
+    Calculate distance in meters between two lat/lon coordinates using Haversine formula.
+    """
+    R = 6371000  # Radius of Earth in meters
+    phi1 = math.radians(lat1)
+    phi2 = math.radians(lat2)
+    delta_phi = math.radians(lat2 - lat1)
+    delta_lambda = math.radians(lon2 - lon1)
+
+    a = math.sin(delta_phi / 2.0) ** 2 + \
+        math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2.0) ** 2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    return R * c
+
+
+@csrf_exempt
+@login_required
+def attendance_settings_api(request):
+    """
+    API for getting and updating Global Attendance Timing & Geofence Location Settings.
+    """
+    settings_obj = AttendanceSetting.get_settings()
+
+    if request.method == 'GET':
+        return JsonResponse({
+            'status': 'success',
+            'settings': {
+                'office_check_in_time': settings_obj.office_check_in_time.strftime('%H:%M'),
+                'grace_period_minutes': settings_obj.grace_period_minutes,
+                'office_check_out_time': settings_obj.office_check_out_time.strftime('%H:%M'),
+                'office_location_name': settings_obj.office_location_name,
+                'office_latitude': settings_obj.office_latitude,
+                'office_longitude': settings_obj.office_longitude,
+                'geofence_radius_meters': settings_obj.geofence_radius_meters,
+                'enforce_geofence': settings_obj.enforce_geofence
+            }
+        })
+
+    elif request.method == 'POST':
+        if not _is_hr_or_admin(request.user):
+            return JsonResponse({'status': 'error', 'message': 'Permission denied. Only HR/Admin can update shift and location settings.'}, status=403)
+        try:
+            data = _body(request)
+            in_time_str = data.get('office_check_in_time')
+            out_time_str = data.get('office_check_out_time')
+            grace = data.get('grace_period_minutes')
+            loc_name = data.get('office_location_name')
+            lat = data.get('office_latitude')
+            lng = data.get('office_longitude')
+            radius = data.get('geofence_radius_meters')
+            enforce = data.get('enforce_geofence')
+
+            if in_time_str:
+                settings_obj.office_check_in_time = datetime.strptime(in_time_str, '%H:%M').time()
+            if out_time_str:
+                settings_obj.office_check_out_time = datetime.strptime(out_time_str, '%H:%M').time()
+            if grace is not None:
+                settings_obj.grace_period_minutes = int(grace)
+            if loc_name:
+                settings_obj.office_location_name = str(loc_name).strip()
+            if lat is not None and str(lat).strip() != '':
+                settings_obj.office_latitude = float(lat)
+            if lng is not None and str(lng).strip() != '':
+                settings_obj.office_longitude = float(lng)
+            if radius is not None:
+                settings_obj.geofence_radius_meters = int(radius)
+            if enforce is not None:
+                settings_obj.enforce_geofence = bool(enforce)
+
+            settings_obj.save()
+
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Attendance shift timings and office location settings updated successfully!',
+                'settings': {
+                    'office_check_in_time': settings_obj.office_check_in_time.strftime('%H:%M'),
+                    'grace_period_minutes': settings_obj.grace_period_minutes,
+                    'office_check_out_time': settings_obj.office_check_out_time.strftime('%H:%M'),
+                    'office_location_name': settings_obj.office_location_name,
+                    'office_latitude': settings_obj.office_latitude,
+                    'office_longitude': settings_obj.office_longitude,
+                    'geofence_radius_meters': settings_obj.geofence_radius_meters,
+                    'enforce_geofence': settings_obj.enforce_geofence
+                }
+            })
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@csrf_exempt
+@login_required
+@require_GET
+def attendance_today_status_api(request):
+    """
+    Get today's punch in / out status for the logged-in user, along with IP, location, timing settings, and employee details.
+    """
+    try:
+        user = request.user
+        today = date.today()
+        att = Attendance.objects.filter(user=user, date=today).first()
+        settings_obj = AttendanceSetting.get_settings()
+
+        emp = getattr(user, 'employee_profile', None)
+        emp_details = {
+            'employee_id': emp.employee_id if emp else 'N/A',
+            'full_name': user.get_full_name() or user.username,
+            'email': user.email or 'N/A',
+            'department': emp.department.name if emp and emp.department else 'N/A',
+            'designation': emp.designation.title if emp and emp.designation else (user.role.title() if hasattr(user, 'role') else 'Staff'),
+            'role': getattr(user, 'role', 'employee')
+        }
+
+        settings_data = {
+            'office_check_in_time': settings_obj.office_check_in_time.strftime('%I:%M %p'),
+            'grace_period_minutes': settings_obj.grace_period_minutes,
+            'office_check_out_time': settings_obj.office_check_out_time.strftime('%I:%M %p'),
+            'office_location_name': settings_obj.office_location_name,
+            'is_admin': _is_hr_or_admin(user)
+        }
+
+        if not att:
+            return JsonResponse({
+                'status': 'success',
+                'has_checked_in': False,
+                'has_checked_out': False,
+                'check_in_time': None,
+                'check_out_time': None,
+                'check_in_ip': None,
+                'check_in_location': None,
+                'check_out_ip': None,
+                'check_out_location': None,
+                'employee': emp_details,
+                'shift_settings': settings_data
+            })
+
+        return JsonResponse({
+            'status': 'success',
+            'has_checked_in': att.check_in is not None,
+            'has_checked_out': att.check_out is not None,
+            'check_in_time': att.check_in.strftime('%I:%M %p') if att.check_in else None,
+            'check_out_time': att.check_out.strftime('%I:%M %p') if att.check_out else None,
+            'check_in_ip': att.check_in_ip or None,
+            'check_in_location': att.check_in_location or None,
+            'check_out_ip': att.check_out_ip or None,
+            'check_out_location': att.check_out_location or None,
+            'attendance_status': att.status,
+            'attendance_status_display': att.get_status_display(),
+            'employee': emp_details,
+            'shift_settings': settings_data
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@csrf_exempt
+@login_required
+@require_POST
+def attendance_check_in_api(request):
+    """
+    Record Punch-In for logged in employee with IP, Geolocation (lat/lng/address), Automatic Late calculation, and Employee details.
+    """
+    try:
+        user = request.user
+        today = date.today()
+        now_dt = datetime.now()
+        now_time = now_dt.time()
+
+        data = _body(request)
+        lat = data.get('latitude')
+        lng = data.get('longitude')
+        loc_address = (data.get('location') or data.get('location_address') or '').strip()
+        
+        client_ip = _get_client_ip(request)
+
+        if not loc_address and lat and lng:
+            loc_address = f"Lat: {lat}, Lng: {lng}"
+        elif not loc_address:
+            loc_address = "GPS Location Not Provided"
+
+        # Calculate Late Status based on Admin Attendance Settings
+        settings_obj = AttendanceSetting.get_settings()
+
+        # Validate Geofence if enabled by Admin
+        if settings_obj.enforce_geofence and settings_obj.office_latitude and settings_obj.office_longitude:
+            if lat is not None and lng is not None and str(lat).strip() != '' and str(lng).strip() != '':
+                dist = _calculate_distance_meters(float(lat), float(lng), settings_obj.office_latitude, settings_obj.office_longitude)
+                if dist > settings_obj.geofence_radius_meters:
+                    return JsonResponse({
+                        'status': 'error',
+                        'message': f"Punch-In rejected: You are {int(dist)}m away from {settings_obj.office_location_name}. Maximum allowed radius is {settings_obj.geofence_radius_meters}m."
+                    }, status=400)
+
+        exp_in_dt = datetime.combine(today, settings_obj.office_check_in_time)
+        late_threshold_dt = exp_in_dt + timedelta(minutes=settings_obj.grace_period_minutes)
+
+        is_late = now_dt > late_threshold_dt
+        computed_status = 'L' if is_late else 'P'
+        status_remark = f"Late Check-In ({now_time.strftime('%I:%M %p')}) - Shift Start: {settings_obj.office_check_in_time.strftime('%I:%M %p')} (+{settings_obj.grace_period_minutes}m Grace)" if is_late else f"On-Time Check-In ({now_time.strftime('%I:%M %p')})"
+
+        att, created = Attendance.objects.get_or_create(
+            user=user,
+            date=today,
+            defaults={
+                'academic_year': 'Jun 2025/2026',
+                'status': computed_status,
+                'check_in': now_time,
+                'check_in_ip': client_ip,
+                'check_in_location': loc_address,
+                'check_in_latitude': float(lat) if (lat is not None and str(lat).strip() != '') else None,
+                'check_in_longitude': float(lng) if (lng is not None and str(lng).strip() != '') else None,
+                'remarks': status_remark
+            }
+        )
+
+        if not created:
+            att.check_in = now_time
+            att.check_in_ip = client_ip
+            att.check_in_location = loc_address
+            att.status = computed_status
+            att.remarks = status_remark
+            if lat is not None and str(lat).strip() != '':
+                att.check_in_latitude = float(lat)
+            if lng is not None and str(lng).strip() != '':
+                att.check_in_longitude = float(lng)
+            att.save()
+
+        emp = getattr(user, 'employee_profile', None)
+        emp_details = {
+            'employee_id': emp.employee_id if emp else 'N/A',
+            'full_name': user.get_full_name() or user.username,
+            'email': user.email or 'N/A',
+            'department': emp.department.name if emp and emp.department else 'N/A',
+            'designation': emp.designation.title if emp and emp.designation else (user.role.title() if hasattr(user, 'role') else 'Staff')
+        }
+
+        msg = f"Punch In recorded at {now_time.strftime('%I:%M %p')}. Marked as LATE (Shift start: {settings_obj.office_check_in_time.strftime('%I:%M %p')})" if is_late else f"Punch In recorded successfully at {now_time.strftime('%I:%M %p')}!"
+
+        return JsonResponse({
+            'status': 'success',
+            'message': msg,
+            'check_in_time': now_time.strftime('%I:%M %p'),
+            'is_late': is_late,
+            'attendance_status': computed_status,
+            'attendance_status_display': 'Late' if is_late else 'Present',
+            'ip_address': client_ip,
+            'location': loc_address,
+            'employee': emp_details
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@csrf_exempt
+@login_required
+@require_POST
+def attendance_check_out_api(request):
+    """
+    Record Punch-Out for logged in employee with IP, Geolocation (lat/lng/address), and Employee details.
+    """
+    try:
+        user = request.user
+        today = date.today()
+        now_time = datetime.now().time()
+
+        data = _body(request)
+        lat = data.get('latitude')
+        lng = data.get('longitude')
+        loc_address = (data.get('location') or data.get('location_address') or '').strip()
+        
+        client_ip = _get_client_ip(request)
+
+        if not loc_address and lat and lng:
+            loc_address = f"Lat: {lat}, Lng: {lng}"
+        elif not loc_address:
+            loc_address = "GPS Location Not Provided"
+
+        att = Attendance.objects.filter(user=user, date=today).first()
+        if not att:
+            att = Attendance.objects.create(
+                user=user,
+                date=today,
+                academic_year='Jun 2025/2026',
+                status='P'
+            )
+
+        att.check_out = now_time
+        att.check_out_ip = client_ip
+        att.check_out_location = loc_address
+        if lat is not None and str(lat).strip() != '':
+            att.check_out_latitude = float(lat)
+        if lng is not None and str(lng).strip() != '':
+            att.check_out_longitude = float(lng)
+        att.save()
+
+        emp = getattr(user, 'employee_profile', None)
+        emp_details = {
+            'employee_id': emp.employee_id if emp else 'N/A',
+            'full_name': user.get_full_name() or user.username,
+            'email': user.email or 'N/A',
+            'department': emp.department.name if emp and emp.department else 'N/A',
+            'designation': emp.designation.title if emp and emp.designation else (user.role.title() if hasattr(user, 'role') else 'Staff')
+        }
+
+        return JsonResponse({
+            'status': 'success',
+            'message': f"Punch Out recorded successfully at {now_time.strftime('%I:%M %p')}!",
+            'check_out_time': now_time.strftime('%I:%M %p'),
+            'ip_address': client_ip,
+            'location': loc_address,
+            'employee': emp_details
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
 
 
