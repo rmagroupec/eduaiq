@@ -3298,8 +3298,8 @@ input[type=submit]:focus {
   padding: 45px;
   display: inline-block;
   border-radius: 100%;
-  background-color: #f8f8f8;
-  color: #41246D;
+  background-color: #ffffff;
+  color: #ea580c;
 }
 
 .home-service .service-wrapper .service-content .course-type .course-title {
@@ -3308,7 +3308,7 @@ input[type=submit]:focus {
 
 .home-service .service-wrapper .service-content .course-type .course-durations {
   margin-bottom: 0;
-  color: #F24080;
+  color: #94a3b8;
 }
 
 .home-service .service-wrapper .service-content .course-form {
@@ -3615,22 +3615,22 @@ input[type=submit]:focus {
 
 .home-service .service-wrapper .course-type:hover {
   transform: translateY(-8px);
-  box-shadow: 0px 15px 30px 0px rgba(65, 36, 109, 0.15);
-  border-color: #F24080;
+  box-shadow: 0px 15px 30px 0px rgba(234, 88, 12, 0.25);
+  border-color: #ea580c;
 }
 
 .home-service .service-wrapper .course-type:hover .course-icon i {
-  background-color: #41246D;
-  color: #ffffff;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+  color: #ffffff !important;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .home-service .service-wrapper .course-type .course-icon i {
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .home-service .service-wrapper .course-type:hover .course-title a {
-  color: #F24080;
+  color: #ea580c;
 }
 
 /* "Our Best Features" boxes */
@@ -3640,8 +3640,8 @@ input[type=submit]:focus {
 
 .home-feature-section .feature-wrapper .feature-type:hover {
   transform: translateY(-8px);
-  box-shadow: 0px 15px 30px 0px rgba(65, 36, 109, 0.12);
-  border-color: #F24080;
+  box-shadow: 0px 15px 30px 0px rgba(234, 88, 12, 0.2);
+  border-color: #ea580c;
 }
 
 .home-feature-section .feature-wrapper .feature-type:hover .feature-icon i {

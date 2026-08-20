@@ -412,134 +412,57 @@
 </div>
 <div class="group-member">
 <div class="row">
+{% for mentor in mentors %}
 <div class="col-sm-6 col-lg-3 p-3">
 <figure class="team-img">
-<img alt="" src="{% static 'assets/img/educator-img8.png' %}"/>
+<img alt="{{ mentor.name }}" src="{{ mentor.photo_url }}"/>
 </figure>
 <div class="team-content text-center">
 <h4>
-<a href="/team/">William Smith</a>
+<a href="/team/{{ mentor.slug }}/">{{ mentor.name }}</a>
 </h4>
-<p>AI &amp; Data Science Lead</p>
+<p>{{ mentor.designation }}</p>
 </div>
 <div class="d-flex justify-content-center align-items-center">
 <div class="social-links team-social-link">
 <ul>
+{% if mentor.facebook_url %}
 <li>
-<a href="https://www.facebook.com/" target="_blank">
+<a href="{{ mentor.facebook_url }}" target="_blank">
 <i class="fab fa-facebook-f"></i>
 </a>
 </li>
+{% endif %}
+{% if mentor.twitter_url %}
 <li>
-<a href="https://twitter.com/" target="_blank">
+<a href="{{ mentor.twitter_url }}" target="_blank">
 <i class="fab fa-twitter"></i>
 </a>
 </li>
+{% endif %}
+{% if mentor.whatsapp_url %}
 <li>
-<a href="https://www.whatsapp.com/" target="_blank">
+<a href="{{ mentor.whatsapp_url }}" target="_blank">
 <i class="fab fa-whatsapp"></i>
 </a>
 </li>
+{% endif %}
+{% if mentor.linkedin_url %}
+<li>
+<a href="{{ mentor.linkedin_url }}" target="_blank">
+<i class="fab fa-linkedin-in"></i>
+</a>
+</li>
+{% endif %}
 </ul>
 </div>
 </div>
 </div>
-<div class="col-sm-6 col-lg-3 p-3">
-<figure class="team-img">
-<img alt="" src="{% static 'assets/img/educator-img11.png' %}"/>
-</figure>
-<div class="team-content text-center">
-<h4>
-<a href="/team/">Jenny White</a>
-</h4>
-<p>Skill Development Head</p>
+{% empty %}
+<div class="col-12 text-center py-4">
+<p class="text-muted">No mentors listed yet.</p>
 </div>
-<div class="d-flex justify-content-center align-items-center">
-<div class="social-links team-social-link">
-<ul>
-<li>
-<a href="https://www.facebook.com/" target="_blank">
-<i class="fab fa-facebook-f"></i>
-</a>
-</li>
-<li>
-<a href="https://twitter.com/" target="_blank">
-<i class="fab fa-twitter"></i>
-</a>
-</li>
-<li>
-<a href="https://www.whatsapp.com/" target="_blank">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-lg-3 p-3">
-<figure class="team-img">
-<img alt="" src="{% static 'assets/img/educator-img9.png' %}"/>
-</figure>
-<div class="team-content text-center">
-<h4>
-<a href="/team/">George Hobbs</a>
-</h4>
-<p>Olympiad Curriculum Lead</p>
-</div>
-<div class="d-flex justify-content-center align-items-center">
-<div class="social-links team-social-link">
-<ul>
-<li>
-<a href="https://www.facebook.com/" target="_blank">
-<i class="fab fa-facebook-f"></i>
-</a>
-</li>
-<li>
-<a href="https://twitter.com/" target="_blank">
-<i class="fab fa-twitter"></i>
-</a>
-</li>
-<li>
-<a href="https://www.whatsapp.com/" target="_blank">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-lg-3 p-3">
-<figure class="team-img">
-<img alt="" src="{% static 'assets/img/educator-img10.png' %}"/>
-</figure>
-<div class="team-content text-center">
-<h4>
-<a href="/team/">Alice Heard</a>
-</h4>
-<p>Campus ERP Specialist</p>
-</div>
-<div class="d-flex justify-content-center align-items-center">
-<div class="social-links team-social-link">
-<ul>
-<li>
-<a href="https://www.facebook.com/" target="_blank">
-<i class="fab fa-facebook-f"></i>
-</a>
-</li>
-<li>
-<a href="https://twitter.com/" target="_blank">
-<i class="fab fa-twitter"></i>
-</a>
-</li>
-<li>
-<a href="https://www.whatsapp.com/" target="_blank">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
+{% endfor %}
 </div>
 </div>
 </div>

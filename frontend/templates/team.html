@@ -42,262 +42,59 @@
 <div class="container">
 <div class="group-member">
 <div class="row align-items-center justify-content-center">
+{% for member in team_members %}
 <div class="col-sm-6 col-md-4 col-lg-3 p-3">
 <figure class="team-img">
-<img alt="William Smith" src="{% static 'assets/img/educator-img8.png' %}"/>
+<a href="/team/{{ member.slug }}/">
+<img alt="{{ member.name }}" src="{{ member.photo_url }}"/>
+</a>
 </figure>
 <div class="team-content text-center">
 <h4>
-<a href="/team/sample-member/">William Smith</a>
+<a href="/team/{{ member.slug }}/">{{ member.name }}</a>
 </h4>
-<p>AI Lab Mentor</p>
+<p>{{ member.designation }}</p>
 </div>
 <div class="d-flex justify-content-center align-items-center">
 <div class="social-links team-social-link">
 <ul>
+{% if member.facebook_url %}
 <li>
-<a href="https://www.facebook.com/">
+<a href="{{ member.facebook_url }}" target="_blank">
 <i class="fab fa-facebook"></i>
 </a>
 </li>
+{% endif %}
+{% if member.twitter_url %}
 <li>
-<a href="https://twitter.com/?lang=en">
+<a href="{{ member.twitter_url }}" target="_blank">
 <i class="fab fa-twitter"></i>
 </a>
 </li>
+{% endif %}
+{% if member.whatsapp_url %}
 <li>
-<a href="https://www.whatsapp.com/">
+<a href="{{ member.whatsapp_url }}" target="_blank">
 <i class="fab fa-whatsapp"></i>
 </a>
 </li>
+{% endif %}
+{% if member.linkedin_url %}
+<li>
+<a href="{{ member.linkedin_url }}" target="_blank">
+<i class="fab fa-linkedin-in"></i>
+</a>
+</li>
+{% endif %}
 </ul>
 </div>
 </div>
 </div>
-<div class="col-sm-6 col-md-4 col-lg-3 p-3">
-<figure class="team-img">
-<img alt="Jenny White" src="{% static 'assets/img/educator-img11.png' %}"/>
-</figure>
-<div class="team-content text-center">
-<h4>
-<a href="/team/sample-member/">Jenny White</a>
-</h4>
-<p>Skill Development Coach</p>
+{% empty %}
+<div class="col-12 text-center py-5">
+<p class="text-muted">No team members listed yet.</p>
 </div>
-<div class="d-flex justify-content-center align-items-center">
-<div class="social-links team-social-link">
-<ul>
-<li>
-<a href="https://www.facebook.com/">
-<i class="fab fa-facebook"></i>
-</a>
-</li>
-<li>
-<a href="https://twitter.com/?lang=en">
-<i class="fab fa-twitter"></i>
-</a>
-</li>
-<li>
-<a href="https://www.whatsapp.com/">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-md-4 col-lg-3 p-3">
-<figure class="team-img">
-<img alt="George Hobbs" src="{% static 'assets/img/educator-img9.png' %}"/>
-</figure>
-<div class="team-content text-center">
-<h4>
-<a href="/team/sample-member/">George Hobbs</a>
-</h4>
-<p>Olympiad Curriculum Lead</p>
-</div>
-<div class="d-flex justify-content-center align-items-center">
-<div class="social-links team-social-link">
-<ul>
-<li>
-<a href="https://www.facebook.com/">
-<i class="fab fa-facebook"></i>
-</a>
-</li>
-<li>
-<a href="https://twitter.com/?lang=en">
-<i class="fab fa-twitter"></i>
-</a>
-</li>
-<li>
-<a href="https://www.whatsapp.com/">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-md-4 col-lg-3 p-3">
-<figure class="team-img">
-<img alt="Alice Heard" src="{% static 'assets/img/educator-img10.png' %}"/>
-</figure>
-<div class="team-content text-center">
-<h4>
-<a href="/team/sample-member/">Alice Heard</a>
-</h4>
-<p>AI Books Author</p>
-</div>
-<div class="d-flex justify-content-center align-items-center">
-<div class="social-links team-social-link">
-<ul>
-<li>
-<a href="https://www.facebook.com/">
-<i class="fab fa-facebook"></i>
-</a>
-</li>
-<li>
-<a href="https://twitter.com/?lang=en">
-<i class="fab fa-twitter"></i>
-</a>
-</li>
-<li>
-<a href="https://www.whatsapp.com/">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-md-4 col-lg-3 p-3">
-<figure class="team-img">
-<img alt="Rahul Mehta" src="{% static 'assets/img/educator-img8.png' %}"/>
-</figure>
-<div class="team-content text-center">
-<h4>
-<a href="/team/sample-member/">Rahul Mehta</a>
-</h4>
-<p>Data Science Mentor</p>
-</div>
-<div class="d-flex justify-content-center align-items-center">
-<div class="social-links team-social-link">
-<ul>
-<li>
-<a href="https://www.facebook.com/">
-<i class="fab fa-facebook"></i>
-</a>
-</li>
-<li>
-<a href="https://twitter.com/?lang=en">
-<i class="fab fa-twitter"></i>
-</a>
-</li>
-<li>
-<a href="https://www.whatsapp.com/">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-md-4 col-lg-3 p-3">
-<figure class="team-img">
-<img alt="Priya Sharma" src="{% static 'assets/img/educator-img11.png' %}"/>
-</figure>
-<div class="team-content text-center">
-<h4>
-<a href="/team/sample-member/">Priya Sharma</a>
-</h4>
-<p>Career &amp; Placement Mentor</p>
-</div>
-<div class="d-flex justify-content-center align-items-center">
-<div class="social-links team-social-link">
-<ul>
-<li>
-<a href="https://www.facebook.com/">
-<i class="fab fa-facebook"></i>
-</a>
-</li>
-<li>
-<a href="https://twitter.com/?lang=en">
-<i class="fab fa-twitter"></i>
-</a>
-</li>
-<li>
-<a href="https://www.whatsapp.com/">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-md-4 col-lg-3 p-3">
-<figure class="team-img">
-<img alt="Aditya Verma" src="{% static 'assets/img/educator-img9.png' %}"/>
-</figure>
-<div class="team-content text-center">
-<h4>
-<a href="/team/sample-member/">Aditya Verma</a>
-</h4>
-<p>Franchise Success Manager</p>
-</div>
-<div class="d-flex justify-content-center align-items-center">
-<div class="social-links team-social-link">
-<ul>
-<li>
-<a href="https://www.facebook.com/">
-<i class="fab fa-facebook"></i>
-</a>
-</li>
-<li>
-<a href="https://twitter.com/?lang=en">
-<i class="fab fa-twitter"></i>
-</a>
-</li>
-<li>
-<a href="https://www.whatsapp.com/">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="col-sm-6 col-md-4 col-lg-3 p-3">
-<figure class="team-img">
-<img alt="Neha Kapoor" src="{% static 'assets/img/educator-img10.png' %}"/>
-</figure>
-<div class="team-content text-center">
-<h4>
-<a href="/team/sample-member/">Neha Kapoor</a>
-</h4>
-<p>Student Success Mentor</p>
-</div>
-<div class="d-flex justify-content-center align-items-center">
-<div class="social-links team-social-link">
-<ul>
-<li>
-<a href="https://www.facebook.com/">
-<i class="fab fa-facebook"></i>
-</a>
-</li>
-<li>
-<a href="https://twitter.com/?lang=en">
-<i class="fab fa-twitter"></i>
-</a>
-</li>
-<li>
-<a href="https://www.whatsapp.com/">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
+{% endfor %}
 </div>
 </div>
 </div>

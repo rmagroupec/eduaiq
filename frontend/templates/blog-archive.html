@@ -1,260 +1,748 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Blog - EduAiQ{% endblock %}
+{% block title %}{% if selected_category %}{{ selected_category.name }} Blogs - {% elif search_query %}Search: {{ search_query }} - {% endif %}Blog & Insights - EduAiQ{% endblock %}
 
 {% block description %}EduAiQ blog — practical guides on AI skills, Olympiad preparation, career development, and campus automation, from the mentors building the courses.{% endblock %}
 
 {% block content %}
-<section class="inner-banner-wrap">
-<div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
-<div class="container">
-<div class="inner-banner-content">
-<h1 class="inner-title">Blog</h1>
-<div class="breadcrumb-content">
-<ul class="breadcrumb">
-</ul>
-</div>
-</div>
-</div>
-</div>
+<style>
+  /* Blog Archive Custom Styling */
+  .blog-archive-hero {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    padding: 60px 0 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .blog-archive-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(234, 88, 12, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .blog-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(234, 88, 12, 0.2);
+    border: 1px solid rgba(234, 88, 12, 0.4);
+    color: #fb923c;
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .blog-hero-title {
+    color: #ffffff;
+    font-size: 38px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    line-height: 1.25;
+  }
+  .blog-hero-desc {
+    color: #94a3b8;
+    font-size: 16px;
+    max-width: 650px;
+    margin: 0 auto 20px;
+  }
+  .blog-breadcrumb-list {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 13.5px;
+  }
+  .blog-breadcrumb-list a {
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .blog-breadcrumb-list a:hover {
+    color: #fb923c;
+  }
+  .blog-breadcrumb-list .active {
+    color: #fb923c;
+    font-weight: 600;
+  }
+  .blog-breadcrumb-list .sep {
+    color: #64748b;
+  }
+
+  /* Main Container & Layout */
+  .blog-main-section {
+    padding: 50px 0 80px;
+    background: #f8fafc;
+  }
+
+  /* Category Filter Pills Bar */
+  .blog-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 35px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    align-items: center;
+  }
+  .blog-filter-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: 50px;
+    background: #ffffff;
+    color: #475569;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .blog-filter-pill:hover {
+    background: #fff7ed;
+    color: #ea580c;
+    border-color: #fdba74;
+    transform: translateY(-2px);
+  }
+  .blog-filter-pill.active {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border-color: #ea580c !important;
+    box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+  }
+  .blog-filter-pill .pill-count {
+    font-size: 11px;
+    background: #f1f5f9;
+    color: #64748b;
+    padding: 2px 7px;
+    border-radius: 20px;
+    font-weight: 700;
+  }
+  .blog-filter-pill.active .pill-count {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+  }
+
+  /* 2-Column Blog Cards Grid */
+  .blog-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 991px) {
+    .blog-cards-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Single Blog Card */
+  .blog-card {
+    background: #ffffff;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .blog-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.1);
+    border-color: #fdba74;
+  }
+  .blog-card-media {
+    position: relative;
+    overflow: hidden;
+    height: 220px;
+    background: #0f172a;
+  }
+  .blog-card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .blog-card:hover .blog-card-media img {
+    transform: scale(1.06);
+  }
+  .blog-card-cat-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 5px 12px;
+    border-radius: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+    text-decoration: none;
+  }
+  .blog-card-cat-badge:hover {
+    color: #ffffff;
+    background: #0f172a;
+  }
+  .blog-card-content {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  .blog-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 10px;
+  }
+  .blog-card-meta i {
+    color: #ea580c;
+    margin-right: 4px;
+  }
+  .blog-card-title {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.45;
+    margin-bottom: 12px;
+  }
+  .blog-card-title a {
+    color: #0f172a;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .blog-card-title a:hover {
+    color: #ea580c;
+  }
+  .blog-card-desc {
+    color: #64748b;
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex-grow: 1;
+  }
+  .blog-card-footer {
+    border-top: 1px solid #f1f5f9;
+    padding-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .blog-card-author {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #334155;
+  }
+  .blog-card-author i {
+    color: #ea580c;
+  }
+  .blog-card-readmore {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #ea580c;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: gap 0.2s;
+  }
+  .blog-card-readmore:hover {
+    gap: 8px;
+    color: #c2410c;
+  }
+
+  /* Empty State */
+  .blog-empty-box {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 60px 24px;
+    text-align: center;
+    border: 1px dashed #cbd5e1;
+  }
+  .blog-empty-icon {
+    width: 72px;
+    height: 72px;
+    background: #fff7ed;
+    color: #ea580c;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin-bottom: 18px;
+  }
+
+  /* Sidebar Widgets */
+  .blog-sidebar-widget {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+    margin-bottom: 28px;
+  }
+  .blog-widget-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #ffedd5;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .blog-widget-title i {
+    color: #ea580c;
+  }
+
+  /* Search Input */
+  .blog-search-form {
+    position: relative;
+  }
+  .blog-search-input {
+    width: 100%;
+    padding: 12px 50px 12px 18px;
+    border-radius: 50px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s;
+  }
+  .blog-search-input:focus {
+    background: #ffffff;
+    border-color: #ea580c;
+    box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.1);
+  }
+  .blog-search-btn {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #0f172a;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .blog-search-btn:hover {
+    background: #ea580c;
+  }
+
+  /* Recent Posts Widget */
+  .blog-recent-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .blog-recent-item {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    text-decoration: none;
+  }
+  .blog-recent-thumb {
+    width: 65px;
+    height: 65px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #0f172a;
+  }
+  .blog-recent-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+  .blog-recent-item:hover .blog-recent-thumb img {
+    transform: scale(1.08);
+  }
+  .blog-recent-info h6 {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.35;
+    margin-bottom: 4px;
+    transition: color 0.2s;
+  }
+  .blog-recent-item:hover .blog-recent-info h6 {
+    color: #ea580c;
+  }
+  .blog-recent-date {
+    font-size: 11.5px;
+    color: #94a3b8;
+  }
+
+  /* Categories Sidebar List */
+  .blog-cat-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .blog-cat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed #e2e8f0;
+  }
+  .blog-cat-item:last-child {
+    border-bottom: none;
+  }
+  .blog-cat-link {
+    color: #334155;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+  }
+  .blog-cat-link:hover {
+    color: #ea580c;
+  }
+  .blog-cat-count {
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+
+  /* Featured Author Box */
+  .blog-author-card {
+    text-align: center;
+  }
+  .blog-author-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    margin: 0 auto 14px;
+    overflow: hidden;
+    border: 3px solid #ffedd5;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .blog-author-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .blog-author-name {
+    font-size: 17px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 4px;
+  }
+  .blog-author-role {
+    font-size: 12.5px;
+    color: #ea580c;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .blog-author-bio {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.55;
+    margin-bottom: 16px;
+  }
+  .blog-author-socials {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  .blog-author-social-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .blog-author-social-btn:hover {
+    background: #ea580c;
+    color: #ffffff;
+    border-color: #ea580c;
+    transform: translateY(-2px);
+  }
+
+  /* Modern Pagination */
+  .blog-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .blog-page-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    border-radius: 50px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .blog-page-btn:hover {
+    background: #ea580c;
+    color: #ffffff;
+    border-color: #ea580c;
+  }
+  .blog-page-info {
+    padding: 8px 16px;
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 600;
+  }
+</style>
+
+<!-- Hero Banner -->
+<section class="blog-archive-hero text-center">
+  <div class="container">
+    <span class="blog-hero-badge">
+      <i class="fas fa-sparkles"></i> EduAiQ Knowledge Hub
+    </span>
+    <h1 class="blog-hero-title">
+      {% if selected_category %}
+        {{ selected_category.name }} Articles
+      {% elif search_query %}
+        Search Results for "{{ search_query }}"
+      {% else %}
+        Blog & Knowledge Center
+      {% endif %}
+    </h1>
+    <p class="blog-hero-desc">
+      Practical guides on AI skills, Olympiad prep, and career development — straight from the mentors building our courses.
+    </p>
+    <ul class="blog-breadcrumb-list">
+      <li><a href="/"><i class="fas fa-home me-1"></i> Home</a></li>
+      <li class="sep">/</li>
+      <li><a href="/blog/">Blog</a></li>
+      {% if selected_category %}
+        <li class="sep">/</li>
+        <li class="active">{{ selected_category.name }}</li>
+      {% endif %}
+      {% if search_query %}
+        <li class="sep">/</li>
+        <li class="active">Search</li>
+      {% endif %}
+    </ul>
+  </div>
 </section>
 
+<!-- Main Content Area -->
+<section class="blog-main-section">
+  <div class="container">
+    <div class="row">
+      
+      <!-- Primary Articles Column -->
+      <div class="col-lg-8 mb-5 mb-lg-0">
+        
+        <!-- Category Filter Pills Bar (Outside of Grid!) -->
+        <div class="blog-filter-bar">
+          <a href="/blog/" class="blog-filter-pill {% if not selected_category %}active{% endif %}">
+            <span>All Posts</span>
+          </a>
+          {% for cat in categories %}
+          <a href="/blog/?category={{ cat.slug }}" class="blog-filter-pill {% if selected_category and selected_category.slug == cat.slug %}active{% endif %}">
+            <span>{{ cat.name }}</span>
+            <span class="pill-count">{{ cat.active_posts }}</span>
+          </a>
+          {% endfor %}
+        </div>
 
-<div class="single-post-section blog-archive">
-<div class="single-post-inner">
-<div class="container">
-<div class="row">
-<div class="col-lg-8 primary right-sidebar">
-<div class="inner-blog-wrap">
+        <!-- 2-Column Cards Grid -->
+        {% if blogs %}
+        <div class="blog-cards-grid">
+          {% for blog in blogs %}
+          <article class="blog-card">
+            <div class="blog-card-media">
+              <a href="/blog/{{ blog.slug }}/">
+                <img alt="{{ blog.title }}" src="{{ blog.image_url }}" />
+              </a>
+              {% if blog.category %}
+              <a href="/blog/?category={{ blog.category.slug }}" class="blog-card-cat-badge">
+                {{ blog.category.name }}
+              </a>
+              {% endif %}
+            </div>
+            <div class="blog-card-content">
+              <div class="blog-card-meta">
+                <span><i class="far fa-calendar-alt"></i> {{ blog.published_at|date:"M d, Y" }}</span>
+                <span><i class="far fa-eye"></i> {{ blog.views_count }} views</span>
+              </div>
+              <h4 class="blog-card-title">
+                <a href="/blog/{{ blog.slug }}/">{{ blog.title }}</a>
+              </h4>
+              <p class="blog-card-desc">
+                {{ blog.summary|default:blog.content|striptags|truncatechars:130 }}
+              </p>
+              <div class="blog-card-footer">
+                <span class="blog-card-author">
+                  <i class="far fa-user-circle"></i> {{ blog.author_display }}
+                </span>
+                <a href="/blog/{{ blog.slug }}/" class="blog-card-readmore">
+                  Read Article <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="blog-empty-box">
+          <div class="blog-empty-icon">
+            <i class="fas fa-newspaper"></i>
+          </div>
+          <h4 class="fw-bold mb-2">No Articles Found</h4>
+          <p class="text-muted mb-4">We couldn't find any articles matching your selected category or search keyword.</p>
+          <a href="/blog/" class="btn btn-dark radius-50 px-4 py-2" style="border-radius: 50px; background: #0f172a; color: #fff; text-decoration: none;">
+            <i class="fas fa-undo me-1"></i> View All Articles
+          </a>
+        </div>
+        {% endif %}
 
-<article class="post grid-item position-relative">
-<figure class="feature-image">
-<img alt="" src="{% static 'assets/img/educator-img12.jpg' %}"/>
-<span class="cat-meta">
-<a href="/blog/5-ai-skills-every-student-should-learn-in-2026/">AI LAB</a>
-</span>
-</figure>
-<div class="entry-content">
-<h4>
-<a class="stretched-link" href="/blog/5-ai-skills-every-student-should-learn-in-2026/">5 AI Skills Every Student Should Learn in 2026</a>
-</h4>
-<p>
-                                                A practical starting list for students beginning in the AI Lab —
-                                                no prior coding background required. Covers what to learn first,
-                                                what to skip until later, and how it maps to real job listings.
-                                            </p>
-<div class="entry-meta">
-<a href="/blog/5-ai-skills-every-student-should-learn-in-2026/">August 12, 2026</a>
-</div>
-</div>
-</article>
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="blog-pagination">
+          {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" class="blog-page-btn">
+            <i class="fas fa-chevron-left"></i> Prev
+          </a>
+          {% endif %}
+          <span class="blog-page-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+          {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" class="blog-page-btn">
+            Next <i class="fas fa-chevron-right"></i>
+          </a>
+          {% endif %}
+        </div>
+        {% endif %}
 
-<article class="post grid-item position-relative">
-<figure class="feature-image">
-<img alt="" src="{% static 'assets/img/educator-img14.jpg' %}"/>
-<span class="cat-meta">
-<a href="/blog/how-to-prepare-for-the-math-olympiad-in-90-days/">OLYMPIADS</a>
-</span>
-</figure>
-<div class="entry-content">
-<h4>
-<a class="stretched-link" href="/blog/how-to-prepare-for-the-math-olympiad-in-90-days/">How To Prepare For The Math Olympiad In 90 Days</a>
-</h4>
-<p>
-                                                A grade-by-grade study plan built around the published Olympiad
-                                                curriculum, with a suggested weekly schedule for the final three
-                                                months before exam day.
-                                            </p>
-<div class="entry-meta">
-<a href="/blog/how-to-prepare-for-the-math-olympiad-in-90-days/">August 5, 2026</a>
-</div>
-</div>
-</article>
+      </div>
 
-<article class="post grid-item position-relative">
-<figure class="feature-image">
-<img alt="" src="{% static 'assets/img/educator-img13.jpg' %}"/>
-<span class="cat-meta">
-<a href="/blog/from-classroom-to-ai-lab-a-students-journey/">CAREERS</a>
-</span>
-</figure>
-<div class="entry-content">
-<h4>
-<a class="stretched-link" href="/blog/from-classroom-to-ai-lab-a-students-journey/">From Classroom To AI Lab: A Student's Journey</a>
-</h4>
-<p>
-                                                How one student went from a first AI Lab module to a
-                                                portfolio-ready project in a single semester, and what they'd do
-                                                differently starting over.
-                                            </p>
-<div class="entry-meta">
-<a href="/blog/from-classroom-to-ai-lab-a-students-journey/">July 28, 2026</a>
-</div>
-</div>
-</article>
+      <!-- Secondary Sidebar Column -->
+      <div class="col-lg-4">
+        
+        <!-- Search Widget -->
+        <div class="blog-sidebar-widget">
+          <h5 class="blog-widget-title">
+            <i class="fas fa-search"></i> Search Articles
+          </h5>
+          <form method="GET" action="/blog/" class="blog-search-form">
+            <input type="text" name="q" value="{{ search_query }}" class="blog-search-input" placeholder="Search topics, keywords..." required />
+            <button type="submit" class="blog-search-btn" aria-label="Search">
+              <i class="fas fa-search"></i>
+            </button>
+          </form>
+        </div>
 
-<article class="post grid-item position-relative">
-<figure class="feature-image">
-<img alt="" src="{% static 'assets/img/educator-img15.jpg' %}"/>
-<span class="cat-meta">
-<a href="/blog/why-institutions-are-moving-to-one-connected-lms/">ECOSYSTEM</a>
-</span>
-</figure>
-<div class="entry-content">
-<h4>
-<a class="stretched-link" href="/blog/why-institutions-are-moving-to-one-connected-lms/">Why Institutions Are Moving To One Connected LMS</a>
-</h4>
-<p>
-                                                What happens when admission CRM, LMS, and examination management
-                                                stop living in separate systems — and what to check before your
-                                                institution switches.
-                                            </p>
-<div class="entry-meta">
-<a href="/blog/why-institutions-are-moving-to-one-connected-lms/">July 20, 2026</a>
-</div>
-</div>
-</article>
-</div>
-</div>
-<div class="col-lg-4 secondary">
-<div class="sidebar">
-<aside class="widget author_widget">
-<p class="widget-title-dash-border">Written By</p>
-<div class="widget-content text-center">
-<div class="profile">
-<figure class="avatar">
-<a href="/team/sample-member/">
-<img alt="William Smith" src="{% static 'assets/img/educator-img8.png' %}"/>
-</a>
-</figure>
-<div class="text-content">
-<div class="name-title">
-<h4>
-<a href="/team/sample-member/">William Smith</a>
-</h4>
-</div>
-<p>
-                                                        AI Lab Mentor at EduAiQ, writing about practical AI skills
-                                                        and what actually helps students get hired.
-                                                    </p>
-</div>
-<div class="social-icon">
-<ul>
-<li>
-<a href="https://www.instagram.com/eduaiq_2026?utm_source=qr&amp;igsh=MTY2bXJuZXZyZTliag==" target="_blank">
-<i class="fab fa-instagram"></i>
-</a>
-</li>
-<li>
-<a href="https://whatsapp.com/channel/0029VbDa70SHltY9CSw9IP2B" target="_blank">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</aside>
-<aside class="widget widget_latest_post widget-post-thumb">
-<div class="text-center">
-<p class="widget-title-dash-border">Recent Post</p>
-</div>
-<ul>
-<li>
-<figure class="post-thumb">
-<a href="/blog/5-ai-skills-every-student-should-learn-in-2026/"><img alt="" src="{% static 'assets/img/educator-img12.jpg' %}"/></a>
-</figure>
-<div class="post-content">
-<h6>
-<a href="/blog/5-ai-skills-every-student-should-learn-in-2026/">5 AI Skills Every Student Should Learn in 2026</a>
-</h6>
-<div class="entry-meta">
-<span class="posted-on">
-<a href="/blog/5-ai-skills-every-student-should-learn-in-2026/">August 12, 2026</a>
-</span>
-</div>
-</div>
-</li>
-<li>
-<figure class="post-thumb">
-<a href="/blog/how-to-prepare-for-the-math-olympiad-in-90-days/"><img alt="" src="{% static 'assets/img/educator-img14.jpg' %}"/></a>
-</figure>
-<div class="post-content">
-<h6>
-<a href="/blog/how-to-prepare-for-the-math-olympiad-in-90-days/">How To Prepare For The Math Olympiad In 90 Days</a>
-</h6>
-<div class="entry-meta">
-<span class="posted-on">
-<a href="/blog/how-to-prepare-for-the-math-olympiad-in-90-days/">August 5, 2026</a>
-</span>
-</div>
-</div>
-</li>
-<li>
-<figure class="post-thumb">
-<a href="/blog/from-classroom-to-ai-lab-a-students-journey/"><img alt="" src="{% static 'assets/img/educator-img13.jpg' %}"/></a>
-</figure>
-<div class="post-content">
-<h6>
-<a href="/blog/from-classroom-to-ai-lab-a-students-journey/">From Classroom To AI Lab: A Student's Journey</a>
-</h6>
-<div class="entry-meta">
-<span class="posted-on">
-<a href="/blog/from-classroom-to-ai-lab-a-students-journey/">July 28, 2026</a>
-</span>
-</div>
-</div>
-</li>
-<li>
-<figure class="post-thumb">
-<a href="/blog/why-institutions-are-moving-to-one-connected-lms/"><img alt="" src="{% static 'assets/img/educator-img15.jpg' %}"/></a>
-</figure>
-<div class="post-content">
-<h6>
-<a href="/blog/why-institutions-are-moving-to-one-connected-lms/">Why Institutions Are Moving To One Connected LMS</a>
-</h6>
-<div class="entry-meta">
-<span class="posted-on">
-<a href="/blog/why-institutions-are-moving-to-one-connected-lms/">July 20, 2026</a>
-</span>
-</div>
-</div>
-</li>
-</ul>
-</aside>
-<aside class="widget widget_social">
-<div class="text-center">
-<p class="widget-title-dash-border">Follow Us On</p>
-</div>
-<div class="socialgroup">
-<ul>
-<li>
-<a href="https://www.instagram.com/eduaiq_2026?utm_source=qr&amp;igsh=MTY2bXJuZXZyZTliag==" target="_blank">
-<i class="fab fa-instagram"></i>
-</a>
-</li>
-<li>
-<a href="https://whatsapp.com/channel/0029VbDa70SHltY9CSw9IP2B" target="_blank">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</aside>
-<aside class="widget widget-bg">
-<p class="bg-title">Explore More</p>
-<ul>
-<li><i aria-hidden="true" class="fas fa-robot"></i> <span class="list-txt"><a href="/page/ai-lab/">AI Lab</a></span></li>
-<li><i aria-hidden="true" class="fas fa-trophy"></i> <span class="list-txt"><a href="/page/olympiads/">Olympiads</a></span></li>
-<li><i aria-hidden="true" class="fas fa-briefcase"></i> <span class="list-txt"><a href="/page/skill-development/">Skill Development</a></span></li>
-<li><i aria-hidden="true" class="fas fa-sitemap"></i> <span class="list-txt"><a href="/page/eduaiq-ecosystem/">EduAiQ Ecosystem</a></span></li>
-</ul>
-</aside>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+        <!-- Featured Mentor Card -->
+        {% if featured_author %}
+        <div class="blog-sidebar-widget">
+          <h5 class="blog-widget-title">
+            <i class="fas fa-chalkboard-teacher"></i> Featured Mentor
+          </h5>
+          <div class="blog-author-card">
+            <div class="blog-author-avatar">
+              <a href="/team/{{ featured_author.slug }}/">
+                <img alt="{{ featured_author.name }}" src="{{ featured_author.photo_url }}" />
+              </a>
+            </div>
+            <h5 class="blog-author-name">
+              <a href="/team/{{ featured_author.slug }}/" class="text-dark text-decoration-none">{{ featured_author.name }}</a>
+            </h5>
+            <div class="blog-author-role">{{ featured_author.designation }}</div>
+            <p class="blog-author-bio">
+              {{ featured_author.bio|truncatechars:120 }}
+            </p>
+            <div class="blog-author-socials">
+              {% if featured_author.facebook_url %}<a href="{{ featured_author.facebook_url }}" target="_blank" class="blog-author-social-btn"><i class="fab fa-facebook-f"></i></a>{% endif %}
+              {% if featured_author.twitter_url %}<a href="{{ featured_author.twitter_url }}" target="_blank" class="blog-author-social-btn"><i class="fab fa-twitter"></i></a>{% endif %}
+              {% if featured_author.linkedin_url %}<a href="{{ featured_author.linkedin_url }}" target="_blank" class="blog-author-social-btn"><i class="fab fa-linkedin-in"></i></a>{% endif %}
+              {% if featured_author.whatsapp_url %}<a href="{{ featured_author.whatsapp_url }}" target="_blank" class="blog-author-social-btn"><i class="fab fa-whatsapp"></i></a>{% endif %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Recent Posts Widget -->
+        <div class="blog-sidebar-widget">
+          <h5 class="blog-widget-title">
+            <i class="fas fa-bolt"></i> Recent Articles
+          </h5>
+          <div class="blog-recent-list">
+            {% for rp in recent_posts %}
+            <a href="/blog/{{ rp.slug }}/" class="blog-recent-item">
+              <div class="blog-recent-thumb">
+                <img alt="{{ rp.title }}" src="{{ rp.image_url }}" />
+              </div>
+              <div class="blog-recent-info">
+                <h6>{{ rp.title|truncatechars:48 }}</h6>
+                <span class="blog-recent-date"><i class="far fa-calendar-alt me-1"></i> {{ rp.published_at|date:"M d, Y" }}</span>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Categories List Widget -->
+        <div class="blog-sidebar-widget">
+          <h5 class="blog-widget-title">
+            <i class="fas fa-folder-open"></i> All Categories
+          </h5>
+          <ul class="blog-cat-list">
+            {% for cat in categories %}
+            <li class="blog-cat-item">
+              <a href="/blog/?category={{ cat.slug }}" class="blog-cat-link">
+                <i class="fas fa-angle-right text-warning"></i> {{ cat.name }}
+              </a>
+              <span class="blog-cat-count">{{ cat.active_posts }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+      </div>
+      
+    </div>
+  </div>
+</section>
 {% endblock %}

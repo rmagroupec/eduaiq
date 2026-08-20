@@ -1933,63 +1933,37 @@ courses in India with AI-driven online courses, e-books & practical training. St
         </div>
       </div>
       <div class="inner-blog-wrap">
+        {% for blog in latest_blogs %}
         <article class="post">
           <figure class="feature-image">
-            <img alt="" src="{% static 'assets/img/educator-img12.jpg' %}" />
+            <a href="/blog/{{ blog.slug }}/">
+              <img alt="{{ blog.title }}" src="{{ blog.image_url }}" />
+            </a>
           </figure>
           <div class="entry-content">
             <h4>
-              <a href="/blog/">5 AI Skills Every Student Should Learn in 2026</a>
+              <a href="/blog/{{ blog.slug }}/">{{ blog.title }}</a>
             </h4>
             <p class="blog-info">
-              A practical starting list for students beginning in the AI Lab — no prior
-              coding background required.
+              {{ blog.summary|default:blog.content|striptags|truncatechars:120 }}
             </p>
-            <div class="d-flex justify-content-end mt-3">
-              <span class="cat-meta">
-                <a href="/blog/">AI LAB</a>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <span class="text-xs text-secondary-light font-weight-medium">
+                <i class="far fa-calendar-alt me-1"></i>{{ blog.published_at|date:"M d, Y" }}
               </span>
+              {% if blog.category %}
+              <span class="cat-meta">
+                <a href="/blog/?category={{ blog.category.slug }}">{{ blog.category.name }}</a>
+              </span>
+              {% endif %}
             </div>
           </div>
         </article>
-        <article class="post">
-          <figure class="feature-image">
-            <img alt="" src="{% static 'assets/img/educator-img14.jpg' %}" />
-          </figure>
-          <div class="entry-content">
-            <h4>
-              <a href="/blog/">How To Prepare For The Math Olympiad In 90 Days</a>
-            </h4>
-            <p class="blog-info">
-              A grade-by-grade study plan built around the published Olympiad
-              curriculum.
-            </p>
-            <div class="d-flex justify-content-end mt-3">
-              <span class="cat-meta">
-                <a href="/blog/">OLYMPIADS</a>
-              </span>
-            </div>
-          </div>
-        </article>
-        <article class="post item-3">
-          <figure class="feature-image">
-            <img alt="" src="{% static 'assets/img/educator-img13.jpg' %}" />
-          </figure>
-          <div class="entry-content">
-            <h4>
-              <a href="/blog/">From Classroom To AI Lab: A Student's Journey</a>
-            </h4>
-            <p class="blog-info">
-              How one student went from a first AI Lab module to a portfolio-ready
-              project in a single semester.
-            </p>
-            <div class="d-flex justify-content-end mt-3">
-              <span class="cat-meta">
-                <a href="/blog/">CAREERS</a>
-              </span>
-            </div>
-          </div>
-        </article>
+        {% empty %}
+        <div class="col-12 text-center py-4">
+          <p class="text-muted">No blog articles published yet.</p>
+        </div>
+        {% endfor %}
       </div>
     </div>
   </div>

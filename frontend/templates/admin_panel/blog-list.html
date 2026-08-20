@@ -1,0 +1,245 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAiQ - Blog & Articles Management{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Blog & Articles Management</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Blog Posts</span>
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-primary d-flex align-items-center gap-6" href="/blog/" target="_blank">
+      <i class="ri-external-link-line"></i> View on Website
+    </a>
+    <a class="btn btn-neutral d-flex align-items-center gap-6" href="/admin-panel/blog-categories/">
+      <i class="ri-folder-line"></i> Manage Categories
+    </a>
+    <a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/blogs/add/">
+      <i class="ri-add-large-line"></i> Add New Blog
+    </a>
+  </div>
+</div>
+
+{% if messages %}
+<div class="mb-20">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show radius-8" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- Stats Cards -->
+<div class="row row-cols-xxxl-4 row-cols-lg-4 row-cols-sm-2 row-cols-1 gy-4 mb-24">
+  <div class="col">
+    <div class="card shadow-none border bg-gradient-start-1 h-100">
+      <div class="card-body p-20">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div>
+            <p class="fw-medium text-primary-light mb-1">Total Articles</p>
+            <h6 class="mb-0">{{ total_count }}</h6>
+          </div>
+          <div class="w-50-px h-50-px bg-cyan rounded-circle d-flex justify-content-center align-items-center">
+            <i class="ri-article-line text-white text-2xl mb-0"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card shadow-none border bg-gradient-start-2 h-100">
+      <div class="card-body p-20">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div>
+            <p class="fw-medium text-primary-light mb-1">Published</p>
+            <h6 class="mb-0 text-success-main">{{ published_count }}</h6>
+          </div>
+          <div class="w-50-px h-50-px bg-purple rounded-circle d-flex justify-content-center align-items-center">
+            <i class="ri-checkbox-circle-line text-white text-2xl mb-0"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card shadow-none border bg-gradient-start-3 h-100">
+      <div class="card-body p-20">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div>
+            <p class="fw-medium text-primary-light mb-1">Drafts</p>
+            <h6 class="mb-0 text-warning-main">{{ draft_count }}</h6>
+          </div>
+          <div class="w-50-px h-50-px bg-info rounded-circle d-flex justify-content-center align-items-center">
+            <i class="ri-draft-line text-white text-2xl mb-0"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card shadow-none border bg-gradient-start-4 h-100">
+      <div class="card-body p-20">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div>
+            <p class="fw-medium text-primary-light mb-1">Categories</p>
+            <h6 class="mb-0 text-primary-600">{{ categories|length }}</h6>
+          </div>
+          <div class="w-50-px h-50-px bg-success-main rounded-circle d-flex justify-content-center align-items-center">
+            <i class="ri-folder-open-line text-white text-2xl mb-0"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content Card -->
+<div class="card h-100 mt-24">
+  <div class="card-body p-24">
+    <!-- Filter Toolbar -->
+    <form method="GET" class="row gy-3 mb-24 align-items-end">
+      <div class="col-md-4">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="searchQ">Search Articles</label>
+        <div class="position-relative">
+          <input type="text" class="form-control radius-8 ps-40" id="searchQ" name="q" value="{{ search_q }}" placeholder="Search by title, tag, author...">
+          <span class="position-absolute start-0 top-50 translate-middle-y ms-16 text-secondary-light">
+            <i class="ri-search-line"></i>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="catFilter">Category</label>
+        <select class="form-control form-select radius-8" id="catFilter" name="category">
+          <option value="" {% if not cat_filter %}selected{% endif %}>All Categories</option>
+          {% for cat in categories %}
+          <option value="{{ cat.slug }}" {% if cat_filter == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="statusFilter">Status</label>
+        <select class="form-control form-select radius-8" id="statusFilter" name="status">
+          <option value="" {% if not status_filter %}selected{% endif %}>All Status</option>
+          <option value="published" {% if status_filter == 'published' %}selected{% endif %}>Published</option>
+          <option value="draft" {% if status_filter == 'draft' %}selected{% endif %}>Draft</option>
+        </select>
+      </div>
+      <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary-600 w-50">Filter</button>
+        {% if search_q or status_filter or cat_filter %}
+        <a href="/admin-panel/blogs/" class="btn btn-neutral w-50">Reset</a>
+        {% endif %}
+      </div>
+    </form>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table basic-border-table mb-0">
+        <thead>
+          <tr>
+            <th scope="col">Article / Title</th>
+            <th scope="col">Category</th>
+            <th scope="col">Author</th>
+            <th scope="col">Published Date</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for post in posts %}
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-12">
+                <img src="{{ post.image_url }}" alt="{{ post.title }}" class="w-64-px h-48-px radius-8 object-fit-cover border shadow-sm flex-shrink-0">
+                <div>
+                  <h6 class="text-md mb-0 fw-semibold">
+                    <a href="/blog/{{ post.slug }}/" target="_blank" class="text-primary-light hover-text-primary">
+                      {{ post.title }}
+                    </a>
+                  </h6>
+                  <span class="text-xs text-secondary-light"><i class="ri-eye-line me-1"></i>{{ post.views_count }} views &bull; Slug: /blog/{{ post.slug }}/</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              {% if post.category %}
+              <span class="badge bg-info-50 text-info-600 px-10 py-6 radius-4 fw-medium">
+                {{ post.category.name }}
+              </span>
+              {% else %}
+              <span class="text-secondary-light">—</span>
+              {% endif %}
+            </td>
+            <td>
+              <span class="fw-medium text-sm text-secondary-dark">
+                {{ post.author_display }}
+              </span>
+            </td>
+            <td>
+              <span class="text-sm text-secondary-light">
+                {{ post.published_at|date:"M d, Y" }}
+              </span>
+            </td>
+            <td>
+              {% if post.status == 'published' %}
+              <span class="badge bg-success-50 text-success-600 px-10 py-4 radius-4 fw-semibold">Published</span>
+              {% else %}
+              <span class="badge bg-neutral-200 text-neutral-600 px-10 py-4 radius-4 fw-semibold">Draft</span>
+              {% endif %}
+            </td>
+            <td class="text-center">
+              <div class="d-inline-flex align-items-center gap-2">
+                <a href="/blog/{{ post.slug }}/" target="_blank" class="w-32-px h-32-px bg-info-focus text-info-main rounded-circle d-inline-flex align-items-center justify-content-center" title="Read on Website">
+                  <i class="ri-eye-line"></i>
+                </a>
+                <a href="/admin-panel/blogs/{{ post.pk }}/edit/" class="w-32-px h-32-px bg-success-focus text-success-main rounded-circle d-inline-flex align-items-center justify-content-center" title="Edit Article">
+                  <i class="ri-edit-line"></i>
+                </a>
+                <button type="button" onclick="confirmDeleteBlog({{ post.pk }}, '{{ post.title|escapejs }}')" class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center border-0" title="Delete">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-40">
+              <div class="text-secondary-light">
+                <i class="ri-article-line text-4xl d-block mb-12"></i>
+                <p class="mb-16">No blog posts found.</p>
+                <a href="/admin-panel/blogs/add/" class="btn btn-primary-600 btn-sm">Add First Blog Post</a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<form id="deleteBlogForm" method="POST" style="display: none;">
+  {% csrf_token %}
+</form>
+
+{% endblock %}
+
+{% block js %}
+<script>
+function confirmDeleteBlog(blogId, title) {
+  if (confirm(`Are you sure you want to delete "${title}"? This cannot be undone.`)) {
+    const form = document.getElementById('deleteBlogForm');
+    form.action = `/admin-panel/blogs/${blogId}/delete/`;
+    form.submit();
+  }
+}
+</script>
+{% endblock %}

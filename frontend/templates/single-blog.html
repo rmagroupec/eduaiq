@@ -1,366 +1,487 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}5 AI Skills Every Student Should Learn in 2026 - EduAiQ Blog{% endblock %}
+{% block title %}{{ blog.title }} - EduAiQ Blog{% endblock %}
 
-{% block description %}A practical starting list of 5 AI skills every student should learn in 2026 — no prior coding background required, mapped to what real job listings actually ask for.{% endblock %}
+{% block description %}{{ blog.summary|default:blog.content|striptags|truncatechars:160 }}{% endblock %}
 
 {% block content %}
-<section class="inner-banner-wrap">
-<div class="inner-baner-container" style="background-image: url({% static 'assets/img/educator-img12.jpg' %});">
-<div class="container">
-<div class="inner-banner-content">
-<h1 class="inner-title">5 AI Skills Every Student Should Learn in 2026</h1>
-<div class="entry-meta">
-<span class="byline">
-<a href="/team/sample-member/">By William Smith</a>
-</span>
-<span class="posted-on">
-<a href="/blog/5-ai-skills-every-student-should-learn-in-2026/">August 12, 2026</a>
-</span>
-<span class="comments-link">
-<a href="#commentArea">3 Comments</a>
-</span>
-</div>
-</div>
-</div>
-</div>
+<style>
+  .single-blog-hero {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    padding: 60px 0 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .single-blog-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(234, 88, 12, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .single-blog-title {
+    color: #ffffff;
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 20px;
+  }
+  .single-blog-meta-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    font-size: 13.5px;
+    color: #cbd5e1;
+  }
+  .single-blog-meta-bar a {
+    color: #fb923c;
+    text-decoration: none;
+  }
+  .single-blog-cat-badge {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    color: #ffffff !important;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 12px;
+    border-radius: 30px;
+  }
+
+  .single-blog-body-section {
+    padding: 50px 0 80px;
+    background: #f8fafc;
+  }
+  .single-blog-main-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 36px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+  }
+  @media (max-width: 767px) {
+    .single-blog-main-card {
+      padding: 20px;
+    }
+    .single-blog-title {
+      font-size: 26px;
+    }
+  }
+
+  .single-blog-featured-img {
+    width: 100%;
+    max-height: 480px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin-bottom: 30px;
+  }
+  .single-blog-article-content {
+    font-size: 16.5px;
+    line-height: 1.85;
+    color: #334155;
+  }
+  .single-blog-article-content h2, 
+  .single-blog-article-content h3, 
+  .single-blog-article-content h4 {
+    color: #0f172a;
+    font-weight: 700;
+    margin-top: 30px;
+    margin-bottom: 14px;
+  }
+  .single-blog-article-content p {
+    margin-bottom: 20px;
+  }
+
+  /* Tags & Share */
+  .single-blog-tags-wrap {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .single-blog-tag-pill {
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .single-blog-tag-pill:hover {
+    background: #ea580c;
+    color: #ffffff;
+  }
+
+  /* Social Share */
+  .single-blog-share-bar {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .share-btn-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #ffffff;
+    transition: opacity 0.2s;
+  }
+  .share-btn-pill:hover {
+    opacity: 0.9;
+    color: #ffffff;
+  }
+  .share-facebook { background: #1877f2; }
+  .share-whatsapp { background: #25d366; }
+  .share-twitter { background: #1da1f2; }
+  .share-linkedin { background: #0a66c2; }
+
+  /* Author Profile Card */
+  .single-blog-author-box {
+    margin-top: 40px;
+    background: #fff7ed;
+    border: 1px solid #ffedd5;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .single-blog-author-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fdba74;
+    flex-shrink: 0;
+  }
+
+  /* Sidebar Widgets */
+  .blog-sidebar-widget {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+    margin-bottom: 28px;
+  }
+  .blog-widget-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #ffedd5;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .blog-widget-title i {
+    color: #ea580c;
+  }
+  .blog-search-form {
+    position: relative;
+  }
+  .blog-search-input {
+    width: 100%;
+    padding: 12px 50px 12px 18px;
+    border-radius: 50px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s;
+  }
+  .blog-search-input:focus {
+    background: #ffffff;
+    border-color: #ea580c;
+    box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.1);
+  }
+  .blog-search-btn {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #0f172a;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .blog-search-btn:hover {
+    background: #ea580c;
+  }
+  .blog-recent-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .blog-recent-item {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    text-decoration: none;
+  }
+  .blog-recent-thumb {
+    width: 65px;
+    height: 65px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #0f172a;
+  }
+  .blog-recent-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+  .blog-recent-item:hover .blog-recent-thumb img {
+    transform: scale(1.08);
+  }
+  .blog-recent-info h6 {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.35;
+    margin-bottom: 4px;
+    transition: color 0.2s;
+  }
+  .blog-recent-item:hover .blog-recent-info h6 {
+    color: #ea580c;
+  }
+  .blog-recent-date {
+    font-size: 11.5px;
+    color: #94a3b8;
+  }
+  .blog-cat-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .blog-cat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed #e2e8f0;
+  }
+  .blog-cat-item:last-child {
+    border-bottom: none;
+  }
+  .blog-cat-link {
+    color: #334155;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+  }
+  .blog-cat-link:hover {
+    color: #ea580c;
+  }
+  .blog-cat-count {
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+</style>
+
+<!-- Hero Banner -->
+<section class="single-blog-hero text-center">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        {% if blog.category %}
+        <a href="/blog/?category={{ blog.category.slug }}" class="single-blog-cat-badge mb-3 d-inline-block">
+          {{ blog.category.name }}
+        </a>
+        {% endif %}
+        <h1 class="single-blog-title">{{ blog.title }}</h1>
+        <div class="single-blog-meta-bar">
+          {% if blog.author_team_member %}
+          <span><i class="far fa-user-circle me-1 text-warning"></i> <a href="/team/{{ blog.author_team_member.slug }}/">{{ blog.author_display }}</a></span>
+          {% else %}
+          <span><i class="far fa-user-circle me-1 text-warning"></i> {{ blog.author_display }}</span>
+          {% endif %}
+          <span><i class="far fa-calendar-alt me-1 text-warning"></i> {{ blog.published_at|date:"F d, Y" }}</span>
+          <span><i class="far fa-eye me-1 text-warning"></i> {{ blog.views_count }} Views</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
+<!-- Main Article Section -->
+<section class="single-blog-body-section">
+  <div class="container">
+    <div class="row">
+      
+      <!-- Article Left Column -->
+      <div class="col-lg-8 mb-5 mb-lg-0">
+        <div class="single-blog-main-card">
+          
+          <!-- Banner Photo -->
+          <img src="{{ blog.image_url }}" alt="{{ blog.title }}" class="single-blog-featured-img" />
 
-<div class="single-post-section">
-<div class="single-post-inner">
-<div class="container">
-<div class="row">
-<div class="col-lg-8 primary right-sidebar">
+          <!-- Content Body -->
+          <div class="single-blog-article-content">
+            {{ blog.content|safe }}
+          </div>
 
-<figure class="feature-image">
-<img alt="5 AI Skills Every Student Should Learn in 2026" src="{% static 'assets/img/educator-img12.jpg' %}"/>
-</figure>
-<div class="single-content-wrap">
-<p>
-                                        AI is no longer a specialist track reserved for computer science majors — it's showing up as a required or preferred skill across marketing, finance, design, healthcare, and operations job listings. The good news is that most students don't need years of coding experience to get started. What matters is knowing which skills actually translate into interview-ready proof of ability. Here are five to prioritize this year.
-                                    </p>
-<h3>1. Prompt Engineering &amp; AI Tool Fluency</h3>
-<p>
-                                        Before writing a single line of code, learn to get reliable, useful output from AI tools themselves. This means structuring clear instructions, breaking large tasks into steps, and knowing when an AI's answer needs to be verified rather than trusted outright. Employers increasingly test for this in take-home assignments, so practicing on real work — summarizing readings, drafting outlines, debugging your own writing — builds a habit that shows up naturally in interviews.
-                                    </p>
-<h3>2. Data Literacy</h3>
-<p>
-                                        You don't need to be a data scientist, but you do need to be comfortable reading a spreadsheet, spotting a misleading chart, and asking "where did this number come from?" Free tools like Google Sheets and basic Python notebooks are enough to start. This skill compounds fast: once you can clean and interpret data, AI tools become far more useful because you can sanity-check what they produce.
-                                    </p>
-<h3>3. Python Fundamentals</h3>
-<p>
-                                        You don't need to master machine learning frameworks on day one. Start with basic scripting — reading files, looping through data, writing small automation scripts. This is the skill that turns "I used ChatGPT" into "I built something," which is what stands out on a resume or in a portfolio project.
-                                    </p>
-<h3>4. Critical Evaluation of AI Output</h3>
-<p>
-                                        As AI tools get better at sounding confident, the skill that matters most is knowing when they're wrong. Practicing this means cross-checking facts, understanding a model's known blind spots, and being able to explain in plain language why a given output should or shouldn't be trusted. This is increasingly what separates a junior hire who "uses AI" from one who's actually productive with it.
-                                    </p>
-<h3>5. Communicating AI-Assisted Work</h3>
-<p>
-                                        Finally, learn to explain what you built and why — including where AI helped and where your own judgment shaped the result. Employers want to see that you can own the outcome, not just the prompt. A short write-up or a five-minute walkthrough of a project is often the single most convincing thing you can bring to an interview.
-                                    </p>
-<p>
-                                        None of these require a computer science degree to start. Pick one skill, build a small project around it this month, and add the next one once it feels comfortable — that steady, project-by-project approach is what the AI Lab curriculum is built around.
-                                    </p>
-</div>
-<div class="meta-wrap">
-<div class="tag-links">
-<a href="/blog/">AI Skills</a>,
-                                        <a href="/blog/">Career Development</a>,
-                                        <a href="/blog/">Student Guide</a>,
-                                        <a href="/blog/">Technology</a>
-</div>
-</div>
-<div class="post-socail-wrap">
-<div class="social-icon-wrap">
-<div class="social-icon social-facebook">
-<a href="https://www.facebook.com/" target="_blank">
-<i class="fab fa-facebook"></i>
-<span>Facebook</span>
-</a>
-</div>
-<div class="social-icon social-whatsapp">
-<a href="https://www.whatsapp.com/" target="_blank">
-<i class="fab fa-whatsapp"></i>
-<span>Whatsapp</span>
-</a>
-</div>
-<div class="social-icon social-twitter">
-<a href="https://www.twitter.com/" target="_blank">
-<i class="fab fa-twitter"></i>
-<span>Twitter</span>
-</a>
-</div>
-<div class="social-icon social-linkedin">
-<a href="https://www.linkedin.com/" target="_blank">
-<i class="fab fa-linkedin"></i>
-<span>Linkedin</span>
-</a>
-</div>
-<div class="social-icon social-pinterest">
-<a href="https://www.pinterest.com/" target="_blank">
-<i class="fab fa-pinterest"></i>
-<span>Pinterest</span>
-</a>
-</div>
-</div>
-</div>
-<div class="author-wrap">
-<div class="author-thumb">
-<img alt="William Smith" src="{% static 'assets/img/educator-img8.png' %}"/>
-</div>
-<div class="author-content">
-<h3 class="author-name">William Smith</h3>
-<p>AI Lab Mentor at EduAiQ, writing about practical AI skills and what actually helps students get hired.</p>
-<a class="button-text" href="/blog/">View All Posts &gt; </a>
-</div>
-</div>
+          <!-- Tags -->
+          {% if blog.tag_list %}
+          <div class="single-blog-tags-wrap">
+            <strong class="text-dark me-2"><i class="fas fa-tags text-warning me-1"></i> Tags:</strong>
+            {% for tag in blog.tag_list %}
+            <a href="/blog/?q={{ tag }}" class="single-blog-tag-pill">{{ tag }}</a>
+            {% endfor %}
+          </div>
+          {% endif %}
 
-<div class="divider-line">
-<span class="st-line"></span>
-</div>
+          <!-- Social Share Bar -->
+          <div class="single-blog-share-bar">
+            <strong class="text-dark me-2"><i class="fas fa-share-alt text-warning me-1"></i> Share:</strong>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="share-btn-pill share-facebook">
+              <i class="fab fa-facebook-f"></i> Facebook
+            </a>
+            <a href="https://api.whatsapp.com/send?text={{ blog.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}" target="_blank" class="share-btn-pill share-whatsapp">
+              <i class="fab fa-whatsapp"></i> WhatsApp
+            </a>
+            <a href="https://twitter.com/intent/tweet?text={{ blog.title|urlencode }}&url={{ request.build_absolute_uri|urlencode }}" target="_blank" class="share-btn-pill share-twitter">
+              <i class="fab fa-twitter"></i> Twitter
+            </a>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri|urlencode }}" target="_blank" class="share-btn-pill share-linkedin">
+              <i class="fab fa-linkedin-in"></i> LinkedIn
+            </a>
+          </div>
 
-<div class="comment-area" id="commentArea">
-<h2 class="comment-title">3 Comments</h2>
-<div class="comment-area-inner">
-<ol>
-<li>
-<figure class="comment-thumb">
-<img alt="" src="{% static 'assets/img/educator-img22.jpg' %}"/>
-</figure>
-<div class="comment-content">
-<div class="comment-header">
-<h5 class="author-name">Priya Nair</h5>
-<span class="post-on">August 13, 2026</span>
-</div>
-<p>This is exactly the roadmap I needed. Starting with prompt engineering and basic Python this week!</p>
-<a class="reply" href="#replyForm"><i class="fas fa-reply"></i>Reply</a>
-</div>
-</li>
-<li>
-<ol>
-<li>
-<figure class="comment-thumb">
-<img alt="" src="{% static 'assets/img/educator-img23.jpg' %}"/>
-</figure>
-<div class="comment-content">
-<div class="comment-header">
-<h5 class="author-name">William Smith</h5>
-<span class="post-on">August 13, 2026</span>
-</div>
-<p>Great to hear, Priya! Point 4 tends to matter most once you're applying — happy to share a checklist if useful.</p>
-<a class="reply" href="#replyForm"><i class="fas fa-reply"></i>Reply</a>
-</div>
-</li>
-</ol>
-</li>
-</ol>
-<ol>
-<li>
-<figure class="comment-thumb">
-<img alt="" src="{% static 'assets/img/educator-img21.jpg' %}"/>
-</figure>
-<div class="comment-content">
-<div class="comment-header">
-<h5 class="author-name">Arjun Mehta</h5>
-<span class="post-on">August 14, 2026</span>
-</div>
-<p>Would love a follow-up post on which portfolio projects work best for skill #3.</p>
-<a class="reply" href="#replyForm"><i class="fas fa-reply"></i>Reply</a>
-</div>
-</li>
-</ol>
-</div>
-<div class="comment-form-wrap" id="replyForm">
-<h2 class="comment-title">Leave a Reply</h2>
-<p>Your email address will not be published. Required fields are marked *</p>
-<form class="comment-form">
-    {% csrf_token %}
-<p class="full-width">
-<label>Comment*</label>
-<textarea rows="9"></textarea>
-</p>
-<p>
-<label>Name *</label>
-<input name="name" type="text"/>
-</p>
-<p>
-<label>Email *</label>
-<input name="email" type="email"/>
-</p>
-<p>
-<label>Website*</label>
-<input name="web" type="text"/>
-</p>
-<p>
-<label>
-<input name="s" type="checkbox"/>
-                                                    Save my name, email, and website in this browser for the next time I comment.
-                                                </label>
-</p>
-<p class="full-width">
-<input name="submit" type="submit" value="Post comment"/>
-</p>
-</form>
-</div>
+          <!-- Author Profile Box -->
+          {% if author_member %}
+          <div class="single-blog-author-box">
+            <img src="{{ author_member.photo_url }}" alt="{{ author_member.name }}" class="single-blog-author-avatar" />
+            <div>
+              <h5 class="fw-bold mb-1 text-dark">
+                <a href="/team/{{ author_member.slug }}/" class="text-dark text-decoration-none">{{ author_member.name }}</a>
+              </h5>
+              <div class="text-orange fw-bold text-xs mb-2" style="color: #ea580c;">{{ author_member.designation }}</div>
+              <p class="text-muted text-sm mb-2">{{ author_member.bio|truncatechars:150 }}</p>
+              <a href="/team/{{ author_member.slug }}/" class="text-decoration-none fw-bold text-sm" style="color: #ea580c;">
+                View Mentor Profile <i class="fas fa-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+          {% endif %}
 
-<div class="post-navigation">
-<div class="nav-prev">
-<a href="/blog/why-institutions-are-moving-to-one-connected-lms/">
-<span class="nav-label">Previous</span>
-<span class="nav-title">Why Institutions Are Moving To One Connected LMS</span>
-</a>
-</div>
-<div class="nav-next">
-<a href="/blog/how-to-prepare-for-the-math-olympiad-in-90-days/">
-<span class="nav-label">Next</span>
-<span class="nav-title">How To Prepare For The Math Olympiad In 90 Days</span>
-</a>
-</div>
-</div>
-</div>
+        </div>
 
-</div>
-<div class="col-lg-4 secondary">
-<div class="sidebar">
-<aside class="widget author_widget">
-<p class="widget-title-dash-border">Written By</p>
-<div class="widget-content text-center">
-<div class="profile">
-<figure class="avatar">
-<a href="/team/sample-member/">
-<img alt="William Smith" src="{% static 'assets/img/educator-img8.png' %}"/>
-</a>
-</figure>
-<div class="text-content">
-<div class="name-title">
-<h4>
-<a href="/team/sample-member/">William Smith</a>
-</h4>
-</div>
-<p>
-                                                        AI Lab Mentor at EduAiQ, writing about practical AI skills
-                                                        and what actually helps students get hired.
-                                                    </p>
-</div>
-<div class="social-icon">
-<ul>
-<li>
-<a href="https://www.instagram.com/eduaiq_2026?utm_source=qr&amp;igsh=MTY2bXJuZXZyZTliag==" target="_blank">
-<i class="fab fa-instagram"></i>
-</a>
-</li>
-<li>
-<a href="https://whatsapp.com/channel/0029VbDa70SHltY9CSw9IP2B" target="_blank">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</aside>
-<aside class="widget widget_latest_post widget-post-thumb">
-<div class="text-center">
-<p class="widget-title-dash-border">Recent Post</p>
-</div>
-<ul>
-<li>
-<figure class="post-thumb">
-<a href="/blog/5-ai-skills-every-student-should-learn-in-2026/"><img alt="" src="{% static 'assets/img/educator-img12.jpg' %}"/></a>
-</figure>
-<div class="post-content">
-<h6>
-<a href="/blog/5-ai-skills-every-student-should-learn-in-2026/">5 AI Skills Every Student Should Learn in 2026</a>
-</h6>
-<div class="entry-meta">
-<span class="posted-on">
-<a href="/blog/5-ai-skills-every-student-should-learn-in-2026/">August 12, 2026</a>
-</span>
-</div>
-</div>
-</li>
-<li>
-<figure class="post-thumb">
-<a href="/blog/how-to-prepare-for-the-math-olympiad-in-90-days/"><img alt="" src="{% static 'assets/img/educator-img14.jpg' %}"/></a>
-</figure>
-<div class="post-content">
-<h6>
-<a href="/blog/how-to-prepare-for-the-math-olympiad-in-90-days/">How To Prepare For The Math Olympiad In 90 Days</a>
-</h6>
-<div class="entry-meta">
-<span class="posted-on">
-<a href="/blog/how-to-prepare-for-the-math-olympiad-in-90-days/">August 5, 2026</a>
-</span>
-</div>
-</div>
-</li>
-<li>
-<figure class="post-thumb">
-<a href="/blog/from-classroom-to-ai-lab-a-students-journey/"><img alt="" src="{% static 'assets/img/educator-img13.jpg' %}"/></a>
-</figure>
-<div class="post-content">
-<h6>
-<a href="/blog/from-classroom-to-ai-lab-a-students-journey/">From Classroom To AI Lab: A Student's Journey</a>
-</h6>
-<div class="entry-meta">
-<span class="posted-on">
-<a href="/blog/from-classroom-to-ai-lab-a-students-journey/">July 28, 2026</a>
-</span>
-</div>
-</div>
-</li>
-<li>
-<figure class="post-thumb">
-<a href="/blog/why-institutions-are-moving-to-one-connected-lms/"><img alt="" src="{% static 'assets/img/educator-img15.jpg' %}"/></a>
-</figure>
-<div class="post-content">
-<h6>
-<a href="/blog/why-institutions-are-moving-to-one-connected-lms/">Why Institutions Are Moving To One Connected LMS</a>
-</h6>
-<div class="entry-meta">
-<span class="posted-on">
-<a href="/blog/why-institutions-are-moving-to-one-connected-lms/">July 20, 2026</a>
-</span>
-</div>
-</div>
-</li>
-</ul>
-</aside>
-<aside class="widget widget_social">
-<div class="text-center">
-<p class="widget-title-dash-border">Follow Us On</p>
-</div>
-<div class="socialgroup">
-<ul>
-<li>
-<a href="https://www.instagram.com/eduaiq_2026?utm_source=qr&amp;igsh=MTY2bXJuZXZyZTliag==" target="_blank">
-<i class="fab fa-instagram"></i>
-</a>
-</li>
-<li>
-<a href="https://whatsapp.com/channel/0029VbDa70SHltY9CSw9IP2B" target="_blank">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-</ul>
-</div>
-</aside>
-<aside class="widget widget-bg">
-<p class="bg-title">Explore More</p>
-<ul>
-<li><i aria-hidden="true" class="fas fa-robot"></i> <span class="list-txt"><a href="/page/ai-lab/">AI Lab</a></span></li>
-<li><i aria-hidden="true" class="fas fa-trophy"></i> <span class="list-txt"><a href="/page/olympiads/">Olympiads</a></span></li>
-<li><i aria-hidden="true" class="fas fa-briefcase"></i> <span class="list-txt"><a href="/page/skill-development/">Skill Development</a></span></li>
-<li><i aria-hidden="true" class="fas fa-sitemap"></i> <span class="list-txt"><a href="/page/eduaiq-ecosystem/">EduAiQ Ecosystem</a></span></li>
-</ul>
-</aside>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+        <!-- Related Posts -->
+        {% if related_posts %}
+        <div class="mt-5">
+          <h4 class="fw-bold mb-4 text-dark"><i class="fas fa-bookmark text-warning me-2"></i> Related Articles</h4>
+          <div class="row">
+            {% for rp in related_posts %}
+            <div class="col-md-6 mb-3">
+              <div class="card h-100 border radius-16 overflow-hidden shadow-xs" style="border-radius: 16px;">
+                <img src="{{ rp.image_url }}" alt="{{ rp.title }}" style="height: 160px; object-fit: cover;">
+                <div class="card-body p-3">
+                  <span class="badge bg-warning text-dark text-xs mb-2">{{ rp.category.name|default:"Article" }}</span>
+                  <h6 class="card-title mb-2">
+                    <a href="/blog/{{ rp.slug }}/" class="text-dark text-decoration-none fw-bold">{{ rp.title|truncatechars:55 }}</a>
+                  </h6>
+                  <span class="text-xs text-muted"><i class="far fa-calendar-alt me-1"></i> {{ rp.published_at|date:"M d, Y" }}</span>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+
+      <!-- Secondary Sidebar -->
+      <div class="col-lg-4">
+        
+        <!-- Search Widget -->
+        <div class="blog-sidebar-widget">
+          <h5 class="blog-widget-title">
+            <i class="fas fa-search"></i> Search Articles
+          </h5>
+          <form method="GET" action="/blog/" class="blog-search-form">
+            <input type="text" name="q" class="blog-search-input" placeholder="Search topics, keywords..." required />
+            <button type="submit" class="blog-search-btn" aria-label="Search">
+              <i class="fas fa-search"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- Recent Posts Widget -->
+        <div class="blog-sidebar-widget">
+          <h5 class="blog-widget-title">
+            <i class="fas fa-bolt"></i> Recent Articles
+          </h5>
+          <div class="blog-recent-list">
+            {% for rp in recent_posts %}
+            <a href="/blog/{{ rp.slug }}/" class="blog-recent-item">
+              <div class="blog-recent-thumb">
+                <img alt="{{ rp.title }}" src="{{ rp.image_url }}" />
+              </div>
+              <div class="blog-recent-info">
+                <h6>{{ rp.title|truncatechars:48 }}</h6>
+                <span class="blog-recent-date"><i class="far fa-calendar-alt me-1"></i> {{ rp.published_at|date:"M d, Y" }}</span>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Categories List Widget -->
+        <div class="blog-sidebar-widget">
+          <h5 class="blog-widget-title">
+            <i class="fas fa-folder-open"></i> All Categories
+          </h5>
+          <ul class="blog-cat-list">
+            {% for cat in categories %}
+            <li class="blog-cat-item">
+              <a href="/blog/?category={{ cat.slug }}" class="blog-cat-link">
+                <i class="fas fa-angle-right text-warning"></i> {{ cat.name }}
+              </a>
+              <span class="blog-cat-count">{{ cat.active_posts }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
 {% endblock %}
+

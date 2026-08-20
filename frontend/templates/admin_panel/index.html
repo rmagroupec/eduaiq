@@ -88,17 +88,34 @@
     </div>
   </div>
 
-  <div class="col-xxl-2 col-xl-4 col-sm-6">
-    <div class="card stat-card-eduaiq h-100 p-20">
-      <div class="d-flex align-items-center justify-content-between mb-16">
-        <span class="icon-box-eduaiq">
-          <i class="ri-award-line"></i>
-        </span>
-        <span class="badge-orange-single">Attempts</span>
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <a href="/admin-panel/team/" class="text-decoration-none">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq">
+            <i class="ri-team-line"></i>
+          </span>
+          <span class="badge-orange-single">Mentors</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Team Members</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ total_team_members|default:0 }}</h3>
       </div>
-      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Exam Attempts</span>
-      <h3 class="mb-0 fw-bold stat-num">{{ total_attempts|default:0 }}</h3>
-    </div>
+    </a>
+  </div>
+
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <a href="/admin-panel/blogs/" class="text-decoration-none">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq">
+            <i class="ri-article-line"></i>
+          </span>
+          <span class="badge-orange-single">Articles</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Blog Posts</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ total_blogs|default:0 }}</h3>
+      </div>
+    </a>
   </div>
 </div>
 

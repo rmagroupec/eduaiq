@@ -1,0 +1,240 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAiQ - Team Members Management{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Team Members & Mentors</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Team Members</span>
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-primary d-flex align-items-center gap-6" href="/team/" target="_blank">
+      <i class="ri-external-link-line"></i> View on Website
+    </a>
+    <a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/team/add/">
+      <i class="ri-add-large-line"></i> Add Team Member
+    </a>
+  </div>
+</div>
+
+{% if messages %}
+<div class="mb-20">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show radius-8" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- Stats Cards -->
+<div class="row row-cols-xxxl-3 row-cols-lg-3 row-cols-sm-2 row-cols-1 gy-4 mb-24">
+  <div class="col">
+    <div class="card shadow-none border bg-gradient-start-1 h-100">
+      <div class="card-body p-20">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div>
+            <p class="fw-medium text-primary-light mb-1">Total Team Members</p>
+            <h6 class="mb-0">{{ total_count }}</h6>
+          </div>
+          <div class="w-50-px h-50-px bg-cyan rounded-circle d-flex justify-content-center align-items-center">
+            <i class="ri-team-line text-white text-2xl mb-0"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card shadow-none border bg-gradient-start-2 h-100">
+      <div class="card-body p-20">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div>
+            <p class="fw-medium text-primary-light mb-1">Active Mentors</p>
+            <h6 class="mb-0 text-success-main">{{ active_count }}</h6>
+          </div>
+          <div class="w-50-px h-50-px bg-purple rounded-circle d-flex justify-content-center align-items-center">
+            <i class="ri-user-follow-line text-white text-2xl mb-0"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card shadow-none border bg-gradient-start-3 h-100">
+      <div class="card-body p-20">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div>
+            <p class="fw-medium text-primary-light mb-1">Website Pages</p>
+            <h6 class="mb-0">Homepage & About</h6>
+          </div>
+          <div class="w-50-px h-50-px bg-info rounded-circle d-flex justify-content-center align-items-center">
+            <i class="ri-global-line text-white text-2xl mb-0"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content Card -->
+<div class="card h-100 mt-24">
+  <div class="card-body p-24">
+    <!-- Filter Toolbar -->
+    <form method="GET" class="row gy-3 mb-24 align-items-end">
+      <div class="col-md-5">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="searchQ">Search Members</label>
+        <div class="position-relative">
+          <input type="text" class="form-control radius-8 ps-40" id="searchQ" name="q" value="{{ search_q }}" placeholder="Search by name, role, email...">
+          <span class="position-absolute start-0 top-50 translate-middle-y ms-16 text-secondary-light">
+            <i class="ri-search-line"></i>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="statusFilter">Status</label>
+        <select class="form-control form-select radius-8" id="statusFilter" name="status">
+          <option value="" {% if not status_filter %}selected{% endif %}>All Members</option>
+          <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active Only</option>
+          <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %}>Inactive Only</option>
+        </select>
+      </div>
+      <div class="col-md-4 d-flex gap-2">
+        <button type="submit" class="btn btn-primary-600 w-50">Filter</button>
+        {% if search_q or status_filter %}
+        <a href="/admin-panel/team/" class="btn btn-neutral w-50">Reset</a>
+        {% endif %}
+      </div>
+    </form>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table basic-border-table mb-0">
+        <thead>
+          <tr>
+            <th scope="col">Order</th>
+            <th scope="col">Member</th>
+            <th scope="col">Designation / Role</th>
+            <th scope="col">Contact</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for member in members %}
+          <tr>
+            <td class="fw-semibold text-secondary-light">#{{ member.order }}</td>
+            <td>
+              <div class="d-flex align-items-center gap-12">
+                <img src="{{ member.photo_url }}" alt="{{ member.name }}" class="w-48-px h-48-px rounded-circle object-fit-cover border shadow-sm">
+                <div>
+                  <h6 class="text-md mb-0 fw-semibold">
+                    <a href="/team/{{ member.slug }}/" target="_blank" class="text-primary-light hover-text-primary">
+                      {{ member.name }}
+                    </a>
+                  </h6>
+                  <span class="text-xs text-secondary-light">Slug: /team/{{ member.slug }}/</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="badge bg-primary-50 text-primary-600 px-10 py-6 radius-4 fw-medium">
+                {{ member.designation }}
+              </span>
+            </td>
+            <td>
+              <div class="text-sm">
+                {% if member.email %}<div><i class="ri-mail-line me-1 text-secondary-light"></i>{{ member.email }}</div>{% endif %}
+                {% if member.phone %}<div><i class="ri-phone-line me-1 text-secondary-light"></i>{{ member.phone }}</div>{% endif %}
+                {% if not member.email and not member.phone %}<span class="text-secondary-light">—</span>{% endif %}
+              </div>
+            </td>
+            <td>
+              <button type="button" onclick="toggleMemberStatus({{ member.pk }}, this)" 
+                      class="btn btn-sm {% if member.is_active %}btn-success text-white{% else %}btn-secondary{% endif %} radius-4 py-4 px-10">
+                {% if member.is_active %}Active{% else %}Inactive{% endif %}
+              </button>
+            </td>
+            <td class="text-center">
+              <div class="d-inline-flex align-items-center gap-2">
+                <a href="/team/{{ member.slug }}/" target="_blank" class="w-32-px h-32-px bg-info-focus text-info-main rounded-circle d-inline-flex align-items-center justify-content-center" title="Preview on Website">
+                  <i class="ri-eye-line"></i>
+                </a>
+                <a href="/admin-panel/team/{{ member.pk }}/edit/" class="w-32-px h-32-px bg-success-focus text-success-main rounded-circle d-inline-flex align-items-center justify-content-center" title="Edit Member">
+                  <i class="ri-edit-line"></i>
+                </a>
+                <button type="button" onclick="confirmDeleteMember({{ member.pk }}, '{{ member.name|escapejs }}')" class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center border-0" title="Delete">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-40">
+              <div class="text-secondary-light">
+                <i class="ri-user-unfollow-line text-4xl d-block mb-12"></i>
+                <p class="mb-16">No team members found.</p>
+                <a href="/admin-panel/team/add/" class="btn btn-primary-600 btn-sm">Add First Team Member</a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Form Modal / Script -->
+<form id="deleteMemberForm" method="POST" style="display: none;">
+  {% csrf_token %}
+</form>
+
+{% endblock %}
+
+{% block js %}
+<script>
+function toggleMemberStatus(memberId, btn) {
+  fetch(`/admin-panel/team/${memberId}/toggle/`, {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': '{{ csrf_token }}',
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      if (data.is_active) {
+        btn.className = 'btn btn-sm btn-success text-white radius-4 py-4 px-10';
+        btn.textContent = 'Active';
+      } else {
+        btn.className = 'btn btn-sm btn-secondary radius-4 py-4 px-10';
+        btn.textContent = 'Inactive';
+      }
+    } else {
+      alert(data.message || 'Error updating status');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert('Network error');
+  });
+}
+
+function confirmDeleteMember(memberId, name) {
+  if (confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) {
+    const form = document.getElementById('deleteMemberForm');
+    form.action = `/admin-panel/team/${memberId}/delete/`;
+    form.submit();
+  }
+}
+</script>
+{% endblock %}

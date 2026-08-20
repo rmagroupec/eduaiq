@@ -26,6 +26,7 @@ from olympiad.models import (
     OlympiadResult,
 )
 from payments.models import Transaction
+from content.models import TeamMember, BlogCategory, BlogPost
 
 User = get_user_model()
 
@@ -51,14 +52,19 @@ def handler500(request):
 # ==========================
 
 def home(request):
-    """Homepage - Featured categories and courses for public & authenticated users"""
+    """Homepage - Featured categories, courses, and latest blog posts"""
     categories = get_allowed_categories_for_user(request.user)
-    return render(request, "index.html", {'categories': categories})
+    latest_blogs = BlogPost.objects.filter(status='published').select_related('category', 'author_team_member').order_by('-published_at')[:3]
+    return render(request, "index.html", {
+        'categories': categories,
+        'latest_blogs': latest_blogs,
+    })
 
 
 def about(request):
-    """About page"""
-    return render(request, "about.html")
+    """About page - dynamic mentors list"""
+    mentors = TeamMember.objects.filter(is_active=True).order_by('order', 'created_at')[:4]
+    return render(request, "about.html", {'mentors': mentors})
 
 
 def courses(request):
@@ -217,8 +223,9 @@ def career(request):
 
 
 def team(request):
-    """Team page"""
-    return render(request, "team.html")
+    """Team page - dynamic active team members"""
+    team_members = TeamMember.objects.filter(is_active=True).order_by('order', 'created_at')
+    return render(request, "team.html", {'team_members': team_members})
 
 
 def gallery(request):
@@ -592,6 +599,10 @@ def dashboard(request):
         exam_names.append(ex.name[:18])
         exam_reg_counts.append(cnt)
 
+    total_team_members = TeamMember.objects.count()
+    total_blogs = BlogPost.objects.count()
+    recent_blogs = BlogPost.objects.select_related('category').order_by('-created_at')[:5]
+
     return render(request, "admin_panel/index.html", {
         'total_students': total_students,
         'total_institutions': total_institutions,
@@ -613,6 +624,9 @@ def dashboard(request):
         'recent_registrations': recent_registrations,
         'exam_names_json': json.dumps(exam_names),
         'exam_reg_counts_json': json.dumps(exam_reg_counts),
+        'total_team_members': total_team_members,
+        'total_blogs': total_blogs,
+        'recent_blogs': recent_blogs,
     })
 
 
@@ -747,17 +761,405 @@ def admin_page_router(request, page_name):
 
 
 # ==========================
-# Blog & Content Pages
+# Blog & Content Pages (Public)
 # ==========================
 
 def blog_archive(request):
-    """Blog archive"""
-    return render(request, "blog-archive.html")
+    """Blog archive page with category filtering, search, and pagination"""
+    from django.core.paginator import Paginator
+    
+    category_slug = request.GET.get('category', '').strip()
+    search_query = request.GET.get('q', '').strip()
+    
+    blogs_qs = BlogPost.objects.filter(status='published').select_related('category', 'author_team_member').order_by('-published_at')
+    
+    selected_category = None
+    if category_slug:
+        selected_category = BlogCategory.objects.filter(slug=category_slug).first()
+        if selected_category:
+            blogs_qs = blogs_qs.filter(category=selected_category)
+            
+    if search_query:
+        blogs_qs = blogs_qs.filter(
+            Q(title__icontains=search_query) |
+            Q(summary__icontains=search_query) |
+            Q(content__icontains=search_query) |
+            Q(tags__icontains=search_query)
+        )
+        
+    paginator = Paginator(blogs_qs, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    categories_list = BlogCategory.objects.annotate(active_posts=Count('posts', filter=Q(posts__status='published'))).order_by('name')
+    recent_posts = BlogPost.objects.filter(status='published').order_by('-published_at')[:4]
+    featured_author = TeamMember.objects.filter(is_active=True).first()
+    
+    return render(request, "blog-archive.html", {
+        'page_obj': page_obj,
+        'blogs': page_obj.object_list,
+        'categories': categories_list,
+        'selected_category': selected_category,
+        'search_query': search_query,
+        'recent_posts': recent_posts,
+        'featured_author': featured_author,
+    })
 
 
-def single_blog(request):
-    """Single blog post"""
-    return render(request, "single-blog.html")
+def single_blog(request, slug=None):
+    """Single blog post detail page"""
+    if not slug:
+        slug = request.GET.get('slug', '')
+    blog = get_object_or_404(BlogPost.objects.select_related('category', 'author_team_member'), slug=slug)
+    
+    # Increment views count safely
+    BlogPost.objects.filter(pk=blog.pk).update(views_count=blog.views_count + 1)
+    blog.views_count += 1
+    
+    related_posts = BlogPost.objects.filter(status='published').exclude(pk=blog.pk)
+    if blog.category:
+        cat_posts = related_posts.filter(category=blog.category).order_by('-published_at')[:3]
+        if cat_posts.exists():
+            related_posts = cat_posts
+        else:
+            related_posts = related_posts.order_by('-published_at')[:3]
+    else:
+        related_posts = related_posts.order_by('-published_at')[:3]
+        
+    categories_list = BlogCategory.objects.annotate(active_posts=Count('posts', filter=Q(posts__status='published'))).order_by('name')
+    recent_posts = BlogPost.objects.filter(status='published').exclude(pk=blog.pk).order_by('-published_at')[:4]
+    author_member = blog.author_team_member or TeamMember.objects.filter(is_active=True).first()
+    
+    return render(request, "single-blog.html", {
+        'blog': blog,
+        'related_posts': related_posts,
+        'recent_posts': recent_posts,
+        'categories': categories_list,
+        'author_member': author_member,
+    })
+
+
+def team_detail(request, slug=None):
+    """Single team member profile detail page"""
+    if not slug:
+        slug = request.GET.get('slug', '')
+    member = get_object_or_404(TeamMember, slug=slug, is_active=True)
+    other_members = TeamMember.objects.filter(is_active=True).exclude(pk=member.pk).order_by('order', 'created_at')[:4]
+    
+    return render(request, "team-detail.html", {
+        'member': member,
+        'other_members': other_members,
+    })
+
+
+# ============================================================================
+# Admin Panel: Team Members Management
+# ============================================================================
+
+@login_required(login_url='/admin-panel/login/')
+def admin_team_list(request):
+    """Admin panel view - Team members list with search and filtering"""
+    search_q = request.GET.get('q', '').strip()
+    status_filter = request.GET.get('status', '').strip()
+    
+    members = TeamMember.objects.all().order_by('order', '-created_at')
+    if search_q:
+        members = members.filter(
+            Q(name__icontains=search_q) |
+            Q(designation__icontains=search_q) |
+            Q(email__icontains=search_q)
+        )
+    if status_filter == 'active':
+        members = members.filter(is_active=True)
+    elif status_filter == 'inactive':
+        members = members.filter(is_active=False)
+        
+    return render(request, "admin_panel/team-list.html", {
+        'members': members,
+        'search_q': search_q,
+        'status_filter': status_filter,
+        'total_count': TeamMember.objects.count(),
+        'active_count': TeamMember.objects.filter(is_active=True).count(),
+    })
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_team_add(request):
+    """Admin panel view - Add new team member"""
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        designation = request.POST.get('designation', '').strip()
+        email = request.POST.get('email', '').strip() or None
+        phone = request.POST.get('phone', '').strip()
+        quote = request.POST.get('quote', '').strip()
+        bio = request.POST.get('bio', '').strip()
+        facebook_url = request.POST.get('facebook_url', '').strip() or None
+        twitter_url = request.POST.get('twitter_url', '').strip() or None
+        linkedin_url = request.POST.get('linkedin_url', '').strip() or None
+        instagram_url = request.POST.get('instagram_url', '').strip() or None
+        whatsapp_url = request.POST.get('whatsapp_url', '').strip()
+        qualifications = request.POST.get('qualifications', '').strip()
+        experiences = request.POST.get('experiences', '').strip()
+        skills_overview = request.POST.get('skills_overview', '').strip()
+        order = int(request.POST.get('order', 0) or 0)
+        is_active = request.POST.get('is_active') == 'on' or request.POST.get('is_active') == 'true'
+        photo = request.FILES.get('photo')
+
+        if not name or not designation:
+            messages.error(request, "Name and Designation are required.")
+            return render(request, "admin_panel/add-team.html")
+
+        member = TeamMember.objects.create(
+            name=name,
+            designation=designation,
+            email=email,
+            phone=phone,
+            quote=quote,
+            bio=bio,
+            facebook_url=facebook_url,
+            twitter_url=twitter_url,
+            linkedin_url=linkedin_url,
+            instagram_url=instagram_url,
+            whatsapp_url=whatsapp_url,
+            qualifications=qualifications,
+            experiences=experiences,
+            skills_overview=skills_overview,
+            order=order,
+            is_active=is_active,
+            photo=photo,
+        )
+        messages.success(request, f"Team member '{member.name}' added successfully!")
+        return redirect('admin_team_list')
+
+    return render(request, "admin_panel/add-team.html")
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_team_edit(request, pk):
+    """Admin panel view - Edit existing team member"""
+    member = get_object_or_404(TeamMember, pk=pk)
+    if request.method == 'POST':
+        member.name = request.POST.get('name', '').strip()
+        member.designation = request.POST.get('designation', '').strip()
+        member.email = request.POST.get('email', '').strip() or None
+        member.phone = request.POST.get('phone', '').strip()
+        member.quote = request.POST.get('quote', '').strip()
+        member.bio = request.POST.get('bio', '').strip()
+        member.facebook_url = request.POST.get('facebook_url', '').strip() or None
+        member.twitter_url = request.POST.get('twitter_url', '').strip() or None
+        member.linkedin_url = request.POST.get('linkedin_url', '').strip() or None
+        member.instagram_url = request.POST.get('instagram_url', '').strip() or None
+        member.whatsapp_url = request.POST.get('whatsapp_url', '').strip()
+        member.qualifications = request.POST.get('qualifications', '').strip()
+        member.experiences = request.POST.get('experiences', '').strip()
+        member.skills_overview = request.POST.get('skills_overview', '').strip()
+        member.order = int(request.POST.get('order', 0) or 0)
+        member.is_active = request.POST.get('is_active') == 'on' or request.POST.get('is_active') == 'true'
+        
+        if 'photo' in request.FILES:
+            member.photo = request.FILES['photo']
+            
+        member.save()
+        messages.success(request, f"Team member '{member.name}' updated successfully!")
+        return redirect('admin_team_list')
+
+    return render(request, "admin_panel/edit-team.html", {'member': member})
+
+
+@login_required(login_url='/admin-panel/login/')
+@require_http_methods(["POST", "DELETE"])
+def admin_team_delete(request, pk):
+    """Admin panel view - Delete team member"""
+    member = get_object_or_404(TeamMember, pk=pk)
+    name = member.name
+    member.delete()
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json':
+        return JsonResponse({'success': True, 'message': f"'{name}' deleted successfully."})
+    messages.success(request, f"'{name}' deleted successfully.")
+    return redirect('admin_team_list')
+
+
+@login_required(login_url='/admin-panel/login/')
+@require_http_methods(["POST"])
+def admin_team_toggle(request, pk):
+    """Admin panel view - Toggle active status for team member"""
+    member = get_object_or_404(TeamMember, pk=pk)
+    member.is_active = not member.is_active
+    member.save()
+    return JsonResponse({
+        'success': True,
+        'is_active': member.is_active,
+        'message': f"Status updated to {'Active' if member.is_active else 'Inactive'}."
+    })
+
+
+# ============================================================================
+# Admin Panel: Blog Management
+# ============================================================================
+
+@login_required(login_url='/admin-panel/login/')
+def admin_blog_list(request):
+    """Admin panel view - Blog articles list with search, category and status filtering"""
+    search_q = request.GET.get('q', '').strip()
+    status_filter = request.GET.get('status', '').strip()
+    cat_filter = request.GET.get('category', '').strip()
+    
+    posts = BlogPost.objects.select_related('category', 'author_team_member').all().order_by('-published_at', '-created_at')
+    if search_q:
+        posts = posts.filter(
+            Q(title__icontains=search_q) |
+            Q(summary__icontains=search_q) |
+            Q(author_name__icontains=search_q) |
+            Q(tags__icontains=search_q)
+        )
+    if status_filter in ['published', 'draft']:
+        posts = posts.filter(status=status_filter)
+    if cat_filter:
+        posts = posts.filter(category__slug=cat_filter)
+        
+    categories = BlogCategory.objects.all().order_by('name')
+    return render(request, "admin_panel/blog-list.html", {
+        'posts': posts,
+        'categories': categories,
+        'search_q': search_q,
+        'status_filter': status_filter,
+        'cat_filter': cat_filter,
+        'total_count': BlogPost.objects.count(),
+        'published_count': BlogPost.objects.filter(status='published').count(),
+        'draft_count': BlogPost.objects.filter(status='draft').count(),
+    })
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_blog_add(request):
+    """Admin panel view - Create new blog post"""
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        category_id = request.POST.get('category')
+        author_name = request.POST.get('author_name', '').strip() or 'EduAiQ Team'
+        author_team_id = request.POST.get('author_team_member')
+        summary = request.POST.get('summary', '').strip()
+        content = request.POST.get('content', '').strip()
+        tags = request.POST.get('tags', '').strip()
+        status = request.POST.get('status', 'published')
+        is_featured = request.POST.get('is_featured') == 'on' or request.POST.get('is_featured') == 'true'
+        featured_image = request.FILES.get('featured_image')
+
+        if not title or not content:
+            messages.error(request, "Title and Content are required.")
+            categories = BlogCategory.objects.all()
+            team_members = TeamMember.objects.filter(is_active=True)
+            return render(request, "admin_panel/add-blog.html", {
+                'categories': categories,
+                'team_members': team_members,
+            })
+
+        category = BlogCategory.objects.filter(pk=category_id).first() if category_id else None
+        author_team = TeamMember.objects.filter(pk=author_team_id).first() if author_team_id else None
+
+        post = BlogPost.objects.create(
+            title=title,
+            category=category,
+            author_name=author_name,
+            author_team_member=author_team,
+            summary=summary,
+            content=content,
+            tags=tags,
+            status=status,
+            is_featured=is_featured,
+            featured_image=featured_image,
+        )
+        messages.success(request, f"Blog post '{post.title}' created successfully!")
+        return redirect('admin_blog_list')
+
+    categories = BlogCategory.objects.all().order_by('name')
+    team_members = TeamMember.objects.filter(is_active=True).order_by('name')
+    return render(request, "admin_panel/add-blog.html", {
+        'categories': categories,
+        'team_members': team_members,
+    })
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_blog_edit(request, pk):
+    """Admin panel view - Edit existing blog post"""
+    post = get_object_or_404(BlogPost, pk=pk)
+    if request.method == 'POST':
+        post.title = request.POST.get('title', '').strip()
+        category_id = request.POST.get('category')
+        post.category = BlogCategory.objects.filter(pk=category_id).first() if category_id else None
+        
+        post.author_name = request.POST.get('author_name', '').strip() or 'EduAiQ Team'
+        author_team_id = request.POST.get('author_team_member')
+        post.author_team_member = TeamMember.objects.filter(pk=author_team_id).first() if author_team_id else None
+        
+        post.summary = request.POST.get('summary', '').strip()
+        post.content = request.POST.get('content', '').strip()
+        post.tags = request.POST.get('tags', '').strip()
+        post.status = request.POST.get('status', 'published')
+        post.is_featured = request.POST.get('is_featured') == 'on' or request.POST.get('is_featured') == 'true'
+        
+        if 'featured_image' in request.FILES:
+            post.featured_image = request.FILES['featured_image']
+            
+        post.save()
+        messages.success(request, f"Blog post '{post.title}' updated successfully!")
+        return redirect('admin_blog_list')
+
+    categories = BlogCategory.objects.all().order_by('name')
+    team_members = TeamMember.objects.filter(is_active=True).order_by('name')
+    return render(request, "admin_panel/edit-blog.html", {
+        'post': post,
+        'categories': categories,
+        'team_members': team_members,
+    })
+
+
+@login_required(login_url='/admin-panel/login/')
+@require_http_methods(["POST", "DELETE"])
+def admin_blog_delete(request, pk):
+    """Admin panel view - Delete blog post"""
+    post = get_object_or_404(BlogPost, pk=pk)
+    title = post.title
+    post.delete()
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json':
+        return JsonResponse({'success': True, 'message': f"'{title}' deleted successfully."})
+    messages.success(request, f"'{title}' deleted successfully.")
+    return redirect('admin_blog_list')
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_blog_categories(request):
+    """Admin panel view - Manage blog categories"""
+    if request.method == 'POST':
+        cat_name = request.POST.get('name', '').strip()
+        cat_desc = request.POST.get('description', '').strip()
+        if cat_name:
+            cat, created = BlogCategory.objects.get_or_create(
+                name=cat_name, 
+                defaults={'description': cat_desc}
+            )
+            if created:
+                messages.success(request, f"Category '{cat.name}' created successfully!")
+            else:
+                messages.info(request, f"Category '{cat.name}' already exists.")
+        return redirect('admin_blog_categories')
+
+    categories = BlogCategory.objects.annotate(
+        posts_count=Count('posts')
+    ).order_by('name')
+    return render(request, "admin_panel/blog-categories.html", {'categories': categories})
+
+
+@login_required(login_url='/admin-panel/login/')
+@require_http_methods(["POST", "DELETE"])
+def admin_blog_category_delete(request, pk):
+    """Admin panel view - Delete blog category"""
+    cat = get_object_or_404(BlogCategory, pk=pk)
+    name = cat.name
+    cat.delete()
+    messages.success(request, f"Category '{name}' deleted successfully.")
+    return redirect('admin_blog_categories')
 
 
 def product_archive(request):
@@ -783,11 +1185,6 @@ def product_checkout(request):
 def career_detail(request):
     """Single career opportunity"""
     return render(request, "career-detail.html")
-
-
-def team_detail(request):
-    """Single team member"""
-    return render(request, "team-detail.html")
 
 
 def single_page(request, slug):

@@ -1,0 +1,164 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAiQ - Add Team Member{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Add Team Member</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/team/">Team Members</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Add New</span>
+    </div>
+  </div>
+  <a class="btn btn-neutral d-flex align-items-center gap-6" href="/admin-panel/team/">
+    <i class="ri-arrow-left-line"></i> Back to Team List
+  </a>
+</div>
+
+{% if messages %}
+<div class="mb-20">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show radius-8" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="card mt-24">
+  <div class="card-header border-bottom bg-base py-16 px-24">
+    <h6 class="text-lg fw-semibold mb-0">Team Member Profile Information</h6>
+  </div>
+  <div class="card-body p-24">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <div class="row gy-4">
+        <!-- Basic Info -->
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="name">
+            Full Name <span class="text-danger-600">*</span>
+          </label>
+          <input type="text" class="form-control radius-8" id="name" name="name" placeholder="e.g. Dr. Rajesh Sharma" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="designation">
+            Designation / Role Title <span class="text-danger-600">*</span>
+          </label>
+          <input type="text" class="form-control radius-8" id="designation" name="designation" placeholder="e.g. AI & Data Science Lead" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="email">Email Address</label>
+          <input type="email" class="form-control radius-8" id="email" name="email" placeholder="mentor@eduaiq.com">
+        </div>
+
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="phone">Phone / WhatsApp Contact</label>
+          <input type="text" class="form-control radius-8" id="phone" name="phone" placeholder="+91 98765 43210">
+        </div>
+
+        <!-- Profile Photo -->
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="photo">Profile Photo</label>
+          <input type="file" class="form-control radius-8" id="photo" name="photo" accept="image/*" onchange="previewPhoto(event)">
+          <span class="text-xs text-secondary-light mt-1 d-block">Recommended: Square PNG/JPG (400x400 px or higher).</span>
+        </div>
+
+        <div class="col-md-3">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="order">Display Order</label>
+          <input type="number" class="form-control radius-8" id="order" name="order" value="0" min="0" placeholder="0">
+          <span class="text-xs text-secondary-light mt-1 d-block">Lower numbers appear first.</span>
+        </div>
+
+        <div class="col-md-3 d-flex align-items-center mt-32">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" checked>
+            <label class="form-check-label fw-semibold text-primary-light ms-2" for="is_active">
+              Active (Visible on Website)
+            </label>
+          </div>
+        </div>
+
+        <!-- Quote -->
+        <div class="col-12">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="quote">Inspirational Quote / Motto</label>
+          <input type="text" class="form-control radius-8" id="quote" name="quote" placeholder="e.g. Empowering young minds with practical AI skills...">
+        </div>
+
+        <!-- Biography -->
+        <div class="col-12">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="bio">Biography / Summary</label>
+          <textarea class="form-control radius-8" id="bio" name="bio" rows="4" placeholder="Detailed bio describing background, mentorship experience, and focus areas..."></textarea>
+        </div>
+
+        <!-- Qualifications & Experience -->
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="qualifications">
+            Qualifications & Education
+          </label>
+          <textarea class="form-control radius-8" id="qualifications" name="qualifications" rows="3" placeholder="# 2015 / 2019: IIT Delhi (Computer Science)&#10;# 2020 / Present: Senior AI Mentor"></textarea>
+          <span class="text-xs text-secondary-light mt-1 d-block">Use # Year / Year: Degree / Institute format for detail cards.</span>
+        </div>
+
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="experiences">
+            Experience & Achievements
+          </label>
+          <textarea class="form-control radius-8" id="experiences" name="experiences" rows="3" placeholder="Summary of industry experience, key achievements, student mentorship..."></textarea>
+        </div>
+
+        <!-- Social Media Links -->
+        <div class="col-12">
+          <h6 class="text-md fw-semibold mt-16 mb-8 border-top pt-16">Social Media Profiles</h6>
+        </div>
+
+        <div class="col-md-3">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="linkedin_url"><i class="ri-linkedin-fill me-1 text-primary"></i> LinkedIn URL</label>
+          <input type="url" class="form-control radius-8" id="linkedin_url" name="linkedin_url" placeholder="https://linkedin.com/in/username">
+        </div>
+
+        <div class="col-md-3">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="twitter_url"><i class="ri-twitter-x-fill me-1"></i> Twitter / X URL</label>
+          <input type="url" class="form-control radius-8" id="twitter_url" name="twitter_url" placeholder="https://twitter.com/username">
+        </div>
+
+        <div class="col-md-3">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="facebook_url"><i class="ri-facebook-fill me-1 text-primary"></i> Facebook URL</label>
+          <input type="url" class="form-control radius-8" id="facebook_url" name="facebook_url" placeholder="https://facebook.com/username">
+        </div>
+
+        <div class="col-md-3">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="instagram_url"><i class="ri-instagram-fill me-1 text-danger"></i> Instagram URL</label>
+          <input type="url" class="form-control radius-8" id="instagram_url" name="instagram_url" placeholder="https://instagram.com/username">
+        </div>
+
+        <div class="col-12 d-flex justify-content-end gap-3 mt-24 border-top pt-20">
+          <a href="/admin-panel/team/" class="btn btn-neutral px-24">Cancel</a>
+          <button type="submit" class="btn btn-primary-600 px-32">
+            <i class="ri-save-line me-1"></i> Save Team Member
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+function previewPhoto(event) {
+  const file = event.target.files[0];
+  if (file) {
+    console.log("Photo selected:", file.name);
+  }
+}
+</script>
+{% endblock %}

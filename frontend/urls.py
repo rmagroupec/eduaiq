@@ -89,12 +89,28 @@ urlpatterns = [
     # ==========================
     # Admin Panel Routes
     # ==========================
+    path('admin-panel/', views.dashboard, name='admin_panel_root'),
     path('admin-panel/dashboard/', views.dashboard, name='admin_panel'),
     path('admin-panel/olympiad-entrance/', views.admin_olympiad_entrance_list, name='admin_olympiad_entrance_list'),
     path('admin-panel/olympiad-entrance/add/', views.admin_olympiad_entrance_add, name='admin_olympiad_entrance_add'),
     path('admin-panel/olympiad-entrance/<int:pk>/edit/', views.admin_olympiad_entrance_edit, name='admin_olympiad_entrance_edit'),
     path('admin-panel/olympiad-entrance/<int:pk>/toggle/', views.admin_olympiad_entrance_toggle, name='admin_olympiad_entrance_toggle'),
     path('admin-panel/olympiad-entrance/<int:pk>/questions/', views.admin_olympiad_entrance_questions, name='admin_olympiad_entrance_questions'),
+    # Admin Panel: Team Management Routes
+    path('admin-panel/team/', views.admin_team_list, name='admin_team_list'),
+    path('admin-panel/team/add/', views.admin_team_add, name='admin_team_add'),
+    path('admin-panel/team/<int:pk>/edit/', views.admin_team_edit, name='admin_team_edit'),
+    path('admin-panel/team/<int:pk>/delete/', views.admin_team_delete, name='admin_team_delete'),
+    path('admin-panel/team/<int:pk>/toggle/', views.admin_team_toggle, name='admin_team_toggle'),
+
+    # Admin Panel: Blog Management Routes
+    path('admin-panel/blogs/', views.admin_blog_list, name='admin_blog_list'),
+    path('admin-panel/blogs/add/', views.admin_blog_add, name='admin_blog_add'),
+    path('admin-panel/blogs/<int:pk>/edit/', views.admin_blog_edit, name='admin_blog_edit'),
+    path('admin-panel/blogs/<int:pk>/delete/', views.admin_blog_delete, name='admin_blog_delete'),
+    path('admin-panel/blog-categories/', views.admin_blog_categories, name='admin_blog_categories'),
+    path('admin-panel/blog-categories/<int:pk>/delete/', views.admin_blog_category_delete, name='admin_blog_category_delete'),
+
     path('admin-panel/users/', views.users, name='admin_users'),
     path('admin-panel/courses/', views.admin_courses, name='admin_courses'),
     path('admin-panel/courses/add/', views.admin_add_course, name='admin_add_course'),

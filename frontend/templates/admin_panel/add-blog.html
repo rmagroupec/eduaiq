@@ -1,0 +1,136 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAiQ - Add Blog Post{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Create New Blog Post</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/blogs/">Blog Posts</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Add New</span>
+    </div>
+  </div>
+  <a class="btn btn-neutral d-flex align-items-center gap-6" href="/admin-panel/blogs/">
+    <i class="ri-arrow-left-line"></i> Back to Blog List
+  </a>
+</div>
+
+{% if messages %}
+<div class="mb-20">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show radius-8" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="card mt-24">
+  <div class="card-header border-bottom bg-base py-16 px-24">
+    <h6 class="text-lg fw-semibold mb-0">Article Details & Content</h6>
+  </div>
+  <div class="card-body p-24">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <div class="row gy-4">
+        <!-- Title -->
+        <div class="col-12">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="title">
+            Article Title <span class="text-danger-600">*</span>
+          </label>
+          <input type="text" class="form-control radius-8 fs-5 fw-semibold" id="title" name="title" placeholder="e.g. 5 AI Skills Every Student Should Learn in 2026" required>
+        </div>
+
+        <!-- Category & Author -->
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="category">Category</label>
+          <select class="form-control form-select radius-8" id="category" name="category">
+            <option value="">-- Select Category --</option>
+            {% for cat in categories %}
+            <option value="{{ cat.pk }}">{{ cat.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="author_team_member">Author (Team Mentor)</label>
+          <select class="form-control form-select radius-8" id="author_team_member" name="author_team_member">
+            <option value="">-- Custom Author / None --</option>
+            {% for m in team_members %}
+            <option value="{{ m.pk }}">{{ m.name }} ({{ m.designation }})</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="author_name">Author Display Name (Fallback)</label>
+          <input type="text" class="form-control radius-8" id="author_name" name="author_name" value="EduAiQ Team" placeholder="e.g. EduAiQ Editorial Team">
+        </div>
+
+        <!-- Featured Image -->
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="featured_image">Featured Image (Banner)</label>
+          <input type="file" class="form-control radius-8" id="featured_image" name="featured_image" accept="image/*">
+          <span class="text-xs text-secondary-light mt-1 d-block">Recommended: Landscape JPG/PNG (1200x630 px or similar).</span>
+        </div>
+
+        <!-- Status & Visibility -->
+        <div class="col-md-3">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="status">Publication Status</label>
+          <select class="form-control form-select radius-8" id="status" name="status">
+            <option value="published" selected>Published (Live)</option>
+            <option value="draft">Draft (Private)</option>
+          </select>
+        </div>
+
+        <div class="col-md-3 d-flex align-items-center mt-32">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="is_featured" name="is_featured" checked>
+            <label class="form-check-label fw-semibold text-primary-light ms-2" for="is_featured">
+              Featured on Homepage
+            </label>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="col-12">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="summary">Short Summary / Excerpt</label>
+          <textarea class="form-control radius-8" id="summary" name="summary" rows="2" placeholder="Brief 1-2 sentence preview for cards, metadata, and search results..."></textarea>
+        </div>
+
+        <!-- Full Content -->
+        <div class="col-12">
+          <div class="d-flex justify-content-between align-items-center mb-8">
+            <label class="text-sm fw-semibold text-primary-light mb-0" for="content">
+              Full Article Content (HTML / Rich Text) <span class="text-danger-600">*</span>
+            </label>
+            <span class="text-xs text-secondary-light">Supports standard HTML tags (&lt;h3&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;strong&gt;, etc.)</span>
+          </div>
+          <textarea class="form-control radius-8 font-monospace" id="content" name="content" rows="12" placeholder="Write or paste your article content here. You can use headings, paragraphs, and list items..." required></textarea>
+        </div>
+
+        <!-- Tags -->
+        <div class="col-12">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="tags">Tags (Comma-separated)</label>
+          <input type="text" class="form-control radius-8" id="tags" name="tags" placeholder="e.g. AI Skills, Career Development, Olympiads, Technology">
+        </div>
+
+        <!-- Actions -->
+        <div class="col-12 d-flex justify-content-end gap-3 mt-24 border-top pt-20">
+          <a href="/admin-panel/blogs/" class="btn btn-neutral px-24">Cancel</a>
+          <button type="submit" class="btn btn-primary-600 px-32">
+            <i class="ri-save-line me-1"></i> Publish Article
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -122,24 +122,40 @@
         background: rgba(255, 255, 255, 0.06) !important;
         border: 1px solid rgba(255, 255, 255, 0.12) !important;
         border-radius: 18px !important;
-        padding: 20px !important;
-        transition: all 0.3s ease !important;
+        padding: 24px 20px !important;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        text-align: center !important;
     }
     .course-type:hover {
         background: rgba(255, 255, 255, 0.1) !important;
-        border-color: rgba(249, 115, 22, 0.4) !important;
-        transform: translateY(-3px) !important;
+        border-color: #ea580c !important;
+        box-shadow: 0 12px 30px rgba(234, 88, 12, 0.25) !important;
+        transform: translateY(-6px) !important;
     }
     .course-icon i {
-        color: #f97316 !important;
+        background: #ffffff !important;
+        color: #ea580c !important;
+        transition: all 0.3s ease !important;
+    }
+    .course-type:hover .course-icon i {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        transform: scale(1.08) !important;
     }
     .course-title a {
         color: #ffffff !important;
         font-weight: 700 !important;
         transition: color 0.2s ease !important;
     }
-    .course-title a:hover {
-        color: #fed7aa !important;
+    .course-type:hover .course-title a {
+        color: #ea580c !important;
+    }
+    .course-durations {
+        color: #94a3b8 !important;
+        font-size: 13px !important;
+    }
+    .course-type:hover .course-durations {
+        color: #cbd5e1 !important;
     }
     .course-form {
         background: rgba(255, 255, 255, 0.08) !important;

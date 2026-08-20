@@ -1,0 +1,151 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAiQ - Edit Blog Post{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Edit Article: {{ post.title }}</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/blogs/">Blog Posts</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Edit</span>
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-primary d-flex align-items-center gap-6" href="/blog/{{ post.slug }}/" target="_blank">
+      <i class="ri-external-link-line"></i> View on Website
+    </a>
+    <a class="btn btn-neutral d-flex align-items-center gap-6" href="/admin-panel/blogs/">
+      <i class="ri-arrow-left-line"></i> Back to Blog List
+    </a>
+  </div>
+</div>
+
+{% if messages %}
+<div class="mb-20">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show radius-8" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="card mt-24">
+  <div class="card-header border-bottom bg-base py-16 px-24">
+    <h6 class="text-lg fw-semibold mb-0">Update Article Content</h6>
+  </div>
+  <div class="card-body p-24">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <div class="row gy-4">
+        <!-- Current Image preview -->
+        <div class="col-12 d-flex align-items-center gap-20 bg-neutral-50 p-16 radius-12 border">
+          <img src="{{ post.image_url }}" alt="{{ post.title }}" class="w-120-px h-72-px radius-8 object-fit-cover border shadow-sm">
+          <div>
+            <h6 class="text-md fw-semibold mb-4">{{ post.title }}</h6>
+            <span class="text-sm text-secondary-light d-block mb-4">Slug: <code>/blog/{{ post.slug }}/</code></span>
+            <span class="text-xs text-secondary-light"><i class="ri-eye-line me-1"></i>{{ post.views_count }} views &bull; Created {{ post.created_at|date:"M d, Y" }}</span>
+          </div>
+        </div>
+
+        <!-- Title -->
+        <div class="col-12">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="title">
+            Article Title <span class="text-danger-600">*</span>
+          </label>
+          <input type="text" class="form-control radius-8 fs-5 fw-semibold" id="title" name="title" value="{{ post.title }}" required>
+        </div>
+
+        <!-- Category & Author -->
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="category">Category</label>
+          <select class="form-control form-select radius-8" id="category" name="category">
+            <option value="">-- Select Category --</option>
+            {% for cat in categories %}
+            <option value="{{ cat.pk }}" {% if post.category and post.category.pk == cat.pk %}selected{% endif %}>{{ cat.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="author_team_member">Author (Team Mentor)</label>
+          <select class="form-control form-select radius-8" id="author_team_member" name="author_team_member">
+            <option value="">-- Custom Author / None --</option>
+            {% for m in team_members %}
+            <option value="{{ m.pk }}" {% if post.author_team_member and post.author_team_member.pk == m.pk %}selected{% endif %}>{{ m.name }} ({{ m.designation }})</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="author_name">Author Display Name (Fallback)</label>
+          <input type="text" class="form-control radius-8" id="author_name" name="author_name" value="{{ post.author_name|default:'EduAiQ Team' }}">
+        </div>
+
+        <!-- Featured Image -->
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="featured_image">Change Featured Image</label>
+          <input type="file" class="form-control radius-8" id="featured_image" name="featured_image" accept="image/*">
+          <span class="text-xs text-secondary-light mt-1 d-block">Leave blank to keep existing image.</span>
+        </div>
+
+        <!-- Status & Visibility -->
+        <div class="col-md-3">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="status">Publication Status</label>
+          <select class="form-control form-select radius-8" id="status" name="status">
+            <option value="published" {% if post.status == 'published' %}selected{% endif %}>Published (Live)</option>
+            <option value="draft" {% if post.status == 'draft' %}selected{% endif %}>Draft (Private)</option>
+          </select>
+        </div>
+
+        <div class="col-md-3 d-flex align-items-center mt-32">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="is_featured" name="is_featured" {% if post.is_featured %}checked{% endif %}>
+            <label class="form-check-label fw-semibold text-primary-light ms-2" for="is_featured">
+              Featured on Homepage
+            </label>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="col-12">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="summary">Short Summary / Excerpt</label>
+          <textarea class="form-control radius-8" id="summary" name="summary" rows="2">{{ post.summary|default:'' }}</textarea>
+        </div>
+
+        <!-- Full Content -->
+        <div class="col-12">
+          <div class="d-flex justify-content-between align-items-center mb-8">
+            <label class="text-sm fw-semibold text-primary-light mb-0" for="content">
+              Full Article Content (HTML / Rich Text) <span class="text-danger-600">*</span>
+            </label>
+            <span class="text-xs text-secondary-light">Supports standard HTML tags</span>
+          </div>
+          <textarea class="form-control radius-8 font-monospace" id="content" name="content" rows="14" required>{{ post.content }}</textarea>
+        </div>
+
+        <!-- Tags -->
+        <div class="col-12">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="tags">Tags (Comma-separated)</label>
+          <input type="text" class="form-control radius-8" id="tags" name="tags" value="{{ post.tags|default:'' }}">
+        </div>
+
+        <!-- Actions -->
+        <div class="col-12 d-flex justify-content-end gap-3 mt-24 border-top pt-20">
+          <a href="/admin-panel/blogs/" class="btn btn-neutral px-24">Cancel</a>
+          <button type="submit" class="btn btn-primary-600 px-32">
+            <i class="ri-save-line me-1"></i> Update Article
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

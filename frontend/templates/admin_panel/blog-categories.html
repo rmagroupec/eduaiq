@@ -1,0 +1,117 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAiQ - Blog Categories{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Blog Categories</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/blogs/">Blog Posts</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Categories</span>
+    </div>
+  </div>
+  <a class="btn btn-neutral d-flex align-items-center gap-6" href="/admin-panel/blogs/">
+    <i class="ri-arrow-left-line"></i> Back to Blog Posts
+  </a>
+</div>
+
+{% if messages %}
+<div class="mb-20">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show radius-8" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="row gy-4">
+  <!-- Add Category Form -->
+  <div class="col-lg-4">
+    <div class="card h-100">
+      <div class="card-header border-bottom bg-base py-16 px-24">
+        <h6 class="text-lg fw-semibold mb-0">Add New Category</h6>
+      </div>
+      <div class="card-body p-24">
+        <form method="POST">
+          {% csrf_token %}
+          <div class="mb-16">
+            <label class="text-sm fw-semibold text-primary-light mb-8" for="name">
+              Category Name <span class="text-danger-600">*</span>
+            </label>
+            <input type="text" class="form-control radius-8" id="name" name="name" placeholder="e.g. AI Research" required>
+          </div>
+          <div class="mb-24">
+            <label class="text-sm fw-semibold text-primary-light mb-8" for="description">Description</label>
+            <textarea class="form-control radius-8" id="description" name="description" rows="3" placeholder="Brief description of articles in this category..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary-600 w-100">
+            <i class="ri-add-line me-1"></i> Create Category
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories List -->
+  <div class="col-lg-8">
+    <div class="card h-100">
+      <div class="card-header border-bottom bg-base py-16 px-24 d-flex justify-content-between align-items-center">
+        <h6 class="text-lg fw-semibold mb-0">Existing Categories ({{ categories|length }})</h6>
+      </div>
+      <div class="card-body p-24">
+        <div class="table-responsive">
+          <table class="table basic-border-table mb-0">
+            <thead>
+              <tr>
+                <th scope="col">Category Name</th>
+                <th scope="col">Slug</th>
+                <th scope="col">Articles</th>
+                <th scope="col" class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for cat in categories %}
+              <tr>
+                <td>
+                  <h6 class="text-md mb-0 fw-semibold">{{ cat.name }}</h6>
+                  {% if cat.description %}
+                  <span class="text-xs text-secondary-light d-block">{{ cat.description|truncatechars:60 }}</span>
+                  {% endif %}
+                </td>
+                <td><code>{{ cat.slug }}</code></td>
+                <td>
+                  <span class="badge bg-primary-50 text-primary-600 px-10 py-4 radius-4 fw-semibold">
+                    {{ cat.posts_count }} post{{ cat.posts_count|pluralize }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <form method="POST" action="/admin-panel/blog-categories/{{ cat.pk }}/delete/" class="d-inline" onsubmit="return confirm('Delete category \'{{ cat.name|escapejs }}\'? Posts in this category will become unassigned.');">
+                    {% csrf_token %}
+                    <button type="submit" class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center border-0" title="Delete Category">
+                      <i class="ri-delete-bin-line"></i>
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="text-center py-32 text-secondary-light">
+                  No categories added yet.
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
