@@ -59,12 +59,147 @@
             overflow: hidden;
             background: #ffffff;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #contentViewer {
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         #contentViewer iframe, #contentViewer video {
             width: 100%;
             height: 480px;
             border: none;
+        }
+
+        /* High-Grade Anti-Piracy & DRM-Grade Protection */
+        * {
+            -webkit-user-drag: none !important;
+        }
+
+        ::selection {
+            background: transparent !important;
+            color: inherit !important;
+        }
+
+        body, .main-player-card, #contentViewer, .sidebar-card {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            -webkit-touch-callout: none !important;
+        }
+
+        /* Screen Shield on Blur / PrintScreen / Snipping Tool */
+        #securityScreenShield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #090D16;
+            z-index: 999999;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .screen-protected-blurred {
+            filter: blur(40px) brightness(0.2) !important;
+            pointer-events: none !important;
+            transition: filter 0.1s ease !important;
+        }
+
+        /* Anti-Record & Dynamic Watermark Overlay */
+        .video-protected-container {
+            position: relative;
+            width: 100%;
+            background: #000000;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .video-shield-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 55px;
+            z-index: 10;
+            background: transparent;
+            pointer-events: auto;
+        }
+
+        .floating-security-watermark {
+            position: absolute;
+            z-index: 15;
+            pointer-events: none;
+            user-select: none;
+            color: rgba(255, 255, 255, 0.38);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            background: rgba(0, 0, 0, 0.45);
+            padding: 4px 14px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: watermarkDrift 22s ease-in-out infinite alternate;
+        }
+
+        @keyframes watermarkDrift {
+            0% {
+                top: 18px;
+                left: 20px;
+                opacity: 0.45;
+            }
+            33% {
+                top: 72%;
+                left: 55%;
+                opacity: 0.25;
+            }
+            66% {
+                top: 22%;
+                left: 68%;
+                opacity: 0.45;
+            }
+            100% {
+                top: 80%;
+                left: 25px;
+                opacity: 0.35;
+            }
+        }
+
+        .protected-watermark-bg {
+            background-image: radial-gradient(rgba(249, 115, 22, 0.05) 1.5px, transparent 1.5px);
+            background-size: 32px 32px;
+            position: relative;
+        }
+
+        .text-watermark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.04;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(-25deg);
+            font-size: 30px;
+            font-weight: 900;
+            color: #000000;
+            z-index: 1;
         }
 
         .sidebar-card {
@@ -221,10 +356,12 @@
                     <div class="main-player-card">
                         
                         <!-- Content Display Window (Video / PDF / Text / Quiz / Assignment) -->
-                        <div id="contentViewer" class="bg-dark text-white d-flex align-items-center justify-content-center position-relative" style="min-height: 480px;">
-                            <div class="text-center p-5">
-                                <i class="fas fa-spinner fa-spin fa-3x mb-3 text-warning"></i>
-                                <p class="fw-bold">Loading chapter content...</p>
+                        <div id="contentViewer" class="bg-dark text-white position-relative w-100" style="min-height: 480px;">
+                            <div class="d-flex align-items-center justify-content-center w-100 text-center p-5" style="min-height: 480px;">
+                                <div>
+                                    <i class="fas fa-spinner fa-spin fa-3x mb-3 text-warning"></i>
+                                    <p class="fw-bold">Loading chapter content...</p>
+                                </div>
                             </div>
                         </div>
 
@@ -364,6 +501,20 @@
         </div>
     </div>
 
+    <!-- Anti-Screenshot / PrintScreen Security Blackout Shield -->
+    <div id="securityScreenShield">
+        <div class="rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 76px; height: 76px; font-size: 32px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 2px solid rgba(239, 68, 68, 0.35); box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <h4 class="fw-bold mb-2 text-white"><i class="fas fa-lock me-2 text-warning"></i> Protected Learning Material</h4>
+        <p class="text-white-50 small mb-3" style="max-width: 460px; line-height: 1.6;">
+            Screenshots, screen recording, and unauthorized copying are strictly disabled to protect EduAiQ educational content.
+        </p>
+        <div class="badge bg-danger text-white px-3 py-2 rounded-pill font-monospace small shadow-sm">
+            <i class="fas fa-user-shield me-1"></i> Security Protected • User: {{ user.username|default:"Student" }}
+        </div>
+    </div>
+
     <!-- Bootstrap JS -->
     <script src="{% static 'admin_assets/js/lib/bootstrap.bundle.min.js' %}"></script>
 
@@ -375,6 +526,137 @@
         let userEnrollment = null;
         let courseSlug = null;
         let assignmentData = null;
+        let activeVideoSource = 'file';
+
+        // =========================================================================
+        // EduAiQ Industry-Grade Anti-Piracy, Anti-Screenshot & DRM Protection Engine
+        // =========================================================================
+        const userIdentifier = '{{ user.username|default:"Student" }}';
+        let shieldTimeout = null;
+
+        function triggerSecurityShield(durationMs = 2200) {
+            const shield = document.getElementById('securityScreenShield');
+            const mainCard = document.querySelector('.main-player-card');
+            
+            // Clear clipboard instantly on screen capture attempt
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText('⚠️ Protected Content - EduAiQ Security Alert: Screenshots and recording are strictly prohibited.').catch(() => {});
+            }
+
+            if (shield) shield.style.display = 'flex';
+            if (mainCard) mainCard.classList.add('screen-protected-blurred');
+
+            clearTimeout(shieldTimeout);
+            shieldTimeout = setTimeout(() => {
+                if (shield) shield.style.display = 'none';
+                if (mainCard) mainCard.classList.remove('screen-protected-blurred');
+            }, durationMs);
+        }
+
+        // 1. Intercept PrintScreen and Screenshot Hotkeys (Windows+Shift+S, Mac Cmd+Shift+3/4/5)
+        window.addEventListener('keydown', function(e) {
+            // PrintScreen key
+            if (e.key === 'PrintScreen' || e.keyCode === 44) {
+                e.preventDefault();
+                triggerSecurityShield(2500);
+                return false;
+            }
+
+            // Windows / Chrome Snipping Tool (Ctrl+Shift+S or Windows+Shift+S)
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 's' || e.key === 'S')) {
+                e.preventDefault();
+                triggerSecurityShield(2500);
+                return false;
+            }
+
+            // Mac Screenshot shortcuts (Cmd+Shift+3, Cmd+Shift+4, Cmd+Shift+5)
+            if (e.metaKey && e.shiftKey && ['3', '4', '5'].includes(e.key)) {
+                e.preventDefault();
+                triggerSecurityShield(2500);
+                return false;
+            }
+
+            // Developer Tools (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C)
+            if (e.key === 'F12' || 
+               ((e.ctrlKey || e.metaKey) && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key))) {
+                e.preventDefault();
+                triggerSecurityShield(1500);
+                return false;
+            }
+
+            // View Source (Ctrl+U), Save Page (Ctrl+S), Print (Ctrl+P), Select All (Ctrl+A)
+            if ((e.ctrlKey || e.metaKey) && ['u', 'U', 's', 'S', 'p', 'P', 'a', 'A'].includes(e.key)) {
+                e.preventDefault();
+                triggerSecurityShield(1500);
+                return false;
+            }
+        }, true);
+
+        window.addEventListener('keyup', function(e) {
+            if (e.key === 'PrintScreen' || e.keyCode === 44) {
+                triggerSecurityShield(2500);
+            }
+        });
+
+        // 2. Anti-Snipping Tool / Loss of Window Focus Detection
+        window.addEventListener('blur', function() {
+            const shield = document.getElementById('securityScreenShield');
+            const mainCard = document.querySelector('.main-player-card');
+            if (shield) shield.style.display = 'flex';
+            if (mainCard) mainCard.classList.add('screen-protected-blurred');
+        });
+
+        window.addEventListener('focus', function() {
+            const shield = document.getElementById('securityScreenShield');
+            const mainCard = document.querySelector('.main-player-card');
+            if (shield) shield.style.display = 'none';
+            if (mainCard) mainCard.classList.remove('screen-protected-blurred');
+        });
+
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                const shield = document.getElementById('securityScreenShield');
+                const mainCard = document.querySelector('.main-player-card');
+                if (shield) shield.style.display = 'flex';
+                if (mainCard) mainCard.classList.add('screen-protected-blurred');
+            } else {
+                const shield = document.getElementById('securityScreenShield');
+                const mainCard = document.querySelector('.main-player-card');
+                if (shield) shield.style.display = 'none';
+                if (mainCard) mainCard.classList.remove('screen-protected-blurred');
+            }
+        });
+
+        // 3. Disable Context Menu, Text Selection, Drag & Copy Globally
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        document.addEventListener('copy', function(e) {
+            e.preventDefault();
+            if (e.clipboardData) {
+                e.clipboardData.setData('text/plain', '⚠️ Protected Content - EduAiQ Security Alert: Copying is disabled.');
+            }
+            return false;
+        });
+
+        document.addEventListener('cut', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        document.addEventListener('selectstart', function(e) {
+            if (!e.target.closest('input, textarea')) {
+                e.preventDefault();
+                return false;
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', loadLessonPlayer);
 
@@ -460,36 +742,182 @@
 
         function extractYouTubeId(url) {
             if (!url) return '';
-            const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+            const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/i);
             return (match && match[1]) ? match[1] : '';
+        }
+
+        function extractVimeoId(url) {
+            if (!url) return '';
+            const match = url.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)/i);
+            return (match && match[1]) ? match[1] : '';
+        }
+
+        function extractDrivePreviewUrl(url) {
+            if (!url || !url.includes('drive.google.com')) return '';
+            const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+            if (match && match[1]) {
+                return `https://drive.google.com/file/d/${match[1]}/preview`;
+            }
+            return '';
+        }
+
+        function handleLessonVideoError(videoSrc) {
+            const viewer = document.getElementById('contentViewer');
+            if (!viewer) return;
+            const isPdf = videoSrc.toLowerCase().endsWith('.pdf');
+            if (isPdf) {
+                currentLesson.content_type = 'pdf';
+                renderContentViewer();
+                return;
+            }
+            viewer.innerHTML = `
+                <div class="p-5 text-center bg-dark text-white rounded w-100">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 64px; height: 64px; font-size: 28px; background: rgba(253, 126, 20, 0.15); color: #fd7e14;">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Video Playback Stream</h5>
+                    <p class="text-white-50 small mb-4" style="max-width: 480px; margin: 0 auto;">
+                        If the video does not auto-play in this browser window, you can view or download the uploaded video directly.
+                    </p>
+                    <a href="${videoSrc}" target="_blank" class="btn btn-warning text-dark fw-bold px-4 py-2 rounded-pill shadow-sm">
+                        <i class="fas fa-external-link-alt me-2"></i> Watch / Open Video File
+                    </a>
+                </div>
+            `;
         }
 
         async function renderContentViewer() {
             const viewer = document.getElementById('contentViewer');
+            const url = (currentLesson.content_url || '').trim();
+            const fileUrl = (currentLesson.content_file || '').trim();
+            const fullFileUrl = fileUrl ? (fileUrl.startsWith('http') ? fileUrl : (window.location.origin + fileUrl)) : '';
+            const contentType = (currentLesson.content_type || '').toLowerCase();
 
-            if (currentLesson.content_type === 'video') {
-                const url = currentLesson.content_url || '';
-                const fileUrl = currentLesson.content_file || '';
-                const ytId = extractYouTubeId(url);
+            // Auto-detect if file or url is a PDF document
+            const isPdf = contentType === 'pdf' || 
+                          (fileUrl && fileUrl.toLowerCase().endsWith('.pdf')) || 
+                          (url && url.toLowerCase().endsWith('.pdf'));
 
-                if (ytId) {
+            if (isPdf) {
+                // Update badge to PDF
+                const typeBadge = document.getElementById('lessonTypeBadge');
+                if (typeBadge) {
+                    typeBadge.textContent = 'PDF Document';
+                    typeBadge.className = 'badge bg-danger text-uppercase px-2.5 py-1.5 mb-2';
+                }
+                const fileTarget = fileUrl || url;
+                if (fileTarget) {
+                    const fullPdfUrl = fileTarget.startsWith('http') ? fileTarget : (window.location.origin + fileTarget);
                     viewer.innerHTML = `
-                        <div class="position-relative w-100 bg-dark rounded overflow-hidden" style="height: 480px;">
+                        <div class="w-100 bg-white p-3 rounded shadow-sm text-center position-relative protected-watermark-bg" oncontextmenu="return false;">
+                            <div class="d-flex justify-content-between align-items-center mb-3 px-2 flex-wrap gap-2">
+                                <span class="fw-bold text-dark"><i class="fas fa-file-pdf text-danger me-2"></i> PDF Document: ${currentLesson.title}</span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <button class="btn btn-sm btn-outline-secondary px-3" onclick="changeLessonPdfPage(-1)"><i class="fas fa-chevron-left"></i> Prev</button>
+                                    <span class="text-xs fw-bold text-dark">Page <span id="currentLessonPdfPage">1</span> of <span id="totalLessonPdfPages">1</span></span>
+                                    <button class="btn btn-sm btn-outline-secondary px-3" onclick="changeLessonPdfPage(1)">Next <i class="fas fa-chevron-right"></i></button>
+                                </div>
+                            </div>
+                            <div class="position-relative d-inline-block w-100 bg-dark rounded p-2 overflow-hidden" style="max-height: 520px; overflow-y: auto;">
+                                <div class="floating-security-watermark">
+                                    <i class="fas fa-shield-alt me-1 text-warning"></i> EduAiQ • ${userIdentifier} • Protected PDF
+                                </div>
+                                <canvas id="lessonPdfCanvas" style="max-width: 100%; height: auto; margin: 0 auto; display: block; user-select: none; pointer-events: none;"></canvas>
+                            </div>
+                        </div>
+                    `;
+                    setTimeout(() => renderLessonPdfCanvas(fullPdfUrl), 100);
+                } else {
+                    viewer.innerHTML = `<div class="p-5 text-center bg-white text-dark rounded w-100"><h5>No PDF File Uploaded</h5></div>`;
+                }
+                return;
+            }
+
+            if (contentType === 'video' || fileUrl.match(/\.(mp4|webm|ogg|mov|mkv|m4v)$/i) || url.match(/\.(mp4|webm|ogg|mov|mkv|m4v)$/i) || extractYouTubeId(url) || extractVimeoId(url) || extractDrivePreviewUrl(url)) {
+                // Update badge to Video
+                const typeBadge = document.getElementById('lessonTypeBadge');
+                if (typeBadge) {
+                    typeBadge.textContent = 'Video';
+                    typeBadge.className = 'badge bg-primary text-uppercase px-2.5 py-1.5 mb-2';
+                }
+
+                const ytId = extractYouTubeId(url);
+                const vimeoId = extractVimeoId(url);
+                const driveUrl = extractDrivePreviewUrl(url);
+                const hasUploadedVideo = Boolean(fileUrl && (fileUrl.match(/\.(mp4|webm|ogg|mov|mkv|m4v)$/i) || !ytId));
+                const videoSrc = fullFileUrl || url;
+                const userIdentifier = '{{ user.username|default:"Student" }}';
+
+                if (hasUploadedVideo && videoSrc) {
+                    viewer.innerHTML = `
+                        <div class="video-protected-container d-flex align-items-center justify-content-center w-100" style="min-height: 480px; height: 480px; background: #000000;" oncontextmenu="return false;">
+                            <div class="floating-security-watermark">
+                                <i class="fas fa-shield-alt me-1 text-warning"></i> EduAiQ • ${userIdentifier} • Protected Content
+                            </div>
+                            <video id="activeLessonVideo" controls controlsList="nodownload noplaybackrate" disablePictureInPicture oncontextmenu="return false;" playsinline preload="metadata" 
+                                style="width: 100%; height: 100%; max-height: 480px; object-fit: contain; background: #000;" 
+                                onerror="handleLessonVideoError('${videoSrc}')">
+                                <source src="${videoSrc}" type="video/mp4">
+                                <source src="${videoSrc}" type="video/webm">
+                                <source src="${videoSrc}">
+                                Your browser does not support video playback.
+                            </video>
+                        </div>
+                    `;
+                } else if (ytId) {
+                    viewer.innerHTML = `
+                        <div class="video-protected-container position-relative w-100 bg-dark overflow-hidden" style="height: 480px;" oncontextmenu="return false;">
+                            <div class="video-shield-top" title="EduAiQ Video Protection"></div>
+                            <div class="floating-security-watermark">
+                                <i class="fas fa-shield-alt me-1 text-warning"></i> EduAiQ • ${userIdentifier} • Protected Content
+                            </div>
                             <iframe id="lessonYtIframe"
-                                src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=0&rel=0&modestbranding=1&controls=1" 
+                                src="https://www.youtube.com/embed/${ytId}?rel=0&modestbranding=1&controls=1&iv_load_policy=3&playsinline=1&enablejsapi=1" 
                                 title="Lesson Video"
                                 frameborder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                                 allowfullscreen 
                                 style="width: 100%; height: 100%; border: none;">
                             </iframe>
                         </div>
                     `;
-                } else if (fileUrl || url) {
-                    const videoSrc = fileUrl || url;
+                } else if (vimeoId) {
                     viewer.innerHTML = `
-                        <div class="position-relative w-100 bg-dark rounded overflow-hidden" style="height: 480px;">
-                            <video controls controlsList="nodownload" style="width: 100%; height: 100%; border-radius: 8px;" src="${videoSrc}">
+                        <div class="video-protected-container position-relative w-100 bg-dark overflow-hidden" style="height: 480px;" oncontextmenu="return false;">
+                            <div class="floating-security-watermark">
+                                <i class="fas fa-shield-alt me-1 text-warning"></i> EduAiQ • ${userIdentifier}
+                            </div>
+                            <iframe src="https://player.vimeo.com/video/${vimeoId}?title=0&byline=0&portrait=0" 
+                                frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen 
+                                style="width: 100%; height: 100%; border: none;">
+                            </iframe>
+                        </div>
+                    `;
+                } else if (driveUrl) {
+                    viewer.innerHTML = `
+                        <div class="video-protected-container position-relative w-100 bg-dark overflow-hidden" style="height: 480px;" oncontextmenu="return false;">
+                            <div class="floating-security-watermark">
+                                <i class="fas fa-shield-alt me-1 text-warning"></i> EduAiQ • ${userIdentifier}
+                            </div>
+                            <iframe src="${driveUrl}" 
+                                frameborder="0" allow="autoplay" allowfullscreen 
+                                style="width: 100%; height: 100%; border: none;">
+                            </iframe>
+                        </div>
+                    `;
+                } else if (videoSrc) {
+                    viewer.innerHTML = `
+                        <div class="video-protected-container d-flex align-items-center justify-content-center w-100" style="min-height: 480px; height: 480px; background: #000000;" oncontextmenu="return false;">
+                            <div class="floating-security-watermark">
+                                <i class="fas fa-shield-alt me-1 text-warning"></i> EduAiQ • ${userIdentifier} • Protected Content
+                            </div>
+                            <video id="activeLessonVideo" controls controlsList="nodownload noplaybackrate" disablePictureInPicture oncontextmenu="return false;" playsinline preload="metadata" 
+                                style="width: 100%; height: 100%; max-height: 480px; object-fit: contain; background: #000;" 
+                                onerror="handleLessonVideoError('${videoSrc}')">
+                                <source src="${videoSrc}" type="video/mp4">
+                                <source src="${videoSrc}" type="video/webm">
+                                <source src="${videoSrc}">
                                 Your browser does not support video playback.
                             </video>
                         </div>
@@ -499,11 +927,11 @@
                         <div class="p-5 text-center bg-dark text-white rounded">
                             <i class="fas fa-video fa-3x text-warning mb-3"></i>
                             <h5>No Video Available</h5>
-                            <p class="text-muted">No video was uploaded for this lesson.</p>
+                            <p class="text-muted">No video link or file was uploaded for this lesson.</p>
                         </div>
                     `;
                 }
-            } else if (currentLesson.content_type === 'assignment') {
+            } else if (contentType === 'assignment') {
                 // Fetch assignment submission status
                 try {
                     const res = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/assignment/`, { credentials: 'include' });

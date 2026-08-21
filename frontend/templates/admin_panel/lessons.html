@@ -195,27 +195,31 @@
     const urlContainer = document.getElementById('urlFieldContainer');
     const fileContainer = document.getElementById('fileFieldContainer');
 
+    const urlLabel = document.querySelector('#urlFieldContainer label');
     const fileLabel = document.querySelector('#fileFieldContainer label');
     const fileInput = document.getElementById('lesFile');
+    const urlInput = document.getElementById('lesUrl');
 
     if (type === 'video') {
       urlContainer.classList.remove('d-none');
       fileContainer.classList.remove('d-none');
-      fileLabel.innerHTML = 'Upload Video File';
-      fileInput.setAttribute('accept', 'video/*');
-      document.getElementById('lesUrl').required = false;
+      urlLabel.innerHTML = 'Video Link (YouTube, Vimeo, Drive, or Direct URL)';
+      urlInput.placeholder = 'https://www.youtube.com/watch?v=...';
+      fileLabel.innerHTML = 'Or Upload Video File (.mp4, .webm, .mov)';
+      fileInput.setAttribute('accept', 'video/mp4,video/webm,video/ogg,video/quicktime,video/*');
+      urlInput.required = false;
       fileInput.required = false;
     } else if (type === 'pdf') {
       urlContainer.classList.add('d-none');
       fileContainer.classList.remove('d-none');
-      fileLabel.innerHTML = 'Upload PDF File <span class="text-danger">*</span>';
-      fileInput.setAttribute('accept', 'application/pdf');
-      document.getElementById('lesUrl').required = false;
+      fileLabel.innerHTML = 'Upload PDF Document <span class="text-danger">*</span>';
+      fileInput.setAttribute('accept', 'application/pdf,.pdf');
+      urlInput.required = false;
       fileInput.required = true;
     } else {
       urlContainer.classList.add('d-none');
       fileContainer.classList.add('d-none');
-      document.getElementById('lesUrl').required = false;
+      urlInput.required = false;
       fileInput.required = false;
     }
   }
