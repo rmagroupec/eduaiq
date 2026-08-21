@@ -22,81 +22,79 @@
 </section>
 
 
-<section class="about-section" style="margin-bottom: 40px;">
+<section class="home-team-section team-page-section py-5">
 <div class="container">
-<div class="title-divider-center"></div>
-<h2 class="about-title text-center">The People Behind EduAiQ</h2>
-<div class="row">
-<div class="col-md-8 offset-md-2">
-<p class="about-describe" style="text-align: center;">
-                                From AI Lab mentors to Olympiad curriculum leads, every person on this team works
-                                directly with students and institutions — not behind the scenes. Here's a look at
-                                the mentors guiding EduAiQ's programs.
-                            </p>
-</div>
-</div>
-</div>
-</section>
+  <div class="text-center mb-4">
+    <div class="title-divider-center mx-auto mb-2"></div>
+    <h2 class="about-title mb-3">The People Behind EduAiQ</h2>
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-10">
+        <p class="about-describe text-muted mb-0">
+          From AI Lab mentors to Olympiad curriculum leads, every person on this team works
+          directly with students and institutions — not behind the scenes. Here's a look at
+          the mentors guiding EduAiQ's programs.
+        </p>
+      </div>
+    </div>
+  </div>
 
-<section class="home-team-section team-page-section">
-<div class="container">
-<div class="group-member">
-<div class="row align-items-center justify-content-center">
-{% for member in team_members %}
-<div class="col-sm-6 col-md-4 col-lg-3 p-3">
-<figure class="team-img">
-<a href="/team/{{ member.slug }}/">
-<img alt="{{ member.name }}" src="{{ member.photo_url }}"/>
-</a>
-</figure>
-<div class="team-content text-center">
-<h4>
-<a href="/team/{{ member.slug }}/">{{ member.name }}</a>
-</h4>
-<p>{{ member.designation }}</p>
-</div>
-<div class="d-flex justify-content-center align-items-center">
-<div class="social-links team-social-link">
-<ul>
-{% if member.facebook_url %}
-<li>
-<a href="{{ member.facebook_url }}" target="_blank">
-<i class="fab fa-facebook"></i>
-</a>
-</li>
-{% endif %}
-{% if member.twitter_url %}
-<li>
-<a href="{{ member.twitter_url }}" target="_blank">
-<i class="fab fa-twitter"></i>
-</a>
-</li>
-{% endif %}
-{% if member.whatsapp_url %}
-<li>
-<a href="{{ member.whatsapp_url }}" target="_blank">
-<i class="fab fa-whatsapp"></i>
-</a>
-</li>
-{% endif %}
-{% if member.linkedin_url %}
-<li>
-<a href="{{ member.linkedin_url }}" target="_blank">
-<i class="fab fa-linkedin-in"></i>
-</a>
-</li>
-{% endif %}
-</ul>
-</div>
-</div>
-</div>
-{% empty %}
-<div class="col-12 text-center py-5">
-<p class="text-muted">No team members listed yet.</p>
-</div>
-{% endfor %}
-</div>
-</div>
+  <div class="group-member mt-4">
+    <div class="row align-items-center justify-content-center">
+      {% for member in team_members %}
+      <div class="col-sm-6 col-md-4 col-lg-3 p-3">
+        <figure class="team-img">
+          <a href="/team/{{ member.slug }}/">
+            <img alt="{{ member.name }}" src="{{ member.photo_url }}"/>
+          </a>
+        </figure>
+        <div class="team-content text-center">
+          <h4>
+            <a href="/team/{{ member.slug }}/">{{ member.name }}</a>
+          </h4>
+          <p>{{ member.designation }}</p>
+        </div>
+        <div class="d-flex justify-content-center align-items-center">
+          <div class="social-links team-social-link">
+            <ul>
+              {% if member.facebook_url %}
+              <li>
+                <a href="{{ member.facebook_url }}" target="_blank">
+                  <i class="fab fa-facebook"></i>
+                </a>
+              </li>
+              {% endif %}
+              {% if member.twitter_url %}
+              <li>
+                <a href="{{ member.twitter_url }}" target="_blank">
+                  <i class="fab fa-twitter"></i>
+                </a>
+              </li>
+              {% endif %}
+              {% if member.whatsapp_url %}
+              <li>
+                <a href="{{ member.whatsapp_url }}" target="_blank">
+                  <i class="fab fa-whatsapp"></i>
+                </a>
+              </li>
+              {% endif %}
+              {% if member.linkedin_url %}
+              <li>
+                <a href="{{ member.linkedin_url }}" target="_blank">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center py-5">
+        <p class="text-muted">No team members listed yet.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
 </div>
 </section>
 

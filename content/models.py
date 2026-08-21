@@ -69,9 +69,9 @@ class TeamMember(models.Model):
 
     @property
     def photo_url(self):
-        if self.photo and hasattr(self.photo, 'url'):
+        if self.photo and hasattr(self.photo, 'url') and self.photo.name:
             return self.photo.url
-        return '/static/assets/img/educator-img8.png'
+        return '/static/assets/img/user-img.png'
 
 
 class BlogCategory(models.Model):

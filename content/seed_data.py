@@ -19,7 +19,7 @@ def seed():
         {
             "name": "William Smith",
             "slug": "william-smith",
-            "designation": "AI & Data Science Lead",
+            "designation": "AI Lab Mentor",
             "quote": "Empowering young minds with practical AI skills for the next generation of technology.",
             "bio": "William Smith is a leading AI researcher and educator with over 8 years of experience mentoring students in machine learning, computer vision, and Python applications. He oversees the EduAiQ AI Lab hands-on projects.",
             "email": "william@eduaiq.com",
@@ -38,7 +38,7 @@ def seed():
         {
             "name": "Jenny White",
             "slug": "jenny-white",
-            "designation": "Skill Development Head",
+            "designation": "Skill Development Coach",
             "quote": "Skills are the true currency of the modern workforce. Learn deeply and build boldly.",
             "bio": "Jenny White specializes in industry-aligned skill development courses, career acceleration frameworks, and enterprise-grade learning paths. She bridges classroom learning with real-world employability.",
             "email": "jenny@eduaiq.com",
@@ -76,7 +76,7 @@ def seed():
         {
             "name": "Alice Heard",
             "slug": "alice-heard",
-            "designation": "AI Books Author & Curriculum Lead",
+            "designation": "AI Books Author",
             "quote": "Demystifying complex technology into clear, actionable books for every student.",
             "bio": "Alice Heard has authored premier AI handbooks and structured educational modules used across hundreds of partner institutions, colleges, and schools.",
             "email": "alice@eduaiq.com",

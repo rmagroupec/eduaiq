@@ -411,11 +411,13 @@
 </div>
 </div>
 <div class="group-member">
-<div class="row">
+<div class="row justify-content-center">
 {% for mentor in mentors %}
-<div class="col-sm-6 col-lg-3 p-3">
+<div class="col-sm-6 col-md-4 col-lg-3 p-3">
 <figure class="team-img">
+<a href="/team/{{ mentor.slug }}/">
 <img alt="{{ mentor.name }}" src="{{ mentor.photo_url }}"/>
+</a>
 </figure>
 <div class="team-content text-center">
 <h4>

@@ -52,11 +52,14 @@ def handler500(request):
 # ==========================
 
 def home(request):
-    """Homepage - Featured categories, courses, and latest blog posts"""
+    """Homepage - Featured categories, courses, team members, and latest blog posts"""
     categories = get_allowed_categories_for_user(request.user)
+    team_members = TeamMember.objects.filter(is_active=True).order_by('order', 'created_at')[:4]
     latest_blogs = BlogPost.objects.filter(status='published').select_related('category', 'author_team_member').order_by('-published_at')[:3]
     return render(request, "index.html", {
         'categories': categories,
+        'team_members': team_members,
+        'mentors': team_members,
         'latest_blogs': latest_blogs,
     })
 
@@ -69,12 +72,21 @@ def about(request):
 
 def courses(request):
     """
-    All courses listing page.
+    All courses listing page with search query filtering.
     Publicly accessible catalog display (excludes AI Books so books stay in AI Books section).
     """
+    search_q = request.GET.get('search', '').strip() or request.GET.get('q', '').strip() or request.GET.get('s', '').strip()
     allowed_courses = get_allowed_courses_for_user(request.user, exclude_books=True)
+    if search_q:
+        allowed_courses = allowed_courses.filter(
+            Q(title__icontains=search_q) |
+            Q(short_description__icontains=search_q) |
+            Q(description__icontains=search_q) |
+            Q(category__name__icontains=search_q)
+        ).distinct()
     return render(request, "courses.html", {
-        'courses': allowed_courses
+        'courses': allowed_courses,
+        'search_query': search_q
     })
 
 
@@ -1168,7 +1180,7 @@ def admin_team_delete(request, pk):
     member = get_object_or_404(TeamMember, pk=pk)
     name = member.name
     member.delete()
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json':
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json' or 'application/json' in request.headers.get('Accept', ''):
         return JsonResponse({'success': True, 'message': f"'{name}' deleted successfully."})
     messages.success(request, f"'{name}' deleted successfully.")
     return redirect('admin_team_list')

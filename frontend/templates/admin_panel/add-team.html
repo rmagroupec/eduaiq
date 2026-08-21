@@ -68,8 +68,13 @@
         <!-- Profile Photo -->
         <div class="col-md-6">
           <label class="text-sm fw-semibold text-primary-light mb-8" for="photo">Profile Photo</label>
-          <input type="file" class="form-control radius-8" id="photo" name="photo" accept="image/*" onchange="previewPhoto(event)">
-          <span class="text-xs text-secondary-light mt-1 d-block">Recommended: Square PNG/JPG (400x400 px or higher).</span>
+          <div class="d-flex align-items-center gap-16">
+            <img id="newPhotoPreview" src="{% static 'assets/img/user-img.png' %}" alt="Preview" class="rounded-circle object-fit-cover border shadow-sm flex-shrink-0" style="width: 50px; height: 50px; min-width: 50px; max-width: 50px; aspect-ratio: 1 / 1; object-fit: cover;">
+            <div class="flex-grow-1">
+              <input type="file" class="form-control radius-8" id="photo" name="photo" accept="image/*" onchange="previewPhoto(event)">
+              <span class="text-xs text-secondary-light mt-1 d-block">Recommended: Square PNG/JPG (400x400 px or higher).</span>
+            </div>
+          </div>
         </div>
 
         <div class="col-md-3">
@@ -157,7 +162,14 @@
 function previewPhoto(event) {
   const file = event.target.files[0];
   if (file) {
-    console.log("Photo selected:", file.name);
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const preview = document.getElementById('newPhotoPreview');
+      if (preview) {
+        preview.src = e.target.result;
+      }
+    };
+    reader.readAsDataURL(file);
   }
 }
 </script>

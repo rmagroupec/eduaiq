@@ -27,13 +27,20 @@
 $( document ).on( 'click', '.header-search-icon .search-icon', function(e){
 	e.preventDefault();
 	$( '.header-search-form' ).addClass( 'search-in' );
+  setTimeout(function() {
+    $( '#spotlightSearchInput' ).focus();
+  }, 150);
 });
 
-$( '.header-search-form, .search-close' ).on( 'click', function(e) {   
+$( document ).on( 'click', '.header-search-backdrop, .search-close', function(e) {   
     e.preventDefault();
-    if(!$(e.target).is( '.header-search-form input' )) {
-        $( '.header-search-form' ).removeClass( 'search-in' );
-    }
+    $( '.header-search-form' ).removeClass( 'search-in' );
+});
+
+$( document ).on( 'keydown', function(e) {
+  if (e.key === 'Escape' && $( '.header-search-form' ).hasClass( 'search-in' )) {
+    $( '.header-search-form' ).removeClass( 'search-in' );
+  }
 });
 
 /* Mobile slick nav */

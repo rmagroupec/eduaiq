@@ -295,32 +295,30 @@
     }
   }
 
-  async function deleteLesson(id, name) {
-    if (!confirm(`Are you sure you want to delete the lesson "${name}"?`)) {
-      return;
-    }
+  function deleteLesson(id, name) {
+    showDeleteToast(name, async function() {
+      try {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+        const response = await fetch(`${API_BASE_URL}/courses/lessons/${id}/`, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRFToken': csrfToken
+          },
+          credentials: 'include'
+        });
 
-    try {
-      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
-      const response = await fetch(`${API_BASE_URL}/courses/lessons/${id}/`, {
-        method: 'DELETE',
-        headers: {
-          'X-CSRFToken': csrfToken
-        },
-        credentials: 'include'
-      });
-
-      if (response.ok) {
-        showToast('Lesson deleted successfully!', 'success');
-        loadAdminLessons();
-      } else {
-        const data = await response.json();
-        showToast('Failed to delete lesson: ' + (data.error || 'Server error'), 'error');
+        if (response.ok) {
+          showToast('Lesson deleted successfully!', 'success');
+          loadAdminLessons();
+        } else {
+          const data = await response.json();
+          showToast('Failed to delete lesson: ' + (data.error || 'Server error'), 'error');
+        }
+      } catch (e) {
+        console.error(e);
+        showToast('Error deleting lesson.', 'error');
       }
-    } catch (e) {
-      console.error(e);
-      showToast('Error deleting lesson.', 'error');
-    }
+    });
   }
 
   function getCookie(name) {

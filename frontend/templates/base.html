@@ -86,16 +86,69 @@
             <i class="fas fa-chevron-up"></i>
         </a>
 
-        <!-- Search overlay -->
-        <div class="header-search-form">
-            <div class="container">
-                <div class="header-search-container">
-                    <form class="search-form" method="get" role="search">
-                        <input name="s" placeholder="Enter your text..." type="text">
+        <!-- Modern Spotlight Search Modal -->
+        <div class="header-search-form header-search-overlay" id="headerSearchModal">
+            <div class="header-search-backdrop"></div>
+            <div class="header-search-dialog">
+                <div class="header-search-card">
+                    <form class="header-search-form-box" action="/courses/" method="get" role="search">
+                        <div class="search-input-wrapper">
+                            <i class="fas fa-search search-leading-icon"></i>
+                            <input type="text" 
+                                   name="search" 
+                                   class="search-spotlight-input" 
+                                   placeholder="Search courses, mentors, AI Lab, Olympiads..." 
+                                   autocomplete="off"
+                                   id="spotlightSearchInput">
+                            <div class="search-actions-group">
+                                <span class="search-kbd-badge d-none d-md-inline-flex">ESC</span>
+                                <button type="button" class="search-modal-close-btn search-close" aria-label="Close search">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
                     </form>
-                    <a class="search-close" href="#">
-                        <i class="fas fa-times"></i>
-                    </a>
+
+                    <!-- Quick Suggestion Links -->
+                    <div class="search-suggestions-container">
+                        <div class="search-suggestions-title">
+                            <i class="fas fa-fire text-orange me-1"></i> Popular Searches
+                        </div>
+                        <div class="search-tags-row">
+                            <a href="/courses/?search=AI" class="search-tag-chip">
+                                <i class="fas fa-robot text-primary-gold"></i> AI & Machine Learning
+                            </a>
+                            <a href="/courses/?search=Python" class="search-tag-chip">
+                                <i class="fab fa-python text-primary-gold"></i> Python Programming
+                            </a>
+                            <a href="/olympiads/" class="search-tag-chip">
+                                <i class="fas fa-trophy text-primary-gold"></i> Olympiad Exams
+                            </a>
+                            <a href="/ai-lab/" class="search-tag-chip">
+                                <i class="fas fa-microchip text-primary-gold"></i> AI Lab
+                            </a>
+                            <a href="/skill-development/" class="search-tag-chip">
+                                <i class="fas fa-code text-primary-gold"></i> Skill Development
+                            </a>
+                            <a href="/team/" class="search-tag-chip">
+                                <i class="fas fa-users text-primary-gold"></i> Meet Mentors
+                            </a>
+                            <a href="/ai-books/" class="search-tag-chip">
+                                <i class="fas fa-book-open text-primary-gold"></i> AI Books
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="search-modal-bottom-bar">
+                        <div class="d-flex align-items-center gap-3 text-muted text-xs">
+                            <span><kbd>↵</kbd> Press Enter to search</span>
+                            <span class="d-none d-sm-inline"><kbd>ESC</kbd> to close</span>
+                        </div>
+                        <a href="/courses/" class="view-all-courses-link text-xs fw-semibold text-orange">
+                            Browse all courses <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

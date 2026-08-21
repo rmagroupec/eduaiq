@@ -47,7 +47,7 @@
       <div class="row gy-4">
         <!-- Current Photo display -->
         <div class="col-12 d-flex align-items-center gap-20 bg-neutral-50 p-16 radius-12 border">
-          <img src="{{ member.photo_url }}" alt="{{ member.name }}" class="w-80-px h-80-px rounded-circle object-fit-cover border shadow-sm">
+          <img src="{{ member.photo_url }}" alt="{{ member.name }}" id="teamPhotoPreview" class="rounded-circle object-fit-cover border shadow-sm flex-shrink-0" style="width: 80px; height: 80px; min-width: 80px; max-width: 80px; aspect-ratio: 1 / 1; object-fit: cover;">
           <div>
             <h6 class="text-md fw-semibold mb-4">{{ member.name }}</h6>
             <span class="text-sm text-secondary-light d-block mb-8">URL Slug: <code>/team/{{ member.slug }}/</code></span>
@@ -85,7 +85,7 @@
         <!-- Photo upload -->
         <div class="col-md-6">
           <label class="text-sm fw-semibold text-primary-light mb-8" for="photo">Change Profile Photo</label>
-          <input type="file" class="form-control radius-8" id="photo" name="photo" accept="image/*">
+          <input type="file" class="form-control radius-8" id="photo" name="photo" accept="image/*" onchange="previewPhoto(event)">
           <span class="text-xs text-secondary-light mt-1 d-block">Leave blank to keep existing photo.</span>
         </div>
 
@@ -165,4 +165,22 @@
     </form>
   </div>
 </div>
+{% endblock %}
+
+{% block js %}
+<script>
+function previewPhoto(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const preview = document.getElementById('teamPhotoPreview');
+      if (preview) {
+        preview.src = e.target.result;
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+}
+</script>
 {% endblock %}

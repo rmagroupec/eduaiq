@@ -183,20 +183,17 @@
     }
   }
 
-  async function deleteCategory(id, name) {
-    if (!confirm(`Are you sure you want to delete the category "${name}"?`)) {
-      return;
-    }
-
-    try {
-      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
-      const response = await fetch(`${API_BASE_URL}/courses/categories/${id}/`, {
-        method: 'DELETE',
-        headers: {
-          'X-CSRFToken': csrfToken
-        },
-        credentials: 'include'
-      });
+  function deleteCategory(id, name) {
+    showDeleteToast(name, async function() {
+      try {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+        const response = await fetch(`${API_BASE_URL}/courses/categories/${id}/`, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRFToken': csrfToken
+          },
+          credentials: 'include'
+        });
 
       if (response.ok) {
         showToast('Category deleted successfully!', 'success');
@@ -217,10 +214,7 @@
         }
         showToast(errorMsg, 'error');
       }
-    } catch (e) {
-      console.error(e);
-      showToast('Error deleting category.', 'error');
-    }
+    });
   }
 
   function getCookie(name) {

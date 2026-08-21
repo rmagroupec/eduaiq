@@ -235,11 +235,11 @@
 {% block js %}
 <script>
 function confirmDeleteBlog(blogId, title) {
-  if (confirm(`Are you sure you want to delete "${title}"? This cannot be undone.`)) {
+  showDeleteToast(title, function() {
     const form = document.getElementById('deleteBlogForm');
     form.action = `/admin-panel/blogs/${blogId}/delete/`;
     form.submit();
-  }
+  });
 }
 </script>
 {% endblock %}

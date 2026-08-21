@@ -128,7 +128,7 @@
         </thead>
         <tbody>
           {% for member in members %}
-          <tr>
+          <tr id="team-row-{{ member.pk }}">
             <td class="fw-semibold text-secondary-light">#{{ member.order }}</td>
             <td>
               <div class="d-flex align-items-center gap-12">
@@ -192,7 +192,7 @@
   </div>
 </div>
 
-<!-- Delete Form Modal / Script -->
+<!-- Delete Form Fallback -->
 <form id="deleteMemberForm" method="POST" style="display: none;">
   {% csrf_token %}
 </form>
@@ -219,22 +219,61 @@ function toggleMemberStatus(memberId, btn) {
         btn.className = 'btn btn-sm btn-secondary radius-4 py-4 px-10';
         btn.textContent = 'Inactive';
       }
+      showToast(data.message || 'Status updated', 'success');
     } else {
-      alert(data.message || 'Error updating status');
+      showToast(data.message || 'Error updating status', 'error');
     }
   })
   .catch(err => {
     console.error(err);
-    alert('Network error');
+    showToast('Network error', 'error');
   });
 }
 
 function confirmDeleteMember(memberId, name) {
-  if (confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) {
-    const form = document.getElementById('deleteMemberForm');
-    form.action = `/admin-panel/team/${memberId}/delete/`;
-    form.submit();
-  }
+  showDeleteToast(name, async function() {
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || (window.getCookie && window.getCookie('csrftoken')) || '{{ csrf_token }}';
+      const response = await fetch(`/admin-panel/team/${memberId}/delete/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrfToken,
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'application/json'
+        }
+      });
+      
+      const data = await response.json().catch(() => ({ success: response.ok }));
+      if (response.ok && data.success !== false) {
+        const row = document.getElementById(`team-row-${memberId}`);
+        if (row) {
+          row.style.transition = 'all 0.35s ease';
+          row.style.opacity = '0';
+          row.style.transform = 'translateX(40px)';
+          setTimeout(() => {
+            row.remove();
+            if ($('tbody tr').length === 0) {
+              location.reload();
+            }
+          }, 350);
+        } else {
+          setTimeout(() => location.reload(), 400);
+        }
+        showToast(data.message || `"${name}" deleted successfully!`, 'success');
+      } else {
+        showToast(data.message || 'Failed to delete team member.', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      const form = document.getElementById('deleteMemberForm');
+      if (form) {
+        form.action = `/admin-panel/team/${memberId}/delete/`;
+        form.submit();
+      } else {
+        showToast('Network error while deleting.', 'error');
+      }
+    }
+  });
 }
 </script>
 {% endblock %}

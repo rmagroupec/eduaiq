@@ -92,12 +92,9 @@
                   </span>
                 </td>
                 <td class="text-center">
-                  <form method="POST" action="/admin-panel/blog-categories/{{ cat.pk }}/delete/" class="d-inline" onsubmit="return confirm('Delete category \'{{ cat.name|escapejs }}\'? Posts in this category will become unassigned.');">
-                    {% csrf_token %}
-                    <button type="submit" class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center border-0" title="Delete Category">
-                      <i class="ri-delete-bin-line"></i>
-                    </button>
-                  </form>
+                  <button type="button" class="w-32-px h-32-px bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center border-0" title="Delete Category" onclick="confirmDeleteBlogCategory({{ cat.pk }}, '{{ cat.name|escapejs }}')">
+                    <i class="ri-delete-bin-line"></i>
+                  </button>
                 </td>
               </tr>
               {% empty %}
@@ -114,4 +111,22 @@
     </div>
   </div>
 </div>
+
+<form id="deleteBlogCategoryForm" method="POST" style="display:none;">
+  {% csrf_token %}
+</form>
+{% endblock %}
+
+{% block js %}
+<script>
+function confirmDeleteBlogCategory(catId, catName) {
+  showDeleteToast(catName, function() {
+    const form = document.getElementById('deleteBlogCategoryForm');
+    form.action = `/admin-panel/blog-categories/${catId}/delete/`;
+    form.submit();
+  }, {
+    warningText: 'Posts in this category will become unassigned and this category will be removed.'
+  });
+}
+</script>
 {% endblock %}
