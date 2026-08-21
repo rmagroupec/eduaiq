@@ -204,29 +204,67 @@
   }
 
   function deleteModule(id, name) {
-    showDeleteToast(name, async function() {
-      try {
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
-        const response = await fetch(`${API_BASE_URL}/courses/modules/${id}/`, {
-          method: 'DELETE',
-          headers: {
-            'X-CSRFToken': csrfToken
-          },
-          credentials: 'include'
-        });
+    if (typeof Swal !== 'undefined') {
+      Swal.fire({
+        title: 'Delete Module?',
+        text: `Are you sure you want to delete the module "${name}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, Delete',
+        customClass: {
+          popup: 'radius-16 border-0 shadow-lg',
+          confirmButton: 'btn btn-danger radius-8 px-20 py-8 text-sm me-2',
+          cancelButton: 'btn btn-secondary radius-8 px-20 py-8 text-sm'
+        },
+        buttonsStyling: false
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+            const response = await fetch(`${API_BASE_URL}/courses/modules/${id}/`, {
+              method: 'DELETE',
+              headers: {
+                'X-CSRFToken': csrfToken
+              },
+              credentials: 'include'
+            });
 
-        if (response.ok) {
-          showToast('Module deleted successfully!', 'success');
-          loadAdminModules();
-        } else {
-          const data = await response.json();
-          showToast('Failed to delete module: ' + (data.error || 'Server error'), 'error');
+            if (response.ok) {
+              Swal.fire({ icon: 'success', title: 'Deleted!', text: 'Module deleted successfully.', timer: 1500, showConfirmButton: false });
+              loadAdminModules();
+            } else {
+              const data = await response.json();
+              Swal.fire({ icon: 'error', title: 'Delete Failed', text: data.error || 'Server error' });
+            }
+          } catch (e) {
+            console.error(e);
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error deleting module.' });
+          }
         }
-      } catch (e) {
-        console.error(e);
-        showToast('Error deleting module.', 'error');
-      }
-    });
+      });
+    } else if (typeof showDeleteToast === 'function') {
+      showDeleteToast(name, async function() {
+        try {
+          const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+          const response = await fetch(`${API_BASE_URL}/courses/modules/${id}/`, {
+            method: 'DELETE',
+            headers: { 'X-CSRFToken': csrfToken },
+            credentials: 'include'
+          });
+          if (response.ok) {
+            if (typeof showToast === 'function') showToast('Module deleted successfully!', 'success');
+            loadAdminModules();
+          } else {
+            const data = await response.json();
+            if (typeof showToast === 'function') showToast('Failed to delete module: ' + (data.error || 'Server error'), 'error');
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    }
   }
 
   function getCookie(name) {

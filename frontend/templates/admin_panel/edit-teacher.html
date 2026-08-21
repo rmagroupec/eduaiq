@@ -48,26 +48,75 @@
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="teacherSubject">Subject
-                                        </label>
-<select class="form-control form-select" id="teacherSubject">
-<option disabled="" value="Select a Subject">Select a Subject</option>
-<option value="English">English</option>
-<option value="Mathematics">Mathematics</option>
-<option value="Physics">Physics</option>
-</select>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="teacherSubject">Subject</label>
+<input class="form-control" id="teacherSubject" list="subjectOptions" placeholder="Select or Type Subject..." type="text"/>
+<datalist id="subjectOptions">
+<option value="English"></option>
+<option value="Mathematics"></option>
+<option value="Physics"></option>
+<option value="Chemistry"></option>
+<option value="Biology"></option>
+<option value="Computer Science"></option>
+<option value="Science"></option>
+<option value="Social Studies"></option>
+<option value="History"></option>
+<option value="Geography"></option>
+<option value="Economics"></option>
+<option value="Accountancy"></option>
+<option value="Business Studies"></option>
+<option value="Political Science"></option>
+<option value="Psychology"></option>
+<option value="Sociology"></option>
+<option value="Philosophy"></option>
+<option value="Hindi"></option>
+<option value="Sanskrit"></option>
+<option value="French"></option>
+<option value="German"></option>
+<option value="Spanish"></option>
+<option value="Physical Education"></option>
+<option value="Art & Craft"></option>
+<option value="Music"></option>
+<option value="Environmental Studies (EVS)"></option>
+<option value="Information Technology (IT)"></option>
+</datalist>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="teacherClass">Subject
-                                        </label>
-<select class="form-control form-select" id="teacherClass">
-<option disabled="" value="Select a Class">Select a Class</option>
-<option value="1 (A)">1 (A)</option>
-<option value="2 (A)">2 (A)</option>
-<option value="3 (A)">3 (A)</option>
-</select>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="teacherClass">Class / Section</label>
+<input class="form-control" id="teacherClass" list="classOptions" placeholder="Select or Type Class..." type="text"/>
+<datalist id="classOptions">
+<option value="Playgroup"></option>
+<option value="Nursery"></option>
+<option value="LKG"></option>
+<option value="UKG"></option>
+<option value="Class 1 (A)"></option>
+<option value="Class 1 (B)"></option>
+<option value="Class 2 (A)"></option>
+<option value="Class 2 (B)"></option>
+<option value="Class 3 (A)"></option>
+<option value="Class 3 (B)"></option>
+<option value="Class 4 (A)"></option>
+<option value="Class 4 (B)"></option>
+<option value="Class 5 (A)"></option>
+<option value="Class 5 (B)"></option>
+<option value="Class 6 (A)"></option>
+<option value="Class 6 (B)"></option>
+<option value="Class 7 (A)"></option>
+<option value="Class 7 (B)"></option>
+<option value="Class 8 (A)"></option>
+<option value="Class 8 (B)"></option>
+<option value="Class 9 (A)"></option>
+<option value="Class 9 (B)"></option>
+<option value="Class 10 (A)"></option>
+<option value="Class 10 (B)"></option>
+<option value="Class 11 - Science"></option>
+<option value="Class 11 - Commerce"></option>
+<option value="Class 11 - Arts"></option>
+<option value="Class 12 - Science"></option>
+<option value="Class 12 - Commerce"></option>
+<option value="Class 12 - Arts"></option>
+</datalist>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
@@ -173,8 +222,7 @@
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="wordQualification">Experience
-                                            <span class="text-danger-600">*</span> </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="wordQualification">Qualification <span class="text-danger-600">*</span></label>
 <input class="form-control" id="wordQualification" placeholder="Enter Qualification" type="text"/>
 </div>
 </div>
@@ -204,10 +252,14 @@
 <label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bloodGroup">Blood
                                             Group</label>
 <select class="form-control form-select" id="bloodGroup">
-<option disabled="" value="Select blood group">Select blood group</option>
+<option disabled="" selected="" value="">Select blood group</option>
 <option value="A+">A+</option>
-<option value="AB+">AB+</option>
 <option value="A-">A-</option>
+<option value="B+">B+</option>
+<option value="B-">B-</option>
+<option value="O+">O+</option>
+<option value="O-">O-</option>
+<option value="AB+">AB+</option>
 <option value="AB-">AB-</option>
 </select>
 </div>
@@ -424,8 +476,10 @@
                                             <span class="text-danger-600">*</span>
 </label>
 <div class="position-relative">
-<input class="form-control" id="your-password" placeholder="Enter your password" type="password"/>
-<span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#your-password"></span>
+<input class="form-control" id="your-password" placeholder="Enter your password" type="password" style="padding-right: 45px;"/>
+<span class="toggle-password cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" style="z-index: 10;" data-toggle="#your-password">
+  <i class="ri-eye-line text-xl"></i>
+</span>
 </div>
 </div>
 </div>
@@ -466,19 +520,26 @@
     });
 
     // ================== Password Show Hide Js Start ==========
-    function initializePasswordToggle(toggleSelector) {
-        $(document).on('click', toggleSelector, function () {
-            $(this).toggleClass("ri-eye-line ri-eye-off-line");
-            var input = $($(this).attr("data-toggle"));
-            if (input.attr("type") === "password") {
-                input.attr("type", "text");
-            } else {
-                input.attr("type", "password");
-            }
-        });
-    }
-    // Call the function
-    initializePasswordToggle('.toggle-password');
+    $(document).on('click', '.toggle-password', function () {
+        var $icon = $(this).find('i');
+        if ($icon.length === 0) {
+            $icon = $(this);
+        }
+        var $input = $(this).siblings('input');
+        if ($input.length === 0 && $(this).attr("data-toggle")) {
+            $input = $($(this).attr("data-toggle"));
+        }
+        if ($input.length === 0) {
+            $input = $('#your-password');
+        }
+        if ($input.attr("type") === "password") {
+            $input.attr("type", "text");
+            $icon.removeClass("ri-eye-line").addClass("ri-eye-off-line");
+        } else {
+            $input.attr("type", "password");
+            $icon.removeClass("ri-eye-off-line").addClass("ri-eye-line");
+        }
+    });
     // ========================= Password Show Hide Js End ===========================
 
     // ========================== Drag & Drop Upload photo Js start ========================

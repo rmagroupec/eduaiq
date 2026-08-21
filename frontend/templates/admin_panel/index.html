@@ -844,6 +844,209 @@
   </div>
 </div>
 
+{% elif is_teacher %}
+<!-- TEACHER ACADEMIC WORKSPACE DASHBOARD -->
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h5 class="fw-bold text-dark mb-1">
+      <i class="ri-user-follow-line text-warning me-2"></i>Teacher Academic Workspace Dashboard
+    </h5>
+    <p class="text-neutral-600 text-sm mb-0">Welcome back, <strong class="text-dark">{{ request.user.get_full_name|default:request.user.username }}</strong>! Here is your daily academic overview, student roster, and attendance status.</p>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="badge bg-warning-100 text-warning-700 px-12 py-8 font-weight-bold text-sm radius-8">
+      <i class="ri-shield-user-line me-1"></i> Role: Academic Teacher ({{ teacher_data.subject|default:"Faculty" }})
+    </span>
+  </div>
+</div>
+
+<!-- TEACHER KPI STAT CARDS -->
+<div class="row gy-4 mb-24">
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-primary-100 text-primary-600">
+          <i class="ri-book-open-line"></i>
+        </span>
+        <span class="badge bg-primary-50 text-primary-600 text-xs px-2 py-1 radius-6">Subject</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Subject / Department</span>
+      <h4 class="mb-0 fw-bold text-dark text-lg">{{ teacher_data.subject|default:"Academic Faculty" }}</h4>
+    </div>
+  </div>
+
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-info-100 text-info-600">
+          <i class="ri-graduation-cap-line"></i>
+        </span>
+        <span class="badge bg-info-50 text-info-600 text-xs px-2 py-1 radius-6">Enrolled</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Students</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ teacher_data.total_students|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-success-100 text-success-600">
+          <i class="ri-fingerprint-line"></i>
+        </span>
+        <span class="badge bg-success-50 text-success-600 text-xs px-2 py-1 radius-6">Attendance</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Shift Status</span>
+      <h5 class="mb-0 fw-bold text-dark text-sm mt-2">
+        {% if teacher_data.today_attendance %}
+          <span class="text-success"><i class="ri-checkbox-circle-fill me-1"></i>Punched In</span>
+        {% else %}
+          <span class="text-neutral-500"><i class="ri-time-line me-1"></i>Not Punched</span>
+        {% endif %}
+      </h5>
+    </div>
+  </div>
+
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-secondary-100 text-secondary-600">
+          <i class="ri-hotel-bed-line"></i>
+        </span>
+        <span class="badge bg-secondary-50 text-secondary-600 text-xs px-2 py-1 radius-6">Pending</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">WFH / Leave Requests</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ teacher_data.pending_wfh|default:0 }}</h3>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK TEACHER SHORTCUTS -->
+<div class="card radius-16 border border-neutral-200 p-20 mb-24 bg-base shadow-xs">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-16">
+    <h6 class="fw-bold text-dark mb-0"><i class="ri-flashlight-line text-warning me-2"></i>Teacher Workspace Shortcuts</h6>
+    <span class="text-neutral-500 text-xs">Direct access to your academic and profile actions</span>
+  </div>
+  <div class="d-flex flex-wrap gap-3">
+    <a href="/admin-panel/student-list/" class="btn-eduaiq-primary">
+      <i class="ri-graduation-cap-line me-1.5"></i> Students Roster
+    </a>
+    <a href="/admin-panel/courses/" class="btn-eduaiq-outline">
+      <i class="ri-book-open-line me-1.5"></i> Course Catalog & Syllabus
+    </a>
+    <a href="/admin-panel/employee-attendance/" class="btn-eduaiq-outline">
+      <i class="ri-fingerprint-line me-1.5"></i> My Attendance
+    </a>
+    <a href="/admin-panel/wfh-requests/" class="btn-eduaiq-outline">
+      <i class="ri-hotel-bed-line me-1.5"></i> Apply WFH / Leave
+    </a>
+    <a href="/admin-panel/view-profile/" class="btn-eduaiq-outline">
+      <i class="ri-user-settings-line me-1.5"></i> My Profile
+    </a>
+  </div>
+</div>
+
+<!-- TEACHER DATA GRID: RECENT STUDENTS & SHIFT ATTENDANCE -->
+<div class="row gy-4 mb-24">
+  <!-- Left Column: Student Roster -->
+  <div class="col-xxl-8 col-xl-7 col-lg-12">
+    <div class="card radius-16 border border-neutral-200 h-100 bg-base shadow-xs">
+      <div class="card-header border-bottom border-neutral-200 p-20 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-user-follow-line me-2 text-warning"></i>Student Academic Roster
+          </h6>
+          <span class="text-neutral-500 text-xs">Registered students and class details</span>
+        </div>
+        <a href="/admin-panel/student-list/" class="btn-view-all-pill">
+          View All Students <i class="ri-arrow-right-line ms-1"></i>
+        </a>
+      </div>
+      <div class="card-body p-20">
+        <div class="table-responsive">
+          <table class="table border-neutral-200 table-hover align-middle radius-8">
+            <thead class="bg-neutral-50">
+              <tr>
+                <th scope="col">Student Name</th>
+                <th scope="col">Admission / Roll No</th>
+                <th scope="col">Class / Section</th>
+                <th scope="col">Contact</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for st in teacher_data.recent_students %}
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="w-32-px h-32-px bg-orange-soft text-warning rounded-circle d-flex align-items-center justify-content-center fw-bold text-xs">
+                      {{ st.user.username|slice:":2"|upper }}
+                    </div>
+                    <span class="fw-semibold text-dark text-sm">{{ st.user.get_full_name|default:st.user.username }}</span>
+                  </div>
+                </td>
+                <td class="text-xs text-secondary-light">
+                  <div>Admission: <strong>{{ st.admission_no|default:"-" }}</strong></div>
+                  <div>Roll: <strong>{{ st.roll_number|default:"-" }}</strong></div>
+                </td>
+                <td class="text-xs fw-medium text-neutral-700">{{ st.class_grade|default:"General" }}</td>
+                <td class="text-xs text-secondary-light">
+                  <div>{{ st.user.email|default:st.guardian_phone }}</div>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="text-center py-30 text-secondary-light text-sm">
+                  <i class="ri-inbox-line text-2xl d-block mb-8 text-neutral-400"></i>
+                  No students found in the roster.
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Today's Shift Attendance -->
+  <div class="col-xxl-4 col-xl-5 col-lg-12">
+    <div class="card radius-16 border border-neutral-200 h-100 bg-base shadow-xs p-24">
+      <div class="d-flex align-items-center justify-content-between mb-20">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-fingerprint-line text-warning me-2"></i>Today's Attendance Status
+          </h6>
+          <span class="text-neutral-500 text-xs">Live shift activity & punch logs</span>
+        </div>
+      </div>
+
+      <div class="p-20 radius-12 bg-neutral-50 border border-neutral-100 text-center mb-20">
+        {% if teacher_data.today_attendance %}
+          <div class="w-50-px h-50-px bg-success-100 text-success-600 rounded-circle mx-auto d-flex align-items-center justify-content-center text-2xl mb-12">
+            <i class="ri-checkbox-circle-fill"></i>
+          </div>
+          <h6 class="fw-bold text-success mb-4">Checked In Today</h6>
+          <p class="text-xs text-neutral-600 mb-0">Punch In Time: <strong class="text-dark">{{ teacher_data.today_attendance.check_in_time|date:"h:i A"|default:"Recorded" }}</strong></p>
+          {% if teacher_data.today_attendance.check_out_time %}
+          <p class="text-xs text-neutral-600 mb-0">Punch Out Time: <strong class="text-dark">{{ teacher_data.today_attendance.check_out_time|date:"h:i A" }}</strong></p>
+          {% endif %}
+        {% else %}
+          <div class="w-50-px h-50-px bg-warning-100 text-warning-600 rounded-circle mx-auto d-flex align-items-center justify-content-center text-2xl mb-12">
+            <i class="ri-time-line"></i>
+          </div>
+          <h6 class="fw-bold text-dark mb-4">Not Punched In Yet</h6>
+          <p class="text-xs text-neutral-500 mb-0">Don't forget to mark your daily shift attendance.</p>
+        {% endif %}
+      </div>
+
+      <a href="/admin-panel/employee-attendance/" class="btn btn-primary-600 w-100 radius-8 py-10 fw-bold d-flex align-items-center justify-content-center gap-2">
+        <i class="ri-fingerprint-line text-lg"></i>
+        <span>Go to Attendance Portal</span>
+      </a>
+    </div>
+  </div>
+</div>
+
 {% else %}
 <!-- EMPLOYEE / SALES WORKSPACE DASHBOARD -->
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">

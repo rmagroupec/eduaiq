@@ -105,6 +105,48 @@
         </a>
       </li>
 
+      {% elif request.user.role == 'teacher' %}
+      <!-- TEACHER PORTAL RESTRICTED MENU -->
+      <li class="sidebar-menu-header" style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #ff9f43; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
+        Academic Teacher Portal
+      </li>
+      <li>
+        <a href="/admin-panel/dashboard/">
+          <i class="ri-home-4-line"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin-panel/student-list/">
+          <i class="ri-graduation-cap-line"></i>
+          <span>Students Roster</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin-panel/courses/">
+          <i class="ri-book-open-line"></i>
+          <span>Courses Catalog</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin-panel/employee-attendance/">
+          <i class="ri-calendar-check-line"></i>
+          <span>My Attendance</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin-panel/wfh-requests/">
+          <i class="ri-calendar-close-line"></i>
+          <span>Leave & WFH Requests</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin-panel/view-profile/">
+          <i class="ri-user-3-line"></i>
+          <span>My Profile</span>
+        </a>
+      </li>
+
       {% elif not request.user.is_superuser and request.user.role != 'admin' %}
       <!-- SALES & EMPLOYEE PORTAL RESTRICTED MENU -->
       <li class="sidebar-menu-header" style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #487fff; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
@@ -257,6 +299,12 @@
             <a href="/admin-panel/add-opportunity/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               + Add Opportunity
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/employee-list/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Employee Directory
             </a>
           </li>
         </ul>

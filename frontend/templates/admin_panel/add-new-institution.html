@@ -43,6 +43,10 @@
           <input type="text" class="form-control radius-8" id="board_affiliation" name="board_affiliation" placeholder="e.g. JEE, NEET, CUET, CBSE, ICSE, University">
         </div>
         <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="phone">Mobile / Contact Number</label>
+          <input type="text" class="form-control radius-8" id="phone" name="phone" placeholder="e.g. +91 9876543210">
+        </div>
+        <div class="col-md-6">
           <label class="text-sm fw-semibold text-primary-light mb-8" for="status">Status</label>
           <select class="form-control form-select radius-8" id="status" name="status">
             <option value="pending">Pending</option>
@@ -228,6 +232,7 @@ $(document).ready(function() {
       name: $('#name').val(),
       type: $('#type').val(),
       board_affiliation: $('#board_affiliation').val(),
+      phone: $('#phone').val(),
       status: $('#status').val(),
       city: $('#city').val(),
       state: $('#state').val(),

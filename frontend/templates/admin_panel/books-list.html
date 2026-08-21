@@ -138,28 +138,29 @@
     return `<span class="badge ${labels[c.status] || 'bg-primary'}">${c.status.replace('_', ' ')}</span>`;
   }
 
-  function deleteBook(slug, title) {
-    showDeleteToast(title, async function() {
-      try {
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
-        const response = await fetch(`${API_BASE_URL}/courses/courses/${slug}/`, {
-          method: 'DELETE',
-          headers: { 'X-CSRFToken': csrfToken },
-          credentials: 'include'
-        });
+  async function deleteBook(slug, title) {
+    if (!confirm(`Are you sure you want to delete "${title}"?`)) {
+      return;
+    }
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(`${API_BASE_URL}/courses/courses/${slug}/`, {
+        method: 'DELETE',
+        headers: { 'X-CSRFToken': csrfToken },
+        credentials: 'include'
+      });
 
-        if (response.ok) {
-          showToast('Book deleted successfully!', 'success');
-          loadAiBooks();
-        } else {
-          const data = await response.json();
-          showToast('Failed to delete book: ' + (data.error || 'Server error'), 'error');
-        }
-      } catch (e) {
-        console.error(e);
-        showToast('Error deleting book.', 'error');
+      if (response.ok) {
+        showToast('Book deleted successfully!', 'success');
+        loadAiBooks();
+      } else {
+        const data = await response.json();
+        showToast('Failed to delete book: ' + (data.error || 'Server error'), 'error');
       }
-    });
+    } catch (e) {
+      console.error(e);
+      showToast('Error deleting book.', 'error');
+    }
   }
 
   function getCookie(name) {

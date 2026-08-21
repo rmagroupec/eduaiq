@@ -187,6 +187,7 @@ def serialize_institution(inst, detailed=False):
         'name': inst.name,
         'type': inst.type,
         'board_affiliation': inst.board_affiliation or '',
+        'phone': inst.phone or '',
         'city': inst.city or '',
         'state': inst.state or '',
         'status': inst.status or 'pending',
@@ -435,6 +436,30 @@ def student_list(request, institution_pk=None):
 
     if request.method == 'GET':
         qs = Student.objects.select_related('user', 'institution', 'batch')
+
+        # Restrict student list for Teacher accounts
+        if request.user.is_authenticated:
+            user_role = (getattr(request.user, 'role', '') or '').lower().strip()
+            if user_role in ['teacher', 'faculty']:
+                emp_prof = getattr(request.user, 'employee_profile', None)
+                teacher_dept = emp_prof.department.name if (emp_prof and emp_prof.department) else None
+                inst_ids = list(Institution.objects.filter(
+                    Q(admin_user=request.user) | Q(created_by=request.user) | Q(assigned_employee=request.user)
+                ).values_list('id', flat=True))
+
+                t_filter = Q()
+                if inst_ids:
+                    t_filter |= Q(institution_id__in=inst_ids)
+                if teacher_dept:
+                    t_filter |= Q(class_grade__icontains=teacher_dept)
+
+                if inst_ids or teacher_dept:
+                    qs = qs.filter(t_filter)
+                else:
+                    school_name = getattr(request.user, 'school_name', '')
+                    if school_name:
+                        qs = qs.filter(Q(institution__name__icontains=school_name) | Q(class_grade__icontains=school_name))
+
         if institution:
             qs = qs.filter(institution=institution)
         else:
@@ -471,6 +496,8 @@ def student_list(request, institution_pk=None):
 
     if not request.user.is_authenticated:
         return JsonResponse({'error': 'Authentication required'}, status=401)
+    if getattr(request.user, 'role', '') in ['teacher', 'faculty']:
+        return JsonResponse({'error': 'Teachers are not permitted to add or modify student profiles.'}, status=403)
     if not _can_manage_institution(request.user, institution):
         return JsonResponse({'error': 'Forbidden'}, status=403)
 

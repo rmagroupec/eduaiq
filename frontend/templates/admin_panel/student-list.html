@@ -13,12 +13,14 @@
       <span class="text-secondary-light">Student List</span>
     </div>
   </div>
+  {% if user.is_superuser or user.role == 'admin' or user.role == 'superadmin' or user.role == 'institution' %}
   <a class="btn btn-primary-600 d-flex align-items-center gap-6" id="addStudentBtn" href="/admin-panel/add-new-student/">
     <span class="d-flex text-md">
       <i class="ri-add-large-line"></i>
     </span>
     Add Student
   </a>
+  {% endif %}
 </div>
 
 <div class="card h-100 mt-24">
@@ -266,6 +268,8 @@ $(document).ready(function() {
 
       const statusBadge = `<span class="px-16 py-4 radius-4 fw-medium text-sm ${badgeClass}">${student.status.toUpperCase()}</span>`;
 
+      const CAN_EDIT_STUDENT = {% if user.is_superuser or user.role == 'admin' or user.role == 'superadmin' or user.role == 'institution' %}true{% else %}false{% endif %};
+
       tbody.append(`
         <tr>
           <td><span class="text-primary-600 fw-medium">${admissionNo}</span></td>
@@ -286,6 +290,7 @@ $(document).ready(function() {
               <a href="/admin-panel/student-details/?id=${student.id}" class="btn btn-sm btn-outline-neutral-300 text-secondary-light px-8 py-4 radius-8" title="View Profile">
                 <i class="ri-eye-line text-md"></i>
               </a>
+              ${CAN_EDIT_STUDENT ? `
               <a href="/admin-panel/edit-student/?id=${student.id}" class="btn btn-sm btn-outline-primary-600 text-primary-600 px-8 py-4 radius-8" title="Edit Student">
                 <i class="ri-edit-2-line text-md"></i>
               </a>
@@ -320,6 +325,7 @@ $(document).ready(function() {
                   </li>
                 </ul>
               </div>
+              ` : ''}
             </div>
           </td>
         </tr>

@@ -759,7 +759,12 @@ def employee_onboarding_api(request):
                 user.last_name = last_name or ''
                 user.email = email or ''
                 user.phone = phone if phone else (user.phone or '')
-                if access_role_input: user.role = str(access_role_input).strip().lower()
+                if access_role_input:
+                    role_str = str(access_role_input).strip().lower()
+                    if any(k in role_str for k in ['teacher', 'faculty', 'educator', 'teaching']):
+                        user.role = 'teacher'
+                    else:
+                        user.role = role_str
                 
                 user.gender = norm_choice(gender, User.GenderChoices.choices)
                 user.father_name = father_name or ''
@@ -880,12 +885,16 @@ def employee_onboarding_api(request):
             # Determine role explicitly or fallback from department
             role = 'employee'
             if access_role_input and str(access_role_input).strip():
-                role = str(access_role_input).strip().lower()
+                role_str = str(access_role_input).strip().lower()
+                if any(k in role_str for k in ['teacher', 'faculty', 'educator', 'teaching']):
+                    role = 'teacher'
+                else:
+                    role = role_str
             else:
                 dept_str = str(department_val).lower() if department_val else ''
                 if 'sales' in dept_str or 'crm' in dept_str:
                     role = 'sales'
-                elif 'teacher' in dept_str or 'faculty' in dept_str:
+                elif any(k in dept_str for k in ['teacher', 'faculty', 'educator', 'teaching']):
                     role = 'teacher'
 
             user = User(

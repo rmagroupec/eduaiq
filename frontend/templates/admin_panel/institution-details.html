@@ -50,6 +50,10 @@
             <span class="text-primary-light text-sm fw-semibold" id="instBoard">-</span>
           </div>
           <div class="d-flex justify-content-between align-items-center pb-8 border-bottom border-neutral-100">
+            <span class="text-secondary-light text-sm fw-medium">Contact / Mobile</span>
+            <span class="text-primary-light text-sm fw-semibold" id="instPhone">-</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center pb-8 border-bottom border-neutral-100">
             <span class="text-secondary-light text-sm fw-medium">City</span>
             <span class="text-primary-light text-sm fw-semibold" id="instCity">-</span>
           </div>
@@ -317,6 +321,7 @@ $(document).ready(function() {
         // Left Card info
         $('#instName').text(inst.name || 'Unnamed Institution');
         $('#instBoard').text(inst.board_affiliation || '-');
+        $('#instPhone').text(inst.phone || '-');
         $('#instCity').text(inst.city || '-');
         $('#instState').text(inst.state || '-');
         $('#instStudentsCount').text(inst.total_students || 0);

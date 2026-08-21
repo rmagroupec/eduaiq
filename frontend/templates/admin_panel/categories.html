@@ -184,37 +184,78 @@
   }
 
   function deleteCategory(id, name) {
-    showDeleteToast(name, async function() {
-      try {
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
-        const response = await fetch(`${API_BASE_URL}/courses/categories/${id}/`, {
-          method: 'DELETE',
-          headers: {
-            'X-CSRFToken': csrfToken
-          },
-          credentials: 'include'
-        });
+    if (typeof Swal !== 'undefined') {
+      Swal.fire({
+        title: 'Delete Category?',
+        text: `Are you sure you want to delete the category "${name}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, Delete',
+        customClass: {
+          popup: 'radius-16 border-0 shadow-lg',
+          confirmButton: 'btn btn-danger radius-8 px-20 py-8 text-sm me-2',
+          cancelButton: 'btn btn-secondary radius-8 px-20 py-8 text-sm'
+        },
+        buttonsStyling: false
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+            const response = await fetch(`${API_BASE_URL}/courses/categories/${id}/`, {
+              method: 'DELETE',
+              headers: {
+                'X-CSRFToken': csrfToken
+              },
+              credentials: 'include'
+            });
 
-      if (response.ok) {
-        showToast('Category deleted successfully!', 'success');
-        loadAdminCategories();
-      } else {
-        let errorMsg = 'Server error';
-        try {
-          const data = await response.json();
-          errorMsg = data.error || errorMsg;
-        } catch (jsonErr) {
-          if (response.status === 400) {
-            errorMsg = 'This category has active courses associated with it and cannot be deleted.';
-          } else if (response.status === 403) {
-            errorMsg = 'Permission denied (Forbidden / CSRF Verification Failed).';
-          } else {
-            errorMsg = `Server error occurred (Status: ${response.status}).`;
+            if (response.ok) {
+              Swal.fire({ icon: 'success', title: 'Deleted!', text: 'Category deleted successfully.', timer: 1500, showConfirmButton: false });
+              loadAdminCategories();
+            } else {
+              let errorMsg = 'Server error';
+              try {
+                const data = await response.json();
+                errorMsg = data.error || errorMsg;
+              } catch (jsonErr) {
+                if (response.status === 400) {
+                  errorMsg = 'This category has active courses associated with it and cannot be deleted.';
+                } else if (response.status === 403) {
+                  errorMsg = 'Permission denied (Forbidden / CSRF Verification Failed).';
+                } else {
+                  errorMsg = `Server error occurred (Status: ${response.status}).`;
+                }
+              }
+              Swal.fire({ icon: 'error', title: 'Delete Failed', text: errorMsg });
+            }
+          } catch (e) {
+            console.error(e);
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error deleting category.' });
           }
         }
-        showToast(errorMsg, 'error');
-      }
-    });
+      });
+    } else if (typeof showDeleteToast === 'function') {
+      showDeleteToast(name, async function() {
+        try {
+          const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+          const response = await fetch(`${API_BASE_URL}/courses/categories/${id}/`, {
+            method: 'DELETE',
+            headers: { 'X-CSRFToken': csrfToken },
+            credentials: 'include'
+          });
+          if (response.ok) {
+            if (typeof showToast === 'function') showToast('Category deleted successfully!', 'success');
+            loadAdminCategories();
+          } else {
+            if (typeof showToast === 'function') showToast('Failed to delete category.', 'error');
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    }
   }
 
   function getCookie(name) {

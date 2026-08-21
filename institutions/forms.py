@@ -7,7 +7,7 @@ class InstitutionForm(forms.ModelForm):
     class Meta:
         model = Institution
         fields = [
-            'name', 'type', 'board_affiliation', 'address', 'city', 'state',
+            'name', 'type', 'board_affiliation', 'phone', 'address', 'city', 'state',
             'admin_user', 'onboarded_by_partner', 'created_by', 'assigned_employee', 'status',
         ]
 

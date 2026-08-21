@@ -22,52 +22,99 @@
     Add Teacher
   </a>
 </div>
-<form action="#" class="mt-24">
+<form action="#" id="addTeacherForm" class="mt-24">
     {% csrf_token %}
 <div class="row gy-3">
 <div class="col-lg-12">
 <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
 <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Personal Info</h6>
+<h6 class="text-lg fw-semibold mb-0" id="pageHeaderTitle">Personal Info</h6>
 </div>
 <div class="card-body p-20">
 <div class="row gy-3">
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="teacherID">Teacher
-                                            ID* <span class="text-danger-600">* </span> </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="teacherID">Teacher ID</label>
 <input class="form-control" id="teacherID" placeholder="Enter Teacher ID" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="fullName">Full Name
-                                            <span class="text-danger-600">*</span> </label>
-<input class="form-control" id="fullName" placeholder="Enter your Full Name" type="text"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="fullName">Full Name <span class="text-danger-600">*</span></label>
+<input class="form-control" id="fullName" placeholder="Enter your Full Name" type="text" required/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="teacherSubject">Subject
-                                        </label>
-<select class="form-control form-select" id="teacherSubject">
-<option disabled="" value="Select a Subject">Select a Subject</option>
-<option value="English">English</option>
-<option value="Mathematics">Mathematics</option>
-<option value="Physics">Physics</option>
-</select>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="teacherSubject">Subject</label>
+<input class="form-control" id="teacherSubject" list="subjectOptions" placeholder="Select or Type Subject..." type="text"/>
+<datalist id="subjectOptions">
+<option value="English"></option>
+<option value="Mathematics"></option>
+<option value="Physics"></option>
+<option value="Chemistry"></option>
+<option value="Biology"></option>
+<option value="Computer Science"></option>
+<option value="Science"></option>
+<option value="Social Studies"></option>
+<option value="History"></option>
+<option value="Geography"></option>
+<option value="Economics"></option>
+<option value="Accountancy"></option>
+<option value="Business Studies"></option>
+<option value="Political Science"></option>
+<option value="Psychology"></option>
+<option value="Sociology"></option>
+<option value="Philosophy"></option>
+<option value="Hindi"></option>
+<option value="Sanskrit"></option>
+<option value="French"></option>
+<option value="German"></option>
+<option value="Spanish"></option>
+<option value="Physical Education"></option>
+<option value="Art & Craft"></option>
+<option value="Music"></option>
+<option value="Environmental Studies (EVS)"></option>
+<option value="Information Technology (IT)"></option>
+</datalist>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="teacherClass">Class
-                                        </label>
-<select class="form-control form-select" id="teacherClass">
-<option disabled="" value="Select a Class">Select a Class</option>
-<option value="1 (A)">1 (A)</option>
-<option value="2 (A)">2 (A)</option>
-<option value="3 (A)">3 (A)</option>
-</select>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="teacherClass">Class / Section</label>
+<input class="form-control" id="teacherClass" list="classOptions" placeholder="Select or Type Class..." type="text"/>
+<datalist id="classOptions">
+<option value="Playgroup"></option>
+<option value="Nursery"></option>
+<option value="LKG"></option>
+<option value="UKG"></option>
+<option value="Class 1 (A)"></option>
+<option value="Class 1 (B)"></option>
+<option value="Class 2 (A)"></option>
+<option value="Class 2 (B)"></option>
+<option value="Class 3 (A)"></option>
+<option value="Class 3 (B)"></option>
+<option value="Class 4 (A)"></option>
+<option value="Class 4 (B)"></option>
+<option value="Class 5 (A)"></option>
+<option value="Class 5 (B)"></option>
+<option value="Class 6 (A)"></option>
+<option value="Class 6 (B)"></option>
+<option value="Class 7 (A)"></option>
+<option value="Class 7 (B)"></option>
+<option value="Class 8 (A)"></option>
+<option value="Class 8 (B)"></option>
+<option value="Class 9 (A)"></option>
+<option value="Class 9 (B)"></option>
+<option value="Class 10 (A)"></option>
+<option value="Class 10 (B)"></option>
+<option value="Class 11 - Science"></option>
+<option value="Class 11 - Commerce"></option>
+<option value="Class 11 - Arts"></option>
+<option value="Class 12 - Science"></option>
+<option value="Class 12 - Commerce"></option>
+<option value="Class 12 - Arts"></option>
+</datalist>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
@@ -82,32 +129,27 @@
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="dateOfBirth">Date Of
-                                            Birth <span class="text-danger-600">*</span> </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="dateOfBirth">Date Of Birth <span class="text-danger-600">*</span></label>
 <input class="form-control" id="dateOfBirth" type="date"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="fathersName">Fathers
-                                            Name </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="fathersName">Fathers Name</label>
 <input class="form-control" id="fathersName" placeholder="Enter Fathers Name" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="mothersName">Mothers
-                                            Name </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="mothersName">Mothers Name</label>
 <input class="form-control" id="mothersName" placeholder="Enter mothers Name" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="meritalStatus">Merital
-                                            Status</label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="meritalStatus">Merital Status</label>
 <select class="form-control form-select" id="meritalStatus">
-<option disabled="" value="Select a Merital Status">Select a Merital Status
-                                            </option>
+<option disabled="" value="Select a Merital Status">Select a Merital Status</option>
 <option value="Married">Married</option>
 <option value="Unmarried">Unmarried</option>
 </select>
@@ -115,11 +157,9 @@
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="contractType">Contract
-                                            Type</label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="contractType">Contract Type</label>
 <select class="form-control form-select" id="contractType">
-<option disabled="" value="Select a Contract Type">Select a Contract Type
-                                            </option>
+<option disabled="" value="Select a Contract Type">Select a Contract Type</option>
 <option value="Contractual">Contractual</option>
 <option value="Hourly">Hourly</option>
 </select>
@@ -137,53 +177,46 @@
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="workLocation">Work
-                                            Location </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="workLocation">Work Location</label>
 <input class="form-control" id="workLocation" placeholder="Enter work location" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="joinDate">Join
-                                            Date</label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="joinDate">Join Date</label>
 <input class="form-control" id="joinDate" type="date"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="phoneNumber">Phone
-                                            Number <span class="text-danger-600">*</span> </label>
-<input class="form-control" id="phoneNumber" placeholder="Enter your Phone Number" type="tel"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="phoneNumber">Phone Number <span class="text-danger-600">*</span></label>
+<input class="form-control" id="phoneNumber" placeholder="Enter your Phone Number" type="tel" required/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="teacherEmails">Email
-                                            <span class="text-danger-600">*</span> </label>
-<input class="form-control" id="teacherEmails" placeholder="Enter your Email" type="text"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="teacherEmails">Email <span class="text-danger-600">*</span></label>
+<input class="form-control" id="teacherEmails" placeholder="Enter your Email" type="email" required/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="wordExperience">Experience
-                                            <span class="text-danger-600">*</span> </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="wordExperience">Experience <span class="text-danger-600">*</span></label>
 <input class="form-control" id="wordExperience" placeholder="Enter experience" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="wordQualification">Experience
-                                            <span class="text-danger-600">*</span> </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="wordQualification">Qualification <span class="text-danger-600">*</span></label>
 <input class="form-control" id="wordQualification" placeholder="Enter Qualification" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Teacher
-                                            Photo <span class="text-danger-600">*</span> </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Teacher Photo <span class="text-danger-600">*</span></label>
 <div class="drop-zone height-44-px p-4 d-flex justify-content-center align-items-center text-center fw-medium text-md cursor-pointer border border-neutral-400 radius-8 border-dashed bg-hover-neutral-200">
 <span class="drop-zone__prompt">Darg &amp; drop a file here or click</span>
-<input class="drop-zone__input" name="myFile" type="file"/>
+<input class="drop-zone__input" id="teacherPhotoInput" name="myFile" type="file"/>
 </div>
 </div>
 </div>
@@ -200,28 +233,29 @@
 <div class="row gy-3">
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bloodGroup">Blood
-                                            Group</label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bloodGroup">Blood Group</label>
 <select class="form-control form-select" id="bloodGroup">
-<option disabled="" value="Select blood group">Select blood group</option>
+<option disabled="" selected="" value="">Select blood group</option>
 <option value="A+">A+</option>
-<option value="AB+">AB+</option>
 <option value="A-">A-</option>
+<option value="B+">B+</option>
+<option value="B-">B-</option>
+<option value="O+">O+</option>
+<option value="O-">O-</option>
+<option value="AB+">AB+</option>
 <option value="AB-">AB-</option>
 </select>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="medicalHeight">Height
-                                        </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="medicalHeight">Height</label>
 <input class="form-control" id="medicalHeight" placeholder="Enter height" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="medicalWeight">Weight
-                                        </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="medicalWeight">Weight</label>
 <input class="form-control" id="medicalWeight" placeholder="Enter Weight" type="text"/>
 </div>
 </div>
@@ -238,29 +272,25 @@
 <div class="row gy-3">
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bankAccountNumber">Bank
-                                            Account Number </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bankAccountNumber">Bank Account Number</label>
 <input class="form-control" id="bankAccountNumber" placeholder="Enter bank account number" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bankName">Bank Name
-                                        </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bankName">Bank Name</label>
 <input class="form-control" id="bankName" placeholder="Enter bank name" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="iFSCCode">IFSC Code
-                                        </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="iFSCCode">IFSC Code</label>
 <input class="form-control" id="iFSCCode" placeholder="Enter IFSC Code" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="nationalIdentificationNumber">National
-                                            Identification Number</label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="nationalIdentificationNumber">National Identification Number</label>
 <input class="form-control" id="nationalIdentificationNumber" placeholder="Enter national identification number" type="text"/>
 </div>
 </div>
@@ -277,8 +307,7 @@
 <div class="row gy-3">
 <div class="col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="docName">Doc Name
-                                        </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="docName">Doc Name</label>
 <input class="form-control" id="docName" placeholder="Enter Doc Name" type="text"/>
 </div>
 </div>
@@ -304,15 +333,13 @@
 <div class="row gy-3">
 <div class="col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="schoolNamee">School
-                                            Name </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="schoolNamee">School Name</label>
 <input class="form-control" id="schoolNamee" placeholder="Enter School Name" type="text"/>
 </div>
 </div>
 <div class="col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="Address">Address
-                                        </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="Address">Address</label>
 <input class="form-control" id="Address" placeholder="Enter Address" type="text"/>
 </div>
 </div>
@@ -329,15 +356,13 @@
 <div class="row gy-3">
 <div class="col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="currentAddress">Current
-                                            Address </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="currentAddress">Current Address</label>
 <input class="form-control" id="currentAddress" placeholder="Enter Current Address" type="text"/>
 </div>
 </div>
 <div class="col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="permanentAddress">Permanent
-                                            Address </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="permanentAddress">Permanent Address</label>
 <input class="form-control" id="permanentAddress" placeholder="Enter Permanent Address" type="text"/>
 </div>
 </div>
@@ -354,8 +379,7 @@
 <div class="row gy-3">
 <div class="col-sm-12">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="moreDetails">Teacher Details
-                                        </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="moreDetails">Teacher Details</label>
 <textarea class="form-control" id="moreDetails" placeholder="Enter details"></textarea>
 </div>
 </div>
@@ -366,35 +390,31 @@
 <div class="col-xl-12">
 <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
 <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-<h6 class="text-lg fw-semibold mb-0">Teacher Details</h6>
+<h6 class="text-lg fw-semibold mb-0">Social Media Links</h6>
 </div>
 <div class="card-body p-20">
 <div class="row gy-3">
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="facebookLink">Facebook
-                                        </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="facebookLink">Facebook</label>
 <input class="form-control" id="facebookLink" placeholder="Enter your facebook link" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="linkedInLink">LinkedIn
-                                        </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="linkedInLink">LinkedIn</label>
 <input class="form-control" id="linkedInLink" placeholder="Enter your LinkedIn link" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="instagramLink">Instagram
-                                        </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="instagramLink">Instagram</label>
 <input class="form-control" id="instagramLink" placeholder="Enter your Instagram link" type="text"/>
 </div>
 </div>
 <div class="col-xxl-3 col-xl-4 col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="youTubeLink">YouTube
-                                        </label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="youTubeLink">YouTube</label>
 <input class="form-control" id="youTubeLink" placeholder="Enter your YouTube link" type="text"/>
 </div>
 </div>
@@ -411,20 +431,18 @@
 <div class="row gy-3">
 <div class="col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="myEmail">Email
-                                            <span class="text-danger-600">*</span>
-</label>
-<input class="form-control" id="myEmail" placeholder="Enter Email" type="email"/>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="myEmail">Email <span class="text-danger-600">*</span></label>
+<input class="form-control" id="myEmail" placeholder="Enter Email" type="email" required/>
 </div>
 </div>
 <div class="col-sm-6">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="your-password">Password
-                                            <span class="text-danger-600">*</span>
-</label>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="your-password">Password <span class="text-danger-600">*</span></label>
 <div class="position-relative">
-<input class="form-control" id="your-password" placeholder="Enter your password" type="password"/>
-<span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#your-password"></span>
+<input class="form-control" id="your-password" placeholder="Enter your password" type="password" style="padding-right: 45px;" required/>
+<span class="toggle-password cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" style="z-index: 10;" data-toggle="#your-password">
+  <i class="ri-eye-line text-xl"></i>
+</span>
 </div>
 </div>
 </div>
@@ -434,12 +452,8 @@
 </div>
 <div class="col-12">
 <div class="d-flex align-items-center justify-content-center gap-3 mt-8">
-<button class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-50 py-11 radius-8" type="reset">
-                            Reset
-                        </button>
-<button class="btn btn-primary-600 border border-primary-600 text-md px-28 py-12 radius-8" type="submit">
-                            Save Changes
-                        </button>
+<button class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-50 py-11 radius-8" type="reset">Reset</button>
+<button class="btn btn-primary-600 border border-primary-600 text-md px-28 py-12 radius-8" id="saveTeacherBtn" type="submit">Save Changes</button>
 </div>
 </div>
 </div>
@@ -447,90 +461,223 @@
 {% endblock %}
 
 {% block js %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-
-    // ================== Password Show Hide Js Start ==========
-    function initializePasswordToggle(toggleSelector) {
-        $(document).on('click', toggleSelector, function () {
-            $(this).toggleClass("ri-eye-line ri-eye-off-line");
-            var input = $($(this).attr("data-toggle"));
-            if (input.attr("type") === "password") {
-                input.attr("type", "text");
-            } else {
-                input.attr("type", "password");
-            }
-        });
-    }
-    // Call the function
-    $(document).ready(function() {
-        initializePasswordToggle('.toggle-password');
+    $(document).on('click', '.toggle-password', function () {
+        var $icon = $(this).find('i');
+        if ($icon.length === 0) {
+            $icon = $(this);
+        }
+        var $input = $(this).siblings('input');
+        if ($input.length === 0 && $(this).attr("data-toggle")) {
+            $input = $($(this).attr("data-toggle"));
+        }
+        if ($input.length === 0) {
+            $input = $('#your-password');
+        }
+        if ($input.attr("type") === "password") {
+            $input.attr("type", "text");
+            $icon.removeClass("ri-eye-line").addClass("ri-eye-off-line");
+        } else {
+            $input.attr("type", "password");
+            $icon.removeClass("ri-eye-off-line").addClass("ri-eye-line");
+        }
     });
-    // ========================= Password Show Hide Js End ===========================
 
-    // ========================== Drag & Drop Upload photo Js start ========================
-    document.querySelectorAll(".drop-zone__input").forEach((inputElement) => {
-        const dropZoneElement = inputElement.closest(".drop-zone");
+    $(document).ready(function() {
 
-        dropZoneElement.addEventListener("click", (e) => {
-            inputElement.click();
+        // Sync email inputs
+        $('#teacherEmails').on('input', function() {
+            $('#myEmail').val($(this).val());
+        });
+        $('#myEmail').on('input', function() {
+            $('#teacherEmails').val($(this).val());
         });
 
-        inputElement.addEventListener("change", (e) => {
-            if (inputElement.files.length) {
-                updateThumbnail(dropZoneElement, inputElement.files[0]);
-            }
-        });
+        // Edit Mode Check
+        var urlParams = new URLSearchParams(window.location.search);
+        var editUserId = urlParams.get('user_id');
+        var editEmpId = urlParams.get('emp_id') || urlParams.get('id');
 
-        dropZoneElement.addEventListener("dragover", (e) => {
+        if (editUserId || editEmpId) {
+            $('#pageHeaderTitle').text('Edit Teacher Profile');
+            $('#saveTeacherBtn').html('<i class="ri-save-line me-1"></i> Update Teacher Profile');
+            $('#your-password').attr('placeholder', 'Leave blank to keep existing password').removeAttr('required');
+
+            $.ajax({
+                url: `/accounts/api/employee/onboard/?user_id=${editUserId || ''}&emp_id=${editEmpId || ''}`,
+                type: 'GET',
+                success: function(resp) {
+                    if (resp.status === 'success' && resp.employee) {
+                        var e = resp.employee;
+                        $('#teacherID').val(e.employee_id || '');
+                        $('#fullName').val(e.full_name || '');
+                        $('#teacherEmails').val(e.email || '');
+                        $('#myEmail').val(e.email || '');
+                        $('#phoneNumber').val(e.phone || '');
+                        $('#teacherSubject').val(e.designation || e.department || '');
+                        $('#gender').val(e.gender || '');
+                        if (e.date_of_birth) $('#dateOfBirth').val(e.date_of_birth);
+                        if (e.joining_date) $('#joinDate').val(e.joining_date);
+                        $('#fathersName').val(e.father_name || '');
+                        $('#mothersName').val(e.mother_name || '');
+                        $('#meritalStatus').val(e.marital_status || '');
+                        $('#contractType').val(e.contract_type || '');
+                        $('#teacherShift').val(e.shift || '');
+                        $('#workLocation').val(e.work_location || '');
+                        $('#bloodGroup').val(e.blood_group || '');
+                        $('#medicalHeight').val(e.medical_height || '');
+                        $('#medicalWeight').val(e.medical_weight || '');
+                        $('#bankAccountNumber').val(e.bank_account_number || '');
+                        $('#bankName').val(e.bank_name || '');
+                        $('#iFSCCode').val(e.ifsc_code || '');
+                        $('#nationalIdentificationNumber').val(e.national_id || '');
+                        $('#currentAddress').val(e.current_address || '');
+                        $('#permanentAddress').val(e.permanent_address || '');
+                    }
+                }
+            });
+        }
+
+        // AJAX Form Submission
+        $('#addTeacherForm').on('submit', function(e) {
             e.preventDefault();
-            dropZoneElement.classList.add("drop-zone--over");
-        });
 
-        ["dragleave", "dragend"].forEach((type) => {
-            dropZoneElement.addEventListener(type, (e) => {
-                dropZoneElement.classList.remove("drop-zone--over");
+            var fullNameVal = ($('#fullName').val() || '').trim();
+            var emailVal = ($('#myEmail').val() || $('#teacherEmails').val() || '').trim();
+            var phoneVal = ($('#phoneNumber').val() || '').trim();
+            var passwordVal = $('#your-password').val() || '';
+
+            if (!fullNameVal) {
+                Swal.fire({ icon: 'warning', title: 'Full Name Required', text: 'Please enter teacher full name.' });
+                return;
+            }
+            if (!emailVal) {
+                Swal.fire({ icon: 'warning', title: 'Email Required', text: 'Please enter a valid email address.' });
+                return;
+            }
+
+            var formData = new FormData();
+            if (editUserId) formData.append('user_id', editUserId);
+            if (editEmpId) formData.append('emp_id', editEmpId);
+
+            formData.append('fullName', fullNameVal);
+            formData.append('employeeID', ($('#teacherID').val() || '').trim());
+            formData.append('employeeRole', 'teacher');
+            formData.append('employeeDepartment', 'Teaching & Faculty');
+            formData.append('employeeDesignation', $('#teacherSubject').val() || 'Teacher');
+            formData.append('gender', $('#gender').val() || '');
+            formData.append('dateOfBirth', $('#dateOfBirth').val() || '');
+            formData.append('fathersName', ($('#fathersName').val() || '').trim());
+            formData.append('mothersName', ($('#mothersName').val() || '').trim());
+            formData.append('meritalStatus', $('#meritalStatus').val() || '');
+            formData.append('contractType', $('#contractType').val() || '');
+            formData.append('employeeShift', $('#teacherShift').val() || '');
+            formData.append('workLocation', ($('#workLocation').val() || '').trim());
+            formData.append('joinDate', $('#joinDate').val() || '');
+            formData.append('phoneNumber', phoneVal);
+            formData.append('myEmail', emailVal);
+            if (passwordVal) formData.append('your-password', passwordVal);
+
+            formData.append('bloodGroup', $('#bloodGroup').val() || '');
+            formData.append('medicalHeight', ($('#medicalHeight').val() || '').trim());
+            formData.append('medicalWeight', ($('#medicalWeight').val() || '').trim());
+            formData.append('bankAccountNumber', ($('#bankAccountNumber').val() || '').trim());
+            formData.append('bankName', ($('#bankName').val() || '').trim());
+            formData.append('iFSCCode', ($('#iFSCCode').val() || '').trim());
+            formData.append('nationalIdentificationNumber', ($('#nationalIdentificationNumber').val() || '').trim());
+            formData.append('currentAddress', ($('#currentAddress').val() || '').trim());
+            formData.append('permanentAddress', ($('#permanentAddress').val() || '').trim());
+
+            var photoInput = $('#teacherPhotoInput')[0];
+            if (photoInput && photoInput.files && photoInput.files[0]) {
+                formData.append('profile_picture', photoInput.files[0]);
+            }
+
+            var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+            $('#saveTeacherBtn').prop('disabled', true).html('<i class="ri-loader-4-line ri-spin me-1"></i> Saving...');
+
+            $.ajax({
+                url: '/accounts/api/employee/onboard/',
+                type: 'POST',
+                headers: { 'X-CSRFToken': csrfToken },
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(resp) {
+                    $('#saveTeacherBtn').prop('disabled', false).html('Save Changes');
+                    if (resp.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: editEmpId ? 'Teacher Updated Successfully!' : 'Teacher Added Successfully!',
+                            width: '360px',
+                            customClass: {
+                                popup: 'radius-16 border-0 shadow-lg',
+                                confirmButton: 'btn btn-primary-600 radius-8 px-20 py-8 text-sm'
+                            },
+                            html: `
+                                <div class="text-start mt-12 p-12 bg-neutral-50 radius-8 border text-secondary-light">
+                                    <div class="mb-6 text-xs"><strong>Teacher ID:</strong> <span class="badge bg-primary-600 text-white ms-1 px-8 py-2 radius-4">${resp.employee_id || 'N/A'}</span></div>
+                                    <div class="mb-6 text-xs"><strong>Username:</strong> <code class="text-primary-600 bg-neutral-200 px-6 py-2 radius-4 fw-semibold">${resp.username || ''}</code></div>
+                                    <div class="text-xs"><strong>Email:</strong> <span class="text-primary-600">${resp.email || ''}</span></div>
+                                </div>
+                            `,
+                            confirmButtonText: '<i class="ri-user-follow-line me-1"></i> View Teacher List'
+                        }).then(function() {
+                            window.location.href = '/admin-panel/teacher-list/';
+                        });
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Error', text: resp.message || 'Could not save teacher.' });
+                    }
+                },
+                error: function(xhr) {
+                    $('#saveTeacherBtn').prop('disabled', false).html('Save Changes');
+                    var msg = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Error saving teacher.';
+                    Swal.fire({ icon: 'error', title: 'Error', text: msg });
+                }
             });
         });
-
-        dropZoneElement.addEventListener("drop", (e) => {
-            e.preventDefault();
-
-            if (e.dataTransfer.files.length) {
-                inputElement.files = e.dataTransfer.files;
-                updateThumbnail(dropZoneElement, e.dataTransfer.files[0]);
-            }
-
-            dropZoneElement.classList.remove("drop-zone--over");
-        });
     });
 
-    /**
-     * Updates the thumbnail on a drop zone element.
-     *
-     * @param {HTMLElement} dropZoneElement
-     * @param {File} file
-     */
+    // Drag & drop upload JS
+    document.querySelectorAll(".drop-zone__input").forEach((inputElement) => {
+        const dropZoneElement = inputElement.closest(".drop-zone");
+        if (dropZoneElement) {
+            dropZoneElement.addEventListener("click", () => inputElement.click());
+            inputElement.addEventListener("change", () => {
+                if (inputElement.files.length) updateThumbnail(dropZoneElement, inputElement.files[0]);
+            });
+            dropZoneElement.addEventListener("dragover", (e) => {
+                e.preventDefault();
+                dropZoneElement.classList.add("drop-zone--over");
+            });
+            ["dragleave", "dragend"].forEach((type) => {
+                dropZoneElement.addEventListener(type, () => dropZoneElement.classList.remove("drop-zone--over"));
+            });
+            dropZoneElement.addEventListener("drop", (e) => {
+                e.preventDefault();
+                if (e.dataTransfer.files.length) {
+                    inputElement.files = e.dataTransfer.files;
+                    updateThumbnail(dropZoneElement, e.dataTransfer.files[0]);
+                }
+                dropZoneElement.classList.remove("drop-zone--over");
+            });
+        }
+    });
+
     function updateThumbnail(dropZoneElement, file) {
         let thumbnailElement = dropZoneElement.querySelector(".drop-zone__thumb");
-
-        // First time - remove the prompt
         if (dropZoneElement.querySelector(".drop-zone__prompt")) {
             dropZoneElement.querySelector(".drop-zone__prompt").remove();
         }
-
-        // First time - there is no thumbnail element, so lets create it
         if (!thumbnailElement) {
             thumbnailElement = document.createElement("div");
             thumbnailElement.classList.add("drop-zone__thumb");
             dropZoneElement.appendChild(thumbnailElement);
         }
-
         thumbnailElement.dataset.label = file.name;
-
-        // Show thumbnail for image files
         if (file.type.startsWith("image/")) {
             const reader = new FileReader();
-
             reader.readAsDataURL(file);
             reader.onload = () => {
                 thumbnailElement.style.backgroundImage = `url('${reader.result}')`;
@@ -539,8 +686,5 @@
             thumbnailElement.style.backgroundImage = null;
         }
     }
-    // ========================== Drag & Drop Upload photo Js end ========================
-
-
     </script>
 {% endblock %}

@@ -13,7 +13,7 @@
       <span class="text-secondary-light">/ Course List</span>
     </div>
   </div>
-  {% if user.is_superuser or user.role == 'admin' or user.role == 'superadmin' or user.is_staff and user.role != 'institution' %}
+  {% if user.is_superuser or user.role == 'admin' or user.role == 'superadmin' %}
   <a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/courses/add/">
     <span class="d-flex text-md">
       <i class="ri-add-large-line"></i>
@@ -61,7 +61,7 @@
 
 <script>
   const API_BASE_URL = window.location.origin;
-  const IS_SUPERADMIN = {% if user.is_superuser or user.role == 'admin' or user.role == 'superadmin' or user.is_staff and user.role != 'institution' %}true{% else %}false{% endif %};
+  const IS_SUPERADMIN = {% if user.is_superuser or user.role == 'admin' or user.role == 'superadmin' %}true{% else %}false{% endif %};
 
   async function loadAdminCourses() {
     const searchVal = document.getElementById('adminCourseSearch').value.trim();
@@ -135,29 +135,67 @@
   }
 
   function deleteCourse(slug, title) {
-    showDeleteToast(title, async function() {
-      try {
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
-        const response = await fetch(`${API_BASE_URL}/courses/courses/${slug}/`, {
-          method: 'DELETE',
-          headers: {
-            'X-CSRFToken': csrfToken
-          },
-          credentials: 'include'
-        });
+    if (typeof Swal !== 'undefined') {
+      Swal.fire({
+        title: 'Delete Course?',
+        text: `Are you sure you want to delete the course "${title}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, Delete',
+        customClass: {
+          popup: 'radius-16 border-0 shadow-lg',
+          confirmButton: 'btn btn-danger radius-8 px-20 py-8 text-sm me-2',
+          cancelButton: 'btn btn-secondary radius-8 px-20 py-8 text-sm'
+        },
+        buttonsStyling: false
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+            const response = await fetch(`${API_BASE_URL}/courses/courses/${slug}/`, {
+              method: 'DELETE',
+              headers: {
+                'X-CSRFToken': csrfToken
+              },
+              credentials: 'include'
+            });
 
-        if (response.ok) {
-          showToast('Course deleted successfully!', 'success');
-          loadAdminCourses();
-        } else {
-          const data = await response.json();
-          showToast('Failed to delete course: ' + (data.error || 'Server error'), 'error');
+            if (response.ok) {
+              Swal.fire({ icon: 'success', title: 'Deleted!', text: 'Course deleted successfully.', timer: 1500, showConfirmButton: false });
+              loadAdminCourses();
+            } else {
+              const data = await response.json();
+              Swal.fire({ icon: 'error', title: 'Delete Failed', text: data.error || 'Server error' });
+            }
+          } catch (e) {
+            console.error(e);
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error deleting course.' });
+          }
         }
-      } catch (e) {
-        console.error(e);
-        showToast('Error connecting to server', 'error');
-      }
-    });
+      });
+    } else if (typeof showDeleteToast === 'function') {
+      showDeleteToast(title, async function() {
+        try {
+          const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+          const response = await fetch(`${API_BASE_URL}/courses/courses/${slug}/`, {
+            method: 'DELETE',
+            headers: { 'X-CSRFToken': csrfToken },
+            credentials: 'include'
+          });
+          if (response.ok) {
+            if (typeof showToast === 'function') showToast('Course deleted successfully!', 'success');
+            loadAdminCourses();
+          } else {
+            const data = await response.json();
+            if (typeof showToast === 'function') showToast('Failed to delete course: ' + (data.error || 'Server error'), 'error');
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    }
   }
 
   function getCookie(name) {

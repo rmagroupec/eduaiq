@@ -14,6 +14,7 @@ class Institution(models.Model):
     name = models.CharField(max_length=255)
     type = models.CharField(max_length=20, choices=TYPE_CHOICES)
     board_affiliation = models.CharField(max_length=100, blank=True)  # CBSE/ICSE/State/Univ/Exam Target
+    phone = models.CharField(max_length=20, blank=True)
     address = models.TextField()
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)

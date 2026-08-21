@@ -46,6 +46,11 @@
         </div>
 
         <div class="col-md-4">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="phone">Contact / Mobile Number</label>
+          <input type="text" class="form-control radius-8" id="phone" name="phone" placeholder="e.g. +91 9876543210">
+        </div>
+
+        <div class="col-md-4">
           <label class="text-sm fw-semibold text-primary-light mb-8" for="status">Onboarding Status</label>
           <select class="form-control form-select radius-8" id="status" name="status">
             <option value="active" selected>Active (Immediate Access)</option>
@@ -260,6 +265,7 @@ $(document).ready(function() {
       name: $('#name').val().trim(),
       type: 'coaching',
       board_affiliation: $('#board_affiliation').val().trim(),
+      phone: $('#phone').val().trim(),
       status: $('#status').val(),
       city: $('#city').val().trim(),
       state: $('#state').val().trim(),

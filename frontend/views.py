@@ -571,6 +571,7 @@ def dashboard(request):
     user_role = (getattr(user, 'role', '') or '').lower().strip()
     is_institution = False
     is_student = False
+    is_teacher = False
     is_employee = False
 
     if not is_admin:
@@ -578,6 +579,8 @@ def dashboard(request):
             is_institution = True
         elif user_role in ['student', 'parent']:
             is_student = True
+        elif user_role in ['teacher', 'faculty']:
+            is_teacher = True
         else:
             is_employee = True
 
@@ -707,6 +710,38 @@ def dashboard(request):
         except Exception:
             pass
 
+    teacher_data = {
+        'subject': '',
+        'assigned_class': '',
+        'total_students': 0,
+        'assigned_courses_count': 0,
+        'today_attendance': None,
+        'pending_wfh': 0,
+        'recent_students': [],
+        'assigned_courses': [],
+    }
+    if is_teacher or is_admin:
+        try:
+            from accounts.models import EmployeeProfile, Attendance, WFHRequest
+            from institutions.models import Student
+
+            emp_prof = EmployeeProfile.objects.filter(user=user).first()
+            if emp_prof:
+                teacher_data['subject'] = emp_prof.department or emp_prof.designation or "Academic Faculty"
+                teacher_data['assigned_class'] = emp_prof.designation if "Class" in (emp_prof.designation or "") else "All Classes"
+            else:
+                teacher_data['subject'] = getattr(user, 'department', '') or "Academic Faculty"
+                teacher_data['assigned_class'] = "All Classes"
+
+            teacher_data['total_students'] = Student.objects.count()
+            teacher_data['recent_students'] = list(Student.objects.select_related('user', 'batch').order_by('-created_at')[:8])
+            teacher_data['assigned_courses'] = list(Course.objects.filter(status='published').select_related('category')[:6])
+            teacher_data['assigned_courses_count'] = Course.objects.count()
+            teacher_data['today_attendance'] = Attendance.objects.filter(user=user, date=date.today()).first()
+            teacher_data['pending_wfh'] = WFHRequest.objects.filter(user=user, status='pending').count()
+        except Exception:
+            pass
+
     total_students = User.objects.filter(role='student').count() or User.objects.count()
     colleges_count = 0
     schools_count = 0
@@ -772,9 +807,11 @@ def dashboard(request):
         'is_main_admin': is_admin,
         'is_institution': is_institution,
         'is_student': is_student,
+        'is_teacher': is_teacher,
         'is_employee': is_employee,
         'inst_data': inst_data,
         'student_data': student_data,
+        'teacher_data': teacher_data,
         'emp_data': emp_data,
         'total_students': total_students,
         'total_institutions': total_institutions,
@@ -933,11 +970,12 @@ def admin_page_router(request, page_name):
         'categories', 'role-permission', 'assign-role', 'general', 'company',
         'notification-alert', 'payment-gateway', 'currencies', 'languages',
         'edit-course', 'add-new-course', 'add-book', 'expenses', 'add-new-employee',
-        'employee-details'
+        'employee-details', 'add-new-student', 'edit-student', 'employee-list'
     ]
 
     is_admin = _is_main_admin(request.user)
-    if not is_admin and page_name in admin_only_pages:
+    user_role = (getattr(request.user, 'role', '') or '').lower().strip()
+    if (not is_admin or user_role in ['teacher', 'faculty']) and page_name in admin_only_pages:
         return redirect('admin_panel')
 
     if page_name in ['view-profile', 'profile']:
@@ -2142,14 +2180,12 @@ def admin_olympiad_entrance_add(request):
         fee = float(request.POST.get('fee', 0))
         is_active = request.POST.get('is_active') == 'on'
 
-        cat, _ = OlympiadCategory.objects.get_or_create(
-            name='Olympiad Entrance',
-            defaults={'description': 'Category for official Olympiad Entrance Examinations'}
-        )
+        cat, _ = OlympiadCategory.objects.get_or_create(name='Olympiad Entrance')
 
         exam = Olympiad.objects.create(
             category=cat,
             name=name,
+            academic_year='2026-27',
             level=level,
             class_group=class_group,
             exam_duration_minutes=exam_duration_minutes,
