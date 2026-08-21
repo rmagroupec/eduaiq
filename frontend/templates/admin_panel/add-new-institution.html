@@ -17,6 +17,8 @@
   </div>
 </div>
 
+<div id="alertContainer"></div>
+
 <div class="card mt-24">
   <div class="card-header border-bottom bg-base py-16 px-24">
     <h6 class="text-lg fw-semibold mb-0">Institution Profile Details</h6>
@@ -269,6 +271,25 @@ $(document).ready(function() {
   loadUsers();
   if ($('#courseAllotmentContainer').length > 0) loadCourses();
   if ($('#categoryAllotmentContainer').length > 0) loadCategories();
+
+  // Parse pre-fill params from URL (e.g. converting CRM B2B Lead)
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('name') || urlParams.has('lead_id') || urlParams.has('phone')) {
+    if (urlParams.get('name')) $('#name').val(urlParams.get('name'));
+    if (urlParams.get('phone')) $('#phone').val(urlParams.get('phone'));
+    if (urlParams.get('city')) $('#city').val(urlParams.get('city'));
+    if (urlParams.get('type')) $('#type').val(urlParams.get('type'));
+
+    const alertBox = document.getElementById('alertContainer');
+    if (alertBox) {
+      alertBox.innerHTML = `
+        <div class="alert alert-info radius-12 p-16 mb-24 d-flex align-items-center gap-2">
+          <i class="ri-information-fill text-xl"></i>
+          <div><strong>Pre-filled from CRM Lead #${urlParams.get('lead_id') || ''}!</strong> Assign an admin user account and set courses to complete setup.</div>
+        </div>
+      `;
+    }
+  }
 });
 </script>
 {% endblock %}

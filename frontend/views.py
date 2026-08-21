@@ -610,18 +610,13 @@ def dashboard(request):
 
             today = date.today()
 
-            total_leads_cnt = user_leads.count() + user_inquiries.count()
-            new_today_cnt = user_leads.filter(created_at__date=today).count() + user_inquiries.filter(created_at__date=today).count()
+            total_leads_cnt = user_leads.count()
+            total_inquiries_cnt = user_inquiries.count()
+            new_today_cnt = user_leads.filter(created_at__date=today).count()
 
-            in_progress_cnt = (
-                user_leads.exclude(stage__in=['converted', 'lost']).count() +
-                user_inquiries.exclude(stage__in=['enrolled', 'lost']).count()
-            )
+            in_progress_cnt = user_leads.exclude(stage__in=['converted', 'lost']).count()
 
-            won_cnt = (
-                user_leads.filter(stage='converted').count() +
-                user_inquiries.filter(stage='enrolled').count()
-            )
+            won_cnt = user_leads.filter(stage='converted').count()
 
             recent_items = []
             for l in user_leads.order_by('-created_at')[:6]:
@@ -634,19 +629,8 @@ def dashboard(request):
                     'created_at': l.created_at,
                 })
 
-            for i in user_inquiries.order_by('-created_at')[:6]:
-                recent_items.append({
-                    'full_name': i.student_name + (f" (Guardian: {i.guardian_name})" if i.guardian_name else ""),
-                    'phone_number': i.phone,
-                    'email': i.email,
-                    'course_interested': i.class_grade_interested or "Student Admission Inquiry",
-                    'status': i.get_stage_display() if hasattr(i, 'get_stage_display') else i.stage,
-                    'created_at': i.created_at,
-                })
-
-            recent_items.sort(key=lambda x: x['created_at'] if x['created_at'] else timezone.now(), reverse=True)
-
             emp_data['total_leads'] = total_leads_cnt
+            emp_data['total_inquiries'] = total_inquiries_cnt
             emp_data['new_leads_today'] = new_today_cnt
             emp_data['in_progress_leads'] = in_progress_cnt
             emp_data['won_leads'] = won_cnt

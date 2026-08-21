@@ -410,13 +410,19 @@
 
     $(document).on('click', '.convert-inquiry-btn', function () {
       const id = $(this).data('id');
+      const inquiry = cachedInquiries[id] || {};
+      const studentName = inquiry.student_name || '';
+      const phone = inquiry.phone || '';
+      const email = inquiry.email || '';
+      const classGrade = inquiry.class_grade_interested || '';
+
       showConfirmModal({
-        title: 'Convert Inquiry to Student',
-        message: 'Convert this inquiry into an enrolled Student record? This will update the inquiry stage to Enrolled.',
+        title: 'Convert Inquiry & Create Student',
+        message: `Convert inquiry for "${studentName}" to Enrolled status and proceed to create their Student Account?`,
         icon: 'ri-user-star-line',
         iconBgClass: 'bg-success-50',
         iconColorClass: 'text-success-600',
-        confirmText: 'Convert Now',
+        confirmText: 'Convert & Create Student',
         confirmBtnClass: 'btn-success-600',
         onConfirm: function () {
           const token = getCsrfToken();
@@ -424,7 +430,12 @@
             url: `/api/crm/student-inquiries/${id}/convert/`, type: 'POST',
             headers: { 'X-CSRFToken': token }, contentType: 'application/json', data: JSON.stringify({}),
             xhrFields: { withCredentials: true },
-            success: function () { showToast('Inquiry converted to Enrolled Student!', 'success'); loadInquiries(currentPage); },
+            success: function () {
+              showToast('Inquiry converted! Opening student registration form...', 'success');
+              setTimeout(function () {
+                window.location.href = `/admin-panel/add-new-student/?inquiry_id=${id}&name=${encodeURIComponent(studentName)}&phone=${encodeURIComponent(phone)}&email=${encodeURIComponent(email)}&class_grade=${encodeURIComponent(classGrade)}`;
+              }, 800);
+            },
             error: function (err) {
               let msg = 'Failed to convert inquiry.';
               if (err.responseJSON && err.responseJSON.error) msg = err.responseJSON.error;

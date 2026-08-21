@@ -29,6 +29,8 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 
+from accounts.models import AuditLog
+
 from .forms import InstitutionForm, StudentForm, BatchForm
 from .models import Institution, Student, Batch
 
@@ -345,6 +347,7 @@ def institution_list(request):
                     institution.allowed_categories.set(CourseCategory.objects.filter(id__in=cat_ids))
         except DjangoValidationError as e:
             return JsonResponse({'success': False, 'errors': e.message_dict}, status=400)
+        AuditLog.log(user=request.user, action='CREATE', module='Institution', object_id=institution.id, description=f"Registered Institution '{institution.name}' ({institution.type})")
         return JsonResponse(
             {'success': True, 'institution': serialize_institution(institution, detailed=True)},
             status=201,
@@ -394,7 +397,10 @@ def institution_detail(request, pk):
     if request.method == 'DELETE':
         if not _is_staff(request.user):
             return JsonResponse({'error': 'Only staff can delete an Institution.'}, status=403)
+        inst_id = institution.id
+        inst_name = institution.name
         institution.delete()
+        AuditLog.log(user=request.user, action='DELETE', module='Institution', object_id=inst_id, description=f"Deleted Institution '{inst_name}'")
         return JsonResponse({'success': True})
 
     body = _body(request)
@@ -512,6 +518,7 @@ def student_list(request, institution_pk=None):
             student.save()
         except DjangoValidationError as e:
             return JsonResponse({'success': False, 'errors': e.message_dict}, status=400)
+        AuditLog.log(user=request.user, action='CREATE', module='Student', object_id=student.id, description=f"Created Student profile #{student.id} ({student.user.get_full_name() if student.user else student.admission_no})")
         return JsonResponse(
             {'success': True, 'student': serialize_student_full(student, request=request)}, status=201
         )
@@ -540,12 +547,14 @@ def student_detail(request, pk):
 
     if request.method == 'DELETE':
         user_obj = student.user
+        student_name = user_obj.get_full_name() if user_obj else f"Student #{student.id}"
         student.delete()
         if user_obj:
             try:
                 user_obj.delete()
             except Exception:
                 pass
+        AuditLog.log(user=request.user, action='DELETE', module='Student', object_id=pk, description=f"Deleted Student profile '{student_name}' and associated user account")
         return JsonResponse({'success': True})
 
 

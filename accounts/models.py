@@ -517,4 +517,50 @@ class AttendanceSetting(models.Model):
             )
         return settings_obj
 
+
+class AuditLog(models.Model):
+    """
+    Audit log for tracking critical administrative actions across the platform.
+    """
+    ACTION_CHOICES = (
+        ('CREATE', 'Create'),
+        ('UPDATE', 'Update'),
+        ('DELETE', 'Delete'),
+        ('CONVERT', 'Convert'),
+        ('ASSIGN', 'Reassign'),
+        ('LOGIN', 'Login'),
+    )
+
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='audit_actions')
+    action = models.CharField(_('Action'), max_length=20, choices=ACTION_CHOICES)
+    module = models.CharField(_('Module'), max_length=100)
+    object_id = models.CharField(_('Target ID'), max_length=100, blank=True)
+    description = models.TextField(_('Description'))
+    ip_address = models.GenericIPAddressField(_('IP Address'), null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = _('Audit Log')
+        verbose_name_plural = _('Audit Logs')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        user_name = self.user.username if self.user else 'System'
+        return f"[{self.action}] {self.module} by {user_name} at {self.created_at.strftime('%Y-%m-%d %H:%M')}"
+
+    @classmethod
+    def log(cls, user, action, module, description, object_id='', ip_address=None):
+        try:
+            return cls.objects.create(
+                user=user if (user and hasattr(user, 'is_authenticated') and user.is_authenticated) else None,
+                action=action,
+                module=module,
+                object_id=str(object_id),
+                description=description,
+                ip_address=ip_address
+            )
+        except Exception as e:
+            print("AuditLog error:", e)
+            return None
+
 

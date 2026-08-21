@@ -158,6 +158,38 @@
   const defaultStudentAvatar = "{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}";
 
   document.addEventListener('DOMContentLoaded', function() {
+    // Parse pre-fill params from URL (e.g. from CRM Student Inquiry conversion)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('name') || urlParams.has('inquiry_id') || urlParams.has('email')) {
+      const fullName = urlParams.get('name') || '';
+      const email = urlParams.get('email') || '';
+      const phone = urlParams.get('phone') || '';
+      const classGrade = urlParams.get('class_grade') || '';
+      
+      if (fullName) {
+        const parts = fullName.trim().split(' ');
+        if (document.getElementById('first_name')) document.getElementById('first_name').value = parts[0] || '';
+        if (document.getElementById('last_name')) document.getElementById('last_name').value = parts.slice(1).join(' ') || '';
+      }
+      if (email && document.getElementById('email')) document.getElementById('email').value = email;
+      if (phone && document.getElementById('phone')) document.getElementById('phone').value = phone;
+      if (classGrade && document.getElementById('class_grade')) document.getElementById('class_grade').value = classGrade;
+
+      const baseUser = email ? email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '') : ((fullName ? fullName.split(' ')[0] : 'student').toLowerCase().replace(/[^a-z0-9]/g, ''));
+      if (document.getElementById('username')) document.getElementById('username').value = baseUser + Math.floor(100 + Math.random() * 900);
+      if (document.getElementById('admission_no')) document.getElementById('admission_no').value = 'ADM' + Date.now().toString().slice(-6);
+
+      const alertBox = document.getElementById('alertContainer');
+      if (alertBox) {
+        alertBox.innerHTML = `
+          <div class="alert alert-info radius-12 p-16 mb-24 d-flex align-items-center gap-2">
+            <i class="ri-information-fill text-xl"></i>
+            <div><strong>Pre-filled from Student Inquiry!</strong> Review and complete student account credentials to complete enrollment.</div>
+          </div>
+        `;
+      }
+    }
+
     loadInstitutionsDropdown();
     loadAllowedCoursesChecklist();
     loadAvailableBatches();

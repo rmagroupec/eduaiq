@@ -1,0 +1,262 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAIQ - Admin Audit Logs{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Admin Audit Logs</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Admin Audit Logs</span>
+    </div>
+  </div>
+  <button class="btn btn-outline-success-600 d-flex align-items-center gap-6 radius-8" id="exportAuditCsvBtn">
+    <i class="ri-download-2-line text-md"></i> Export CSV
+  </button>
+</div>
+
+<div class="card h-100 mt-24">
+  <div class="card-body p-24">
+    <!-- Filter Bar -->
+    <div class="row gy-3 mb-24 align-items-end">
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="actionFilter">Action Type</label>
+        <select class="form-control form-select radius-8" id="actionFilter">
+          <option value="">All Actions</option>
+          <option value="CREATE">➕ Create</option>
+          <option value="UPDATE">✏️ Update</option>
+          <option value="DELETE">🗑️ Delete</option>
+          <option value="CONVERT">🔄 Convert</option>
+          <option value="ASSIGN">👤 Reassign</option>
+          <option value="LOGIN">🔑 Login</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="moduleFilter">Module</label>
+        <select class="form-control form-select radius-8" id="moduleFilter">
+          <option value="">All Modules</option>
+          <option value="Student">Student</option>
+          <option value="Teacher">Teacher</option>
+          <option value="Lead">B2B Lead</option>
+          <option value="Inquiry">Student Inquiry</option>
+          <option value="Institution">Institution</option>
+          <option value="Authentication">Authentication</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="searchQuery">Search Log</label>
+        <input type="text" class="form-control radius-8" id="searchQuery" placeholder="Search by user, description, or ID...">
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-outline-primary-600 w-100 radius-8" id="clearFiltersBtn">
+          Clear Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive mt-24">
+      <table class="table border-neutral-200 table-hover align-middle">
+        <thead>
+          <tr class="bg-neutral-50">
+            <th scope="col">Log ID</th>
+            <th scope="col" class="text-nowrap">Timestamp</th>
+            <th scope="col" class="text-nowrap">Admin User</th>
+            <th scope="col" class="text-nowrap">Action</th>
+            <th scope="col" class="text-nowrap">Module</th>
+            <th scope="col" class="text-nowrap">Target ID</th>
+            <th scope="col">Description</th>
+            <th scope="col" class="text-nowrap">IP Address</th>
+          </tr>
+        </thead>
+        <tbody id="auditLogsTableBody">
+          <tr>
+            <td colspan="8" class="text-center py-40">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading audit logs...</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 mt-24">
+      <span class="text-sm text-secondary-light" id="tableInfoSpan">Showing 0 to 0 of 0 logs</span>
+      <nav aria-label="Page navigation" id="paginationNav" class="d-none">
+        <ul class="pagination pagination-primary mb-0 gap-8" id="paginationUl"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+  let currentPage = 1;
+
+  loadAuditLogs();
+
+  $('#actionFilter, #moduleFilter').on('change', function() {
+    currentPage = 1;
+    loadAuditLogs();
+  });
+
+  let searchTimeout;
+  $('#searchQuery').on('keyup', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+      currentPage = 1;
+      loadAuditLogs();
+    }, 350);
+  });
+
+  $('#clearFiltersBtn').on('click', function() {
+    $('#actionFilter').val('');
+    $('#moduleFilter').val('');
+    $('#searchQuery').val('');
+    currentPage = 1;
+    loadAuditLogs();
+  });
+
+  $(document).on('click', '#paginationUl .page-link', function(e) {
+    e.preventDefault();
+    const p = $(this).data('page');
+    if (p) {
+      currentPage = p;
+      loadAuditLogs();
+    }
+  });
+
+  function loadAuditLogs() {
+    const action = $('#actionFilter').val();
+    const module = $('#moduleFilter').val();
+    const q = $('#searchQuery').val().trim();
+
+    let url = `/accounts/api/audit-logs/?page=${currentPage}&page_size=20`;
+    if (action) url += `&action=${encodeURIComponent(action)}`;
+    if (module) url += `&module=${encodeURIComponent(module)}`;
+    if (q) url += `&q=${encodeURIComponent(q)}`;
+
+    $.ajax({
+      url: url,
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        renderTable(res);
+        renderPagination(res);
+      },
+      error: function(err) {
+        $('#auditLogsTableBody').html(`
+          <tr>
+            <td colspan="8" class="text-center py-40 text-danger-600">
+              <i class="ri-error-warning-line text-xxl d-block mb-8"></i>
+              Failed to load audit logs. Make sure you are logged in as Admin.
+            </td>
+          </tr>
+        `);
+      }
+    });
+  }
+
+  function actionBadge(act) {
+    const map = {
+      CREATE: 'bg-success-100 text-success-700',
+      UPDATE: 'bg-info-100 text-info-700',
+      DELETE: 'bg-danger-100 text-danger-700',
+      CONVERT: 'bg-purple-100 text-purple-700',
+      ASSIGN: 'bg-warning-100 text-warning-700',
+      LOGIN: 'bg-primary-100 text-primary-700'
+    };
+    const cls = map[act] || 'bg-neutral-100 text-neutral-700';
+    return `<span class="badge ${cls} text-xs px-10 py-4 radius-4 fw-bold">${act}</span>`;
+  }
+
+  function renderTable(data) {
+    const tbody = $('#auditLogsTableBody');
+    tbody.empty();
+
+    if (!data.results || data.results.length === 0) {
+      tbody.html(`
+        <tr>
+          <td colspan="8" class="text-center py-40 text-secondary-light">
+            <i class="ri-shield-check-line text-xxl d-block mb-8"></i>
+            No audit log entries recorded yet.
+          </td>
+        </tr>
+      `);
+      $('#tableInfoSpan').text('Showing 0 to 0 of 0 logs');
+      return;
+    }
+
+    data.results.forEach(log => {
+      tbody.append(`
+        <tr>
+          <td><span class="text-secondary-light fw-medium">#${log.id}</span></td>
+          <td><span class="text-xs text-secondary-light text-nowrap">${log.created_at}</span></td>
+          <td><span class="fw-semibold text-neutral-800 text-sm"><i class="ri-user-3-line me-1 text-primary-600"></i>${log.user}</span></td>
+          <td>${actionBadge(log.action)}</td>
+          <td><span class="badge bg-neutral-100 text-neutral-800 radius-4 text-xs">${log.module}</span></td>
+          <td><span class="text-xs fw-mono text-secondary-light">${log.object_id || '-'}</span></td>
+          <td><span class="text-sm text-neutral-800">${log.description}</span></td>
+          <td><span class="text-xs text-secondary-light font-monospace">${log.ip_address}</span></td>
+        </tr>
+      `);
+    });
+
+    const startEntry = (data.page - 1) * data.page_size + 1;
+    const endEntry = Math.min(data.page * data.page_size, data.count);
+    $('#tableInfoSpan').text(`Showing ${startEntry} to ${endEntry} of ${data.count} audit logs`);
+  }
+
+  function renderPagination(data) {
+    const nav = $('#paginationNav');
+    const ul = $('#paginationUl');
+    ul.empty();
+
+    if (data.total_pages <= 1) {
+      nav.addClass('d-none');
+      return;
+    }
+    nav.removeClass('d-none');
+
+    const prevDisabled = data.page === 1 ? 'disabled' : '';
+    ul.append(`<li class="page-item ${prevDisabled}"><button class="page-link py-6 px-12" data-page="${data.page - 1}">Previous</button></li>`);
+
+    for (let i = 1; i <= data.total_pages; i++) {
+      const activeClass = i === data.page ? 'active' : '';
+      ul.append(`<li class="page-item ${activeClass}"><button class="page-link py-6 px-12" data-page="${i}">${i}</button></li>`);
+    }
+
+    const nextDisabled = data.page === data.total_pages ? 'disabled' : '';
+    ul.append(`<li class="page-item ${nextDisabled}"><button class="page-link py-6 px-12" data-page="${data.page + 1}">Next</button></li>`);
+  }
+
+  $('#exportAuditCsvBtn').on('click', function () {
+    let csv = [];
+    let rows = document.querySelectorAll("table tr");
+    for (let i = 0; i < rows.length; i++) {
+      let row = [], cols = rows[i].querySelectorAll("td, th");
+      for (let j = 0; j < cols.length; j++) {
+        let text = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""');
+        row.push('"' + text.trim() + '"');
+      }
+      csv.push(row.join(","));
+    }
+    let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+    let downloadLink = document.createElement("a");
+    downloadLink.download = `Admin_Audit_Logs_${new Date().toISOString().slice(0, 10)}.csv`;
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  });
+});
+</script>
+{% endblock %}

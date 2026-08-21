@@ -26,6 +26,7 @@ from django.views.decorators.http import require_GET, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 
 from django.contrib.auth import get_user_model
+from accounts.models import AuditLog
 
 from institutions.forms import StudentForm
 from institutions.models import Institution, Student
@@ -389,7 +390,10 @@ def lead_detail(request, pk):
         return JsonResponse({'lead': serialize_lead(lead, detailed=True)})
 
     if request.method == 'DELETE':
+        lead_id = lead.id
+        lead_name = lead.institution_name or lead.lead_name
         lead.delete()
+        AuditLog.log(user=request.user, action='DELETE', module='Lead', object_id=lead_id, description=f"Deleted B2B Lead '{lead_name}'")
         return JsonResponse({'success': True})
 
     body = _body(request)
@@ -440,6 +444,8 @@ def lead_convert(request, pk):
     lead.converted_institution = institution
     lead.converted_at = timezone.now()
     lead.save(update_fields=['stage', 'converted_institution', 'converted_at', 'updated_at'])
+
+    AuditLog.log(user=request.user, action='CONVERT', module='Lead', object_id=lead.id, description=f"Converted B2B Lead '{lead.institution_name or lead.lead_name}' to Institution #{institution.id}")
 
     return JsonResponse({
         'success': True,
@@ -534,7 +540,10 @@ def inquiry_detail(request, pk):
         return JsonResponse({'inquiry': serialize_inquiry(inquiry, detailed=True)})
 
     if request.method == 'DELETE':
+        inq_id = inquiry.id
+        inq_name = inquiry.student_name
         inquiry.delete()
+        AuditLog.log(user=request.user, action='DELETE', module='Inquiry', object_id=inq_id, description=f"Deleted Student Inquiry '{inq_name}'")
         return JsonResponse({'success': True})
 
     body = _body(request)
@@ -642,6 +651,8 @@ def inquiry_convert(request, pk):
     inquiry.converted_student = student
     inquiry.converted_at = timezone.now()
     inquiry.save(update_fields=['stage', 'converted_student', 'converted_at', 'updated_at'])
+
+    AuditLog.log(user=request.user, action='CONVERT', module='Inquiry', object_id=inquiry.id, description=f"Converted Student Inquiry '{inquiry.student_name}' to Enrolled Student #{student.id}")
 
     return JsonResponse({
         'success': True,

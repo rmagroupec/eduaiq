@@ -13,12 +13,17 @@
       <span class="text-secondary-light">Institution List</span>
     </div>
   </div>
-  <a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/add-new-institution/">
-    <span class="d-flex text-md">
-      <i class="ri-add-large-line"></i>
-    </span>
-    Add Institution
-  </a>
+  <div class="d-flex align-items-center gap-2">
+    <button class="btn btn-outline-success-600 d-flex align-items-center gap-6 radius-8" id="exportInstitutionsCsvBtn">
+      <i class="ri-download-2-line text-md"></i> Export CSV
+    </button>
+    <a class="btn btn-primary-600 d-flex align-items-center gap-6 radius-8" href="/admin-panel/add-new-institution/">
+      <span class="d-flex text-md">
+        <i class="ri-add-large-line"></i>
+      </span>
+      Add Institution
+    </a>
+  </div>
 </div>
 
 <div class="card h-100 mt-24">
@@ -419,6 +424,27 @@ $(document).ready(function() {
         });
       }
     });
+  });
+
+  $('#exportInstitutionsCsvBtn').on('click', function () {
+    let csv = [];
+    let rows = document.querySelectorAll("table tr");
+    for (let i = 0; i < rows.length; i++) {
+      let row = [], cols = rows[i].querySelectorAll("td, th");
+      for (let j = 0; j < cols.length - 1; j++) {
+        let text = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""');
+        row.push('"' + text.trim() + '"');
+      }
+      csv.push(row.join(","));
+    }
+    let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+    let downloadLink = document.createElement("a");
+    downloadLink.download = `Institution_List_${new Date().toISOString().slice(0, 10)}.csv`;
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   });
 
   fetchInstitutions();

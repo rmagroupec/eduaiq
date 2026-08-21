@@ -13,10 +13,15 @@
       <span class="text-secondary-light">Institution Leads</span>
     </div>
   </div>
-  <a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/add-new-lead/">
-    <span class="d-flex text-md"><i class="ri-add-large-line"></i></span>
-    Add Lead
-  </a>
+  <div class="d-flex align-items-center gap-2">
+    <button class="btn btn-outline-success-600 d-flex align-items-center gap-6 radius-8" id="exportLeadsCsvBtn">
+      <i class="ri-download-2-line text-md"></i> Export CSV
+    </button>
+    <a class="btn btn-primary-600 d-flex align-items-center gap-6 radius-8" href="/admin-panel/add-new-lead/">
+      <span class="d-flex text-md"><i class="ri-add-large-line"></i></span>
+      Add Lead
+    </a>
+  </div>
 </div>
 
 <div class="card h-100 mt-24">
@@ -401,13 +406,18 @@
 
     $(document).on('click', '.convert-lead-btn', function () {
       const id = $(this).data('id');
+      const lead = cachedLeads[id] || {};
+      const leadName = lead.institution_name || lead.lead_name || '';
+      const phone = lead.phone || '';
+      const city = lead.city || '';
+
       showConfirmModal({
         title: 'Convert Lead to Institution',
-        message: 'Convert this lead into a live Institution record? This action will activate their profile.',
+        message: `Convert lead "${leadName}" to Converted status and open the Institution onboarding form?`,
         icon: 'ri-building-line',
         iconBgClass: 'bg-success-50',
         iconColorClass: 'text-success-600',
-        confirmText: 'Convert Now',
+        confirmText: 'Convert & Add Institution',
         confirmBtnClass: 'btn-success-600',
         onConfirm: function () {
           const token = getCsrfToken();
@@ -415,7 +425,12 @@
             url: `/api/crm/leads/${id}/convert/`, type: 'POST',
             headers: { 'X-CSRFToken': token }, contentType: 'application/json', data: JSON.stringify({}),
             xhrFields: { withCredentials: true },
-            success: function () { showToast('Lead converted to Institution!', 'success'); loadLeads(currentPage); },
+            success: function () {
+              showToast('Lead converted! Redirecting to Institution registration...', 'success');
+              setTimeout(function () {
+                window.location.href = `/admin-panel/add-new-institution/?lead_id=${id}&name=${encodeURIComponent(leadName)}&phone=${encodeURIComponent(phone)}&city=${encodeURIComponent(city)}`;
+              }, 800);
+            },
             error: function (err) {
               let msg = 'Failed to convert lead.';
               if (err.responseJSON && err.responseJSON.error) msg = err.responseJSON.error;
@@ -467,6 +482,28 @@
           });
         }
       });
+    });
+
+    $('#exportLeadsCsvBtn').on('click', function () {
+      let csv = [];
+      let rows = document.querySelectorAll("table tr");
+      for (let i = 0; i < rows.length; i++) {
+        let row = [], cols = rows[i].querySelectorAll("td, th");
+        for (let j = 0; j < cols.length - 1; j++) {
+          let text = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""');
+          row.push('"' + text.trim() + '"');
+        }
+        csv.push(row.join(","));
+      }
+      let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+      let downloadLink = document.createElement("a");
+      downloadLink.download = `Institution_Leads_${new Date().toISOString().slice(0, 10)}.csv`;
+      downloadLink.href = window.URL.createObjectURL(csvFile);
+      downloadLink.style.display = "none";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      showToast('Exported Institution Leads to CSV!', 'success');
     });
 
     if ($('#ownerFilter').length || $('#editOwner').length) {

@@ -28,7 +28,7 @@
 <div class="row gy-4 mb-24">
   <!-- 1. Total Institutions -->
   <div class="col-xxl-3 col-xl-3 col-md-6 col-sm-6">
-    <a href="/admin-panel/institutions/" class="text-decoration-none d-block h-100">
+    <a href="/admin-panel/institution-list/" class="text-decoration-none d-block h-100">
       <div class="card stat-card-eduaiq h-100 p-20">
         <div class="d-flex align-items-center justify-content-between mb-16">
           <span class="icon-box-eduaiq">
@@ -60,7 +60,7 @@
 
   <!-- 3. Total Students -->
   <div class="col-xxl-3 col-xl-3 col-md-6 col-sm-6">
-    <a href="/admin-panel/students/" class="text-decoration-none d-block h-100">
+    <a href="/admin-panel/student-list/" class="text-decoration-none d-block h-100">
       <div class="card stat-card-eduaiq h-100 p-20">
         <div class="d-flex align-items-center justify-content-between mb-16">
           <span class="icon-box-eduaiq">
@@ -76,7 +76,7 @@
 
   <!-- 4. Teachers -->
   <div class="col-xxl-3 col-xl-3 col-md-6 col-sm-6">
-    <a href="/admin-panel/teachers/" class="text-decoration-none d-block h-100">
+    <a href="/admin-panel/teacher-list/" class="text-decoration-none d-block h-100">
       <div class="card stat-card-eduaiq h-100 p-20">
         <div class="d-flex align-items-center justify-content-between mb-16">
           <span class="icon-box-eduaiq">
@@ -92,7 +92,7 @@
 
   <!-- 5. Olympiad Exams -->
   <div class="col-xxl-3 col-xl-3 col-md-6 col-sm-6">
-    <a href="/admin-panel/olympiad/" class="text-decoration-none d-block h-100">
+    <a href="/admin-panel/olympiad-entrance/" class="text-decoration-none d-block h-100">
       <div class="card stat-card-eduaiq h-100 p-20">
         <div class="d-flex align-items-center justify-content-between mb-16">
           <span class="icon-box-eduaiq">
@@ -108,7 +108,7 @@
 
   <!-- 6. Exam Registrations -->
   <div class="col-xxl-3 col-xl-3 col-md-6 col-sm-6">
-    <a href="/admin-panel/olympiad/registrations/" class="text-decoration-none d-block h-100">
+    <a href="/admin-panel/olympiad-entrance/" class="text-decoration-none d-block h-100">
       <div class="card stat-card-eduaiq h-100 p-20">
         <div class="d-flex align-items-center justify-content-between mb-16">
           <span class="icon-box-eduaiq">
@@ -1066,16 +1066,18 @@
 <!-- EMPLOYEE KPI STAT CARDS -->
 <div class="row gy-4 mb-24">
   <div class="col-xxl-2 col-xl-4 col-sm-6">
-    <div class="card stat-card-eduaiq h-100 p-20">
-      <div class="d-flex align-items-center justify-content-between mb-16">
-        <span class="icon-box-eduaiq">
-          <i class="ri-contacts-line"></i>
-        </span>
-        <span class="badge-orange-single">Assigned</span>
+    <a href="/admin-panel/leads/" class="text-decoration-none d-block h-100">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq">
+            <i class="ri-contacts-line"></i>
+          </span>
+          <span class="badge-orange-single">Assigned</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total CRM Leads</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ emp_data.total_leads|default:0 }}</h3>
       </div>
-      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total CRM Leads</span>
-      <h3 class="mb-0 fw-bold stat-num">{{ emp_data.total_leads|default:0 }}</h3>
-    </div>
+    </a>
   </div>
 
   <div class="col-xxl-2 col-xl-4 col-sm-6">

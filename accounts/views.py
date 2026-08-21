@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
 from .forms import DeleteAccountForm, ProfileForm, SignUpForm, UserEditForm
-from .models import Profile, Role, User
+from .models import Profile, Role, User, AuditLog
 
 
 # ============================================================================
@@ -1941,6 +1941,72 @@ def attendance_check_out_api(request):
         })
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@require_GET
+@login_required
+def audit_log_list_api(request):
+    """
+    API endpoint for listing system audit logs with pagination and filtering.
+    """
+    if not (request.user.is_superuser or getattr(request.user, 'role', '') in ['admin', 'superadmin']):
+        return JsonResponse({'status': 'error', 'message': 'Access denied.'}, status=403)
+
+    try:
+        page = int(request.GET.get('page', 1))
+        page_size = int(request.GET.get('page_size', 20))
+        module = request.GET.get('module', '').strip()
+        action = request.GET.get('action', '').strip()
+        search = request.GET.get('q', '').strip()
+
+        qs = AuditLog.objects.select_related('user').all()
+
+        if module:
+            qs = qs.filter(module__iexact=module)
+        if action:
+            qs = qs.filter(action__iexact=action)
+        if search:
+            qs = qs.filter(
+                Q(description__icontains=search) |
+                Q(user__username__icontains=search) |
+                Q(user__first_name__icontains=search) |
+                Q(user__last_name__icontains=search) |
+                Q(object_id__icontains=search)
+            )
+
+        total_count = qs.count()
+        total_pages = (total_count + page_size - 1) // page_size if page_size > 0 else 1
+        page = max(1, min(page, total_pages)) if total_pages > 0 else 1
+
+        offset = (page - 1) * page_size
+        logs = qs[offset:offset + page_size]
+
+        results = []
+        for log in logs:
+            user_name = log.user.get_full_name() or log.user.username if log.user else 'System'
+            results.append({
+                'id': log.id,
+                'user': user_name,
+                'user_id': log.user.id if log.user else None,
+                'action': log.action,
+                'module': log.module,
+                'object_id': log.object_id,
+                'description': log.description,
+                'ip_address': log.ip_address or 'N/A',
+                'created_at': log.created_at.strftime('%Y-%m-%d %H:%M:%S')
+            })
+
+        return JsonResponse({
+            'status': 'success',
+            'count': total_count,
+            'page': page,
+            'page_size': page_size,
+            'total_pages': total_pages,
+            'results': results
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
 
 
 
