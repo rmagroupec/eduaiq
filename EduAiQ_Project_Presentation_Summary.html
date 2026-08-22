@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduAiQ - Complete Project Presentation & Architecture Summary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 12mm 15mm 15mm 15mm;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #1e293b;
+            background: #ffffff;
+            line-height: 1.55;
+            font-size: 13px;
+        }
+
+        .page {
+            page-break-after: always;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .page:last-child {
+            page-break-after: avoid;
+        }
+
+        /* Header & Footer */
+        .doc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+        }
+
+        .doc-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 800;
+            color: #090D16;
+            letter-spacing: -0.5px;
+        }
+
+        .doc-logo span {
+            color: #fd7e14;
+        }
+
+        .doc-badge {
+            background: #fff7ed;
+            color: #ea580c;
+            border: 1px solid #fdba74;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        /* Hero / Cover */
+        .cover-hero {
+            background: linear-gradient(135deg, #090D16 0%, #1e1b4b 60%, #0f172a 100%);
+            color: #ffffff;
+            border-radius: 16px;
+            padding: 40px 32px;
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(9, 13, 22, 0.15);
+        }
+
+        .cover-hero::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(253, 126, 20, 0.25) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-title {
+            font-size: 30px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-title span {
+            background: linear-gradient(90deg, #fd7e14, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 15px;
+            color: #cbd5e1;
+            max-width: 650px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .meta-chips {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .meta-chip {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Section Headings */
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: 800;
+            color: #090D16;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .section-heading i {
+            color: #fd7e14;
+            font-size: 20px;
+        }
+
+        /* Grids & Cards */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            position: relative;
+        }
+
+        .feature-card.highlight {
+            border-left: 4px solid #fd7e14;
+            background: #fffbf5;
+        }
+
+        .feature-card.navy-card {
+            border-left: 4px solid #090D16;
+            background: #f8fafc;
+        }
+
+        .feature-card.green-card {
+            border-left: 4px solid #10b981;
+            background: #f0fdf4;
+        }
+
+        .feature-card.purple-card {
+            border-left: 4px solid #8b5cf6;
+            background: #faf5ff;
+        }
+
+        .card-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .card-icon.orange { background: #fff7ed; color: #ea580c; border: 1px solid #fdba74; }
+        .card-icon.navy { background: #090D16; color: #ffffff; }
+        .card-icon.green { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+        .card-icon.purple { background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe; }
+        .card-icon.blue { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .card-desc {
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        /* Stat Counters */
+        .stat-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 22px;
+            font-weight: 800;
+            color: #090D16;
+            margin-bottom: 2px;
+        }
+
+        .stat-num span {
+            color: #fd7e14;
+        }
+
+        .stat-lbl {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Tables */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 12px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .styled-table th {
+            background: #090D16;
+            color: #ffffff;
+            text-align: left;
+            padding: 10px 12px;
+            font-weight: 700;
+            font-size: 11.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .styled-table td {
+            padding: 9px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: top;
+        }
+
+        .styled-table tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+
+        .styled-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Badges & Tags */
+        .tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 10.5px;
+            font-weight: 700;
+        }
+        .tag-green { background: #dcfce7; color: #166534; }
+        .tag-orange { background: #ffedd5; color: #9a3412; }
+        .tag-blue { background: #dbeafe; color: #1e40af; }
+        .tag-purple { background: #f3e8ff; color: #6b21a8; }
+        .tag-red { background: #fee2e2; color: #991b1b; }
+
+        /* Security Pillar Box */
+        .security-banner {
+            background: linear-gradient(135deg, #1e1b4b, #090D16);
+            color: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(253, 126, 20, 0.3);
+        }
+
+        .sec-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .sec-item {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .sec-title {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #fdba74;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sec-text {
+            font-size: 11px;
+            color: #cbd5e1;
+            line-height: 1.45;
+        }
+
+        /* Presentation Pitch Flow Steps */
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px 16px;
+        }
+
+        .step-num {
+            width: 28px;
+            height: 28px;
+            background: #fd7e14;
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .step-content h5 {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #090D16;
+            margin-bottom: 3px;
+        }
+
+        .step-content p {
+            font-size: 11.5px;
+            color: #64748b;
+            line-height: 1.45;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 11px;
+            color: #94a3b8;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 12px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== PAGE 1: EXECUTIVE OVERVIEW & CORE ECOSYSTEM ==================== -->
+    <div class="page">
+        <div class="doc-header">
+            <div class="doc-logo">
+                <i class="fas fa-graduation-cap" style="color: #fd7e14;"></i> Edu<span>AiQ</span> Ecosystem
+            </div>
+            <div class="doc-badge">Official Presentation & Pitch Deck</div>
+        </div>
+
+        <div class="cover-hero">
+            <div class="hero-title">Next-Gen AI-Powered <span>EdTech Ecosystem</span></div>
+            <div class="hero-subtitle">
+                EduAiQ is a unified, enterprise-grade educational ecosystem integrating Student LMS, National Olympiad Engine, Institutional B2B Network, Growth Partner Franchise Kit, and 100% DRM Content Protection.
+            </div>
+            <div class="meta-chips">
+                <div class="meta-chip"><i class="fas fa-layer-group"></i> Multi-Tenant Architecture</div>
+                <div class="meta-chip"><i class="fas fa-shield-alt"></i> DRM Anti-Piracy Protection</div>
+                <div class="meta-chip"><i class="fas fa-trophy"></i> Live Olympiad Engine</div>
+                <div class="meta-chip"><i class="fas fa-handshake"></i> B2B Partner Network</div>
+                <div class="meta-chip"><i class="fas fa-robot"></i> AI Tutor Integrated</div>
+            </div>
+        </div>
+
+        <!-- 4 Key Ecosystem Metrics -->
+        <div class="grid-4">
+            <div class="stat-card">
+                <div class="stat-num">50<span>+</span></div>
+                <div class="stat-lbl">Interactive Courses</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">100<span>%</span></div>
+                <div class="stat-lbl">DRM Content Security</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">B2B<span>+</span>B2C</div>
+                <div class="stat-lbl">Hybrid Revenue Model</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">360<span>°</span></div>
+                <div class="stat-lbl">Admin Control Center</div>
+            </div>
+        </div>
+
+        <!-- 3 Core Pillars -->
+        <div class="section-heading"><i class="fas fa-cubes"></i> Core Ecosystem Pillars</div>
+        <div class="grid-3">
+            <div class="feature-card highlight">
+                <div class="card-icon orange"><i class="fas fa-play-circle"></i></div>
+                <div class="card-title">1. Student LMS & Player</div>
+                <div class="card-desc">
+                    Multi-format interactive player supporting direct MP4/WebM video streaming, PDF Canvas reader, structured text modules, practice quizzes, and graded assignments with auto-certification.
+                </div>
+            </div>
+            <div class="feature-card purple-card">
+                <div class="card-icon purple"><i class="fas fa-award"></i></div>
+                <div class="card-title">2. National Olympiad Hub</div>
+                <div class="card-desc">
+                    High-stakes online competition management with timed secure examination environments, automated scoring, instant rank leaderboards, and tamper-proof digital certificates.
+                </div>
+            </div>
+            <div class="feature-card navy-card">
+                <div class="card-icon navy"><i class="fas fa-school"></i></div>
+                <div class="card-title">3. Institutional B2B Network</div>
+                <div class="card-desc">
+                    Comprehensive portal for schools, colleges, and coaching academies to license courses, track batch progress, manage student cohorts, and view performance analytics.
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="feature-card green-card">
+                <div class="card-icon green"><i class="fas fa-bullhorn"></i></div>
+                <div class="card-title">4. Growth Partner & Franchise Kit</div>
+                <div class="card-desc">
+                    Turnkey growth kit with marketing collateral, branded QR codes, affiliate commission engine, and automated partner onboarding pipelines.
+                </div>
+            </div>
+            <div class="feature-card blue-card">
+                <div class="card-icon blue"><i class="fas fa-cogs"></i></div>
+                <div class="card-title">5. Unified 8-in-1 Admin Control</div>
+                <div class="card-desc">
+                    Real-time operational dashboard managing Courses, Modules, Lessons, Students, Teachers, Olympiad Registrations, Leads, and Team Members.
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-note">EduAiQ Architecture & Presentation Brief • Confidential • Page 1 of 4</div>
+    </div>
+
+    <!-- ==================== PAGE 2: DETAILED MODULES & DRM SECURITY ==================== -->
+    <div class="page">
+        <div class="doc-header">
+            <div class="doc-logo">
+                <i class="fas fa-graduation-cap" style="color: #fd7e14;"></i> Edu<span>AiQ</span> Technical Deep-Dive
+            </div>
+            <div class="doc-badge">Modules & Security Suite</div>
+        </div>
+
+        <div class="section-heading"><i class="fas fa-shield-virus"></i> 100% DRM-Grade Content Security Architecture</div>
+        
+        <div class="security-banner">
+            <div style="font-size: 15px; font-weight: 800; margin-bottom: 6px; color: #fd7e14;">
+                <i class="fas fa-lock me-2"></i> Zero-Piracy Student Media Protection Suite
+            </div>
+            <p style="font-size: 12px; color: #cbd5e1;">
+                EduAiQ employs an enterprise-grade, multi-layer security barrier protecting proprietary videos, PDF notes, and reading materials from unauthorized capture, copying, or leakage.
+            </p>
+            <div class="sec-grid">
+                <div class="sec-item">
+                    <div class="sec-title"><i class="fas fa-desktop"></i> Anti-PrintScreen & Snipping</div>
+                    <div class="sec-text">Intercepts PrtScn key, Win+Shift+S, Cmd+Shift, instantly blacking out the screen and wiping the clipboard with security warnings.</div>
+                </div>
+                <div class="sec-item">
+                    <div class="sec-title"><i class="fas fa-eye-slash"></i> Loss-of-Focus Auto-Blur</div>
+                    <div class="sec-text">When third-party screen recorders or snipping overlays are opened, the player activates a 40px heavy blur to prevent capture.</div>
+                </div>
+                <div class="sec-item">
+                    <div class="sec-title"><i class="fas fa-fingerprint"></i> Dynamic Floating Watermark</div>
+                    <div class="sec-text">Authenticated student username & timestamp continuously drift across the video/PDF, deterring phone camera recordings.</div>
+                </div>
+                <div class="sec-item">
+                    <div class="sec-title"><i class="fas fa-mouse-pointer"></i> Global Anti-Copy & Inspect</div>
+                    <div class="sec-text">Right-click context menu, text drag/selection, DevTools shortcuts (F12, Ctrl+Shift+I), View Source (Ctrl+U) completely blocked.</div>
+                </div>
+                <div class="sec-item">
+                    <div class="sec-title"><i class="fas fa-file-pdf"></i> Secure Canvas PDF Engine</div>
+                    <div class="sec-text">PDFs are converted to isolated HTML5 canvas frames with disabled downloads, preventing raw PDF URL theft.</div>
+                </div>
+                <div class="sec-item">
+                    <div class="sec-title"><i class="fas fa-video"></i> Dual-Source Fallback Stream</div>
+                    <div class="sec-text">Direct MP4/WebM video streaming with strict cross-origin policies, eliminating YouTube Error 153 & embed syndication bans.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-heading"><i class="fas fa-list-check"></i> Functional Capabilities Matrix</div>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Module Name</th>
+                    <th style="width: 45%;">Core Capabilities</th>
+                    <th style="width: 15%;">Access Role</th>
+                    <th style="width: 15%;">Tech Stack</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Lesson Player</strong></td>
+                    <td>Video streaming, PDF viewer, Text notes, Practical tasks, progress tracking</td>
+                    <td><span class="tag tag-green">Student</span></td>
+                    <td>HTML5, JS, PDF.js</td>
+                </tr>
+                <tr>
+                    <td><strong>Olympiad Arena</strong></td>
+                    <td>Live timed tests, auto-grading, dynamic leaderboards, e-certificates</td>
+                    <td><span class="tag tag-green">Student / All</span></td>
+                    <td>Django REST, AJAX</td>
+                </tr>
+                <tr>
+                    <td><strong>Admin Dashboard</strong></td>
+                    <td>8x KPI cards, CRUD modules, video/PDF upload manager, student analytics</td>
+                    <td><span class="tag tag-orange">Admin / Staff</span></td>
+                    <td>Bootstrap, Chart.js</td>
+                </tr>
+                <tr>
+                    <td><strong>Growth Partner Kit</strong></td>
+                    <td>Marketing brochures, printable QR codes, franchise kit, lead registration</td>
+                    <td><span class="tag tag-blue">Partner / B2B</span></td>
+                    <td>Django, QR Engine</td>
+                </tr>
+                <tr>
+                    <td><strong>Institution Portal</strong></td>
+                    <td>School onboarding, student cohort analytics, batch certificate verification</td>
+                    <td><span class="tag tag-purple">Institutions</span></td>
+                    <td>Django ORM, RBAC</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="footer-note">EduAiQ Architecture & Presentation Brief • Confidential • Page 2 of 4</div>
+    </div>
+
+    <!-- ==================== PAGE 3: TECH ARCHITECTURE & DATABASE ==================== -->
+    <div class="page">
+        <div class="doc-header">
+            <div class="doc-logo">
+                <i class="fas fa-graduation-cap" style="color: #fd7e14;"></i> Edu<span>AiQ</span> System Architecture
+            </div>
+            <div class="doc-badge">Tech Stack & Data Models</div>
+        </div>
+
+        <div class="section-heading"><i class="fas fa-server"></i> Full-Stack Technical Architecture</div>
+
+        <div class="grid-3">
+            <div class="feature-card navy-card">
+                <div class="card-icon navy"><i class="fab fa-python"></i></div>
+                <div class="card-title">Backend Core</div>
+                <div class="card-desc">
+                    • <strong>Framework:</strong> Python 3.12 / Django 5.x<br>
+                    • <strong>API Layer:</strong> Django REST Framework (DRF)<br>
+                    • <strong>Auth:</strong> Custom User Model, Session & JWT<br>
+                    • <strong>ORM:</strong> High-performance Querysets & Migrations
+                </div>
+            </div>
+            <div class="feature-card highlight">
+                <div class="card-icon orange"><i class="fab fa-html5"></i></div>
+                <div class="card-title">Frontend UI/UX</div>
+                <div class="card-desc">
+                    • <strong>Design System:</strong> Custom Modern Vanilla CSS<br>
+                    • <strong>Palette:</strong> Navy (#090D16), Vibrant Amber (#FD7E14)<br>
+                    • <strong>Interactivity:</strong> Vanilla JavaScript ES6+<br>
+                    • <strong>Frameworks:</strong> Bootstrap 5.3 Grid, FontAwesome
+                </div>
+            </div>
+            <div class="feature-card green-card">
+                <div class="card-icon green"><i class="fas fa-database"></i></div>
+                <div class="card-title">Data & Storage</div>
+                <div class="card-desc">
+                    • <strong>RDBMS:</strong> SQLite / PostgreSQL production ready<br>
+                    • <strong>Media Storage:</strong> Django FileStorage for MP4, PDF<br>
+                    • <strong>Caching:</strong> Optimized query caching<br>
+                    • <strong>Security:</strong> CSRF, CORS, XSS Sanitization
+                </div>
+            </div>
+        </div>
+
+        <div class="section-heading"><i class="fas fa-project-diagram"></i> Database Models & Entity Relations</div>
+
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th style="width: 22%;">Model Name</th>
+                    <th style="width: 28%;">App & Category</th>
+                    <th style="width: 50%;">Key Fields & Relationships</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>CustomUser</code></td>
+                    <td><code>accounts</code> (Auth)</td>
+                    <td><code>email, username, role (student/teacher/partner/admin), phone, avatar</code></td>
+                </tr>
+                <tr>
+                    <td><code>Course</code></td>
+                    <td><code>courses</code> (LMS)</td>
+                    <td><code>title, slug, price, discount_price, thumbnail, category, is_published</code></td>
+                </tr>
+                <tr>
+                    <td><code>Module</code></td>
+                    <td><code>courses</code> (Curriculum)</td>
+                    <td><code>course (FK), title, order, description</code></td>
+                </tr>
+                <tr>
+                    <td><code>Lesson</code></td>
+                    <td><code>courses</code> (Content)</td>
+                    <td><code>module (FK), title, content_type (video/pdf/text/assignment), content_file, url</code></td>
+                </tr>
+                <tr>
+                    <td><code>Enrollment</code></td>
+                    <td><code>courses</code> (Progress)</td>
+                    <td><code>user (FK), course (FK), progress_pct, completed_at, certificate_issued</code></td>
+                </tr>
+                <tr>
+                    <td><code>Olympiad</code></td>
+                    <td><code>olympiads</code> (Contest)</td>
+                    <td><code>title, registration_fee, exam_date, duration_minutes, max_marks</code></td>
+                </tr>
+                <tr>
+                    <td><code>ExamRegistration</code></td>
+                    <td><code>olympiads</code> (Records)</td>
+                    <td><code>user (FK), olympiad (FK), score, rank, certificate_file, status</code></td>
+                </tr>
+                <tr>
+                    <td><code>Institution</code></td>
+                    <td><code>institutions</code> (B2B)</td>
+                    <td><code>name, contact_person, email, student_count, address, logo, status</code></td>
+                </tr>
+                <tr>
+                    <td><code>Lead</code></td>
+                    <td><code>leads</code> (CRM)</td>
+                    <td><code>name, email, phone, program_interest, status (new/contacted/closed)</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="footer-note">EduAiQ Architecture & Presentation Brief • Confidential • Page 3 of 4</div>
+    </div>
+
+    <!-- ==================== PAGE 4: BUSINESS MODEL, PITCH & ROADMAP ==================== -->
+    <div class="page">
+        <div class="doc-header">
+            <div class="doc-logo">
+                <i class="fas fa-graduation-cap" style="color: #fd7e14;"></i> Edu<span>AiQ</span> Business & Pitch Guide
+            </div>
+            <div class="doc-badge">Presentation Pitch Playbook</div>
+        </div>
+
+        <div class="section-heading"><i class="fas fa-chart-line"></i> Business Model & Revenue Engines</div>
+
+        <div class="grid-4">
+            <div class="feature-card highlight">
+                <div class="card-icon orange"><i class="fas fa-shopping-cart"></i></div>
+                <div class="card-title">B2C Course Sales</div>
+                <div class="card-desc">Direct enrollment revenue from professional skills, language, and coding courses.</div>
+            </div>
+            <div class="feature-card green-card">
+                <div class="card-icon green"><i class="fas fa-medal"></i></div>
+                <div class="card-title">Olympiad Fees</div>
+                <div class="card-desc">Registration charges for national-level Olympiads and certified assessments.</div>
+            </div>
+            <div class="feature-card navy-card">
+                <div class="card-icon navy"><i class="fas fa-building-columns"></i></div>
+                <div class="card-title">B2B School Licenses</div>
+                <div class="card-desc">Annual institutional subscription packages for schools and coaching institutes.</div>
+            </div>
+            <div class="feature-card purple-card">
+                <div class="card-icon purple"><i class="fas fa-users-gear"></i></div>
+                <div class="card-title">Partner Franchises</div>
+                <div class="card-desc">Franchise onboarding kits, affiliate revenue-share & regional growth partners.</div>
+            </div>
+        </div>
+
+        <div class="section-heading"><i class="fas fa-microphone-lines"></i> How to Pitch EduAiQ in 4 Steps (Demo Flow)</div>
+
+        <div class="step-list">
+            <div class="step-item">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h5>Showcase the Student Experience & Course Catalog</h5>
+                    <p>Start on the homepage / courses portal. Show the modern UI, capsule offer banner, seamless exploration, and 1-click enrollment into courses like English, Coding, Human Values, and Olympiads.</p>
+                </div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h5>Demonstrate the DRM Protected Multi-Format Lesson Player</h5>
+                    <p>Open <code>/lesson/?id=...</code>. Demonstrate instant switching between Video, PDF canvas notes, and assignments. Press <kbd>PrtScn</kbd> or <kbd>Win+Shift+S</kbd> to show the live security blackout shield and dynamic watermark!</p>
+                </div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h5>Present the 8-in-1 Central Admin Command Center</h5>
+                    <p>Log in as admin (<code>/admin-panel/</code>). Show the balanced 4x2 KPI metric dashboard (Institutions, Courses, Students, Teachers, Olympiads, Registrations, Team, Blogs), live module creation, and photo preview uploads.</p>
+                </div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <h5>Pitch the B2B Institutional Network & Growth Partner Kit</h5>
+                    <p>Highlight the Growth Partner Kit with ready-to-print marketing collateral and school partnership dashboard, proving ready scalability for high-margin B2B & franchise expansions.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategic Highlights -->
+        <div class="section-heading"><i class="fas fa-star"></i> Key Competitive Differentiators</div>
+        <div class="grid-3">
+            <div class="feature-card">
+                <div class="card-title text-primary"><i class="fas fa-bolt me-1 text-warning"></i> Instant Deployment</div>
+                <div class="card-desc">Self-contained Django architecture with zero heavy external dependencies, ultra-fast load times.</div>
+            </div>
+            <div class="feature-card">
+                <div class="card-title text-primary"><i class="fas fa-lock me-1 text-danger"></i> Complete IP Protection</div>
+                <div class="card-desc">Courses and videos are protected from screen capture, link-theft, and illegal distribution.</div>
+            </div>
+            <div class="feature-card">
+                <div class="card-title text-primary"><i class="fas fa-infinity me-1 text-success"></i> Highly Scalable</div>
+                <div class="card-desc">Ready for 100,000+ concurrent students across schools, Olympiads, and digital learning.</div>
+            </div>
+        </div>
+
+        <div class="footer-note">EduAiQ Presentation Brief • Created for Executive Review & Stakeholder Demos • Page 4 of 4</div>
+    </div>
+
+</body>
+</html>

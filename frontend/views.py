@@ -80,7 +80,6 @@ def courses(request):
     if search_q:
         allowed_courses = allowed_courses.filter(
             Q(title__icontains=search_q) |
-            Q(short_description__icontains=search_q) |
             Q(description__icontains=search_q) |
             Q(category__name__icontains=search_q)
         ).distinct()

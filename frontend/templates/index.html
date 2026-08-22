@@ -948,74 +948,105 @@ courses in India with AI-driven online courses, e-books & practical training. St
   /* ==========================================================================
      EduAiQ Our Best Features Section (Midnight Navy & Golden Yellow Palette)
      ========================================================================== */
+  /* ==========================================================================
+     EduAiQ Feature Section Overrides (Images & Clickable Cards)
+     ========================================================================== */
   .home-feature-section .feature-wrapper .feature-type {
-    border: 2px dashed rgba(15, 23, 42, 0.18) !important;
-    border-radius: 25px !important;
+    padding: 20px 20px 65px 20px !important;
+    border: 2px dashed rgba(249, 115, 22, 0.35) !important;
+    border-radius: 22px !important;
     background: #ffffff !important;
     transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
   .home-feature-section .feature-wrapper .feature-type:hover {
     border-color: #fd7e14 !important;
-    transform: translateY(-6px) !important;
-    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08) !important;
+    transform: translateY(-8px) !important;
+    box-shadow: 0 18px 38px rgba(249, 115, 22, 0.16) !important;
   }
 
-  /* Icons */
-  .home-feature-section .feature-wrapper .feature-type .feature-icon i {
-    color: #fd7e14 !important;
-    transition: transform 0.35s ease !important;
+  .feature-img-wrapper {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   }
 
-  .home-feature-section .feature-wrapper .feature-type:nth-child(even) .feature-icon i {
-    color: #0F172A !important;
+  .feature-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
   }
 
-  .home-feature-section .feature-wrapper .feature-type:hover .feature-icon i {
-    transform: scale(1.08) rotate(3deg) !important;
+  .home-feature-section .feature-wrapper .feature-type:hover .feature-card-img {
+    transform: scale(1.06);
   }
 
-  /* Number Badges (1, 2, 3) */
-  .home-feature-section .feature-wrapper .feature-type .feature-icon .meta-no {
-    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
-    color: #0F172A !important;
-    font-weight: 800 !important;
-    border: 4px solid #ffffff !important;
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35) !important;
-  }
-
-  .home-feature-section .feature-wrapper .feature-type:nth-child(even) .feature-icon .meta-no {
-    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+  .feature-img-wrapper .meta-no {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25) !important;
+    font-weight: 800 !important;
+    font-size: 15px;
+    border-radius: 50% !important;
+    border: 3px solid #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+    z-index: 5;
+    margin: 0;
+    padding: 0;
   }
 
   /* Headings & Descriptions */
   .home-feature-section .feature-wrapper .feature-type .feature-heading {
     color: #0F172A !important;
     font-weight: 800 !important;
+    font-size: 19px !important;
+    margin-bottom: 10px !important;
   }
 
   .home-feature-section .feature-wrapper .feature-type .feature-info {
     color: #475569 !important;
-    font-size: 14px !important;
+    font-size: 13.5px !important;
     line-height: 1.6 !important;
+    margin-bottom: 0 !important;
   }
 
   /* Bottom Circular Arrow Button */
   .home-feature-section .feature-wrapper .feature-type .right-arrow-link i {
-    background-color: #0F172A !important;
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #0F172A !important;
     color: #fd7e14 !important;
     box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25) !important;
     transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
-  .home-feature-section .feature-wrapper .feature-type .right-arrow-link:hover i,
   .home-feature-section .feature-wrapper .feature-type:hover .right-arrow-link i {
-    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
-    color: #0F172A !important;
-    box-shadow: 0 10px 25px rgba(245, 158, 11, 0.45) !important;
-    transform: scale(1.1) !important;
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 10px 25px rgba(249, 115, 22, 0.5) !important;
+    transform: scale(1.12) !important;
   }
 
   /* ==========================================================================
@@ -1183,7 +1214,7 @@ courses in India with AI-driven online courses, e-books & practical training. St
       <div class="col-md-6">
         <div class="about-left-content">
           <figure class="figure-round-border">
-            <img alt="" src="{% static 'assets/img/educator-img13.jpg' %}" />
+            <img alt="EduAiQ Skill Development Department" src="{% static 'assets/img/eduaiq-skill-development-hall.jpg' %}" />
           </figure>
           <div class="skill-container">
             <div class="skill-wrapper">
@@ -1259,7 +1290,7 @@ courses in India with AI-driven online courses, e-books & practical training. St
             learning, and examination tools running on one connected platform.
           </p>
           <figure class="figure-round-border">
-            <img alt="" src="{% static 'assets/img/educator-img12-500px.jpg' %}" />
+            <img alt="EduAiQ Smart Learning Classroom" src="{% static 'assets/img/eduaiq-smart-classroom.jpg' %}" />
           </figure>
         </div>
       </div>
@@ -1463,12 +1494,12 @@ courses in India with AI-driven online courses, e-books & practical training. St
 <!-- ==========================================================================
      EduAiQ Olympiad Entrance Exams & Quizzes Homepage Showcase Section
      ========================================================================== -->
-<section class="home-olympiad-quiz-section py-5" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); position: relative; overflow: hidden;">
+<section class="home-olympiad-quiz-section py-5" style="background: radial-gradient(circle at 15% 20%, rgba(253, 126, 20, 0.08) 0%, transparent 45%), radial-gradient(circle at 85% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 45%), linear-gradient(135deg, #0b1120 0%, #0f172a 50%, #1e293b 100%); position: relative; overflow: hidden;">
   <div class="container py-3" style="position: relative; z-index: 2;">
     <div class="row mb-4">
       <div class="col-lg-8 offset-lg-2 text-center">
         <div class="title-divider-center" style="background-color: #fd7e14 !important; width: 60px; height: 3px; margin: 0 auto 15px auto;"></div>
-        <span class="badge px-3 py-2 rounded-pill fs-7 mb-2" style="background: rgba(253, 126, 20, 0.15); color: #fd7e14; border: 1px solid rgba(253, 126, 20, 0.3); font-weight: 700;">
+        <span class="badge px-3 py-2 rounded-pill mb-2" style="background: rgba(253, 126, 20, 0.15); color: #fd7e14; border: 1px solid rgba(253, 126, 20, 0.3); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px;">
           <i class="fas fa-award me-1"></i> NATIONAL COMPETITIONS & ASSESSMENTS
         </span>
         <h2 class="text-white fw-bold display-6 mb-2">Olympiad Entrance Exams & Quizzes</h2>
@@ -1478,33 +1509,41 @@ courses in India with AI-driven online courses, e-books & practical training. St
       </div>
     </div>
 
-    <div class="row g-4 justify-content-center">
+    <div class="row g-4 justify-content-center align-items-stretch">
       <!-- Card 1: Olympiad Entrance Exam -->
-      <div class="col-lg-6 col-md-12">
-        <div class="h-100 p-4 p-md-5 rounded-4 shadow-lg border text-white d-flex flex-column justify-content-between" 
-             style="background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(12px); border-color: rgba(253, 126, 20, 0.25) !important; transition: all 0.35s ease;">
+      <div class="col-lg-6 col-md-12 d-flex">
+        <div class="w-100 p-4 p-md-5 rounded-4 shadow-lg border text-white d-flex flex-column justify-content-between" 
+             style="background: rgba(255, 255, 255, 0.035); backdrop-filter: blur(16px); border: 1px solid rgba(253, 126, 20, 0.25) !important; border-radius: 24px !important; transition: all 0.35s ease;"
+             onmouseover="this.style.borderColor='#fd7e14'; this.style.transform='translateY(-6px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.45), 0 0 24px rgba(253,126,20,0.2)';"
+             onmouseout="this.style.borderColor='rgba(253, 126, 20, 0.25)'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
           <div>
             <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-              <span class="badge px-3 py-2 rounded-pill fw-bold" style="background: #fd7e14; color: #0F172A; font-size: 0.78rem;">
+              <span class="badge px-3 py-2 rounded-pill fw-bold" style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); color: #ffffff; font-size: 0.78rem; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(253, 126, 20, 0.3);">
                 <i class="fas fa-star me-1"></i> OFFICIAL ENTRANCE EXAMS
               </span>
-              <span style="color: #cbd5e1; font-size: 0.85rem; font-weight: 600;">
+              <span class="badge px-3 py-2 rounded-pill" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: #e2e8f0; font-size: 0.82rem; font-weight: 600;">
                 <i class="fas fa-clock text-warning me-1"></i> Timed & Monitored
               </span>
             </div>
-            <h3 class="text-white fw-bold mb-3">Olympiad Entrance Examination</h3>
-            <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6;" class="mb-4">
+            <h3 class="text-white fw-bold mb-3" style="font-size: 1.65rem;">Olympiad Entrance Examination</h3>
+            <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.65;" class="mb-4">
               Take national level entrance tests in Math, Science, and AI. Qualify for prestigious EduAiQ scholarship bands, medals, and official printable merit certificates.
             </p>
             <div class="d-flex flex-wrap gap-2 mb-4">
-              <span class="badge bg-dark text-warning border border-secondary px-3 py-2 rounded-pill font-monospace">🥇 Gold, Silver & Bronze Medals</span>
-              <span class="badge bg-dark text-info border border-secondary px-3 py-2 rounded-pill font-monospace">📜 Merit & Participation Certs</span>
-              <span class="badge bg-dark text-success border border-secondary px-3 py-2 rounded-pill font-monospace">⚡ Auto Grading & Results</span>
+              <span class="badge px-3 py-2 rounded-pill d-inline-flex align-items-center gap-1.5" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14); color: #f8fafc; font-size: 0.84rem; font-weight: 500;">
+                <i class="fas fa-medal text-warning"></i> Gold, Silver & Bronze Medals
+              </span>
+              <span class="badge px-3 py-2 rounded-pill d-inline-flex align-items-center gap-1.5" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14); color: #f8fafc; font-size: 0.84rem; font-weight: 500;">
+                <i class="fas fa-certificate text-info"></i> Merit & Participation Certs
+              </span>
+              <span class="badge px-3 py-2 rounded-pill d-inline-flex align-items-center gap-1.5" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14); color: #f8fafc; font-size: 0.84rem; font-weight: 500;">
+                <i class="fas fa-bolt text-warning"></i> Auto Grading & Results
+              </span>
             </div>
           </div>
-          <div>
-            <a href="/olympiad-entrance/" class="btn w-100 py-3 rounded-pill fw-bold text-dark d-flex align-items-center justify-content-center gap-2 shadow" 
-               style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); border: none; font-size: 0.95rem;">
+          <div class="pt-2">
+            <a href="/olympiad-entrance/" class="btn w-100 py-3 rounded-pill fw-bold text-white d-flex align-items-center justify-content-center gap-2 shadow" 
+               style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); border: none; font-size: 0.95rem; letter-spacing: 0.5px; box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4) !important; transition: all 0.3s ease;">
               <i class="fas fa-edit"></i> ACCESS OLYMPIAD ENTRANCE EXAMS <i class="fas fa-arrow-right ms-1"></i>
             </a>
           </div>
@@ -1512,31 +1551,39 @@ courses in India with AI-driven online courses, e-books & practical training. St
       </div>
 
       <!-- Card 2: Interactive Practice Quizzes -->
-      <div class="col-lg-6 col-md-12">
-        <div class="h-100 p-4 p-md-5 rounded-4 shadow-lg border text-white d-flex flex-column justify-content-between" 
-             style="background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(12px); border-color: rgba(253, 126, 20, 0.25) !important; transition: all 0.35s ease;">
+      <div class="col-lg-6 col-md-12 d-flex">
+        <div class="w-100 p-4 p-md-5 rounded-4 shadow-lg border text-white d-flex flex-column justify-content-between" 
+             style="background: rgba(255, 255, 255, 0.035); backdrop-filter: blur(16px); border: 1px solid rgba(253, 126, 20, 0.25) !important; border-radius: 24px !important; transition: all 0.35s ease;"
+             onmouseover="this.style.borderColor='#fd7e14'; this.style.transform='translateY(-6px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.45), 0 0 24px rgba(253,126,20,0.2)';"
+             onmouseout="this.style.borderColor='rgba(253, 126, 20, 0.25)'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
           <div>
             <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-              <span class="badge px-3 py-2 rounded-pill fw-bold" style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); color: #ffffff; font-size: 0.78rem;">
+              <span class="badge px-3 py-2 rounded-pill fw-bold" style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); color: #ffffff; font-size: 0.78rem; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(253, 126, 20, 0.3);">
                 <i class="fas fa-question-circle me-1"></i> INTERACTIVE QUIZZES
               </span>
-              <span style="color: #cbd5e1; font-size: 0.85rem; font-weight: 600;">
-                <i class="fas fa-check-circle me-1" style="color: #fd7e14;"></i> Instant Feedback
+              <span class="badge px-3 py-2 rounded-pill" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: #e2e8f0; font-size: 0.82rem; font-weight: 600;">
+                <i class="fas fa-check-circle text-success me-1"></i> Instant Feedback
               </span>
             </div>
-            <h3 class="text-white fw-bold mb-3">Course Quizzes & Assessments</h3>
-            <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6;" class="mb-4">
+            <h3 class="text-white fw-bold mb-3" style="font-size: 1.65rem;">Course Quizzes & Assessments</h3>
+            <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.65;" class="mb-4">
               Test your mastery on lesson-by-lesson practice quizzes. Receive real-time score analytics, detailed answer breakdowns, and progress tracking on your student dashboard.
             </p>
             <div class="d-flex flex-wrap gap-2 mb-4">
-              <span class="badge bg-dark text-white border px-3 py-2 rounded-pill font-monospace" style="border-color: rgba(253, 126, 20, 0.4) !important;">🎯 Lesson-Wise Quizzes</span>
-              <span class="badge bg-dark text-white border px-3 py-2 rounded-pill font-monospace" style="border-color: rgba(253, 126, 20, 0.4) !important;">📊 Score & Attempt History</span>
-              <span class="badge bg-dark text-white border px-3 py-2 rounded-pill font-monospace" style="border-color: rgba(253, 126, 20, 0.4) !important;">🏆 Student ID & Dashboard</span>
+              <span class="badge px-3 py-2 rounded-pill d-inline-flex align-items-center gap-1.5" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14); color: #f8fafc; font-size: 0.84rem; font-weight: 500;">
+                <i class="fas fa-bullseye text-danger"></i> Lesson-Wise Quizzes
+              </span>
+              <span class="badge px-3 py-2 rounded-pill d-inline-flex align-items-center gap-1.5" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14); color: #f8fafc; font-size: 0.84rem; font-weight: 500;">
+                <i class="fas fa-chart-line text-primary"></i> Score & Attempt History
+              </span>
+              <span class="badge px-3 py-2 rounded-pill d-inline-flex align-items-center gap-1.5" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14); color: #f8fafc; font-size: 0.84rem; font-weight: 500;">
+                <i class="fas fa-trophy text-warning"></i> Student ID & Dashboard
+              </span>
             </div>
           </div>
-          <div>
+          <div class="pt-2">
             <a href="/my-learning/" class="btn w-100 py-3 rounded-pill fw-bold text-white d-flex align-items-center justify-content-center gap-2 shadow" 
-               style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); border: none; font-size: 0.95rem; box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4) !important;">
+               style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); border: none; font-size: 0.95rem; letter-spacing: 0.5px; box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4) !important; transition: all 0.3s ease;">
               <i class="fas fa-list-check"></i> VIEW QUIZZES & ASSESSMENTS <i class="fas fa-arrow-right ms-1"></i>
             </a>
           </div>
@@ -1603,10 +1650,10 @@ courses in India with AI-driven online courses, e-books & practical training. St
       </div>
     </div>
     <div class="feature-wrapper">
-      <div class="feature-type">
-        <div class="feature-icon">
+      <div class="feature-type" onclick="window.location.href='/team/'">
+        <div class="feature-img-wrapper">
+          <img alt="Expert Mentors" class="feature-card-img" src="{% static 'assets/img/eduaiq-smart-classroom.jpg' %}" />
           <h5 class="meta-no">1</h5>
-          <i aria-hidden="true" class="fas fa-chalkboard-teacher"></i>
         </div>
         <h4 class="feature-heading">Expert Mentors</h4>
         <p class="feature-info">90+ mentors with real classroom and industry experience
@@ -1615,22 +1662,22 @@ courses in India with AI-driven online courses, e-books & practical training. St
           <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
         </a>
       </div>
-      <div class="feature-type">
-        <div class="feature-icon">
+      <div class="feature-type" onclick="window.location.href='/courses/'">
+        <div class="feature-img-wrapper">
+          <img alt="Affordable Courses" class="feature-card-img" src="{% static 'assets/img/eduaiq-smart-classroom.jpg' %}" />
           <h5 class="meta-no">2</h5>
-          <i aria-hidden="true" class="fas fa-tags"></i>
         </div>
         <h4 class="feature-heading">Affordable Courses</h4>
         <p class="feature-info">Transparent pricing across courses, Olympiad registration,
           and franchise programs — no hidden fees at checkout.</p>
-        <a class="right-arrow-link" href="/checkout/">
+        <a class="right-arrow-link" href="/courses/">
           <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
         </a>
       </div>
-      <div class="feature-type">
-        <div class="feature-icon">
+      <div class="feature-type" onclick="window.location.href='/page/ai-lab/'">
+        <div class="feature-img-wrapper">
+          <img alt="Efficient & Flexible" class="feature-card-img" src="{% static 'assets/img/eduaiq-smart-classroom.jpg' %}" />
           <h5 class="meta-no">3</h5>
-          <i aria-hidden="true" class="fas fa-bolt"></i>
         </div>
         <h4 class="feature-heading">Efficient &amp; Flexible</h4>
         <p class="feature-info">Self-paced AI Lab modules that fit around school, work, or a
@@ -1728,7 +1775,7 @@ courses in India with AI-driven online courses, e-books & practical training. St
       <div class="col-lg-7">
         <div class="inner-goal-image">
           <figure class="video-play-image">
-            <img alt="" src="{% static 'assets/img/educator-img13.jpg' %}" />
+            <img alt="EduAiQ Smart Learning Classroom" src="{% static 'assets/img/eduaiq-smart-classroom.jpg' %}" />
             <div class="overlay02 overlay"></div>
             <div class="video-button">
               <a data-video-id="IUN664s7N-c" id="video-container">
