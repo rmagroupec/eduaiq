@@ -13,9 +13,11 @@
       <span class="text-secondary-light">Admin Audit Logs</span>
     </div>
   </div>
+  {% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'superadmin' or request.user.role == 'super_admin' or is_main_admin %}
   <button class="btn btn-outline-success-600 d-flex align-items-center gap-6 radius-8" id="exportAuditCsvBtn">
     <i class="ri-download-2-line text-md"></i> Export CSV
   </button>
+  {% endif %}
 </div>
 
 <div class="card h-100 mt-24">

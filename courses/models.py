@@ -6,13 +6,15 @@ Complete Encrypted Quiz Models for Courses App
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, FileExtensionValidator
 from django.utils import timezone
 from cryptography.fernet import Fernet, InvalidToken
 import os
 import json
 import logging
 from accounts.models import User 
+
+validate_image_extension = FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp'])
 
 logger = logging.getLogger(__name__)
 
@@ -76,8 +78,8 @@ class CourseCategory(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True)
-    icon = models.ImageField(upload_to='category_icons/', null=True, blank=True)
-    image = models.ImageField(upload_to='category_images/', null=True, blank=True)
+    icon = models.ImageField(upload_to='category_icons/', null=True, blank=True, validators=[validate_image_extension])
+    image = models.ImageField(upload_to='category_images/', null=True, blank=True, validators=[validate_image_extension])
     color_code = models.CharField(max_length=7, default='#0066cc')
     is_active = models.BooleanField(default=True)
     order = models.PositiveIntegerField(default=0)
@@ -142,10 +144,10 @@ class Course(models.Model):
     category = models.ForeignKey(CourseCategory, on_delete=models.PROTECT, related_name='courses')
     delivery_mode = models.CharField(max_length=20, choices=DELIVERY_MODES, default='hybrid')
     description = models.TextField(blank=True)
-    thumbnail = models.ImageField(upload_to='course_thumbs/', null=True, blank=True)
+    thumbnail = models.ImageField(upload_to='course_thumbs/', null=True, blank=True, validators=[validate_image_extension])
     price = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, choices=STATUS, default='draft')
-    created_by = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, related_name='authored_courses')
+    created_by = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, related_name='authored_courses')
     reviewed_by = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_courses')
     author = models.CharField(max_length=200, default='EduAiQ Editorial Team', blank=True)
     pdf_file = models.FileField(upload_to='book_pdfs/', null=True, blank=True)

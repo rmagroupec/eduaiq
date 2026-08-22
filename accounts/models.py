@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, FileExtensionValidator
 from django.utils.translation import gettext_lazy as _
+
+validate_image_extension = FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp'])
 
 
 class Role(models.Model):
@@ -89,7 +91,8 @@ class User(AbstractUser):
         _('Profile Image'),
         upload_to='profile_images/%Y/%m/%d/',
         null=True,
-        blank=True
+        blank=True,
+        validators=[validate_image_extension]
     )
     date_of_birth = models.DateField(
         _('Date of Birth'),

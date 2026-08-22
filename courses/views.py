@@ -15,8 +15,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models as dj_models
+from django.db.models import Q
 from django.http import JsonResponse
 from django.utils import timezone
+from accounts.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods
 
@@ -29,6 +31,7 @@ from .utils import (
     get_allowed_courses_for_user,
     get_allowed_categories_for_user,
     is_course_accessible_by_user,
+    get_user_institution,
 )
 
 
@@ -125,7 +128,7 @@ def serialize_course(c, detailed=False, request=None):
     }
 
     user = request.user if (request and hasattr(request, 'user')) else None
-    data['is_accessible'] = is_accessible_by_user(user, c) if 'is_accessible_by_user' in globals() else is_course_accessible_by_user(user, c)
+    data['is_accessible'] = is_course_accessible_by_user(user, c)
 
     if detailed:
         modules_list = []
@@ -270,21 +273,37 @@ def serialize_enrollment(e, request=None):
     thumbnail_url = None
     if c.thumbnail:
         thumbnail_url = request.build_absolute_uri(c.thumbnail.url) if request else c.thumbnail.url
+    
+    student_obj = None
+    if hasattr(e, 'student') and e.student:
+        full_name = ''
+        if hasattr(e.student, 'get_full_name'):
+            full_name = e.student.get_full_name()
+        if not full_name:
+            full_name = e.student.username
+        student_obj = {
+            'id': e.student.id,
+            'username': e.student.username,
+            'email': getattr(e.student, 'email', '') or 'info@eduaiq.co.in',
+            'full_name': full_name,
+        }
+
     return {
         'id': e.id,
-        'student': e.student_id,
+        'student': student_obj or {'id': e.student_id, 'username': f'Student #{e.student_id}'},
+        'student_id': e.student_id,
         'course': {
             'id': c.id,
             'title': c.title,
             'slug': c.slug,
-            'category': c.category.name,
+            'category': c.category.name if c.category else 'General',
             'instructor': c.created_by.username if c.created_by else 'N/A',
             'thumbnail': thumbnail_url,
         },
         'progress_pct': str(e.progress_pct),
         'is_completed': e.is_completed,
         'covered_by_plan': e.covered_by_plan,
-        'amount_paid': str(e.amount_paid) if e.amount_paid is not None else None,
+        'amount_paid': str(e.amount_paid) if e.amount_paid is not None else "0.00",
         'enrollment_date': e.enrollment_date,
         'completion_date': e.completion_date,
     }
@@ -306,7 +325,18 @@ def serialize_access_log(log):
 @require_http_methods(['GET', 'POST'])
 def category_list(request):
     if request.method == 'GET':
-        qs = get_allowed_categories_for_user(request.user)
+        exclude_param = request.GET.get('exclude_books')
+        if exclude_param is not None:
+            exclude_books = (exclude_param.lower() == 'true')
+        else:
+            exclude_books = not _is_staff(request.user)
+        qs = get_allowed_categories_for_user(request.user, exclude_books=exclude_books)
+        if not qs.exists():
+            CourseCategory.objects.get_or_create(
+                name='General Education',
+                defaults={'slug': 'general-education', 'description': 'Default course category', 'is_active': True}
+            )
+            qs = get_allowed_categories_for_user(request.user, exclude_books=exclude_books)
         return JsonResponse({
             'count': qs.count(),
             'results': [serialize_category(c) for c in qs]
@@ -677,7 +707,8 @@ def lesson_quiz(request, pk):
     if not _can_manage_course(request.user, course):
         return JsonResponse({'error': 'Forbidden'}, status=403)
     if lesson.content_type != 'quiz':
-        return JsonResponse({'error': "Lesson content_type must be 'quiz'"}, status=400)
+        lesson.content_type = 'quiz'
+        lesson.save()
     if hasattr(lesson, 'quiz'):
         return JsonResponse({'error': 'This lesson already has a quiz'}, status=400)
 
@@ -955,27 +986,28 @@ def enroll_course(request, slug):
     data = _body(request)
     student_id = data.get('student_id')
 
-    if not student_id:
-        return JsonResponse({'error': 'student_id is required. Only Institution Admins can allot courses to students.'}, status=400)
+    if student_id:
+        try:
+            student = User.objects.get(pk=student_id, role='student')
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'Student not found.'}, status=404)
 
-    try:
-        student = User.objects.get(pk=student_id, role='student')
-    except ObjectDoesNotExist:
-        return JsonResponse({'error': 'Student not found.'}, status=404)
+        # Get student's institution
+        if not hasattr(student, 'student_profile') or not student.student_profile.institution:
+            return JsonResponse({'error': 'Student does not belong to any institution.'}, status=400)
+        
+        institution = student.student_profile.institution
 
-    # Get student's institution
-    if not hasattr(student, 'student_profile') or not student.student_profile.institution:
-        return JsonResponse({'error': 'Student does not belong to any institution.'}, status=400)
-    
-    institution = student.student_profile.institution
+        # Check if request.user is the Admin of this institution or a Super Admin
+        if institution.admin_user_id != request.user.id and not request.user.is_superuser:
+            return JsonResponse({'error': 'Forbidden. Only the Institution Admin or Super Admin can allot courses to this student.'}, status=403)
 
-    # Check if request.user is the Admin of this institution or a Super Admin
-    if institution.admin_user_id != request.user.id and not request.user.is_superuser:
-        return JsonResponse({'error': 'Forbidden. Only the Institution Admin or Super Admin can allot courses to this student.'}, status=403)
-
-    # Check if the course is allotted to the institution by the Main Admin
-    if not institution.allowed_courses.filter(pk=course.pk).exists():
-        return JsonResponse({'error': 'This course is not allotted to your institution by the Main Admin.'}, status=403)
+        # Check if the course is allotted to the institution by the Main Admin
+        if not institution.allowed_courses.filter(pk=course.pk).exists():
+            return JsonResponse({'error': 'This course is not allotted to your institution by the Main Admin.'}, status=403)
+    else:
+        # Self-enrollment flow for logged-in user
+        student = request.user
 
     if Enrollment.objects.filter(student=student, course=course).exists():
         return JsonResponse({'error': 'Student is already enrolled in this course.'}, status=400)
@@ -1026,6 +1058,53 @@ def my_enrollments(request):
         page_size = min(max(int(request.GET.get('page_size', 12)), 1), 100)
     except ValueError:
         page, page_size = 1, 12
+
+    count = qs.count()
+    import math
+    total_pages = math.ceil(count / page_size)
+    start = (page - 1) * page_size
+    results = qs[start:start + page_size]
+
+    return JsonResponse({
+        'count': count,
+        'page': page,
+        'page_size': page_size,
+        'total_pages': total_pages,
+        'results': [serialize_enrollment(e, request=request) for e in results]
+    })
+
+
+@login_required
+@require_GET
+def admin_enrollments(request):
+    """Admin-only endpoint returning all student enrollments across system."""
+    user_role = (getattr(request.user, 'role', '') or '').lower()
+    if not request.user.is_superuser and user_role not in ['admin', 'superadmin', 'super_admin']:
+        return JsonResponse({'error': 'Forbidden'}, status=403)
+
+    qs = Enrollment.objects.select_related('student', 'course__category', 'course__created_by').order_by('-enrollment_date')
+
+    student_id = request.GET.get('student')
+    if student_id:
+        qs = qs.filter(student_id=student_id)
+
+    course_id = request.GET.get('course')
+    if course_id:
+        qs = qs.filter(course_id=course_id)
+
+    search_q = request.GET.get('q', '').strip()
+    if search_q:
+        qs = qs.filter(
+            Q(student__username__icontains=search_q) |
+            Q(student__email__icontains=search_q) |
+            Q(course__title__icontains=search_q)
+        )
+
+    try:
+        page = max(int(request.GET.get('page', 1)), 1)
+        page_size = min(max(int(request.GET.get('page_size', 50)), 1), 200)
+    except ValueError:
+        page, page_size = 1, 50
 
     count = qs.count()
     import math

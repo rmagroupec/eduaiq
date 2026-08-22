@@ -1,6 +1,8 @@
 from django.core.exceptions import ValidationError
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, FileExtensionValidator
 from django.db import models
+
+validate_image_extension = FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp'])
 
 
 class Institution(models.Model):
@@ -112,7 +114,7 @@ class Student(models.Model):
 
     # Documents
     aadhar_or_id_proof = models.FileField(upload_to='student_docs/id_proof/', null=True, blank=True)
-    profile_photo = models.ImageField(upload_to='student_docs/photos/', null=True, blank=True)
+    profile_photo = models.ImageField(upload_to='student_docs/photos/', null=True, blank=True, validators=[validate_image_extension])
 
     # Logistics
     emergency_contact_phone = models.CharField(max_length=15, blank=True)

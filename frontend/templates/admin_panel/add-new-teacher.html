@@ -215,8 +215,8 @@
 <div class="">
 <label class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Teacher Photo <span class="text-danger-600">*</span></label>
 <div class="drop-zone height-44-px p-4 d-flex justify-content-center align-items-center text-center fw-medium text-md cursor-pointer border border-neutral-400 radius-8 border-dashed bg-hover-neutral-200">
-<span class="drop-zone__prompt">Darg &amp; drop a file here or click</span>
-<input class="drop-zone__input" id="teacherPhotoInput" name="myFile" type="file"/>
+<span class="drop-zone__prompt">Drag &amp; drop image here or click (JPG, JPEG, PNG, WEBP)</span>
+<input class="drop-zone__input" id="teacherPhotoInput" name="myFile" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"/>
 </div>
 </div>
 </div>
@@ -666,6 +666,16 @@
     });
 
     function updateThumbnail(dropZoneElement, file) {
+        if (file) {
+            const allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (!allowedExts.includes(ext)) {
+                Swal.fire({ icon: 'warning', title: 'Invalid Format', text: 'Only JPG, JPEG, PNG, and WEBP files are allowed.' });
+                const input = dropZoneElement.querySelector(".drop-zone__input");
+                if (input) input.value = '';
+                return;
+            }
+        }
         let thumbnailElement = dropZoneElement.querySelector(".drop-zone__thumb");
         if (dropZoneElement.querySelector(".drop-zone__prompt")) {
             dropZoneElement.querySelector(".drop-zone__prompt").remove();

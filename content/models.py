@@ -1,6 +1,9 @@
 from django.db import models
 from django.utils.text import slugify
 from django.utils import timezone
+from django.core.validators import FileExtensionValidator
+
+validate_image_extension = FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp'])
 
 
 class TeamMember(models.Model):
@@ -11,7 +14,7 @@ class TeamMember(models.Model):
     name = models.CharField(max_length=200, help_text="Full name of the team member")
     slug = models.SlugField(max_length=220, unique=True, blank=True, help_text="Unique URL slug (auto-generated if empty)")
     designation = models.CharField(max_length=200, help_text="e.g. AI Lab Mentor, Olympiad Lead, CEO")
-    photo = models.ImageField(upload_to='team/', blank=True, null=True, help_text="Profile picture")
+    photo = models.ImageField(upload_to='team/', blank=True, null=True, help_text="Profile picture", validators=[validate_image_extension])
     quote = models.TextField(blank=True, default='', help_text="Inspirational quote or motto")
     bio = models.TextField(blank=True, default='', help_text="Detailed biography or introduction")
     
@@ -133,7 +136,7 @@ class BlogPost(models.Model):
         blank=True, 
         related_name='blog_posts'
     )
-    featured_image = models.ImageField(upload_to='blogs/', blank=True, null=True)
+    featured_image = models.ImageField(upload_to='blogs/', blank=True, null=True, validators=[validate_image_extension])
     summary = models.TextField(
         blank=True, 
         default='', 

@@ -238,32 +238,42 @@ def serialize_student_public(s):
 
 
 def serialize_student_full(s, request=None):
+    enrolled_course_ids = []
+    if s.user_id:
+        from courses.models import Enrollment
+        enrolled_course_ids = list(Enrollment.objects.filter(student_id=s.user_id).values_list('course_id', flat=True))
     return {
         'id': s.id,
         'user_id': s.user_id,
+        'username': s.user.username if s.user_id else '',
+        'first_name': s.user.first_name if s.user_id else '',
+        'last_name': s.user.last_name if s.user_id else '',
+        'email': s.user.email if s.user_id else '',
+        'phone': s.user.phone if s.user_id else '',
         'student_name': s.user.get_full_name() if s.user_id else None,
         'institution_id': s.institution_id,
         'institution_name': s.institution.name if s.institution_id else None,
         'batch_id': s.batch_id,
         'batch_name': s.batch.name if s.batch_id else None,
         'admission_no': s.admission_no,
-        'roll_number': s.roll_number,
-        'class_grade': s.class_grade,
-        'section': s.section,
-        'academic_year': s.academic_year,
-        'admission_date': s.admission_date,
-        'date_of_birth': s.date_of_birth,
-        'age': s.age,
-        'gender': s.gender,
-        'blood_group': s.blood_group,
-        'category': s.category,
-        'father_name': s.father_name,
-        'mother_name': s.mother_name,
-        'guardian_name': s.guardian_name,
-        'guardian_relation': s.guardian_relation,
-        'guardian_phone': s.guardian_phone,
-        'guardian_email': s.guardian_email,
+        'roll_number': s.roll_number or '',
+        'class_grade': s.class_grade or '',
+        'section': s.section or '',
+        'academic_year': s.academic_year or '',
+        'admission_date': s.admission_date.isoformat() if s.admission_date else None,
+        'date_of_birth': s.date_of_birth.isoformat() if s.date_of_birth else None,
+        'age': getattr(s, 'age', None),
+        'gender': s.gender or 'prefer_not_to_say',
+        'blood_group': s.blood_group or '',
+        'category': s.category or 'general',
+        'father_name': s.father_name or '',
+        'mother_name': s.mother_name or '',
+        'guardian_name': s.guardian_name or '',
+        'guardian_relation': s.guardian_relation or '',
+        'guardian_phone': s.guardian_phone or '',
+        'guardian_email': s.guardian_email or '',
         'parent_user_id': s.parent_user_id,
+        'enrolled_course_ids': enrolled_course_ids,
         'aadhar_or_id_proof': (
             request.build_absolute_uri(s.aadhar_or_id_proof.url)
             if s.aadhar_or_id_proof and request else
@@ -274,8 +284,8 @@ def serialize_student_full(s, request=None):
             if s.profile_photo and request else
             (s.profile_photo.url if s.profile_photo else None)
         ),
-        'emergency_contact_phone': s.emergency_contact_phone,
-        'status': s.status,
+        'emergency_contact_phone': s.emergency_contact_phone or '',
+        'status': s.status or 'active',
         'created_at': s.created_at.isoformat() if s.created_at else None,
         'updated_at': s.updated_at.isoformat() if s.updated_at else None,
     }
@@ -539,8 +549,7 @@ def student_detail(request, pk):
         return JsonResponse({'error': 'Student not found'}, status=404)
 
     if request.method == 'GET':
-        viewer = request.user if request.user.is_authenticated else None
-        return JsonResponse({'student': serialize_student(student, viewer=viewer, request=request)})
+        return JsonResponse({'student': serialize_student_full(student, request=request)})
 
     if not _can_manage_student(request.user, student):
         return JsonResponse({'error': 'Forbidden'}, status=403)
@@ -566,6 +575,45 @@ def student_detail(request, pk):
         try:
             student.full_clean()
             student.save()
+
+            # Sync user profile details if provided
+            if student.user:
+                u_changed = False
+                if 'first_name' in body:
+                    student.user.first_name = body['first_name'].strip()
+                    u_changed = True
+                if 'last_name' in body:
+                    student.user.last_name = body['last_name'].strip()
+                    u_changed = True
+                if 'email' in body and body['email'].strip():
+                    student.user.email = body['email'].strip()
+                    u_changed = True
+                if 'phone' in body and body['phone'].strip():
+                    student.user.phone = body['phone'].strip()
+                    u_changed = True
+                if 'password' in body and body['password'].strip():
+                    student.user.set_password(body['password'].strip())
+                    u_changed = True
+                if u_changed:
+                    student.user.save()
+
+            # Sync course enrollments if course_ids passed
+            course_ids_raw = body.get('course_ids') or request.POST.get('course_ids')
+            if course_ids_raw is not None and student.user:
+                course_ids = course_ids_raw
+                if isinstance(course_ids, str):
+                    import json
+                    try: course_ids = json.loads(course_ids)
+                    except Exception: course_ids = [c for c in course_ids.split(',') if c.strip().isdigit()]
+                if isinstance(course_ids, list):
+                    from courses.models import Course, Enrollment
+                    Enrollment.objects.filter(student=student.user).exclude(course_id__in=course_ids).delete()
+                    for cid in course_ids:
+                        try:
+                            c_obj = Course.objects.get(id=int(cid))
+                            Enrollment.objects.get_or_create(student=student.user, course=c_obj, defaults={'covered_by_plan': True, 'amount_paid': 0})
+                        except Exception: pass
+
         except DjangoValidationError as e:
             return JsonResponse({'success': False, 'errors': e.message_dict}, status=400)
         return JsonResponse({'success': True, 'student': serialize_student_full(student, request=request)})
@@ -715,15 +763,54 @@ def create_institution_student(request):
             user.profile_image = photo_file
             user.save()
 
+        roll_number = data.get('roll_number', '').strip()
+        admission_date = data.get('admission_date') or None
+        date_of_birth = data.get('date_of_birth') or None
+        gender = data.get('gender', 'prefer_not_to_say').strip()
+        blood_group = data.get('blood_group', '').strip()
+        category = data.get('category', 'general').strip()
+        father_name = data.get('father_name', '').strip()
+        mother_name = data.get('mother_name', '').strip()
+        guardian_name = data.get('guardian_name', '').strip()
+        guardian_relation = data.get('guardian_relation', '').strip()
+        guardian_phone = data.get('guardian_phone', '').strip()
+        guardian_email = data.get('guardian_email', '').strip()
+        emergency_contact_phone = data.get('emergency_contact_phone', '').strip()
+        status_val = data.get('status', 'active').strip()
+
+        parent_user_id = data.get('parent_user') or data.get('parent_user_id')
+        parent_user_obj = None
+        if parent_user_id:
+            try: parent_user_obj = User.objects.get(id=int(parent_user_id))
+            except Exception: pass
+
+        id_proof_file = request.FILES.get('aadhar_or_id_proof') or request.FILES.get('id_proof')
+
         # Create Student Profile
         student = Student.objects.create(
             user=user,
             institution=inst,
             batch=batch_obj,
             admission_no=admission_no,
+            roll_number=roll_number,
             class_grade=class_grade,
             section=section,
             academic_year=academic_year,
+            admission_date=admission_date if admission_date else None,
+            date_of_birth=date_of_birth if date_of_birth else None,
+            gender=gender,
+            blood_group=blood_group,
+            category=category,
+            father_name=father_name,
+            mother_name=mother_name,
+            guardian_name=guardian_name,
+            guardian_relation=guardian_relation,
+            guardian_phone=guardian_phone,
+            guardian_email=guardian_email,
+            parent_user=parent_user_obj,
+            emergency_contact_phone=emergency_contact_phone,
+            status=status_val,
+            aadhar_or_id_proof=id_proof_file if id_proof_file else None,
             profile_photo=photo_file if photo_file else None
         )
 

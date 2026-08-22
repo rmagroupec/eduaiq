@@ -30,7 +30,7 @@
             <label for="userAvatarInput" class="position-absolute bottom-0 end-0 bg-primary-600 text-white rounded-circle d-flex align-items-center justify-content-center cursor-pointer shadow hover-bg-primary-700" style="width: 34px; height: 34px; right: 0; bottom: 0;" title="Change Profile Picture">
               <i class="ri-camera-fill text-lg"></i>
             </label>
-            <input type="file" id="userAvatarInput" accept="image/*" class="d-none">
+            <input type="file" id="userAvatarInput" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" class="d-none">
             {% endif %}
           </figure>
           <h2 class="h5 text-primary-light mb-8 fw-bold">{% if profile_user %}{{ profile_user.get_full_name|default:profile_user.username|title }}{% else %}User Account{% endif %}</h2>
@@ -261,6 +261,14 @@
     $('#userAvatarInput').on('change', function() {
       var file = this.files[0];
       if (!file) return;
+
+      var allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
+      var ext = file.name.split('.').pop().toLowerCase();
+      if (!allowedExts.includes(ext)) {
+        if (window.showToast) window.showToast('Invalid image format! Only JPG, JPEG, PNG, and WEBP allowed.', 'error');
+        $(this).val('');
+        return;
+      }
 
       if (file.size > 5 * 1024 * 1024) {
         if (window.showToast) window.showToast('Profile image must be less than 5MB', 'error');

@@ -522,7 +522,7 @@ def my_learning(request):
 
 
 @login_required(login_url='/login/')
-def quiz_player(request):
+def quiz_player(request, pk=None):
     """
     Quiz taking interface with timer and encrypted questions
     Template: quiz-player.html
@@ -530,27 +530,27 @@ def quiz_player(request):
       - POST /quizzes/{id}/start/
       - POST /attempts/{id}/answer/
       - POST /attempts/{id}/submit/
-    Query Params: id (quiz ID)
+    URL Path / Query Params: pk or id (quiz ID)
     Requires: User authentication
     """
-    quiz_id = request.GET.get('id', '')
+    quiz_id = pk or request.GET.get('id', '')
     return render(request, "quiz-player.html", {
         'quiz_id': quiz_id
     })
 
 
 @login_required(login_url='/login/')
-def lesson_player(request):
+def lesson_player(request, pk=None):
     """
     Lesson viewing interface with video/text/pdf support
     Template: lesson-player.html
     APIs:
       - GET /courses/lessons/{id}/
       - PATCH /courses/enrollments/{id}/progress/
-    Query Params: id (lesson ID)
+    URL Path / Query Params: pk or id (lesson ID)
     Requires: User authentication
     """
-    lesson_id = request.GET.get('id', '')
+    lesson_id = pk or request.GET.get('id', '')
     return render(request, "lesson-player.html", {
         'lesson_id': lesson_id
     })

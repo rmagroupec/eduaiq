@@ -26,6 +26,7 @@
 <div class="card-body p-0 dataTable-wrapper">
 <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 px-20 py-12 border-bottom border-neutral-200">
 <div class="d-flex flex-wrap align-items-center gap-16">
+{% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'superadmin' or request.user.role == 'super_admin' or is_main_admin %}
 <div class="dropdown">
 <button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
 <span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
@@ -49,6 +50,7 @@
 </li>
 </ul>
 </div>
+{% endif %}
 <form class="navbar-search dt-search m-0">
     {% csrf_token %}
 <input aria-controls="dataTable" class="dt-input bg-transparent radius-4" name="search" placeholder="Search..." type="text"/>

@@ -112,8 +112,8 @@
 
         <!-- Thumbnail -->
         <div class="col-12">
-          <label class="form-label" for="thumbnail">Course Thumbnail</label>
-          <input type="file" id="thumbnail" name="thumbnail" class="form-control" accept="image/*" onchange="previewSelectedImage(event)"/>
+          <label class="form-label" for="thumbnail">Course Thumbnail <span class="text-xs text-muted">(JPG, JPEG, PNG, WEBP)</span></label>
+          <input type="file" id="thumbnail" name="thumbnail" class="form-control" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" onchange="previewSelectedImage(event)"/>
           <div id="newThumbnailPreviewContainer" style="display: none; margin-top: 10px;">
             <label class="form-label d-block text-sm text-secondary-light">Selected Image Preview:</label>
             <img id="newThumbnailPreview" src="" alt="Preview" style="width: 150px; height: 100px; object-fit: cover; border: 1px solid #ddd; border-radius: 4px;">
@@ -145,15 +145,24 @@
     const previewImg = document.getElementById('newThumbnailPreview');
 
     if (file) {
+      const allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
+      const ext = file.name.split('.').pop().toLowerCase();
+      if (!allowedExts.includes(ext)) {
+        showToast('Invalid image format! Only JPG, JPEG, PNG, and WEBP files are allowed.', 'error');
+        event.target.value = '';
+        if (previewImg) previewImg.src = '';
+        if (previewContainer) previewContainer.style.display = 'none';
+        return;
+      }
       const reader = new FileReader();
       reader.onload = function(e) {
-        previewImg.src = e.target.result;
-        previewContainer.style.display = 'block';
+        if (previewImg) previewImg.src = e.target.result;
+        if (previewContainer) previewContainer.style.display = 'block';
       };
       reader.readAsDataURL(file);
     } else {
-      previewImg.src = '';
-      previewContainer.style.display = 'none';
+      if (previewImg) previewImg.src = '';
+      if (previewContainer) previewContainer.style.display = 'none';
     }
   }
 
@@ -168,11 +177,12 @@
 
   async function loadCategories() {
     try {
-      const response = await fetch(`${API_BASE_URL}/courses/categories/`);
+      const response = await fetch(`${API_BASE_URL}/courses/categories/?exclude_books=false`);
       const data = await response.json();
       const select = document.getElementById('category');
       
       if (data.results) {
+        select.innerHTML = '<option value="" disabled selected>Select Category</option>';
         data.results.forEach(cat => {
           const opt = document.createElement('option');
           opt.value = cat.id;

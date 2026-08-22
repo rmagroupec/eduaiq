@@ -84,9 +84,9 @@
 
         <!-- Photo upload -->
         <div class="col-md-6">
-          <label class="text-sm fw-semibold text-primary-light mb-8" for="photo">Change Profile Photo</label>
-          <input type="file" class="form-control radius-8" id="photo" name="photo" accept="image/*" onchange="previewPhoto(event)">
-          <span class="text-xs text-secondary-light mt-1 d-block">Leave blank to keep existing photo.</span>
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="photo">Change Profile Photo <span class="text-xs text-muted">(JPG, JPEG, PNG, WEBP)</span></label>
+          <input type="file" class="form-control radius-8" id="photo" name="photo" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" onchange="previewPhoto(event)">
+          <span class="text-xs text-secondary-light mt-1 d-block">Allowed formats: JPG, JPEG, PNG, WEBP. Leave blank to keep existing photo.</span>
         </div>
 
         <div class="col-md-3">
@@ -172,6 +172,17 @@
 function previewPhoto(event) {
   const file = event.target.files[0];
   if (file) {
+    const allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!allowedExts.includes(ext)) {
+      if (typeof showToast === 'function') {
+        showToast('Invalid image format! Only JPG, JPEG, PNG, and WEBP files are allowed.', 'error');
+      } else {
+        alert('Invalid image format! Only JPG, JPEG, PNG, and WEBP files are allowed.');
+      }
+      event.target.value = '';
+      return;
+    }
     const reader = new FileReader();
     reader.onload = function(e) {
       const preview = document.getElementById('teamPhotoPreview');

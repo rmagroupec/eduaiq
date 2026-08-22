@@ -41,11 +41,11 @@
                   <label for="studentPhotoInput" class="position-absolute bottom-0 end-0 bg-primary-600 text-white rounded-circle d-flex align-items-center justify-content-center cursor-pointer shadow hover-bg-primary-700" style="width: 30px; height: 30px; right: -2px; bottom: -2px;" title="Upload Photo">
                     <i class="ri-camera-fill text-sm"></i>
                   </label>
-                  <input type="file" id="studentPhotoInput" name="profile_photo" accept="image/*" class="d-none" />
+                  <input type="file" id="studentPhotoInput" name="profile_photo" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" class="d-none" />
                 </div>
                 <div>
                   <h6 class="text-md fw-semibold mb-4 text-primary-light">Upload Student Photo</h6>
-                  <p class="text-xs text-secondary-light mb-8">Allowed formats: JPG, PNG, WEBP (Max 5MB)</p>
+                  <p class="text-xs text-secondary-light mb-8">Allowed formats: JPG, JPEG, PNG, WEBP (Max 5MB)</p>
                   <div class="d-flex align-items-center gap-2">
                     <label for="studentPhotoInput" class="btn btn-sm btn-primary-50 text-primary-600 border border-primary-200 radius-8 d-inline-flex align-items-center gap-1 cursor-pointer fw-medium px-14 py-6 text-xs">
                       <i class="ri-upload-cloud-2-line text-sm"></i> Choose Image
@@ -59,18 +59,29 @@
 
           <div class="row gy-3">
             <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="first_name">First Name</label>
+              <input type="text" class="form-control radius-8" id="first_name" name="first_name" placeholder="John">
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="last_name">Last Name</label>
+              <input type="text" class="form-control radius-8" id="last_name" name="last_name" placeholder="Doe">
+            </div>
+            <div class="col-md-3">
               <label class="text-sm fw-semibold text-primary-light mb-8" for="username">Login Username <span class="text-danger-600">*</span></label>
               <input type="text" class="form-control radius-8" id="username" name="username" placeholder="e.g. student101" required>
             </div>
             <div class="col-md-3">
               <label class="text-sm fw-semibold text-primary-light mb-8" for="password">Login Password <span class="text-danger-600">*</span></label>
-              <input type="password" class="form-control radius-8" id="password" name="password" placeholder="••••••••••••" required>
+              <div class="position-relative">
+                <input type="password" class="form-control radius-8" id="password" name="password" placeholder="••••••••••••" style="padding-right: 42px;" required>
+                <span class="toggle-password ri-eye-line text-xl cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#password" style="z-index: 10;" title="Toggle Password Visibility"></span>
+              </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
               <label class="text-sm fw-semibold text-primary-light mb-8" for="email">Student Email Address</label>
               <input type="email" class="form-control radius-8" id="email" name="email" placeholder="student@example.com">
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
               <label class="text-sm fw-semibold text-primary-light mb-8" for="phone">Phone / Mobile Number</label>
               <input type="text" class="form-control radius-8" id="phone" name="phone" placeholder="+919876543210">
             </div>
@@ -84,26 +95,10 @@
     <div class="col-lg-12">
       <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden border border-neutral-200">
         <div class="card-header border-bottom bg-neutral-50 py-16 px-24">
-          <h6 class="text-lg fw-bold mb-0 text-primary-600"><i class="ri-graduation-cap-line me-2"></i> Academic, Batch & Target Exam Profile</h6>
+          <h6 class="text-lg fw-bold mb-0 text-primary-600"><i class="ri-graduation-cap-line me-2"></i> Academic, Institution & Batch Profile</h6>
         </div>
         <div class="card-body p-24">
           <div class="row gy-3">
-            <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="first_name">First Name</label>
-              <input type="text" class="form-control radius-8" id="first_name" name="first_name" placeholder="John">
-            </div>
-            <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="last_name">Last Name</label>
-              <input type="text" class="form-control radius-8" id="last_name" name="last_name" placeholder="Doe">
-            </div>
-            <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="admission_no">Admission / Roll No <span class="text-danger-600">*</span></label>
-              <input type="text" class="form-control radius-8" id="admission_no" name="admission_no" placeholder="ADM2026001" required>
-            </div>
-            <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="class_grade">Class / Grade / Target Exam</label>
-              <input type="text" class="form-control radius-8" id="class_grade" name="class_grade" placeholder="e.g. Class 10, NEET 2027, JEE Main" value="Class 10">
-            </div>
             <div class="col-md-4">
               <label class="text-sm fw-semibold text-primary-light mb-8" for="institution_id">Select Institution</label>
               <select class="form-control form-select radius-8" id="institution_id" name="institution_id">
@@ -111,21 +106,166 @@
               </select>
             </div>
             <div class="col-md-4">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="batch_id">Assign Target Batch (Optional)</label>
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="batch_id">Assign Target Batch</label>
               <select class="form-control form-select radius-8" id="batch_id" name="batch_id">
                 <option value="">-- No Specific Batch / General --</option>
               </select>
             </div>
             <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="admission_no">Admission Number <span class="text-danger-600">*</span></label>
+              <input type="text" class="form-control radius-8" id="admission_no" name="admission_no" placeholder="e.g. ADM2026001" required>
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="roll_number">Roll Number</label>
+              <input type="text" class="form-control radius-8" id="roll_number" name="roll_number" placeholder="e.g. 101">
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="class_grade">Class / Grade / Target Exam</label>
+              <input type="text" class="form-control radius-8" id="class_grade" name="class_grade" placeholder="e.g. Class 10, NEET 2027, JEE Main" value="Class 10">
+            </div>
+            <div class="col-md-3">
               <label class="text-sm fw-semibold text-primary-light mb-8" for="section">Section</label>
-              <input type="text" class="form-control radius-8" id="section" name="section" placeholder="e.g. A, Morning, Batch-1" value="A">
+              <input type="text" class="form-control radius-8" id="section" name="section" placeholder="e.g. A, Morning" value="A">
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="academic_year">Academic Year</label>
+              <input type="text" class="form-control radius-8" id="academic_year" name="academic_year" value="2026-27">
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="admission_date">Admission Date</label>
+              <input type="date" class="form-control radius-8" id="admission_date" name="admission_date">
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="status">Account Status</label>
+              <select class="form-control form-select radius-8" id="status" name="status">
+                <option value="active" selected>Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="graduated">Graduated</option>
+                <option value="transferred">Transferred</option>
+                <option value="dropped">Dropped Out</option>
+              </select>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Section 3: Course Enrollment Checklist -->
+    <!-- Section 3: Personal & Background Details -->
+    <div class="col-lg-12">
+      <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden border border-neutral-200">
+        <div class="card-header border-bottom bg-neutral-50 py-16 px-24">
+          <h6 class="text-lg fw-bold mb-0 text-primary-600"><i class="ri-user-heart-line me-2"></i> Personal & Demographic Details</h6>
+        </div>
+        <div class="card-body p-24">
+          <div class="row gy-3">
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="date_of_birth">Date of Birth</label>
+              <input type="date" class="form-control radius-8" id="date_of_birth" name="date_of_birth">
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="gender">Gender</label>
+              <select class="form-control form-select radius-8" id="gender" name="gender">
+                <option value="prefer_not_to_say">Prefer Not to Say</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="blood_group">Blood Group</label>
+              <select class="form-control form-select radius-8" id="blood_group" name="blood_group">
+                <option value="">Select Blood Group</option>
+                <option value="a+">A+</option>
+                <option value="a-">A-</option>
+                <option value="b+">B+</option>
+                <option value="b-">B-</option>
+                <option value="ab+">AB+</option>
+                <option value="ab-">AB-</option>
+                <option value="o+">O+</option>
+                <option value="o-">O-</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="category">Category</label>
+              <select class="form-control form-select radius-8" id="category" name="category">
+                <option value="general">General</option>
+                <option value="obc">OBC</option>
+                <option value="sc">SC</option>
+                <option value="st">ST</option>
+                <option value="ews">EWS</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="emergency_contact_phone">Emergency Contact Phone</label>
+              <input type="tel" class="form-control radius-8" id="emergency_contact_phone" name="emergency_contact_phone" placeholder="+919876543210">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Parent & Guardian Details -->
+    <div class="col-lg-12">
+      <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden border border-neutral-200">
+        <div class="card-header border-bottom bg-neutral-50 py-16 px-24">
+          <h6 class="text-lg fw-bold mb-0 text-primary-600"><i class="ri-parent-line me-2"></i> Parent & Guardian Details</h6>
+        </div>
+        <div class="card-body p-24">
+          <div class="row gy-3">
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="father_name">Father's Name</label>
+              <input type="text" class="form-control radius-8" id="father_name" name="father_name" placeholder="Father Name">
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="mother_name">Mother's Name</label>
+              <input type="text" class="form-control radius-8" id="mother_name" name="mother_name" placeholder="Mother Name">
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="guardian_name">Guardian's Name</label>
+              <input type="text" class="form-control radius-8" id="guardian_name" name="guardian_name" placeholder="Guardian Name">
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="guardian_relation">Guardian Relation</label>
+              <input type="text" class="form-control radius-8" id="guardian_relation" name="guardian_relation" placeholder="e.g. Uncle, Grandfather">
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="guardian_phone">Guardian Phone</label>
+              <input type="tel" class="form-control radius-8" id="guardian_phone" name="guardian_phone" placeholder="+919876543210">
+            </div>
+            <div class="col-md-4">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="guardian_email">Guardian Email</label>
+              <input type="email" class="form-control radius-8" id="guardian_email" name="guardian_email" placeholder="guardian@example.com">
+            </div>
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="parent_user">Link Parent Account (Optional)</label>
+              <select class="form-control form-select radius-8" id="parent_user" name="parent_user">
+                <option value="">-- Select Parent User (Optional) --</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 5: Documents & ID Proof -->
+    <div class="col-lg-12">
+      <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden border border-neutral-200">
+        <div class="card-header border-bottom bg-neutral-50 py-16 px-24">
+          <h6 class="text-lg fw-bold mb-0 text-primary-600"><i class="ri-file-user-line me-2"></i> Documents & Identification</h6>
+        </div>
+        <div class="card-body p-24">
+          <div class="row gy-3">
+            <div class="col-md-6">
+              <label class="text-sm fw-semibold text-primary-light mb-8" for="aadhar_or_id_proof">Aadhar Card / ID Proof Document</label>
+              <input type="file" class="form-control radius-8" id="aadhar_or_id_proof" name="aadhar_or_id_proof" accept=".pdf,.jpg,.jpeg,.png,.webp">
+              <span class="text-xs text-secondary-light mt-4 d-block">Supported formats: PDF, JPG, PNG, WEBP (Max 10MB)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 6: Course Enrollment Checklist -->
     <div class="col-lg-12">
       <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden border border-neutral-200">
         <div class="card-header border-bottom bg-neutral-50 py-16 px-24">
@@ -193,6 +333,7 @@
     loadInstitutionsDropdown();
     loadAllowedCoursesChecklist();
     loadAvailableBatches();
+    loadParentUsersDropdown();
 
     // Profile photo upload preview listener
     const photoInput = document.getElementById('studentPhotoInput');
@@ -203,6 +344,13 @@
       photoInput.addEventListener('change', function() {
         const file = this.files[0];
         if (file) {
+          const allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
+          const ext = file.name.split('.').pop().toLowerCase();
+          if (!allowedExts.includes(ext)) {
+            alert('Invalid image format! Only JPG, JPEG, PNG, and WEBP files are allowed.');
+            this.value = '';
+            return;
+          }
           if (file.size > 5 * 1024 * 1024) {
             alert('Profile picture must be less than 5MB.');
             this.value = '';
@@ -249,14 +397,38 @@
       formData.append('first_name', document.getElementById('first_name').value.trim());
       formData.append('last_name', document.getElementById('last_name').value.trim());
       formData.append('admission_no', admission_no);
+      formData.append('roll_number', document.getElementById('roll_number') ? document.getElementById('roll_number').value.trim() : '');
       formData.append('class_grade', document.getElementById('class_grade').value.trim());
       formData.append('section', document.getElementById('section').value.trim());
+      formData.append('academic_year', document.getElementById('academic_year') ? document.getElementById('academic_year').value.trim() : '2026-27');
+      formData.append('admission_date', document.getElementById('admission_date') ? document.getElementById('admission_date').value : '');
+      formData.append('status', document.getElementById('status') ? document.getElementById('status').value : 'active');
+      
+      formData.append('date_of_birth', document.getElementById('date_of_birth') ? document.getElementById('date_of_birth').value : '');
+      formData.append('gender', document.getElementById('gender') ? document.getElementById('gender').value : 'prefer_not_to_say');
+      formData.append('blood_group', document.getElementById('blood_group') ? document.getElementById('blood_group').value : '');
+      formData.append('category', document.getElementById('category') ? document.getElementById('category').value : 'general');
+      formData.append('emergency_contact_phone', document.getElementById('emergency_contact_phone') ? document.getElementById('emergency_contact_phone').value.trim() : '');
+
+      formData.append('father_name', document.getElementById('father_name') ? document.getElementById('father_name').value.trim() : '');
+      formData.append('mother_name', document.getElementById('mother_name') ? document.getElementById('mother_name').value.trim() : '');
+      formData.append('guardian_name', document.getElementById('guardian_name') ? document.getElementById('guardian_name').value.trim() : '');
+      formData.append('guardian_relation', document.getElementById('guardian_relation') ? document.getElementById('guardian_relation').value.trim() : '');
+      formData.append('guardian_phone', document.getElementById('guardian_phone') ? document.getElementById('guardian_phone').value.trim() : '');
+      formData.append('guardian_email', document.getElementById('guardian_email') ? document.getElementById('guardian_email').value.trim() : '');
+      formData.append('parent_user', document.getElementById('parent_user') ? document.getElementById('parent_user').value : '');
+
       if (batchId) formData.append('batch_id', batchId);
       if (instId) formData.append('institution', instId);
       formData.append('course_ids', JSON.stringify(selectedCourses));
 
       if (photoInput && photoInput.files && photoInput.files[0]) {
         formData.append('profile_photo', photoInput.files[0]);
+      }
+
+      const idProofInput = document.getElementById('aadhar_or_id_proof');
+      if (idProofInput && idProofInput.files && idProofInput.files[0]) {
+        formData.append('aadhar_or_id_proof', idProofInput.files[0]);
       }
 
       try {
@@ -302,8 +474,27 @@
     });
   });
 
+  async function loadParentUsersDropdown() {
+    const parentSelect = document.getElementById('parent_user');
+    if (!parentSelect) return;
+    try {
+      const res = await fetch('/accounts/users/?role=parent&page_size=200', { credentials: 'include' });
+      const data = await res.json();
+      const parents = data.results || [];
+      parents.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = `${p.first_name || ''} ${p.last_name || ''} (${p.username})`;
+        parentSelect.appendChild(opt);
+      });
+    } catch (e) {
+      console.warn("Could not load parent accounts:", e);
+    }
+  }
+
   async function loadInstitutionsDropdown() {
     const select = document.getElementById('institution_id');
+    if (!select) return;
     const urlParams = new URLSearchParams(window.location.search);
     const paramInstId = urlParams.get('institution_id');
 
@@ -322,31 +513,41 @@
       if (paramInstId) {
         select.value = paramInstId;
       }
+
+      select.addEventListener('change', function() {
+        loadAvailableBatches(this.value);
+      });
     } catch (e) {
       console.warn("Could not load institutions:", e);
     }
   }
 
-  async function loadAvailableBatches() {
+  async function loadAvailableBatches(selectedInstId = null) {
     const batchSelect = document.getElementById('batch_id');
-    const urlParams = new URLSearchParams(window.location.search);
-    const instId = urlParams.get('institution_id');
+    if (!batchSelect) return;
 
-    let fetchUrl = `${API_BASE_URL}/api/batches/`;
+    batchSelect.innerHTML = '<option value="">-- No Specific Batch / General --</option>';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramInstId = urlParams.get('institution_id');
+    const currentDropdownInst = document.getElementById('institution_id') ? document.getElementById('institution_id').value : '';
+    const instId = selectedInstId || currentDropdownInst || paramInstId;
+
+    let fetchUrl = `${API_BASE_URL}/api/batches/?page_size=100`;
     if (instId) {
-      fetchUrl = `${API_BASE_URL}/api/institutions/${instId}/batches/`;
+      fetchUrl = `${API_BASE_URL}/api/institutions/${instId}/batches/?page_size=100`;
     }
 
     try {
       const response = await fetch(fetchUrl, { credentials: 'include' });
       const data = await response.json();
-      const batches = data.results || [];
+      const batches = data.results || (Array.isArray(data) ? data : []);
 
       if (batches.length > 0) {
         batches.forEach(b => {
           const opt = document.createElement('option');
           opt.value = b.id;
-          opt.textContent = `${b.name} (${b.target_exam || 'General'} - ${b.institution_name || 'Institution'})`;
+          opt.textContent = `${b.name} (${b.target_exam || 'General'}${b.institution_name ? ' - ' + b.institution_name : ''})`;
           batchSelect.appendChild(opt);
         });
       }

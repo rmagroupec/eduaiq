@@ -25,6 +25,7 @@
         <thead class="table-light">
           <tr>
             <th>Enrollment ID</th>
+            <th>Student</th>
             <th>Thumbnail</th>
             <th>Course Title</th>
             <th>Category</th>
@@ -36,7 +37,7 @@
         </thead>
         <tbody id="enrollmentsTableBody">
           <tr>
-            <td colspan="8" class="text-center py-5 text-muted">
+            <td colspan="9" class="text-center py-5 text-muted">
               <i class="ri-loader-4-line ri-spin align-middle me-2"></i> Loading enrollments...
             </td>
           </tr>
@@ -51,24 +52,34 @@
 
   async function loadAdminEnrollments() {
     try {
-      const response = await fetch(`${API_BASE_URL}/courses/my-enrollments/`);
+      let response = await fetch(`${API_BASE_URL}/courses/admin/enrollments/`);
+      if (!response.ok) {
+        response = await fetch(`${API_BASE_URL}/courses/my-enrollments/`);
+      }
       const data = await response.json();
       const tbody = document.getElementById('enrollmentsTableBody');
       const results = data.results || [];
 
       if (results.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No student enrollments found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-muted">No student enrollments found.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = results.map(e => `
+      tbody.innerHTML = results.map(e => {
+        const studentName = typeof e.student === 'object' ? (e.student.full_name || e.student.username) : `Student #${e.student}`;
+        const studentEmail = typeof e.student === 'object' ? (e.student.email || '') : '';
+        return `
         <tr>
-          <td># ${e.id}</td>
+          <td>#${e.id}</td>
+          <td>
+            <div class="fw-semibold text-dark">${studentName}</div>
+            <div class="text-xs text-muted">${studentEmail}</div>
+          </td>
           <td>
             <img src="${e.course?.thumbnail || 'https://via.placeholder.com/80x50'}" alt="${e.course?.title}" style="width: 80px; height: 50px; object-fit: cover; border-radius: 4px;">
           </td>
           <td class="fw-semibold text-dark">${e.course?.title || 'Unknown Course'}</td>
-          <td>${e.course?.category || 'N/A'}</td>
+          <td><span class="badge bg-neutral-100 text-secondary-light px-8 py-4 radius-4">${e.course?.category || 'General'}</span></td>
           <td class="fw-bold">₹${e.amount_paid || '0.00'}</td>
           <td>
             <div class="d-flex align-items-center gap-10">
@@ -85,12 +96,12 @@
             </span>
           </td>
         </tr>
-      `).join('');
+      `}).join('');
     } catch (e) {
       console.error(e);
       document.getElementById('enrollmentsTableBody').innerHTML = `
         <tr>
-          <td colspan="8" class="text-center py-4 text-danger">Failed to load enrollments.</td>
+          <td colspan="9" class="text-center py-4 text-danger">Failed to load enrollments.</td>
         </tr>
       `;
     }

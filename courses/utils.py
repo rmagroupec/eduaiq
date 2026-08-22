@@ -22,10 +22,14 @@ def get_user_institution(user):
 
 def get_allowed_courses_for_user(user, exclude_books=True):
     """
-    Returns QuerySet of ALL published Course objects so every user (guests, students, institution admins)
+    Returns QuerySet of Course objects so every user (guests, students, institution admins)
     can browse and view the full course catalog on the main website.
+    Staff/Admins see all courses regardless of status.
     """
-    qs = Course.objects.filter(status='published')
+    if user and user.is_authenticated and (user.is_superuser or user.is_staff or getattr(user, 'role', '') in ('admin', 'superadmin', 'super_admin', 'main_admin', 'staff')):
+        qs = Course.objects.all()
+    else:
+        qs = Course.objects.filter(status='published')
     return qs.exclude(category__slug='ai-books') if exclude_books else qs
 
 

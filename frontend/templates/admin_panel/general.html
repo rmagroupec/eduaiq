@@ -110,8 +110,8 @@
 </div>
 <div class="row gy-4">
 <div class="col-md-6">
-<label class="form-label fw-semibold text-secondary-light text-md mb-8" for="imageUpload">Logo <span class="text-secondary-light fw-normal">(140px X 140px)</span></label>
-<input class="form-control radius-8" id="imageUpload" type="file"/>
+<label class="form-label fw-semibold text-secondary-light text-md mb-8" for="imageUpload">Logo <span class="text-secondary-light fw-normal">(140px X 140px, JPG/PNG/WEBP)</span></label>
+<input class="form-control radius-8" id="imageUpload" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"/>
 <div class="avatar-upload mt-16">
 <div class="avatar-preview style-two">
 <div id="previewImage1"></div>
@@ -119,8 +119,8 @@
 </div>
 </div>
 <div class="col-md-6">
-<label class="form-label fw-semibold text-secondary-light text-md mb-8" for="imageUploadTwo">Logo <span class="text-secondary-light fw-normal">(140px X 140px)</span></label>
-<input class="form-control radius-8" id="imageUploadTwo" type="file"/>
+<label class="form-label fw-semibold text-secondary-light text-md mb-8" for="imageUploadTwo">Logo Icon <span class="text-secondary-light fw-normal">(140px X 140px, JPG/PNG/WEBP)</span></label>
+<input class="form-control radius-8" id="imageUploadTwo" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"/>
 <div class="avatar-upload mt-16">
 <div class="avatar-preview style-two">
 <div id="previewImage2"></div>
@@ -148,6 +148,13 @@
     // ================== Image Upload Js Start ===========================
     function readURL(input, previewElementId) {
         if (input.files && input.files[0]) {
+            var allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
+            var ext = input.files[0].name.split('.').pop().toLowerCase();
+            if (!allowedExts.includes(ext)) {
+                alert('Invalid image format! Only JPG, JPEG, PNG, and WEBP files are allowed.');
+                input.value = '';
+                return;
+            }
             var reader = new FileReader();
             reader.onload = function (e) {
                 $('#' + previewElementId).css('background-image', 'url(' + e.target.result + ')');

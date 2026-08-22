@@ -39,7 +39,9 @@ urlpatterns = [
     # ==========================
     path('my-learning/', views.my_learning, name='my_learning'),          # Student dashboard
     path('quiz/', views.quiz_player, name='quiz_player'),                 # Quiz player
+    path('quiz/<int:pk>/', views.quiz_player, name='quiz_player_detail'),
     path('lesson/', views.lesson_player, name='lesson_player'),           # Lesson viewer/player
+    path('lesson/<int:pk>/', views.lesson_player, name='lesson_player_detail'),
 
     # ==========================
     # Feature Pages
