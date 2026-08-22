@@ -18,6 +18,10 @@
     <button class="btn btn-outline-success-600 d-flex align-items-center gap-6 radius-8" id="exportInstitutionsCsvBtn">
       <i class="ri-download-2-line text-md"></i> Export CSV
     </button>
+    <button class="btn btn-outline-info-600 d-flex align-items-center gap-6 radius-8" id="importInstitutionsCsvBtn"
+            style="border-color:#0ea5e9;color:#0ea5e9;">
+      <i class="ri-upload-2-line text-md"></i> Import CSV
+    </button>
     {% endif %}
     <a class="btn btn-primary-600 d-flex align-items-center gap-6 radius-8" href="/admin-panel/add-new-institution/">
       <span class="d-flex text-md">
@@ -26,6 +30,79 @@
       Add Institution
     </a>
   </div>
+</div>
+
+<!-- ===== Import CSV Modal ===== -->
+<div class="modal fade" id="importCsvModal" tabindex="-1" aria-labelledby="importCsvModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content radius-16 border-0 shadow-lg">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold text-primary-light" id="importCsvModalLabel">
+          <i class="ri-upload-2-line me-2" style="color:#0ea5e9;"></i>Import Institutions via CSV
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-16">
+
+        <!-- Info alert -->
+        <div class="alert d-flex align-items-start gap-2 radius-8 mb-16"
+             style="background:#f0f9ff;border:1px solid #bae6fd;color:#0369a1;">
+          <i class="ri-information-line mt-1"></i>
+          <div class="text-sm">
+            <strong>Required columns:</strong> <code>name</code>, <code>type</code><br>
+            <strong>Optional columns:</strong> <code>board_affiliation</code>, <code>phone</code>, <code>city</code>, <code>state</code>, <code>address</code>, <code>status</code><br>
+            <strong>Valid types:</strong> coaching, school, college, university, other<br>
+            <strong>Valid statuses:</strong> active, pending, suspended
+          </div>
+        </div>
+
+        <!-- Download sample -->
+        <div class="mb-16 text-end">
+          <a id="downloadSampleCsv" href="#" class="text-sm fw-semibold" style="color:#0ea5e9;text-decoration:none;">
+            <i class="ri-download-line me-1"></i>Download Sample CSV
+          </a>
+        </div>
+
+        <!-- Drop zone -->
+        <div id="csvDropZone"
+             style="border:2px dashed #94a3b8;border-radius:12px;padding:36px 24px;text-align:center;
+                    background:#f8fafc;cursor:pointer;transition:border-color .2s,background .2s;">
+          <i class="ri-file-text-line" style="font-size:40px;color:#94a3b8;"></i>
+          <p class="mb-4 mt-8 fw-semibold text-secondary-light">Drag &amp; drop your CSV file here</p>
+          <p class="text-sm text-secondary-light mb-12">or</p>
+          <label class="btn btn-outline-primary-600 radius-8 px-20 py-8 text-sm fw-medium" for="csvFileInput"
+                 style="cursor:pointer;">Browse File</label>
+          <input type="file" id="csvFileInput" accept=".csv" class="d-none">
+          <p id="csvFileName" class="mt-12 text-sm text-secondary-light"></p>
+        </div>
+
+        <!-- Progress bar (hidden) -->
+        <div id="importProgressWrap" class="mt-16" style="display:none !important;">
+          <div class="progress radius-8" style="height:8px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated"
+                 id="importProgressBar" role="progressbar" style="width:100%;"></div>
+          </div>
+          <p class="text-sm text-center mt-8 text-secondary-light">Uploading &amp; processing…</p>
+        </div>
+
+        <!-- Result area (hidden) -->
+        <div id="importResultArea" class="mt-16" style="display:none;"></div>
+
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <button type="button" class="btn btn-secondary radius-8 px-20 py-8 text-sm fw-medium"
+                data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary-600 radius-8 px-20 py-8 text-sm fw-medium"
+                id="submitImportCsvBtn" disabled>
+          <i class="ri-upload-2-line me-1"></i>Import Now
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ===== /Import CSV Modal ===== -->
+
+<div class="d-none">
 </div>
 
 <div class="card h-100 mt-24">
@@ -427,6 +504,138 @@ $(document).ready(function() {
       }
     });
   });
+
+  // ---- Import CSV ----
+  const importModal = new bootstrap.Modal(document.getElementById('importCsvModal'));
+  let selectedCsvFile = null;
+
+  $('#importInstitutionsCsvBtn').on('click', function () {
+    // Reset state
+    selectedCsvFile = null;
+    $('#csvFileName').text('');
+    $('#csvFileInput').val('');
+    $('#submitImportCsvBtn').prop('disabled', true);
+    $('#importResultArea').hide().html('');
+    $('#importProgressWrap').hide();
+    resetDropZone();
+    importModal.show();
+  });
+
+  function resetDropZone() {
+    const dz = document.getElementById('csvDropZone');
+    dz.style.borderColor = '#94a3b8';
+    dz.style.background  = '#f8fafc';
+  }
+
+  // Download sample CSV
+  $('#downloadSampleCsv').on('click', function (e) {
+    e.preventDefault();
+    const sampleData = [
+      'name,type,board_affiliation,phone,city,state,address,status',
+      'Sunrise Coaching Institute,coaching,IIT JEE,9876543210,Delhi,Uttar Pradesh,123 Main Road,active',
+      'Green Valley School,school,CBSE,8765432109,Mumbai,Maharashtra,456 Park Avenue,pending',
+      'City College,college,University of Delhi,7654321098,Delhi,Delhi,789 College Lane,active'
+    ].join('\n');
+    const blob = new Blob([sampleData], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'institutions_sample.csv';
+    a.click();
+  });
+
+  // Drag & drop
+  const dropZone = document.getElementById('csvDropZone');
+  dropZone.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    this.style.borderColor = '#0ea5e9';
+    this.style.background  = '#e0f2fe';
+  });
+  dropZone.addEventListener('dragleave', function () { resetDropZone(); });
+  dropZone.addEventListener('drop', function (e) {
+    e.preventDefault();
+    resetDropZone();
+    const files = e.dataTransfer.files;
+    if (files.length) handleFileSelect(files[0]);
+  });
+  dropZone.addEventListener('click', function (e) {
+    if (e.target.tagName !== 'LABEL' && e.target.tagName !== 'INPUT') {
+      document.getElementById('csvFileInput').click();
+    }
+  });
+  document.getElementById('csvFileInput').addEventListener('change', function () {
+    if (this.files.length) handleFileSelect(this.files[0]);
+  });
+
+  function handleFileSelect(file) {
+    if (!file.name.toLowerCase().endsWith('.csv')) {
+      Swal.fire({ icon: 'warning', title: 'Invalid File', text: 'Only .csv files are accepted.', timer: 2000, showConfirmButton: false });
+      return;
+    }
+    selectedCsvFile = file;
+    $('#csvFileName').html(`<i class="ri-file-text-line me-1"></i><strong>${file.name}</strong> (${(file.size/1024).toFixed(1)} KB)`);
+    $('#submitImportCsvBtn').prop('disabled', false);
+    dropZone.style.borderColor = '#22c55e';
+    dropZone.style.background  = '#f0fdf4';
+  }
+
+  // Submit
+  $('#submitImportCsvBtn').on('click', function () {
+    if (!selectedCsvFile) return;
+
+    const formData = new FormData();
+    formData.append('csv_file', selectedCsvFile);
+
+    $('#importProgressWrap').show();
+    $('#submitImportCsvBtn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Importing…');
+    $('#importResultArea').hide().html('');
+
+    $.ajax({
+      url: '/api/institutions/import-csv/',
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      headers: { 'X-CSRFToken': token },
+      xhrFields: { withCredentials: true },
+      success: function (res) {
+        $('#importProgressWrap').hide();
+        $('#submitImportCsvBtn').html('<i class="ri-upload-2-line me-1"></i>Import Now');
+
+        let html = `<div class="alert radius-8 mb-12" style="background:#f0fdf4;border:1px solid #86efac;color:#166534;">
+          <strong><i class="ri-checkbox-circle-line me-1"></i>${res.message}</strong>
+          <div class="mt-4 text-sm">✅ Created: <strong>${res.created}</strong> &nbsp;|&nbsp; ⚠️ Skipped: <strong>${res.skipped}</strong></div>
+        </div>`;
+
+        if (res.row_errors && res.row_errors.length) {
+          html += `<div class="mt-8"><p class="fw-semibold text-sm mb-8 text-danger-main"><i class="ri-error-warning-line me-1"></i>Skipped Rows:</p>
+            <div style="max-height:180px;overflow-y:auto;">
+              <table class="table table-sm text-sm mb-0">
+                <thead><tr><th>Row</th><th>Name</th><th>Reason</th></tr></thead>
+                <tbody>`;
+          res.row_errors.forEach(function (e) {
+            html += `<tr><td>${e.row}</td><td>${e.name}</td><td class="text-danger-main">${e.errors.join('; ')}</td></tr>`;
+          });
+          html += '</tbody></table></div></div>';
+        }
+
+        $('#importResultArea').html(html).show();
+        if (res.created > 0) {
+          fetchInstitutions();
+          setTimeout(function () { importModal.hide(); }, 3500);
+        } else {
+          $('#submitImportCsvBtn').prop('disabled', false);
+        }
+      },
+      error: function (err) {
+        $('#importProgressWrap').hide();
+        $('#submitImportCsvBtn').prop('disabled', false).html('<i class="ri-upload-2-line me-1"></i>Import Now');
+        const msg = (err.responseJSON && (err.responseJSON.error || err.responseJSON.detail)) || 'Import failed. Please check your CSV and try again.';
+        $('#importResultArea').html(`<div class="alert radius-8" style="background:#fef2f2;border:1px solid #fca5a5;color:#991b1b;">
+          <i class="ri-close-circle-line me-1"></i><strong>Error:</strong> ${msg}</div>`).show();
+      }
+    });
+  });
+  // ---- /Import CSV ----
 
   $('#exportInstitutionsCsvBtn').on('click', function () {
     let csv = [];

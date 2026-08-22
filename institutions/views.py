@@ -939,4 +939,139 @@ def batch_detail(request, pk):
     if form.is_valid():
         batch = form.save()
         return JsonResponse({'success': True, 'batch': serialize_batch(batch)})
-    return JsonResponse({'success': False, 'errors': _form_errors(form)}, status=400)
+    return JsonResponse({'success': False, 'errors': _form_errors(form)}, status=400)
+
+
+# ============================================================================
+# IMPORT CSV — Institutions
+# ============================================================================
+
+@require_http_methods(['POST'])
+@login_required
+def import_institutions_csv(request):
+    """
+    Bulk-create institutions from an uploaded CSV file.
+
+    Expected CSV columns (header row required):
+        name, type, board_affiliation, phone, city, state, address, status
+
+    Returns JSON with counts of created / skipped rows and per-row errors.
+    """
+    import csv
+    import io
+
+    if not _is_staff(request.user):
+        return JsonResponse({'error': 'Forbidden — staff access required.'}, status=403)
+
+    csv_file = request.FILES.get('csv_file')
+    if not csv_file:
+        return JsonResponse({'error': 'No file uploaded. Please attach a CSV file.'}, status=400)
+
+    if not csv_file.name.lower().endswith('.csv'):
+        return JsonResponse({'error': 'Invalid file type. Only .csv files are accepted.'}, status=400)
+
+    # Decode bytes → text
+    try:
+        text = csv_file.read().decode('utf-8-sig')   # utf-8-sig strips BOM if present
+    except (UnicodeDecodeError, Exception):
+        return JsonResponse({'error': 'Could not decode file. Please save it as UTF-8 CSV.'}, status=400)
+
+    reader = csv.DictReader(io.StringIO(text))
+
+    # Validate headers
+    REQUIRED_COLS = {'name', 'type'}
+    OPTIONAL_COLS = {'board_affiliation', 'phone', 'city', 'state', 'address', 'status'}
+    ALL_COLS = REQUIRED_COLS | OPTIONAL_COLS
+
+    if not reader.fieldnames:
+        return JsonResponse({'error': 'CSV file appears to be empty or has no header row.'}, status=400)
+
+    header_set = {h.strip().lower() for h in reader.fieldnames}
+    missing_required = REQUIRED_COLS - header_set
+    if missing_required:
+        return JsonResponse({
+            'error': f'Missing required column(s): {", ".join(sorted(missing_required))}. '
+                     f'Expected columns: {", ".join(sorted(ALL_COLS))}'
+        }, status=400)
+
+    VALID_TYPES   = {'coaching', 'school', 'college', 'university', 'other'}
+    VALID_STATUSES = {'active', 'pending', 'suspended'}
+
+    created_count = 0
+    skipped_count = 0
+    row_errors = []
+
+    for row_index, raw_row in enumerate(reader, start=2):   # row 1 = header
+        # Normalise keys
+        row = {k.strip().lower(): (v.strip() if v else '') for k, v in raw_row.items()}
+
+        name = row.get('name', '').strip()
+        inst_type = row.get('type', '').strip().lower()
+
+        errors_for_row = []
+
+        if not name:
+            errors_for_row.append('name is required')
+        if not inst_type:
+            errors_for_row.append('type is required')
+        elif inst_type not in VALID_TYPES:
+            errors_for_row.append(f'type "{inst_type}" is invalid — must be one of: {", ".join(sorted(VALID_TYPES))}')
+
+        status = row.get('status', 'pending').strip().lower() or 'pending'
+        if status not in VALID_STATUSES:
+            status = 'pending'
+
+        if errors_for_row:
+            skipped_count += 1
+            row_errors.append({'row': row_index, 'name': name or '(empty)', 'errors': errors_for_row})
+            continue
+
+        # Skip duplicates (same name + type)
+        if Institution.objects.filter(name__iexact=name, type=inst_type).exists():
+            skipped_count += 1
+            row_errors.append({
+                'row': row_index,
+                'name': name,
+                'errors': ['Institution with this name and type already exists — skipped.']
+            })
+            continue
+
+        inst = Institution(
+            name=name,
+            type=inst_type,
+            board_affiliation=row.get('board_affiliation', '') or '',
+            phone=row.get('phone', '') or '',
+            city=row.get('city', '') or '',
+            state=row.get('state', '') or '',
+            address=row.get('address', '') or '',
+            status=status,
+            created_by=request.user,
+        )
+        try:
+            inst.full_clean(exclude=['admin_user', 'onboarded_by_partner', 'assigned_employee'])
+            inst.save()
+            created_count += 1
+            AuditLog.log(
+                user=request.user,
+                action='CREATE',
+                module='Institution',
+                object_id=inst.id,
+                description=f"[CSV Import] Registered Institution '{inst.name}' ({inst.type})"
+            )
+        except DjangoValidationError as exc:
+            skipped_count += 1
+            row_errors.append({
+                'row': row_index,
+                'name': name,
+                'errors': [str(e) for e in exc.messages]
+            })
+
+    return JsonResponse({
+        'success': True,
+        'created': created_count,
+        'skipped': skipped_count,
+        'row_errors': row_errors,
+        'message': f'{created_count} institution(s) imported successfully.'
+                   + (f' {skipped_count} row(s) skipped.' if skipped_count else ''),
+    }, status=200)
+

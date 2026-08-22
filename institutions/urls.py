@@ -7,6 +7,7 @@ app_name = "institutions"
 urlpatterns = [
     # Institutions
     path("institutions/", views.institution_list, name="institution-list"),
+    path("institutions/import-csv/", views.import_institutions_csv, name="institution-import-csv"),
     path("institutions/me/", views.my_institution_detail, name="my-institution-detail"),
     path("institutions/<int:pk>/", views.institution_detail, name="institution-detail"),
     path("institutions/<int:pk>/allot-courses/", views.institution_allot_courses, name="institution-allot-courses"),
