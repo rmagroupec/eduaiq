@@ -117,16 +117,34 @@
 
 <!-- Other Team Mentors -->
 {% if other_members %}
+<style>
+  .mentor-card-link {
+    text-decoration: none !important;
+    display: block;
+  }
+  .mentor-card {
+    transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: 1px solid #e5e7eb;
+    background-color: #ffffff;
+  }
+  .mentor-card-link:hover .mentor-card {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08) !important;
+    border-color: #cbd5e1;
+  }
+</style>
 <div class="other-mentors-wrap mt-5 pt-4 border-top">
 <h4 class="mb-4">Meet Other EduAiQ Mentors</h4>
 <div class="row">
 {% for om in other_members %}
 <div class="col-sm-6 col-md-3 p-2">
-  <div class="card p-3 text-center border radius-12 shadow-sm h-100">
-    <img src="{{ om.photo_url }}" alt="{{ om.name }}" class="rounded-circle mx-auto mb-3" style="width: 72px; height: 72px; object-fit: cover;">
-    <h6 class="mb-1"><a href="/team/{{ om.slug }}/" class="text-dark text-decoration-none">{{ om.name }}</a></h6>
-    <span class="text-xs text-muted">{{ om.designation }}</span>
-  </div>
+  <a href="/team/{{ om.slug }}/" class="mentor-card-link h-100">
+    <div class="card p-3 text-center radius-12 shadow-sm h-100 mentor-card">
+      <img src="{{ om.photo_url }}" alt="{{ om.name }}" class="rounded-circle mx-auto mb-3" style="width: 72px; height: 72px; object-fit: cover;">
+      <h6 class="mb-1 text-dark">{{ om.name }}</h6>
+      <span class="text-xs text-muted">{{ om.designation }}</span>
+    </div>
+  </a>
 </div>
 {% endfor %}
 </div>
