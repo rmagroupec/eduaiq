@@ -2163,7 +2163,29 @@ def admin_olympiad_entrance_add(request):
         fee = float(request.POST.get('fee', 0))
         is_active = request.POST.get('is_active') == 'on'
 
+        # ── Date & Time fields from form ──
+        from datetime import datetime
+        def parse_dt(val, fallback):
+            try:
+                return datetime.strptime(val, '%Y-%m-%dT%H:%M') if val else fallback
+            except (ValueError, TypeError):
+                return fallback
+
+        def parse_date(val, fallback):
+            try:
+                return datetime.strptime(val, '%Y-%m-%d').date() if val else fallback
+            except (ValueError, TypeError):
+                return fallback
+
+        exam_date = parse_dt(request.POST.get('exam_date'), timezone.now() + timedelta(days=7))
+        registration_start = parse_date(request.POST.get('registration_start'), timezone.now().date())
+        registration_end = parse_date(request.POST.get('registration_end'), (timezone.now() + timedelta(days=30)).date())
+        result_declaration_date_raw = request.POST.get('result_declaration_date')
+        result_declaration_date = parse_dt(result_declaration_date_raw, None) if result_declaration_date_raw else None
+
         cat, _ = OlympiadCategory.objects.get_or_create(name='Olympiad Entrance')
+
+        syllabus_pdf = request.FILES.get('syllabus_pdf', None)
 
         exam = Olympiad.objects.create(
             category=cat,
@@ -2175,10 +2197,14 @@ def admin_olympiad_entrance_add(request):
             result_display_mode=result_display_mode,
             fee=fee,
             is_active=is_active,
-            exam_date=timezone.now() + timedelta(days=7),
-            registration_start=timezone.now(),
-            registration_end=timezone.now() + timedelta(days=30),
+            exam_date=exam_date,
+            registration_start=registration_start,
+            registration_end=registration_end,
+            result_declaration_date=result_declaration_date,
         )
+        if syllabus_pdf:
+            exam.syllabus_pdf = syllabus_pdf
+            exam.save()
         messages.success(request, f"Olympiad Entrance Exam '{exam.name}' created successfully!")
         return redirect('admin_olympiad_entrance_list')
 
@@ -2200,6 +2226,32 @@ def admin_olympiad_entrance_edit(request, pk):
         exam.result_display_mode = request.POST.get('result_display_mode', exam.result_display_mode)
         exam.fee = float(request.POST.get('fee', exam.fee))
         exam.is_active = request.POST.get('is_active') == 'on'
+
+        # ── Date & Time fields ──
+        from datetime import datetime
+        def parse_dt(val, fallback):
+            try:
+                return datetime.strptime(val, '%Y-%m-%dT%H:%M') if val else fallback
+            except (ValueError, TypeError):
+                return fallback
+
+        def parse_date(val, fallback):
+            try:
+                return datetime.strptime(val, '%Y-%m-%d').date() if val else fallback
+            except (ValueError, TypeError):
+                return fallback
+
+        exam.exam_date = parse_dt(request.POST.get('exam_date'), exam.exam_date)
+        exam.registration_start = parse_date(request.POST.get('registration_start'), exam.registration_start)
+        exam.registration_end = parse_date(request.POST.get('registration_end'), exam.registration_end)
+        result_declaration_date_raw = request.POST.get('result_declaration_date')
+        exam.result_declaration_date = parse_dt(result_declaration_date_raw, exam.result_declaration_date) if result_declaration_date_raw else exam.result_declaration_date
+
+        # ── Syllabus PDF update ──
+        syllabus_pdf = request.FILES.get('syllabus_pdf', None)
+        if syllabus_pdf:
+            exam.syllabus_pdf = syllabus_pdf
+
         exam.save()
 
         messages.success(request, f"Exam '{exam.name}' details updated successfully!")

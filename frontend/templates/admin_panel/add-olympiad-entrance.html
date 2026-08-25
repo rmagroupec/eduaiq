@@ -28,7 +28,7 @@
       </div>
 
       <div class="card-body p-24">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
 
           <div class="mb-20">
@@ -66,6 +66,51 @@
             </div>
           </div>
 
+          {# ── DATE & TIME FIELDS ── #}
+          <div class="card radius-8 border border-primary-100 bg-primary-50 p-20 mb-20">
+            <h6 class="fw-bold text-primary-700 mb-16 d-flex align-items-center gap-2">
+              <i class="ri-calendar-schedule-line"></i> Schedule & Dates
+            </h6>
+
+            <div class="row gy-3 mb-16">
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-neutral-900">
+                  📅 Registration Start Date <span class="text-danger">*</span>
+                </label>
+                <input type="date" name="registration_start" class="form-control radius-8"
+                  value="{{ exam.registration_start|date:'Y-m-d'|default:'' }}" required>
+                <small class="text-neutral-500">Registration kab se shuru hogi</small>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-neutral-900">
+                  📅 Registration End Date <span class="text-danger">*</span>
+                </label>
+                <input type="date" name="registration_end" class="form-control radius-8"
+                  value="{{ exam.registration_end|date:'Y-m-d'|default:'' }}" required>
+                <small class="text-neutral-500">Registration kab band hogi</small>
+              </div>
+            </div>
+
+            <div class="mb-16">
+              <label class="form-label fw-bold text-neutral-900">
+                🕐 Exam Date & Time <span class="text-danger">*</span>
+              </label>
+              <input type="datetime-local" name="exam_date" class="form-control radius-8"
+                value="{{ exam.exam_date|date:'Y-m-d\TH:i'|default:'' }}" required>
+              <small class="text-neutral-500">Exam kab hoga — date aur exact time dono select karein</small>
+            </div>
+
+            <div class="mb-0">
+              <label class="form-label fw-bold text-neutral-900">
+                📣 Result Declaration Date & Time
+                <span class="text-neutral-400 fw-normal">(Optional)</span>
+              </label>
+              <input type="datetime-local" name="result_declaration_date" class="form-control radius-8"
+                value="{{ exam.result_declaration_date|date:'Y-m-d\TH:i'|default:'' }}">
+              <small class="text-neutral-500">Result kab announce hoga — sirf "Scheduled" mode ke liye zaruri hai</small>
+            </div>
+          </div>
+
           <div class="mb-20">
             <label class="form-label fw-bold text-neutral-900">Result Publication Policy</label>
             <select name="result_display_mode" class="form-select radius-8">
@@ -74,6 +119,25 @@
               {% endfor %}
             </select>
             <small class="text-neutral-500 d-block mt-1">Controls when candidates can view their scorecards after submission.</small>
+          </div>
+
+          {# ── SYLLABUS PDF UPLOAD ── #}
+          <div class="mb-20">
+            <label class="form-label fw-bold text-neutral-900">
+              📄 Syllabus PDF
+              <span class="text-neutral-400 fw-normal">(Optional)</span>
+            </label>
+            <input type="file" name="syllabus_pdf" accept=".pdf" class="form-control radius-8">
+            <small class="text-neutral-500 d-block mt-1">PDF syllabus upload karein jo students download kar sakein (max 10 MB)</small>
+            {% if exam.syllabus_pdf %}
+              <div class="mt-8 d-flex align-items-center gap-2">
+                <i class="ri-file-pdf-2-line text-danger fs-5"></i>
+                <a href="{{ exam.syllabus_pdf.url }}" target="_blank" class="text-primary text-sm fw-semibold">
+                  Current: {{ exam.syllabus_pdf.name|cut:"olympiad_syllabus/" }}
+                </a>
+                <span class="text-neutral-400 text-xs">(Naya file upload karne se replace ho jayega)</span>
+              </div>
+            {% endif %}
           </div>
 
           <div class="form-check form-switch mb-24">
