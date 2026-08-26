@@ -2008,6 +2008,68 @@ def audit_log_list_api(request):
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
 
+# ============================================================================
+# EMPLOYEE SUSPEND / ACTIVATE API
+# ============================================================================
+
+@login_required
+@require_POST
+def suspend_employee_api(request, emp_id):
+    """
+    Toggle employee suspend/activate status.
+    - Sets user.is_active = False and user.status = 'inactive' on suspend.
+    - Sets user.is_active = True and user.status = 'active' on activate.
+    Only accessible by admin/superadmin.
+    """
+    try:
+        # Permission check
+        if not (request.user.is_superuser or getattr(request.user, 'role', '') in ('admin', 'superadmin', 'super_admin')):
+            return JsonResponse({'status': 'error', 'message': 'Permission denied.'}, status=403)
+
+        from .models import EmployeeProfile
+        try:
+            emp = EmployeeProfile.objects.select_related('user').get(pk=emp_id)
+        except EmployeeProfile.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Employee not found.'}, status=404)
+
+        user = emp.user
+
+        # Toggle
+        if user.is_active:
+            # Currently active → suspend
+            user.is_active = False
+            user.status = 'inactive'
+            action_label = 'suspended'
+        else:
+            # Currently suspended → activate
+            user.is_active = True
+            user.status = 'active'
+            action_label = 'activated'
+
+        user.save(update_fields=['is_active', 'status'])
+
+        # Audit log
+        try:
+            AuditLog.log(
+                user=request.user,
+                action='UPDATE',
+                module='Employee',
+                description=f"Employee {emp.employee_id} ({user.get_full_name()}) was {action_label}.",
+                object_id=str(emp.pk),
+                ip_address=request.META.get('REMOTE_ADDR')
+            )
+        except Exception:
+            pass
+
+        return JsonResponse({
+            'status': 'success',
+            'message': f"Employee {action_label} successfully.",
+            'new_status': user.status,
+            'is_active': user.is_active,
+        })
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
 
 

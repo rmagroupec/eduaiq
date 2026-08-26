@@ -60,6 +60,7 @@ urlpatterns = [
     path('api/employee/delete/', views.delete_employee_api, name='delete_employee_api_post'),
     path('api/audit-logs/', views.audit_log_list_api, name='audit-logs-api'),
     path('api/employee/<int:emp_id>/delete/', views.delete_employee_api, name='delete_employee_api'),
+    path('api/employee/<int:emp_id>/suspend/', views.suspend_employee_api, name='suspend_employee_api'),
     path('api/profile/update-image/', views.update_profile_image_api, name='update_profile_image_api'),
     path('api/profile/update-info/', views.update_profile_info_api, name='update_profile_info_api'),
     path('api/attendance/', views.attendance_api, name='attendance_api'),
