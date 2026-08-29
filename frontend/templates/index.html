@@ -8,6 +8,210 @@ courses in India with AI-driven online courses, e-books & practical training. St
 
 {% block css %}
 <style>
+  /* ═══════════════════════════════════════════════
+     VISION / MISSION / COMMITMENT STRIP
+  ═══════════════════════════════════════════════ */
+  .eduaiq-vmc-strip {
+    background: linear-gradient(135deg, #0a1128 0%, #0F172A 60%, #1a1f3a 100%);
+    padding: 40px 0;
+  }
+  .vmc-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 24px 30px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+  }
+  .vmc-item:last-child { border-right: none; }
+  .vmc-center { border-left: 1px solid rgba(255,255,255,0.08); }
+  .vmc-icon {
+    width: 50px; height: 50px; min-width: 50px;
+    background: linear-gradient(135deg, #fd7e14, #ea580c);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 20px;
+    box-shadow: 0 6px 18px rgba(253,126,20,0.35);
+    flex-shrink: 0;
+  }
+  .vmc-text h6 {
+    color: #fd7e14; font-weight: 800; font-size: 12px;
+    letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px;
+  }
+  .vmc-text p { color: rgba(255,255,255,0.82); font-size: 14px; margin: 0; line-height: 1.6; }
+
+  /* ═══════════════════════════════════════════════
+     CORE FOCUS AREAS SECTION
+  ═══════════════════════════════════════════════ */
+  .eduaiq-focus-section {
+    background: #f8fafc;
+    padding: 70px 0;
+  }
+  .focus-main-heading {
+    font-size: 32px; font-weight: 900; color: #0F172A;
+    letter-spacing: 1px; margin-bottom: 8px;
+  }
+  .focus-subheading { color: #64748b; font-size: 15px; }
+
+  .focus-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .focus-card {
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: default;
+  }
+  .focus-card:hover {
+    border-color: #fd7e14;
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(253,126,20,0.15);
+  }
+  .focus-icon-wrap {
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, #0F172A, #1E293B);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fd7e14; font-size: 22px;
+    box-shadow: 0 4px 12px rgba(15,23,42,0.2);
+    transition: all 0.3s ease;
+  }
+  .focus-card:hover .focus-icon-wrap {
+    background: linear-gradient(135deg, #fd7e14, #ea580c);
+    color: #fff;
+  }
+  .focus-card span {
+    font-size: 10.5px; font-weight: 800; color: #0F172A;
+    letter-spacing: 0.8px; text-transform: uppercase; line-height: 1.3;
+  }
+
+  /* Right box */
+  .focus-right-box {
+    background: linear-gradient(135deg, #0a1128, #0F172A);
+    border-radius: 20px;
+    padding: 36px 32px;
+    height: 100%;
+    display: flex; flex-direction: column; justify-content: center;
+    box-shadow: 0 16px 40px rgba(15,23,42,0.2);
+  }
+  .focus-tagline {
+    font-size: 28px; font-weight: 900; color: #fff;
+    line-height: 1.25; margin-bottom: 0;
+  }
+  .focus-tagline span { color: #fd7e14; }
+  .focus-tagline em { font-style: normal; color: #fbbf24; }
+
+  .focus-pillars { display: flex; flex-direction: column; gap: 12px; }
+  .pillar-item {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 14px;
+  }
+  .pillar-icon {
+    width: 34px; height: 34px;
+    background: rgba(253,126,20,0.2); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fd7e14; font-size: 15px;
+  }
+  .pillar-item span { color: rgba(255,255,255,0.85); font-size: 13.5px; font-weight: 600; }
+
+  .focus-cta-btn {
+    display: inline-flex; align-items: center;
+    background: linear-gradient(135deg, #fd7e14, #ea580c);
+    color: #fff; font-weight: 800; font-size: 14px;
+    padding: 12px 28px; border-radius: 50px; text-decoration: none;
+    box-shadow: 0 6px 18px rgba(253,126,20,0.35);
+    transition: all 0.3s ease;
+    width: fit-content;
+  }
+  .focus-cta-btn:hover {
+    background: #fff; color: #0F172A;
+    box-shadow: 0 8px 24px rgba(253,126,20,0.2);
+  }
+
+  /* ═══════════════════════════════════════════════
+     STATS SECTION
+  ═══════════════════════════════════════════════ */
+  .eduaiq-stats-section {
+    background: linear-gradient(135deg, #0F172A 0%, #1a1f3a 100%);
+    padding: 60px 0;
+  }
+  .stats-inner {
+    border: 1px solid rgba(253,126,20,0.25);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .stat-item {
+    padding: 36px 20px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    transition: background 0.3s ease;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-item:hover { background: rgba(253,126,20,0.07); }
+  .stat-icon {
+    font-size: 28px; color: #fd7e14; margin-bottom: 10px;
+  }
+  .stat-number {
+    font-size: 42px; font-weight: 900; color: #fff;
+    line-height: 1; display: inline-block;
+  }
+  .stat-plus {
+    font-size: 18px; font-weight: 800; color: #fd7e14;
+    display: inline-block; vertical-align: super;
+  }
+  .stat-label {
+    font-size: 13px; color: rgba(255,255,255,0.65);
+    font-weight: 600; margin-top: 6px; text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ═══════════════════════════════════════════════
+     VALUES / LEARN-COMPETE STRIP
+  ═══════════════════════════════════════════════ */
+  .eduaiq-values-strip {
+    background: #fff;
+    padding: 50px 0;
+    border-top: 3px solid #fd7e14;
+  }
+  .values-headline {
+    font-size: 26px; font-weight: 900; color: #0F172A;
+    letter-spacing: 1px; margin-bottom: 4px;
+  }
+  .values-headline span { color: #fd7e14; }
+  .values-sub { font-size: 13px; color: #64748b; font-weight: 600; letter-spacing: 2px; }
+  .value-pill {
+    background: #f1f5f9;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 50px;
+    padding: 12px 16px;
+    font-size: 12.5px; font-weight: 700; color: #0F172A;
+    text-align: center;
+    transition: all 0.3s ease;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .value-pill i { color: #fd7e14; }
+  .value-pill:hover {
+    background: #0F172A; color: #fd7e14; border-color: #fd7e14;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(15,23,42,0.15);
+  }
+  .value-pill:hover i { color: #fd7e14; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .focus-grid { grid-template-columns: repeat(2, 1fr); }
+    .vmc-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .stat-number { font-size: 30px; }
+    .focus-tagline { font-size: 22px; }
+  }
+
   .post {
     background: white;
     border-radius: 12px;
@@ -1183,14 +1387,13 @@ courses in India with AI-driven online courses, e-books & practical training. St
         <div class="image-overlay pattern-overlay"></div>
         <div class="banner-content">
           <div class="title-divider"></div>
-          <p class="banner-pretitle">SMART LEARNING. REAL CAREERS. BETTER OUTCOMES.</p>
+          <p class="banner-pretitle">SMART LEARNING. BETTER OUTCOMES.</p>
           <div class="banner-title">
-            <h1>Empowering Minds Through <span class="highlight-yellow">AI-Driven Education</span></h1>
+            <h1>Empowering Minds. <span class="highlight-yellow">Transforming Futures.</span></h1>
           </div>
           <div class="banner-text">
-            <p>EduAiQ is India's innovative EdTech platform helping students and professionals
-              build job-ready skills — through AI-powered courses, practical e-books, and
-              smart learning tools.</p>
+            <p>An Innovative <strong style="color:#fd7e14;">AI-Powered</strong> Education Ecosystem — Building future-ready students through
+              AI, Robotics, Digital Learning, Olympiads, and Skill Development Programs.</p>
           </div>
           <div class="banner-button">
             <a class="button-round-secondary" href="{% url 'register' %}">REGISTER TO JOIN US</a>
@@ -1208,6 +1411,179 @@ courses in India with AI-driven online courses, e-books & practical training. St
   <div class="overlay-image pattern-overlay"></div>
 </section>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     VISION / MISSION / COMMITMENT STRIP  (from company portfolio)
+════════════════════════════════════════════════════════════════ -->
+<section class="eduaiq-vmc-strip">
+  <div class="container">
+    <div class="row g-0">
+      <div class="col-md-4 vmc-item">
+        <div class="vmc-icon"><i class="fas fa-crosshairs"></i></div>
+        <div class="vmc-text">
+          <h6>OUR VISION</h6>
+          <p>To be the Global Leader in AI Powered Education.</p>
+        </div>
+      </div>
+      <div class="col-md-4 vmc-item vmc-center">
+        <div class="vmc-icon"><i class="fas fa-rocket"></i></div>
+        <div class="vmc-text">
+          <h6>OUR MISSION</h6>
+          <p>To empower learners with future-ready skills through innovation and technology.</p>
+        </div>
+      </div>
+      <div class="col-md-4 vmc-item">
+        <div class="vmc-icon"><i class="fas fa-shield-alt"></i></div>
+        <div class="vmc-text">
+          <h6>OUR COMMITMENT</h6>
+          <p>Quality Education &nbsp;|&nbsp; Ethical Innovation &nbsp;|&nbsp; Inclusive Growth</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     CORE FOCUS AREAS  (from company portfolio PDF)
+════════════════════════════════════════════════════════════════ -->
+<section class="eduaiq-focus-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="title-divider-center"></div>
+      <h2 class="focus-main-heading">OUR CORE FOCUS AREAS</h2>
+      <p class="focus-subheading">Building future-ready students through AI, Robotics & Digital Innovation</p>
+    </div>
+    <div class="row g-4">
+      <!-- Left: 9 focus cards -->
+      <div class="col-lg-7">
+        <div class="focus-grid">
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-brain"></i></div>
+            <span>AI EDUCATION</span>
+          </div>
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-robot"></i></div>
+            <span>ROBOTICS</span>
+          </div>
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-play-circle"></i></div>
+            <span>DIGITAL LEARNING</span>
+          </div>
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-lightbulb"></i></div>
+            <span>INNOVATION &amp; RESEARCH</span>
+          </div>
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-chart-line"></i></div>
+            <span>SKILL DEVELOPMENT</span>
+          </div>
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-user-graduate"></i></div>
+            <span>CAREER GUIDANCE</span>
+          </div>
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-trophy"></i></div>
+            <span>OLYMPIADS &amp; TALENT HUNT</span>
+          </div>
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-chalkboard-teacher"></i></div>
+            <span>TEACHER TRAINING</span>
+          </div>
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-cogs"></i></div>
+            <span>DIGITAL SERVICES &amp; SOLUTIONS</span>
+          </div>
+        </div>
+      </div>
+      <!-- Right: tagline + pillars -->
+      <div class="col-lg-5 d-flex flex-column justify-content-center">
+        <div class="focus-right-box">
+          <h3 class="focus-tagline">LEARN TODAY.<br><span>INNOVATE TOMORROW.</span><br><em>LEAD FOREVER.</em></h3>
+          <div class="focus-pillars mt-4">
+            <div class="pillar-item">
+              <div class="pillar-icon"><i class="fas fa-graduation-cap"></i></div>
+              <span>For Classes 4<sup>th</sup> to 12<sup>th</sup></span>
+            </div>
+            <div class="pillar-item">
+              <div class="pillar-icon"><i class="fas fa-shield-alt"></i></div>
+              <span>Trusted by Schools &amp; Parents</span>
+            </div>
+            <div class="pillar-item">
+              <div class="pillar-icon"><i class="fas fa-globe"></i></div>
+              <span>Pan India Presence</span>
+            </div>
+          </div>
+          <a href="/about/" class="focus-cta-btn mt-4">Explore EduAiQ <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATS ROW  (from company portfolio PDF)
+════════════════════════════════════════════════════════════════ -->
+<section class="eduaiq-stats-section">
+  <div class="container">
+    <div class="stats-inner">
+      <div class="row g-0 text-center">
+        <div class="col-6 col-md-3 stat-item">
+          <div class="stat-icon"><i class="fas fa-flask"></i></div>
+          <div class="stat-number" data-target="5000">0</div>
+          <div class="stat-plus">+</div>
+          <div class="stat-label">AI &amp; Robotics Labs</div>
+        </div>
+        <div class="col-6 col-md-3 stat-item">
+          <div class="stat-icon"><i class="fas fa-users"></i></div>
+          <div class="stat-number" data-target="50">0</div>
+          <div class="stat-plus">Lakh+</div>
+          <div class="stat-label">Students Impacted</div>
+        </div>
+        <div class="col-6 col-md-3 stat-item">
+          <div class="stat-icon"><i class="fas fa-university"></i></div>
+          <div class="stat-number" data-target="10000">0</div>
+          <div class="stat-plus">+</div>
+          <div class="stat-label">Institutions Associated</div>
+        </div>
+        <div class="col-6 col-md-3 stat-item">
+          <div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div class="stat-number" data-target="25">0</div>
+          <div class="stat-plus">+</div>
+          <div class="stat-label">States Presence Across India</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEARN. COMPETE. GROW. SUCCEED. STRIP
+════════════════════════════════════════════════════════════════ -->
+<section class="eduaiq-values-strip">
+  <div class="container">
+    <div class="text-center mb-4">
+      <p class="values-headline">LEARN. <span>COMPETE.</span> GROW. <span>SUCCEED.</span></p>
+      <p class="values-sub">— A JOURNEY TOWARDS EXCELLENCE —</p>
+    </div>
+    <div class="row g-3 justify-content-center">
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="value-pill"><i class="fas fa-book-open me-2"></i>Quality Education</div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="value-pill"><i class="fas fa-user-tie me-2"></i>Expert Guidance</div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="value-pill"><i class="fas fa-medal me-2"></i>Proven Results</div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="value-pill"><i class="fas fa-chart-bar me-2"></i>Better Outcomes</div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="value-pill"><i class="fas fa-globe me-2"></i>Stronger Tomorrow</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="home-about-us">
   <div class="container">
     <div class="row">
@@ -1218,9 +1594,9 @@ courses in India with AI-driven online courses, e-books & practical training. St
           </figure>
           <div class="skill-container">
             <div class="skill-wrapper">
-              <h6 class="skill-titile">AI Lab Projects Completed</h6>
+              <h6 class="skill-titile">AI & Robotics Education</h6>
               <div class="progress-wrapper">
-                <div class="ab-progress example" data-progress="" data-value="92"></div>
+                <div class="ab-progress example" data-progress="" data-value="95"></div>
               </div>
             </div>
             <div class="skill-wrapper">
@@ -1230,9 +1606,9 @@ courses in India with AI-driven online courses, e-books & practical training. St
               </div>
             </div>
             <div class="skill-wrapper">
-              <h6 class="skill-titile">Mentor Response Rate</h6>
+              <h6 class="skill-titile">Institution Partnership Success</h6>
               <div class="progress-wrapper">
-                <div class="ab-progress example" data-progress="" data-value="90"></div>
+                <div class="ab-progress example" data-progress="" data-value="92"></div>
               </div>
             </div>
           </div>
@@ -1240,36 +1616,36 @@ courses in India with AI-driven online courses, e-books & practical training. St
             <div class="qulifaction-content left-content">
               <div class="qualification-tag">
                 <div class="qualifaction-icon">
-                  <i aria-hidden="true" class="fas fa-medal"></i>
+                  <i aria-hidden="true" class="fas fa-rocket"></i>
                 </div>
                 <div class="qualifaction-title">
                   <h5>
-                    Certified Institute
+                    Innovation & Excellence
                   </h5>
                 </div>
               </div>
               <div class="qulifaction-detail">
                 <p>
-                  Recognized curriculum standards across AI Lab, Skill Development,
-                  and Olympiad programs, reviewed each cycle.
+                  Delivering world-class AI & Robotics Education, promoting innovation,
+                  research & entrepreneurship for future-ready institutions.
                 </p>
               </div>
             </div>
             <div class="qulifaction-content right-content">
               <div class="qualification-tag">
                 <div class="qualifaction-icon">
-                  <i aria-hidden="true" class="fas fa-user"></i>
+                  <i aria-hidden="true" class="fas fa-users"></i>
                 </div>
                 <div class="qualifaction-title">
                   <h5>
-                    Qualifed Teachers
+                    Student First Approach
                   </h5>
                 </div>
               </div>
               <div class="qulifaction-detail">
                 <p>
-                  Mentors with real industry and classroom experience, not just
-                  recorded lecture slides.
+                  Empowering learners with future skills and bridging education with
+                  industry to create a global learning ecosystem.
                 </p>
               </div>
             </div>
@@ -1282,12 +1658,12 @@ courses in India with AI-driven online courses, e-books & practical training. St
       <div class="col-md-6">
         <div class="about-right-content">
           <div class="title-divider"></div>
-          <h2 class="about-title">Why Institute Choose Us for Gaining Knowledge !</h2>
+          <h2 class="about-title">About EduAiQ — Empowering Minds. Building Futures.</h2>
           <p class="about-desc">
-            EduAiQ pairs every course with hands-on practice — AI Lab projects, real
-            datasets, and mentor feedback — so learners build a portfolio, not just a
-            certificate. Institutions get the same approach at scale, with admission,
-            learning, and examination tools running on one connected platform.
+            EduAiQ is a future-focused EdTech and AI innovation company dedicated to transforming education through
+            <strong style="color:#fd7e14;">Artificial Intelligence, Robotics, Digital Learning</strong> and Future Skills.
+            We empower schools, colleges, institutions, educators and learners with next-generation technology solutions,
+            AI-powered learning, innovation labs and industry-ready training programs.
           </p>
           <figure class="figure-round-border">
             <img alt="EduAiQ Smart Learning Classroom" src="{% static 'assets/img/eduaiq-smart-classroom.jpg' %}" />
@@ -2134,5 +2510,30 @@ courses in India with AI-driven online courses, e-books & practical training. St
       });
     }
   });
+
+  // ── Stats Counter Animation ─────────────────────────────────────
+  const statNumbers = document.querySelectorAll('.stat-number');
+  const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.getAttribute('data-target'));
+        const duration = 1800;
+        const step = target / (duration / 16);
+        let current = 0;
+        const timer = setInterval(() => {
+          current += step;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          el.textContent = Math.floor(current).toLocaleString('en-IN');
+        }, 16);
+        statsObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  statNumbers.forEach(el => statsObserver.observe(el));
 </script>
-{% endblock %}
+{% endblock %}
