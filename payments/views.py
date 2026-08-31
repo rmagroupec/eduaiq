@@ -405,7 +405,6 @@ def create_razorpay_order(request):
 #  STEP 2 ─ Verify Razorpay Signature (HMAC-SHA256)
 #  Call this AFTER Razorpay handler fires on the frontend
 # ─────────────────────────────────────────────────────────────
-@login_required
 def verify_payment_signature(request):
     """
     POST body expected:
@@ -476,7 +475,6 @@ def verify_payment_signature(request):
 #  STEP 3 ─ Fetch Payment Status from Razorpay Gateway
 #  Useful for checking pending / failed payments
 # ─────────────────────────────────────────────────────────────
-@login_required
 def payment_status(request, payment_id):
     """
     GET /payments/api/payment/status/<payment_id>/
@@ -519,8 +517,8 @@ def payment_status(request, payment_id):
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
 
-@login_required
 def test_payment_page(request):
+    """Test page - no login required for easy testing"""
     return render(request, 'payments/test_payment.html', {
         'razorpay_key_id': settings.RAZORPAY_KEY_ID
     })
