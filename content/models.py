@@ -179,7 +179,7 @@ class BlogPost(models.Model):
     def image_url(self):
         if self.featured_image and hasattr(self.featured_image, 'url'):
             return self.featured_image.url
-        return '/static/assets/img/educator-img12.jpg'
+        return '/static/assets/img/blog-default-indian.jpg'
 
     @property
     def tag_list(self):
