@@ -54,6 +54,7 @@ urlpatterns = [
     path('team/', views.team, name='team'),
     path('gallery/', views.gallery, name='gallery'),
     path('testimonial/', views.testimonial, name='testimonial'),
+    path('testimonials/', views.testimonial),  # alias — both URLs work
     path('facility/', views.facility, name='facility'),
     path('growth-partner-kit/', views.growth_partner_kit, name='growth_partner_kit'),
     path('apply-for-franchise/', views.apply_for_franchise, name='apply_for_franchise'),
