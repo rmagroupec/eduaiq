@@ -5,12 +5,15 @@ import razorpay
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 from django.utils import timezone
 from .models import Invoice, InvoiceItem, FeeCollection, Transaction
 from accounts.models import User
 import json
 import uuid
+import hmac
+import hashlib
 
 @login_required
 def invoices_api(request):
@@ -398,7 +401,124 @@ def create_razorpay_order(request):
         }, status=400)
 
 
-   
+# ─────────────────────────────────────────────────────────────
+#  STEP 2 ─ Verify Razorpay Signature (HMAC-SHA256)
+#  Call this AFTER Razorpay handler fires on the frontend
+# ─────────────────────────────────────────────────────────────
+@login_required
+def verify_payment_signature(request):
+    """
+    POST body expected:
+      {
+        "razorpay_order_id": "order_XXXX",
+        "razorpay_payment_id": "pay_XXXX",
+        "razorpay_signature": "<hex-signature>",
+        "amount": 500,                    # optional – for saving Transaction
+        "description": "Test Payment"     # optional
+      }
+    Returns:
+      { status: 'success'|'failed', message, payment_id, transaction_id }
+    """
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'Only POST allowed.'}, status=405)
+
+    try:
+        data = json.loads(request.body) if request.body else {}
+
+        order_id   = data.get('razorpay_order_id', '')
+        payment_id = data.get('razorpay_payment_id', '')
+        signature  = data.get('razorpay_signature', '')
+
+        if not all([order_id, payment_id, signature]):
+            return JsonResponse({'status': 'failed', 'message': 'Missing required fields.'}, status=400)
+
+        # ── Razorpay HMAC-SHA256 verification ──
+        key    = settings.RAZORPAY_KEY_SECRET.encode('utf-8')
+        msg    = f"{order_id}|{payment_id}".encode('utf-8')
+        digest = hmac.new(key, msg, hashlib.sha256).hexdigest()
+
+        if not hmac.compare_digest(digest, signature.lower()):
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'Signature verification failed. Payment may be tampered.'
+            }, status=400)
+
+        # ── Signature valid → Save Transaction record ──
+        amount      = float(data.get('amount', 0))
+        description = data.get('description', 'Razorpay Online Payment')
+        inv_no      = f"INV-{timezone.now().strftime('%Y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
+
+        txn = Transaction.objects.create(
+            invoice_no       = inv_no,
+            transaction_type = description,
+            payment_type     = 'Online / Razorpay',
+            source_type      = 'general',
+            amount           = amount,
+            payer            = request.user if request.user.is_authenticated else None,
+            gateway_txn_id   = payment_id,
+            status           = 'success'
+        )
+
+        return JsonResponse({
+            'status'         : 'success',
+            'message'        : 'Payment verified and recorded successfully.',
+            'payment_id'     : payment_id,
+            'order_id'       : order_id,
+            'transaction_id' : txn.id,
+            'invoice_no'     : inv_no,
+        })
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+# ─────────────────────────────────────────────────────────────
+#  STEP 3 ─ Fetch Payment Status from Razorpay Gateway
+#  Useful for checking pending / failed payments
+# ─────────────────────────────────────────────────────────────
+@login_required
+def payment_status(request, payment_id):
+    """
+    GET /payments/api/payment/status/<payment_id>/
+    Fetches live payment status from Razorpay.
+    Returns:
+      { status: 'success'|'failed'|'pending'|'error', payment_status, amount, method, ... }
+    """
+    try:
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        payment = client.payment.fetch(payment_id)
+
+        rzp_status = payment.get('status', 'unknown')  # captured / failed / created / authorized
+
+        # Map Razorpay status → our simple status
+        status_map = {
+            'captured'   : 'success',
+            'authorized' : 'pending',
+            'created'    : 'pending',
+            'failed'     : 'failed',
+        }
+        mapped_status = status_map.get(rzp_status, 'pending')
+
+        return JsonResponse({
+            'status'         : mapped_status,
+            'razorpay_status': rzp_status,
+            'payment_id'     : payment.get('id'),
+            'order_id'       : payment.get('order_id'),
+            'amount'         : payment.get('amount', 0) / 100,   # paise → rupees
+            'currency'       : payment.get('currency'),
+            'method'         : payment.get('method'),            # card / upi / netbanking
+            'email'          : payment.get('email'),
+            'contact'        : payment.get('contact'),
+            'description'    : payment.get('description', ''),
+            'created_at'     : payment.get('created_at'),
+        })
+
+    except razorpay.errors.BadRequestError as e:
+        return JsonResponse({'status': 'error', 'message': f'Invalid payment ID: {payment_id}'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
 @login_required
 def test_payment_page(request):
     return render(request, 'payments/test_payment.html', {
