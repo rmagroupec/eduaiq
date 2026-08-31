@@ -1,6 +1,11 @@
+
+
+from django.conf import settings
+import razorpay
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+
 from django.utils import timezone
 from .models import Invoice, InvoiceItem, FeeCollection, Transaction
 from accounts.models import User
@@ -338,4 +343,64 @@ def invoice_details_api(request, item_type, item_id):
     invoice_data = get_invoice_data_dict(item_type, item_id)
     return JsonResponse({'status': 'success', 'data': invoice_data})
 
+@login_required
+def create_razorpay_order(request):
+    if request.method != 'POST':
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Only POST method is allowed.'
+        }, status=405)
 
+
+
+
+    try:
+        data = json.loads(request.body) if request.body else request.POST
+
+        amount = float(data.get('amount', 0))
+
+        if amount <= 0:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Invalid payment amount.'
+            }, status=400)
+
+        # Razorpay amount is always in paise
+        amount_paise = int(round(amount * 100))
+
+        client = razorpay.Client(
+            auth=(
+                settings.RAZORPAY_KEY_ID,
+                settings.RAZORPAY_KEY_SECRET
+            )
+        )
+
+        order_data = {
+            'amount': amount_paise,
+            'currency': 'INR',
+            'payment_capture': 1
+        }
+
+        order = client.order.create(data=order_data)
+
+        return JsonResponse({
+            'status': 'success',
+            'order_id': order['id'],
+            'amount': amount_paise,
+            'currency': 'INR',
+            'key_id': settings.RAZORPAY_KEY_ID
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=400)
+
+
+   
+@login_required
+def test_payment_page(request):
+    return render(request, 'payments/test_payment.html', {
+        'razorpay_key_id': settings.RAZORPAY_KEY_ID
+    })

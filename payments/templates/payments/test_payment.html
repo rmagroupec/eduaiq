@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Razorpay Test Payment</title>
+</head>
+
+<body>
+
+    <h2>Razorpay Test Payment</h2>
+
+    <p>Test Amount: ₹500</p>
+
+    <button id="pay-btn">Pay ₹500</button>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+        document.getElementById("pay-btn").addEventListener("click", async function () {
+
+            try {
+
+                // Step 1: Django se Razorpay Order create karna
+                const response = await fetch(
+                    "{% url 'create_razorpay_order' %}",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            amount: 500
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                console.log("Order Response:", data);
+
+                if (data.status !== "success") {
+                    alert(data.message || "Order create nahi hua.");
+                    return;
+                }
+
+                // Step 2: Razorpay Checkout options
+                const options = {
+
+                    key: data.key_id,
+
+                    amount: data.amount,
+
+                    currency: data.currency,
+
+                    name: "EduAIQ",
+
+                    description: "Test Payment",
+
+                    order_id: data.order_id,
+
+                    handler: function (paymentResponse) {
+
+                        console.log("Payment Response:", paymentResponse);
+
+                        alert(
+                            "Payment completed!\n\n" +
+                            "Payment ID: " +
+                            paymentResponse.razorpay_payment_id
+                        );
+                    },
+
+                    theme: {
+                        color: "#3399cc"
+                    }
+                };
+
+                // Step 3: Razorpay Checkout open
+                const razorpay = new Razorpay(options);
+
+                razorpay.open();
+
+            } catch (error) {
+
+                console.error("Payment Error:", error);
+
+                alert("Something went wrong. Check browser console.");
+
+            }
+
+        });
+    </script>
+
+</body>
+</html>
