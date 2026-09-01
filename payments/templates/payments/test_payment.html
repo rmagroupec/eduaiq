@@ -3,461 +3,396 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Razorpay Payment Test | EduAiQ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Payment | EduAiQ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    {% load static %}
+    {% csrf_token %}
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            font-family: 'Inter', Arial, sans-serif;
             min-height: 100vh;
+            background: #0f0c29;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            color: #fff;
         }
 
-        /* ── Card ── */
-        .pay-card {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 24px;
-            padding: 48px 44px;
+        .card {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 20px;
+            padding: 40px 36px;
             width: 100%;
             max-width: 460px;
-            color: #fff;
-            box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.5);
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 36px;
-        }
+        /* Brand */
+        .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
         .brand-icon {
-            width: 42px; height: 42px;
+            width: 44px; height: 44px;
             background: linear-gradient(135deg, #7c3aed, #4f46e5);
             border-radius: 12px;
-            display: grid; place-items: center;
-            font-size: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
         }
-        .brand-name { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
-        .brand-sub  { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 1px; }
+        .brand-name { font-size: 20px; font-weight: 800; }
+        .brand-sub  { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
 
-        .pay-label { font-size: 12px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-        .pay-amount {
-            font-size: 52px; font-weight: 800; letter-spacing: -2px;
-            background: linear-gradient(90deg, #a78bfa, #60a5fa);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 4px;
+        /* Amount */
+        .lbl { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 6px; }
+        .amount-display { font-size: 46px; font-weight: 800; letter-spacing: -2px; color: #a78bfa; margin-bottom: 4px; line-height: 1; }
+        .sub-desc { font-size: 13px; color: rgba(255,255,255,0.35); margin-bottom: 24px; }
+
+        /* Amount Input */
+        .input-row { margin-bottom: 20px; }
+        .input-row label { display: block; font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 7px; }
+        .input-row input {
+            width: 100%; padding: 12px 14px;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 10px; color: #fff; font-size: 16px; font-family: inherit; outline: none;
         }
-        .pay-desc { font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 36px; }
+        .input-row input:focus { border-color: #7c3aed; }
 
-        .detail-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.07);
-            font-size: 13px;
+        /* Details rows */
+        .detail { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.07); font-size: 13px; }
+        .detail:last-of-type { border-bottom: none; margin-bottom: 4px; }
+        .detail .k { color: rgba(255,255,255,0.4); }
+        .badge { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); border-radius: 20px; padding: 2px 9px; font-size: 11px; font-weight: 700; }
+
+        /* TEST MODE HINT BOX */
+        .test-hint {
+            margin: 16px 0;
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.3);
+            border-radius: 12px;
+            padding: 14px 16px;
         }
-        .detail-row:last-of-type { border-bottom: none; }
-        .detail-row .key { color: rgba(255,255,255,0.45); }
-        .detail-row .val { font-weight: 500; }
-
-        .badge-test {
-            background: rgba(251,191,36,0.15); color: #fbbf24;
-            border: 1px solid rgba(251,191,36,0.3);
-            border-radius: 20px; padding: 3px 10px;
-            font-size: 11px; font-weight: 600;
+        .test-hint-title {
+            font-size: 11px; font-weight: 700; color: #34d399;
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .test-method {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 10px 12px; margin-bottom: 8px;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .test-method:last-child { margin-bottom: 0; }
+        .test-method:hover { background: rgba(255,255,255,0.1); }
+        .test-method-icon { font-size: 18px; flex-shrink: 0; }
+        .test-method-info { flex: 1; }
+        .test-method-name { font-size: 12px; font-weight: 700; color: #fff; }
+        .test-method-val {
+            font-size: 11px; color: #a78bfa; font-family: monospace;
+            background: rgba(167,139,250,0.12); padding: 2px 7px;
+            border-radius: 5px; display: inline-block; margin-top: 3px;
+        }
+        .test-method-badge {
+            font-size: 10px; color: #34d399; font-weight: 700;
+            background: rgba(16,185,129,0.15); padding: 2px 7px; border-radius: 10px;
         }
 
-        .btn-pay {
-            width: 100%; margin-top: 32px;
-            padding: 16px;
-            background: linear-gradient(135deg, #7c3aed, #4f46e5);
-            color: #fff;
-            border: none; border-radius: 14px;
-            font-size: 16px; font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
+        /* Pay Button */
+        .pay-btn {
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            position: relative; overflow: hidden;
+            width: 100%; margin-top: 20px; padding: 16px;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            color: #fff; border: none; border-radius: 14px;
+            font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .btn-pay:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(124,58,237,0.45); }
-        .btn-pay:active { transform: translateY(0); }
-        .btn-pay:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .btn-pay .spinner {
-            width: 18px; height: 18px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            display: none;
+        .pay-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(124,58,237,0.45); }
+        .pay-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+        .spinner {
+            width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.25);
+            border-top-color: #fff; border-radius: 50%; display: none;
+            animation: spin 0.65s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+        .secure { text-align: center; margin-top: 12px; font-size: 11px; color: rgba(255,255,255,0.25); }
 
-        .secure-note {
-            text-align: center; margin-top: 16px;
-            font-size: 11px; color: rgba(255,255,255,0.3);
-            display: flex; align-items: center; justify-content: center; gap: 5px;
-        }
-
-        /* ── Modal Overlay ── */
-        .modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(8px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 9999;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
-
-        .modal-box {
-            background: #1a1a2e;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 24px;
-            padding: 44px 40px;
-            width: 100%; max-width: 420px;
-            text-align: center;
-            transform: scale(0.9) translateY(20px);
-            transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
-            position: relative;
-        }
-        .modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
-
-        /* Status icon circle */
-        .status-icon {
-            width: 88px; height: 88px;
-            border-radius: 50%;
-            display: grid; place-items: center;
-            font-size: 40px;
-            margin: 0 auto 24px;
-            position: relative;
-        }
-        .status-icon::after {
-            content: '';
-            position: absolute; inset: -6px;
-            border-radius: 50%;
-            border: 2px solid currentColor;
-            opacity: 0.25;
-            animation: pulse-ring 1.5s ease-out infinite;
-        }
-        @keyframes pulse-ring {
-            0%   { transform: scale(1); opacity: 0.25; }
-            100% { transform: scale(1.35); opacity: 0; }
-        }
-
-        .status-icon.success { background: rgba(16,185,129,0.15); color: #10b981; }
-        .status-icon.failed  { background: rgba(239,68,68,0.15);  color: #ef4444; }
-        .status-icon.pending { background: rgba(251,191,36,0.15); color: #fbbf24; }
-
-        .modal-title {
-            font-size: 24px; font-weight: 800; letter-spacing: -0.5px;
-            margin-bottom: 8px; color: #fff;
-        }
-        .modal-subtitle {
-            font-size: 14px; color: rgba(255,255,255,0.45);
-            margin-bottom: 28px; line-height: 1.6;
-        }
-
-        .modal-details {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            padding: 16px;
-            text-align: left;
-            margin-bottom: 28px;
-        }
-        .modal-detail-row {
-            display: flex; justify-content: space-between;
-            font-size: 12px; padding: 6px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            color: rgba(255,255,255,0.7);
-        }
-        .modal-detail-row:last-child { border-bottom: none; }
-        .modal-detail-row span:first-child { color: rgba(255,255,255,0.35); }
-
-        .btn-close-modal {
-            width: 100%; padding: 14px;
-            border-radius: 12px; border: none;
-            font-size: 15px; font-weight: 700;
-            cursor: pointer; transition: all 0.2s;
-        }
-        .btn-close-modal.success { background: linear-gradient(135deg, #059669, #10b981); color: #fff; }
-        .btn-close-modal.failed  { background: linear-gradient(135deg, #dc2626, #ef4444); color: #fff; }
-        .btn-close-modal.pending { background: linear-gradient(135deg, #d97706, #fbbf24); color: #000; }
-        .btn-close-modal:hover   { filter: brightness(1.1); transform: translateY(-1px); }
-
-        .close-x {
-            position: absolute; top: 16px; right: 18px;
-            background: none; border: none;
-            color: rgba(255,255,255,0.3); font-size: 22px;
-            cursor: pointer; line-height: 1;
-        }
-        .close-x:hover { color: #fff; }
+        /* Status + Log */
+        .status-panel { display: none; margin-top: 16px; border-radius: 12px; padding: 14px 16px; font-size: 13px; font-weight: 600; text-align: center; }
+        .status-panel.success { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); color: #34d399; }
+        .status-panel.error   { background: rgba(239,68,68,0.15);   border: 1px solid rgba(239,68,68,0.3);   color: #f87171; }
+        .status-panel.info    { background: rgba(96,165,250,0.12);  border: 1px solid rgba(96,165,250,0.2);  color: #60a5fa; }
+        .step-log { display: none; margin-top: 12px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 12px; font-size: 11px; font-family: monospace; color: rgba(255,255,255,0.45); max-height: 110px; overflow-y: auto; }
+        .step-log span { display: block; padding: 2px 0; }
+        .step-log .ok  { color: #34d399; }
+        .step-log .err { color: #f87171; }
+        .step-log .inf { color: #60a5fa; }
     </style>
 </head>
 <body>
 
-<!-- ── Payment Card ── -->
-<div class="pay-card">
+<div class="card">
+
+    <!-- Brand -->
     <div class="brand">
-        <div class="brand-icon">🎓</div>
+        <div class="brand-icon">&#127891;</div>
         <div>
             <div class="brand-name">EduAiQ</div>
             <div class="brand-sub">Secure Payment Gateway</div>
         </div>
     </div>
 
-    <div class="pay-label">Amount to Pay</div>
-    <div class="pay-amount">₹500</div>
-    <div class="pay-desc">Test Payment · Razorpay Integration</div>
+    <!-- Amount -->
+    <div class="lbl">Amount to Pay</div>
+    <div class="amount-display" id="amtDisplay">&#8377;500</div>
+    <div class="sub-desc">EduAiQ Premium Plan &middot; Powered by Razorpay</div>
 
-    <div class="detail-row"><span class="key">Order For</span><span class="val">EduAiQ Premium Plan</span></div>
-    <div class="detail-row"><span class="key">Mode</span><span class="val"><span class="badge-test">TEST MODE</span></span></div>
-    <div class="detail-row"><span class="key">Gateway</span><span class="val">Razorpay</span></div>
-    <div class="detail-row"><span class="key">Currency</span><span class="val">INR ₹</span></div>
+    <!-- Custom Amount Input -->
+    <div class="input-row">
+        <label for="amtInput">Custom Amount (&#8377;)</label>
+        <input type="number" id="amtInput" value="500" min="1" placeholder="Enter amount...">
+    </div>
 
-    <button class="btn-pay" id="pay-btn" onclick="startPayment()">
-        <div class="spinner" id="spinner"></div>
-        <span id="btn-text">🔒 Pay ₹500 Securely</span>
+    <!-- Details -->
+    <div class="detail"><span class="k">Product</span><span>EduAiQ Premium Plan</span></div>
+    <div class="detail"><span class="k">Mode</span><span><span class="badge">TEST MODE</span></span></div>
+    <div class="detail"><span class="k">Gateway</span><span>Razorpay</span></div>
+    <div class="detail"><span class="k">Currency</span><span>INR &#8377;</span></div>
+
+    <!-- ✅ TEST MODE HINT -->
+    <div class="test-hint">
+        <div class="test-hint-title">&#9989; Test Mode — Use These Details</div>
+
+        <div class="test-method" onclick="payWithUPI()">
+            <div class="test-method-icon">&#128241;</div>
+            <div class="test-method-info">
+                <div class="test-method-name">UPI (Recommended)</div>
+                <div class="test-method-val">success@razorpay</div>
+            </div>
+            <div class="test-method-badge">AUTO &#9654;</div>
+        </div>
+
+        <div class="test-method" onclick="payWithCard()">
+            <div class="test-method-icon">&#128179;</div>
+            <div class="test-method-info">
+                <div class="test-method-name">Card</div>
+                <div class="test-method-val">5267 3181 8797 5449 &nbsp;|&nbsp; 02/26 &nbsp;|&nbsp; 123</div>
+            </div>
+            <div class="test-method-badge">CLICK &#9654;</div>
+        </div>
+    </div>
+
+    <!-- Pay Button -->
+    <button class="pay-btn" id="payBtn" onclick="startPayment('upi')">
+        <div class="spinner" id="spinEl"></div>
+        <span id="btnTxt">&#128274; Pay &#8377;500 &mdash; UPI (Test)</span>
     </button>
 
-    <div class="secure-note">🔐 256-bit SSL Encrypted · Powered by Razorpay</div>
-</div>
+    <div class="secure">&#128272; 256-bit SSL &nbsp;&middot;&nbsp; No real money deducted in TEST mode</div>
 
-<!-- ── Status Modal ── -->
-<div class="modal-overlay" id="statusModal">
-    <div class="modal-box">
-        <button class="close-x" onclick="closeModal()">✕</button>
-        <div class="status-icon" id="modalIcon">✓</div>
-        <div class="modal-title" id="modalTitle">Payment Successful!</div>
-        <div class="modal-subtitle" id="modalSubtitle">Your payment has been verified and recorded.</div>
-        <div class="modal-details" id="modalDetails"></div>
-        <button class="btn-close-modal" id="modalBtn" onclick="closeModal()">Done</button>
-    </div>
+    <!-- Status + Log -->
+    <div class="status-panel" id="statusPanel"></div>
+    <div class="step-log" id="stepLog"></div>
 </div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-{% load static %}
 <script>
-    // ── CSRF helper ──
-    function getCookie(name) {
-        const v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-        return v ? v[2] : null;
+    // Sync amount display
+    document.getElementById('amtInput').addEventListener('input', function() {
+        var v = parseFloat(this.value) || 0;
+        document.getElementById('amtDisplay').textContent = '\u20B9' + v;
+    });
+
+    // Get CSRF token
+    function getCsrf() {
+        var inp = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (inp) return inp.value;
+        var m = document.cookie.match('(^|;) ?csrftoken=([^;]*)');
+        return m ? m[2] : '';
     }
-    const CSRF = getCookie('csrftoken');
 
-    // ────────────────────────────────────────────────
-    //  STEP 1: Create Razorpay Order
-    // ────────────────────────────────────────────────
-    async function startPayment() {
-        const btn     = document.getElementById('pay-btn');
-        const spinner = document.getElementById('spinner');
-        const btnText = document.getElementById('btn-text');
+    // Logger
+    function log(msg, cls) {
+        var box = document.getElementById('stepLog');
+        box.style.display = 'block';
+        var s = document.createElement('span');
+        s.className = cls || 'inf';
+        s.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+        box.appendChild(s);
+        box.scrollTop = box.scrollHeight;
+    }
 
-        btn.disabled     = true;
-        spinner.style.display = 'block';
-        btnText.textContent   = 'Creating Order…';
+    function showStatus(msg, type) {
+        var p = document.getElementById('statusPanel');
+        p.style.display = 'block';
+        p.className = 'status-panel ' + (type || 'info');
+        p.textContent = msg;
+    }
+
+    function setBtn(disabled, spin, text) {
+        document.getElementById('payBtn').disabled = disabled;
+        document.getElementById('spinEl').style.display = spin ? 'block' : 'none';
+        document.getElementById('btnTxt').textContent = text;
+    }
+
+    // Quick UPI click
+    function payWithUPI() { startPayment('upi'); }
+    function payWithCard() { startPayment('card'); }
+
+    // ──────────────────────────────────────────────────────────
+    //  MAIN PAYMENT FUNCTION
+    // ──────────────────────────────────────────────────────────
+    async function startPayment(method) {
+        method = method || 'upi';
+        var amount = parseFloat(document.getElementById('amtInput').value);
+        if (!amount || amount <= 0) { alert('Please enter a valid amount!'); return; }
+
+        // Reset
+        document.getElementById('stepLog').innerHTML = '';
+        document.getElementById('statusPanel').style.display = 'none';
+        setBtn(true, true, 'Creating order...');
+        log('Creating Razorpay order for \u20B9' + amount, 'inf');
 
         try {
-            const res  = await fetch("{% url 'create_razorpay_order' %}", {
+            // ── STEP 1: Create Razorpay Order on backend ──
+            var res = await fetch('/payments/api/payment/create-order/', {
                 method : 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
-                body   : JSON.stringify({ amount: 500, description: 'EduAiQ Premium Plan' })
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrf() },
+                body   : JSON.stringify({ amount: amount, description: 'EduAiQ Premium Plan' })
             });
-            const data = await res.json();
 
-            if (data.status !== 'success') {
-                showModal('failed', { message: data.message || 'Order creation failed.' });
-                resetBtn(); return;
+            if (!res.ok) {
+                var txt = await res.text();
+                log('HTTP ' + res.status + ': ' + txt.substring(0,150), 'err');
+                showStatus('Server error ' + res.status + '. Check console.', 'error');
+                setBtn(false, false, '\uD83D\uDD12 Pay \u20B9' + amount);
+                return;
             }
 
-            btnText.textContent = 'Opening Razorpay…';
+            var data = await res.json();
+            if (data.status !== 'success') {
+                log('Order failed: ' + data.message, 'err');
+                showStatus('Order creation failed: ' + (data.message || ''), 'error');
+                setBtn(false, false, '\uD83D\uDD12 Pay \u20B9' + amount);
+                return;
+            }
 
-            // ────────────────────────────────────────────
-            //  STEP 2: Open Razorpay Checkout
-            // ────────────────────────────────────────────
-            const options = {
-                key         : data.key_id,
-                amount      : data.amount,
-                currency    : data.currency,
-                name        : 'EduAiQ',
-                description : 'EduAiQ Premium Plan',
-                image       : '{% static "assets/img/eduaiq-logo.png" %}',
-                order_id    : data.order_id,
+            log('Order created: ' + data.order_id, 'ok');
+            setBtn(true, false, 'Opening Razorpay...');
 
-                // ── After user completes payment ──
-                handler: async function (paymentResponse) {
-                    btnText.textContent = 'Verifying…';
-
-                    // ────────────────────────────────────────
-                    //  STEP 3: Verify Signature on Backend
-                    // ────────────────────────────────────────
-                    const verifyRes = await fetch("{% url 'verify_payment_signature' %}", {
-                        method : 'POST',
-                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
-                        body   : JSON.stringify({
-                            razorpay_order_id  : paymentResponse.razorpay_order_id,
-                            razorpay_payment_id: paymentResponse.razorpay_payment_id,
-                            razorpay_signature : paymentResponse.razorpay_signature,
-                            amount             : 500,
-                            description        : 'EduAiQ Premium Plan'
-                        })
-                    });
-                    const verifyData = await verifyRes.json();
-
-                    if (verifyData.status === 'success') {
-                        // ────────────────────────────────────────
-                        //  STEP 4: Fetch Live Payment Status
-                        // ────────────────────────────────────────
-                        try {
-                            const statusRes  = await fetch(`/payments/api/payment/status/${paymentResponse.razorpay_payment_id}/`);
-                            const statusData = await statusRes.json();
-                            showModal(statusData.status || 'success', {
-                                payment_id    : paymentResponse.razorpay_payment_id,
-                                order_id      : paymentResponse.razorpay_order_id,
-                                transaction_id: verifyData.transaction_id,
-                                invoice_no    : verifyData.invoice_no,
-                                amount        : `₹${statusData.amount || 500}`,
-                                method        : statusData.method || 'Card',
-                                rzp_status    : statusData.razorpay_status || 'captured',
-                            });
-                        } catch {
-                            // fallback if status API has minor issue
-                            showModal('success', {
-                                payment_id    : paymentResponse.razorpay_payment_id,
-                                order_id      : paymentResponse.razorpay_order_id,
-                                transaction_id: verifyData.transaction_id,
-                                invoice_no    : verifyData.invoice_no,
-                                amount        : '₹500',
-                                method        : 'Card',
-                            });
-                        }
-                    } else {
-                        showModal('failed', {
-                            message   : verifyData.message || 'Signature verification failed.',
-                            payment_id: paymentResponse.razorpay_payment_id,
-                        });
-                    }
-                    resetBtn();
-                },
-
-                // ── User closed modal without paying ──
-                modal: {
-                    ondismiss: function () {
-                        showModal('pending', { message: 'Payment window was closed before completing.' });
-                        resetBtn();
-                    }
-                },
-
-                prefill: {
-                    name : '{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}',
-                    email: '{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}',
-                },
-                theme: { color: '#7c3aed' }
+            // ── STEP 2: Open Razorpay Checkout with correct prefill ──
+            var prefill = {
+                name : '',
+                email: '',
             };
 
-            const rzp = new Razorpay(options);
+            // Pre-fill based on method
+            if (method === 'upi') {
+                prefill.method = 'upi';
+                prefill.vpa    = 'success@razorpay';   // ← Razorpay test UPI ID
+            } else {
+                prefill.method       = 'card';
+                prefill['card[number]']  = '5267318187975449';
+                prefill['card[expiry]']  = '02/26';
+                prefill['card[cvv]']     = '123';
+            }
 
-            // ── Handle payment failure inside modal ──
-            rzp.on('payment.failed', function (response) {
-                showModal('failed', {
-                    payment_id: response.error.metadata.payment_id,
-                    order_id  : response.error.metadata.order_id,
-                    message   : response.error.description,
-                    reason    : response.error.reason,
-                });
-                resetBtn();
+            var options = {
+                key        : data.key_id,
+                amount     : data.amount,
+                currency   : 'INR',
+                name       : 'EduAiQ',
+                description: 'EduAiQ Premium Plan',
+                order_id   : data.order_id,
+                prefill    : prefill,
+                theme      : { color: '#7c3aed' },
+
+                // ── STEP 3: Razorpay calls this after payment ──
+                handler: async function(resp) {
+                    log('Payment done! ID: ' + resp.razorpay_payment_id, 'ok');
+                    setBtn(true, true, 'Verifying...');
+
+                    try {
+                        // ── STEP 4: Verify signature on backend ──
+                        var vRes = await fetch('/payments/api/payment/verify-signature/', {
+                            method : 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrf() },
+                            body   : JSON.stringify({
+                                razorpay_order_id  : resp.razorpay_order_id,
+                                razorpay_payment_id: resp.razorpay_payment_id,
+                                razorpay_signature : resp.razorpay_signature,
+                                amount             : amount,
+                                description        : 'EduAiQ Premium Plan'
+                            })
+                        });
+
+                        var vData = await vRes.json();
+                        log('Verify: ' + vData.status + ' | txn=' + vData.transaction_id, vData.status === 'success' ? 'ok' : 'err');
+
+                        if (vData.status === 'success') {
+                            // ── STEP 5: Redirect to Payment Success Page ──
+                            log('Redirecting to success page...', 'ok');
+                            var p = new URLSearchParams({
+                                payment_id    : resp.razorpay_payment_id,
+                                order_id      : resp.razorpay_order_id,
+                                transaction_id: vData.transaction_id || '',
+                                invoice_no    : vData.invoice_no || '',
+                                amount        : amount,
+                                method        : method.toUpperCase(),
+                                description   : 'EduAiQ Premium Plan'
+                            });
+                            window.location.href = '/payments/payment-success/?' + p.toString();
+                        } else {
+                            showStatus('Verification failed: ' + (vData.message || ''), 'error');
+                            setBtn(false, false, '\uD83D\uDD12 Pay \u20B9' + amount);
+                        }
+
+                    } catch(ve) {
+                        log('Verify network error: ' + ve, 'err');
+                        // Payment was captured, redirect anyway
+                        var p = new URLSearchParams({
+                            payment_id : resp.razorpay_payment_id,
+                            order_id   : resp.razorpay_order_id,
+                            amount     : amount,
+                            method     : method.toUpperCase(),
+                            description: 'EduAiQ Premium Plan'
+                        });
+                        window.location.href = '/payments/payment-success/?' + p.toString();
+                    }
+                },
+
+                modal: {
+                    ondismiss: function() {
+                        log('Razorpay modal closed by user', 'inf');
+                        showStatus('Payment cancelled. Click a method above to retry.', 'info');
+                        setBtn(false, false, '\uD83D\uDD12 Pay \u20B9' + amount + ' \u2014 UPI (Test)');
+                    }
+                }
+            };
+
+            var rzp = new Razorpay(options);
+
+            rzp.on('payment.failed', function(r) {
+                log('Payment failed: ' + r.error.description, 'err');
+                showStatus(
+                    'Payment failed: ' + r.error.description +
+                    ' \u2014 Try clicking "UPI" option above and use success@razorpay',
+                    'error'
+                );
+                setBtn(false, false, '\uD83D\uDD12 Pay \u20B9' + amount + ' \u2014 UPI (Test)');
             });
 
             rzp.open();
+            log('Razorpay modal opened (method: ' + method + ')', 'inf');
 
-        } catch (err) {
-            console.error(err);
-            showModal('failed', { message: 'Network error. Please try again.' });
-            resetBtn();
+        } catch(err) {
+            log('Error: ' + err.message, 'err');
+            showStatus('Network error. Is server running?', 'error');
+            setBtn(false, false, '\uD83D\uDD12 Pay \u20B9' + amount);
         }
     }
-
-    // ────────────────────────────────────────────────
-    //  Show Modal  (status: 'success' | 'failed' | 'pending')
-    // ────────────────────────────────────────────────
-    function showModal(status, info = {}) {
-        const icon     = document.getElementById('modalIcon');
-        const title    = document.getElementById('modalTitle');
-        const subtitle = document.getElementById('modalSubtitle');
-        const details  = document.getElementById('modalDetails');
-        const btn      = document.getElementById('modalBtn');
-
-        // Clear previous classes
-        icon.className = `status-icon ${status}`;
-
-        const cfg = {
-            success: {
-                icon    : '✓',
-                title   : 'Payment Successful!',
-                subtitle: 'Your payment has been verified & recorded securely.',
-            },
-            failed: {
-                icon    : '✕',
-                title   : 'Payment Failed',
-                subtitle: info.message || 'Something went wrong with your payment.',
-            },
-            pending: {
-                icon    : '⏳',
-                title   : 'Payment Pending',
-                subtitle: info.message || 'Your payment is being processed.',
-            },
-        }[status] || { icon: '?', title: 'Unknown', subtitle: '' };
-
-        icon.textContent    = cfg.icon;
-        title.textContent   = cfg.title;
-        subtitle.textContent = cfg.subtitle;
-        btn.className       = `btn-close-modal ${status}`;
-        btn.textContent     = status === 'success' ? '🎉 Done' : status === 'failed' ? 'Try Again' : 'OK, Got It';
-
-        // Build detail rows
-        const rows = [];
-        if (info.payment_id)     rows.push(['Payment ID',     info.payment_id]);
-        if (info.order_id)       rows.push(['Order ID',       info.order_id]);
-        if (info.transaction_id) rows.push(['Transaction ID', `#${info.transaction_id}`]);
-        if (info.invoice_no)     rows.push(['Invoice No',     info.invoice_no]);
-        if (info.amount)         rows.push(['Amount',         info.amount]);
-        if (info.method)         rows.push(['Method',         info.method.toUpperCase()]);
-        if (info.rzp_status)     rows.push(['Gateway Status', info.rzp_status]);
-        if (info.reason)         rows.push(['Reason',         info.reason]);
-
-        details.innerHTML = rows.length
-            ? rows.map(([k, v]) =>
-                `<div class="modal-detail-row"><span>${k}</span><span>${v}</span></div>`
-              ).join('')
-            : '<div class="modal-detail-row"><span>Status</span><span>' + status.toUpperCase() + '</span></div>';
-
-        document.getElementById('statusModal').classList.add('active');
-    }
-
-    function closeModal() {
-        document.getElementById('statusModal').classList.remove('active');
-    }
-
-    function resetBtn() {
-        const btn     = document.getElementById('pay-btn');
-        const spinner = document.getElementById('spinner');
-        const btnText = document.getElementById('btn-text');
-        btn.disabled         = false;
-        spinner.style.display = 'none';
-        btnText.textContent   = '🔒 Pay ₹500 Securely';
-    }
-
-    // Close modal on overlay click
-    document.getElementById('statusModal').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-    });
 </script>
+
 </body>
 </html>

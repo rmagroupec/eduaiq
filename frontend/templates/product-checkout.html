@@ -226,16 +226,23 @@
 </div>
 </div>
 <div class="col-sm-12">
+
 <div class="form-group">
 <label>What Are You Paying For? <abbr class="label-star">*</abbr></label>
-<select id="feeCategory" name="fee_category">
-<option value="course">Course Fee</option>
-<option value="olympiad">Olympiad Registration Fee</option>
-<option value="skill">Skill Development Program Fee</option>
-<option value="franchise">Franchise Application Fee</option>
+<select id="feeCategory" name="fee_category" onchange="updateFeeSummary()">
+<option value="franchise" selected>Franchise Application Fee</option>
+<option value="institution">Institution Membership Fee</option>
+<option value="skill">Skill Development Custom Dues</option>
+<option value="other">Other / Custom Dues</option>
 </select>
 </div>
 </div>
+<div class="col-sm-12" id="customAmountWrapper" style="display: none;">
+<div class="form-group">
+<label>Custom Amount (₹) <abbr class="label-star">*</abbr></label>
+<input id="customAmount" name="custom_amount" placeholder="Enter amount to pay" type="number" min="1" oninput="updateFeeSummary()"/>
+</div>
+
 <div class="col-sm-6">
 <div class="form-group">
 <label>Roll Number / Student ID (if any)</label>
@@ -255,7 +262,7 @@
 <h3 class="Information-title">Additional Information</h3>
 <div class="form-group">
 <label>Notes (optional)</label>
-<textarea placeholder="Anything we should know — e.g. a specific batch, course name, or reference number" rows="3"></textarea>
+<textarea id="checkoutNotes" placeholder="Anything we should know — e.g. a specific batch, course name, or reference number" rows="3"></textarea>
 </div>
 </div>
 </div>
@@ -272,14 +279,16 @@
 </tr>
 </thead>
 <tbody>
+
 <tr>
 <td>Selected category</td>
-<td class="text-right">As applicable</td>
+<td class="text-right" id="summaryCategory">Franchise Application Fee</td>
 </tr>
 <tr>
 <td><strong>Total Payable</strong></td>
-<td class="text-right"><strong style="color: #ea580c;">Confirmed on payment screen</strong></td>
+<td class="text-right"><strong style="color: #ea580c;" id="summaryAmount">₹15000</strong></td>
 </tr>
+
 </tbody>
 </table>
 <p style="font-size: 13px; color: #64748b; margin-top: 15px; margin-bottom: 0;">
@@ -305,81 +314,227 @@ UPI / Cards / Net Banking (via Razorpay)
 <button type="button" class="button-round-secondary w-100" id="pay-btn" style="display:block; text-align:center; border:none; width: 100%;">PROCEED TO PAY VIA RAZORPAY</button>
 </div>
 
+
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script>
+        function updateFeeSummary() {
+            const cat = document.getElementById('feeCategory');
+            const customWrap = document.getElementById('customAmountWrapper');
+            const summaryCat = document.getElementById('summaryCategory');
+            const summaryAmount = document.getElementById('summaryAmount');
+            
+            let catName = cat.options[cat.selectedIndex].text;
+            summaryCat.innerText = catName;
+
+            let val = cat.value;
+            let amount = 0;
+
+            if (val === 'franchise') {
+                customWrap.style.display = 'none';
+                amount = 15000;
+            } else if (val === 'institution') {
+                customWrap.style.display = 'none';
+                amount = 5000;
+            } else {
+                customWrap.style.display = 'block';
+                let customVal = parseInt(document.getElementById('customAmount').value) || 0;
+                amount = customVal;
+            }
+            summaryAmount.innerText = '₹' + amount;
+        }
+
         document.getElementById("pay-btn").addEventListener("click", async function () {
+            
+            // Validate Form
+            const fullName = document.querySelector('input[name="full_name"]').value.trim();
+            const phone = document.querySelector('input[name="phone"]').value.trim();
+            const email = document.querySelector('input[name="email"]').value.trim();
+            const rollNo = document.querySelector('input[name="roll_number"]').value.trim();
+            const institutionName = document.querySelector('input[name="institution"]').value.trim();
+            const notes = document.getElementById('checkoutNotes').value.trim();
+            
+            const cat = document.getElementById('feeCategory');
+            const catVal = cat.value;
+            const catName = cat.options[cat.selectedIndex].text;
+
+            if (!fullName || !phone || !email) {
+                alert("Please fill in all mandatory fields (Name, Phone, Email).");
+                return;
+            }
+
+            let amount = 0;
+            if (catVal === 'franchise') amount = 15000;
+            else if (catVal === 'institution') amount = 5000;
+            else amount = parseInt(document.getElementById('customAmount').value) || 0;
+
+            if (amount <= 0) {
+                alert("Please enter a valid amount greater than 0.");
+                return;
+            }
 
             try {
-
-                // Step 1: Django se Razorpay Order create karna
-                const response = await fetch(
-                    "{% url 'create_razorpay_order' %}",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            amount: 500
-                        })
-                    }
-                );
+                // Step 1: Create Order
+                const response = await fetch("{% url 'create_razorpay_order' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie("csrftoken") || ''
+                    },
+                    body: JSON.stringify({ amount: amount })
+                });
 
                 const data = await response.json();
-
-                console.log("Order Response:", data);
-
                 if (data.status !== "success") {
-                    alert(data.message || "Order create nahi hua.");
+                    alert(data.message || "Failed to create order.");
                     return;
                 }
 
-                // Step 2: Razorpay Checkout options
+                // Step 2: Open Razorpay
                 const options = {
-
                     key: data.key_id,
-
                     amount: data.amount,
-
                     currency: data.currency,
-
-                    name: "EduAIQ",
-
-                    description: "Test Payment",
-
+                    name: "EduAiQ",
+                    description: catName,
                     order_id: data.order_id,
-
-                    handler: function (paymentResponse) {
-
-                        console.log("Payment Response:", paymentResponse);
-
-                        alert(
-                            "Payment completed!\n\n" +
-                            "Payment ID: " +
-                            paymentResponse.razorpay_payment_id
-                        );
+                    prefill: {
+                        name: fullName,
+                        email: email,
+                        contact: phone
                     },
-
-                    theme: {
-                        color: "#3399cc"
+                    theme: { color: "#ea580c" },
+                    handler: function (paymentResponse) {
+                        console.log("Payment Success:", paymentResponse);
+                        
+                        // Step 3: Verify & Save Transaction
+                        fetch("/payments/api/payment/verify-signature/", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRFToken": getCookie("csrftoken") || ''
+                            },
+                            body: JSON.stringify({
+                                razorpay_order_id: paymentResponse.razorpay_order_id,
+                                razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                                razorpay_signature: paymentResponse.razorpay_signature,
+                                amount: amount,
+                                description: catName + (notes ? " - " + notes : ""),
+                                source_type: "miscellaneous_fee"
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(verifyData => {
+                            if (verifyData.status === "success") {
+                                showPaymentSuccessModal(paymentResponse.razorpay_payment_id, amount, catName);
+                            } else {
+                                alert("Payment verified but saving failed: " + verifyData.message);
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            alert("Payment verification error!");
+                        });
                     }
                 };
 
-                // Step 3: Razorpay Checkout open
                 const razorpay = new Razorpay(options);
-
+                razorpay.on('payment.failed', function (resp) {
+                    alert('Payment Failed: ' + resp.error.description);
+                });
                 razorpay.open();
 
             } catch (error) {
-
                 console.error("Payment Error:", error);
-
                 alert("Something went wrong. Check browser console.");
-
             }
-
         });
+
+        // Helper to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+function showPaymentSuccessModal(txnId, price, courseTitle) {
+
+    const successHTML = `
+      <div class="modal fade show" id="paymentSuccessModal" tabindex="-1" style="display: block; background: rgba(15,23,42,0.85); backdrop-filter: blur(10px); z-index: 1070;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+          <div class="modal-content text-center p-4" style="border-radius: 24px; border: 1px solid rgba(16,185,129,0.4); box-shadow: 0 25px 60px rgba(0,0,0,0.5); background: #ffffff;">
+            
+            <div class="d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 76px; height: 76px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; border-radius: 50%; box-shadow: 0 10px 25px rgba(16,185,129,0.4);">
+              <i class="fas fa-check" style="font-size: 38px;"></i>
+            </div>
+
+            <h3 class="fw-extrabold text-dark mb-1">🎉 Payment Successful!</h3>
+            <p class="text-muted text-sm mb-3">Your transaction has been processed and verified via <strong>Razorpay Gateway</strong>.</p>
+
+            <div class="card p-3 border-0 radius-16 text-start mb-3" style="background: #f8fafc; border: 1px solid #e2e8f0 !important;">
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted text-xs">Transaction ID:</span>
+                <strong class="text-dark text-xs font-monospace">${txnId}</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted text-xs">Payment Gateway:</span>
+                <span class="badge bg-success text-white text-xs fw-bold" style="background: #10b981 !important;">Razorpay Mode</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted text-xs">Item / Course:</span>
+                <strong class="text-dark text-xs">${courseTitle}</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted text-xs">Amount Paid:</span>
+                <strong class="text-primary text-sm">₹${price}</strong>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted text-xs">Status:</span>
+                <span class="text-success text-xs fw-bold"><i class="fas fa-check-circle me-1"></i> VERIFIED & SUCCESSFUL</span>
+              </div>
+            </div>
+
+            <div class="alert alert-warning py-2 px-3 radius-12 text-xs mb-3 d-flex align-items-center justify-content-center gap-2" style="background: #fffbeb; color: #b45309; border: 1px solid #fde68a;">
+              <i class="fas fa-clock text-warning fs-6"></i>
+              <span>Redirecting to <strong>Home Page</strong> in <strong id="redirectCountdown">3</strong> seconds...</span>
+            </div>
+
+            <div class="d-flex gap-2">
+              <a href="/" class="btn btn-primary w-100 py-2.5 radius-12 fw-bold text-sm" style="background: #ea580c; border: none;">
+                <i class="fas fa-home me-1"></i> Go to Home
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+
+    let existing = document.getElementById('paymentSuccessModal');
+    if (existing) existing.remove();
+
+    document.body.insertAdjacentHTML('beforeend', successHTML);
+
+    let timeLeft = 3;
+    const interval = setInterval(() => {
+      timeLeft--;
+      const el = document.getElementById('redirectCountdown');
+      if (el) el.innerText = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        window.location.href = '/';
+      }
+    }, 1000);
+  }
     </script>
 <div class="need-help-widget">
 <h5 class="bg-title">Need Help?</h5>

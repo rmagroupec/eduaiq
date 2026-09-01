@@ -18,4 +18,7 @@ urlpatterns = [
 
     # --- Test Page ---
     path('test-payment/', views.test_payment_page, name='test_payment'),
+
+    # --- Payment Success Page ---
+    path('payment-success/', views.payment_success_page, name='payment_success'),
 ]

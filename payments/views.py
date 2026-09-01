@@ -1,5 +1,3 @@
-
-
 from django.conf import settings
 import razorpay
 from django.shortcuts import render, get_object_or_404
@@ -14,6 +12,8 @@ import json
 import uuid
 import hmac
 import hashlib
+import random
+import string
 
 @login_required
 def invoices_api(request):
@@ -346,7 +346,7 @@ def invoice_details_api(request, item_type, item_id):
     invoice_data = get_invoice_data_dict(item_type, item_id)
     return JsonResponse({'status': 'success', 'data': invoice_data})
 
-@login_required
+@csrf_exempt
 def create_razorpay_order(request):
     if request.method != 'POST':
         return JsonResponse({
@@ -405,6 +405,7 @@ def create_razorpay_order(request):
 #  STEP 2 ─ Verify Razorpay Signature (HMAC-SHA256)
 #  Call this AFTER Razorpay handler fires on the frontend
 # ─────────────────────────────────────────────────────────────
+@csrf_exempt
 def verify_payment_signature(request):
     """
     POST body expected:
@@ -413,7 +414,8 @@ def verify_payment_signature(request):
         "razorpay_payment_id": "pay_XXXX",
         "razorpay_signature": "<hex-signature>",
         "amount": 500,                    # optional – for saving Transaction
-        "description": "Test Payment"     # optional
+        "description": "Test Payment",   # optional
+        "registration_data": {...}        # optional – olympiad registration fields
       }
     Returns:
       { status: 'success'|'failed', message, payment_id, transaction_id }
@@ -445,18 +447,73 @@ def verify_payment_signature(request):
         # ── Signature valid → Save Transaction record ──
         amount      = float(data.get('amount', 0))
         description = data.get('description', 'Razorpay Online Payment')
+        source      = data.get('source_type', 'general')
+        reference_id= data.get('reference_id', None)
         inv_no      = f"INV-{timezone.now().strftime('%Y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
 
         txn = Transaction.objects.create(
             invoice_no       = inv_no,
             transaction_type = description,
             payment_type     = 'Online / Razorpay',
-            source_type      = 'general',
+            source_type      = source,
+            reference_id     = reference_id,
             amount           = amount,
-            payer            = request.user if request.user.is_authenticated else None,
+            payer            = request.user if (request.user and request.user.is_authenticated) else None,
             gateway_txn_id   = payment_id,
             status           = 'success'
         )
+
+        # ── If olympiad registration data is present, save it ──
+        reg_data = data.get('registration_data')
+        roll_number = None
+        if reg_data:
+            try:
+                from olympiad.models import OlympiadRegistration, Olympiad
+                olympiad_id = reg_data.get('olympiad_id')
+                student_name = reg_data.get('student_name', '')
+                email = reg_data.get('email', '')
+                guardian_phone = reg_data.get('guardian_phone', '')
+
+                # Get or create a guest user account for the student
+                guest_user = None
+                if email:
+                    guest_user = User.objects.filter(email=email).first()
+                    if not guest_user:
+                        username_base = email.split('@')[0][:20]
+                        username = username_base
+                        counter = 1
+                        while User.objects.filter(username=username).exists():
+                            username = f"{username_base}{counter}"
+                            counter += 1
+                        temp_password = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+                        guest_user = User.objects.create_user(
+                            username=username,
+                            email=email,
+                            password=temp_password,
+                            first_name=student_name.split(' ')[0] if student_name else '',
+                            last_name=' '.join(student_name.split(' ')[1:]) if student_name else '',
+                        )
+
+                # Generate unique roll number
+                roll_number = f"OLY-{timezone.now().strftime('%Y')}-{''.join(random.choices(string.digits, k=6))}"
+                while OlympiadRegistration.objects.filter(roll_number=roll_number).exists():
+                    roll_number = f"OLY-{timezone.now().strftime('%Y')}-{''.join(random.choices(string.digits, k=6))}"
+
+                if olympiad_id and guest_user:
+                    olympiad_obj = Olympiad.objects.filter(id=olympiad_id).first()
+                    if olympiad_obj:
+                        OlympiadRegistration.objects.get_or_create(
+                            olympiad=olympiad_obj,
+                            student=guest_user,
+                            defaults={
+                                'roll_number': roll_number,
+                                'transaction': txn,
+                                'status': 'registered',
+                            }
+                        )
+            except Exception as reg_err:
+                # Don't fail the whole payment if registration saving fails
+                pass
 
         return JsonResponse({
             'status'         : 'success',
@@ -465,6 +522,7 @@ def verify_payment_signature(request):
             'order_id'       : order_id,
             'transaction_id' : txn.id,
             'invoice_no'     : inv_no,
+            'roll_number'    : roll_number,
         })
 
     except Exception as e:
@@ -522,3 +580,20 @@ def test_payment_page(request):
     return render(request, 'payments/test_payment.html', {
         'razorpay_key_id': settings.RAZORPAY_KEY_ID
     })
+
+
+def payment_success_page(request):
+    """
+    Payment Success Page — shown after successful Razorpay payment.
+    Reads payment details from GET params passed by frontend after verification.
+    """
+    context = {
+        'payment_id'    : request.GET.get('payment_id', ''),
+        'order_id'      : request.GET.get('order_id', ''),
+        'transaction_id': request.GET.get('transaction_id', ''),
+        'invoice_no'    : request.GET.get('invoice_no', ''),
+        'amount'        : request.GET.get('amount', ''),
+        'method'        : request.GET.get('method', ''),
+        'description'   : request.GET.get('description', 'EduAiQ Payment'),
+    }
+    return render(request, 'payments/payment_success.html', context)

@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, timedelta, date
+from django.conf import settings
 from django.utils import timezone
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -102,10 +103,12 @@ def course_detail(request):
 
     is_accessible = is_course_accessible_by_user(request.user, course)
 
+    from django.conf import settings
     return render(request, "course-detail.html", {
         'course_slug': course_slug,
         'course': course,
         'is_accessible': is_accessible,
+        'razorpay_key_id': settings.RAZORPAY_KEY_ID,
     })
 
 
@@ -1442,8 +1445,14 @@ def olympiad_curriculum(request):
 
 
 def olympiad_form(request):
-    """Olympiad registration form"""
-    return render(request, "olympiad-form.html")
+    """Olympiad registration form with Razorpay payment integration"""
+    from olympiad.models import Olympiad
+    olympiads = Olympiad.objects.filter(is_active=True).order_by('name')
+    context = {
+        'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+        'olympiads': olympiads,
+    }
+    return render(request, "olympiad-form.html", context)
 
 
 # ==========================

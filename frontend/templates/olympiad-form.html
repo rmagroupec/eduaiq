@@ -13,11 +13,9 @@
 <h1 class="inner-title">Olympiad Registration Form</h1>
 <div class="breadcrumb-content">
 <ul class="breadcrumb">
-
 </ul>
 </div>
 <style>
-  /* Fix visibility of text on dark background image */
   .contact-detail-container .section-title,
   .contact-detail-container h2 {
       color: #ffffff !important;
@@ -48,8 +46,6 @@
   .contact-details-list ul li .details-content span {
       color: #64748b !important;
   }
-
-  /* Left Info Cards Icons - Soft Gold Circle & Golden Orange Icon */
   .contact-details-list .icon {
       background: #fff7ed !important;
       border: 2px solid #ffedd5 !important;
@@ -80,7 +76,6 @@
   .contact-details-list li:hover .icon i {
       color: #ffffff !important;
   }
-
   .contact-details-list ul li .details-content span a {
       color: #ea580c !important;
       font-weight: 700 !important;
@@ -88,8 +83,6 @@
   .contact-details-list ul li .details-content span a:hover {
       color: #fd7e14 !important;
   }
-
-  /* Form Height & Compact Layout Overrides */
   .contact-form-inner {
       margin-top: 40px !important;
   }
@@ -100,8 +93,6 @@
   .contact-from p {
       margin-bottom: 12px !important;
   }
-
-  /* Input & Select Fields: Dark Text & Compact Height */
   .contact-from input[type="text"],
   .contact-from input[type="email"],
   .contact-from input[type="number"],
@@ -118,7 +109,6 @@
       border: 1.5px solid #cbd5e1 !important;
       transition: all 0.25s ease !important;
   }
-
   .contact-from textarea {
       height: 72px !important;
       padding: 10px 18px !important;
@@ -130,16 +120,8 @@
       border: 1.5px solid #cbd5e1 !important;
       transition: all 0.25s ease !important;
   }
-
-  /* Dark Placeholder Text Override */
   .contact-from input::placeholder,
   .contact-from textarea::placeholder {
-      color: #334155 !important;
-      font-weight: 600 !important;
-      opacity: 1 !important;
-  }
-  .contact-from input::-webkit-input-placeholder,
-  .contact-from textarea::-webkit-input-placeholder {
       color: #334155 !important;
       font-weight: 600 !important;
       opacity: 1 !important;
@@ -152,8 +134,6 @@
       color: #0f172a !important;
       font-weight: 600 !important;
   }
-
-  /* Form Inputs Focus Highlight - Brand Golden Orange */
   .contact-from input[type="text"]:focus,
   .contact-from input[type="email"]:focus,
   .contact-from input[type="number"]:focus,
@@ -165,10 +145,9 @@
       box-shadow: 0 0 0 3.5px rgba(253, 126, 20, 0.2) !important;
       outline: none !important;
   }
-
-  /* Registration Submit Button - EduAiQ Glowing Brand Orange */
   .contact-from input[type="submit"],
-  .contact-from button[type="submit"] {
+  .contact-from button[type="submit"],
+  #olympiad-submit-btn {
       background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
       color: #ffffff !important;
       border: none !important;
@@ -181,19 +160,129 @@
       box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4) !important;
       transition: all 0.35s ease !important;
       cursor: pointer !important;
+      width: 100% !important;
   }
-
-  .contact-from input[type="submit"]:hover,
-  .contact-from button[type="submit"]:hover {
+  #olympiad-submit-btn:hover:not(:disabled) {
       background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
       box-shadow: 0 12px 30px rgba(234, 88, 12, 0.6) !important;
       transform: translateY(-2px) !important;
-      color: #ffffff !important;
   }
-
-  /* Hide overline title divider */
+  #olympiad-submit-btn:disabled {
+      opacity: 0.7 !important;
+      cursor: not-allowed !important;
+      transform: none !important;
+  }
   .title-divider {
       display: none !important;
+  }
+
+  /* Fee display badge */
+  #fee-badge {
+      display: none;
+      background: linear-gradient(135deg, #fff7ed, #ffedd5);
+      border: 2px solid #fed7aa;
+      border-radius: 14px;
+      padding: 12px 20px;
+      margin-bottom: 12px;
+      text-align: center;
+      font-weight: 700;
+      color: #c2410c;
+      font-size: 1.05rem;
+  }
+  #fee-badge .fee-amount {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #ea580c;
+  }
+
+  /* Success overlay */
+  #payment-success-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+  }
+  #payment-success-overlay.show {
+      display: flex;
+  }
+  .success-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 48px 40px;
+      max-width: 480px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+      animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn {
+      from { opacity: 0; transform: scale(0.7); }
+      to   { opacity: 1; transform: scale(1); }
+  }
+  .success-icon {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 36px;
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(34,197,94,0.4);
+  }
+  .success-card h3 {
+      color: #0f172a;
+      font-weight: 800;
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+  }
+  .success-card p {
+      color: #475569;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+  }
+  .roll-number-badge {
+      background: #f0fdf4;
+      border: 2px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-weight: 800;
+      color: #16a34a;
+      font-size: 1.1rem;
+      margin: 16px 0;
+      display: inline-block;
+  }
+  .success-card .btn-home {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 32px;
+      background: linear-gradient(135deg, #fd7e14, #ea580c);
+      color: #fff;
+      border-radius: 50px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 6px 20px rgba(234,88,12,0.4);
+      transition: all 0.3s;
+  }
+  .success-card .btn-home:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(234,88,12,0.5);
+      color: #fff;
+  }
+
+  /* Error alert */
+  #form-error-msg {
+      display: none;
+      background: #fef2f2;
+      border: 1.5px solid #fecaca;
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: #dc2626;
+      font-weight: 600;
+      font-size: 0.92rem;
+      margin-bottom: 12px;
   }
 </style>
 
@@ -207,9 +296,9 @@
 <div class="section-disc">
 <h2 class="section-title">Before You Register</h2>
 <p>
-                                            Have these details ready and check the curriculum for your subject and
-                                            grade band so you know exactly what to expect on exam day.
-                                        </p>
+    Have these details ready and check the curriculum for your subject and
+    grade band so you know exactly what to expect on exam day.
+</p>
 </div>
 <div class="contact-details-list">
 <ul>
@@ -228,7 +317,7 @@
 </div>
 <div class="details-content">
 <h5>Registration Fee</h5>
-<span><a href="/checkout/">Pay Fee after submitting this form</a></span>
+<span><a href="#">Pay Fee after submitting this form</a></span>
 </div>
 </li>
 <li>
@@ -247,17 +336,28 @@
 <div class="col-lg-7">
 <div class="contact-from-wrap">
 <div class="pattern-overlay circle-patten"></div>
-<form class="contact-from">
+
+<!-- Error Message Box -->
+<div id="form-error-msg"></div>
+
+<!-- Fee Badge -->
+<div id="fee-badge">
+    <div>Registration Fee</div>
+    <div class="fee-amount" id="fee-amount-display">₹0</div>
+    <div style="font-size:0.8rem;color:#92400e;margin-top:4px;">You will be charged this amount via Razorpay</div>
+</div>
+
+<form class="contact-from" id="olympiad-reg-form" novalidate>
     {% csrf_token %}
 <p>
-<input name="student_name" placeholder="Student Full Name*" type="text"/>
+<input id="student_name" name="student_name" placeholder="Student Full Name*" type="text" required/>
 </p>
 <p>
-<input name="dob" placeholder="Date of Birth*" type="date"/>
+<input id="dob" name="dob" placeholder="Date of Birth*" type="date" required/>
 </p>
 <p>
-<select name="grade" required="">
-<option disabled="" selected="" value="">Select Grade / Class*</option>
+<select id="grade" name="grade" required>
+<option disabled selected value="">Select Grade / Class*</option>
 <option value="3">Grade 3</option>
 <option value="4">Grade 4</option>
 <option value="5">Grade 5</option>
@@ -269,33 +369,44 @@
 </select>
 </p>
 <p>
-<select name="subject" required="">
-<option disabled="" selected="" value="">Select Olympiad Subject*</option>
-<option value="math">Math Olympiad</option>
-<option value="science">Science Olympiad</option>
-<option value="ai">AI Olympiad</option>
+<select id="subject" name="subject" required>
+<option disabled selected value="">Select Olympiad Subject*</option>
+{% if olympiads %}
+    {% for oly in olympiads %}
+    <option value="{{ oly.id }}" data-fee="{{ oly.fee }}">{{ oly.name }}</option>
+    {% endfor %}
+{% else %}
+<option value="math" data-fee="299">Math Olympiad</option>
+<option value="science" data-fee="299">Science Olympiad</option>
+<option value="ai" data-fee="349">AI Olympiad</option>
+{% endif %}
 </select>
 </p>
 <p class="width-full">
-<input name="school" placeholder="School / Institution Name*" type="text"/>
+<input id="school" name="school" placeholder="School / Institution Name*" type="text" required/>
 </p>
 <p>
-<input name="guardian_name" placeholder="Parent / Guardian Name*" type="text"/>
+<input id="guardian_name" name="guardian_name" placeholder="Parent / Guardian Name*" type="text" required/>
 </p>
 <p>
-<input name="guardian_phone" placeholder="Parent / Guardian Phone*" type="number"/>
+<input id="guardian_phone" name="guardian_phone" placeholder="Parent / Guardian Phone*" type="number" required/>
 </p>
 <p>
-<input name="email" placeholder="Email Address*" type="email"/>
+<input id="email" name="email" placeholder="Email Address*" type="email" required/>
 </p>
 <p>
-<input name="city" placeholder="City*" type="text"/>
+<input id="city" name="city" placeholder="City*" type="text" required/>
 </p>
 <p class="width-full">
-<textarea placeholder="Previous Olympiad experience, if any (optional)" rows="2"></textarea>
+<textarea id="experience" name="experience" placeholder="Previous Olympiad experience, if any (optional)" rows="2"></textarea>
 </p>
 <p class="width-full">
-<input name="submit" type="submit" value="Register &amp; Proceed To Pay Fee"/>
+<button type="submit" id="olympiad-submit-btn">
+    <span id="btn-text">Register &amp; Proceed To Pay Fee</span>
+    <span id="btn-spinner" style="display:none;">
+        <i class="fas fa-spinner fa-spin"></i> Processing...
+    </span>
+</button>
 </p>
 </form>
 </div>
@@ -303,5 +414,636 @@
 </div>
 </div>
 </div>
-</section>
+</section><!-- ══════════════════════════════════════════════════
+     CUSTOM PAYMENT MODAL
+══════════════════════════════════════════════════ -->
+<div id="pay-modal-overlay">
+  <div id="pay-modal-box">
+
+    <!-- Header -->
+    <div class="pay-modal-header">
+      <div class="pay-modal-logo">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="14" fill="#fd7e14"/><text x="14" y="19" text-anchor="middle" fill="#fff" font-size="13" font-weight="800">₹</text></svg>
+        <span>Secure Payment</span>
+      </div>
+      <button id="pay-modal-close" aria-label="Close">✕</button>
+    </div>
+
+    <!-- Order Summary Strip -->
+    <div class="pay-order-summary">
+      <div class="pay-order-row">
+        <span class="pay-order-label">Student</span>
+        <span class="pay-order-value" id="modal-student-name">—</span>
+      </div>
+      <div class="pay-order-row">
+        <span class="pay-order-label">Olympiad</span>
+        <span class="pay-order-value" id="modal-subject">—</span>
+      </div>
+      <div class="pay-order-divider"></div>
+      <div class="pay-order-row">
+        <span class="pay-order-label" style="font-weight:800;color:#0f172a;">Total Fee</span>
+        <span class="pay-order-fee" id="modal-fee">₹0</span>
+      </div>
+    </div>
+
+    <!-- Payment Tabs -->
+    <div class="pay-tabs">
+      <button class="pay-tab-btn active" data-tab="upi">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 11l9-9 9 9M5 9v10a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1V9" stroke="#fd7e14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        UPI
+      </button>
+      <button class="pay-tab-btn" data-tab="card">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="#fd7e14" stroke-width="2"/><path d="M2 10h20" stroke="#fd7e14" stroke-width="2"/></svg>
+        Card
+      </button>
+    </div>
+
+    <!-- ── UPI Tab ── -->
+    <div class="pay-tab-content active" id="tab-upi">
+      <label class="pay-input-label">Enter your UPI ID</label>
+      <div class="pay-upi-wrap">
+        <svg class="pay-upi-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#fd7e14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <input type="text" id="upi-id-input" class="pay-input" placeholder="yourname@upi  (e.g. success@razorpay)" autocomplete="off" spellcheck="false"/>
+      </div>
+      <div class="pay-upi-apps">
+        <span class="pay-upi-app-label">Supported apps:</span>
+        <span class="pay-upi-app-chip">GPay</span>
+        <span class="pay-upi-app-chip">PhonePe</span>
+        <span class="pay-upi-app-chip">Paytm</span>
+        <span class="pay-upi-app-chip">BHIM</span>
+      </div>
+      <p class="pay-test-hint">🧪 <strong>Test Mode:</strong> Use <code>success@razorpay</code> to simulate success</p>
+    </div>
+
+    <!-- ── Card Tab ── -->
+    <div class="pay-tab-content" id="tab-card">
+      <label class="pay-input-label">Card Number</label>
+      <div class="pay-card-input-wrap">
+        <svg class="pay-card-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="#fd7e14" stroke-width="2"/><path d="M2 10h20" stroke="#fd7e14" stroke-width="2"/></svg>
+        <input type="text" id="card-number" class="pay-input" placeholder="4111 1111 1111 1111" maxlength="19" autocomplete="cc-number"/>
+      </div>
+      <div class="pay-card-row">
+        <div class="pay-card-half">
+          <label class="pay-input-label">Expiry (MM/YY)</label>
+          <input type="text" id="card-expiry" class="pay-input" placeholder="MM / YY" maxlength="5" autocomplete="cc-exp"/>
+        </div>
+        <div class="pay-card-half">
+          <label class="pay-input-label">CVV</label>
+          <div class="pay-cvv-wrap">
+            <input type="password" id="card-cvv" class="pay-input" placeholder="• • •" maxlength="4" autocomplete="cc-csc"/>
+            <svg class="pay-cvv-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#94a3b8" stroke-width="2"/></svg>
+          </div>
+        </div>
+      </div>
+      <label class="pay-input-label">Cardholder Name</label>
+      <input type="text" id="card-name" class="pay-input" placeholder="Name on card" autocomplete="cc-name"/>
+      <p class="pay-test-hint">🧪 <strong>Test card:</strong> <code>4111 1111 1111 1111</code> | Exp: <code>12/28</code> | CVV: <code>123</code></p>
+    </div>
+
+    <!-- Modal Error -->
+    <div id="pay-modal-error"></div>
+
+    <!-- Pay Button -->
+    <button id="pay-now-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="margin-right:8px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#fff" stroke-width="2"/></svg>
+      Pay Securely Now
+    </button>
+
+    <div class="pay-secured-by">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#94a3b8" stroke-width="2"/></svg>
+      Secured by <strong>Razorpay</strong> · 256-bit SSL Encrypted
+    </div>
+
+  </div>
+</div>
+
+<!-- Payment Success Overlay -->
+<div id="payment-success-overlay">
+    <div class="success-card">
+        <div class="success-icon">✓</div>
+        <h3>Registration Successful! 🎉</h3>
+        <p>Your Olympiad registration has been confirmed and payment received.</p>
+        <div class="roll-number-badge" id="success-roll-number">Roll No: Generating...</div>
+        <p id="success-payment-id" style="font-size:0.85rem;color:#94a3b8;"></p>
+        <p style="font-size:0.85rem;color:#64748b;">A confirmation will be sent to your email address.</p>
+        <a href="/olympiad-entrance/" class="btn-home">View Olympiad Exams →</a>
+    </div>
+</div>
+
+<!-- Payment Modal Styles -->
+<style>
+/* ─── Overlay ─── */
+#pay-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,0.75);
+  backdrop-filter: blur(6px);
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+#pay-modal-overlay.show { display: flex; }
+
+/* ─── Box ─── */
+#pay-modal-box {
+  background: #ffffff;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.3);
+  animation: slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  overflow: hidden;
+}
+@keyframes slideUp {
+  from { opacity:0; transform: translateY(40px) scale(0.95); }
+  to   { opacity:1; transform: translateY(0)   scale(1);    }
+}
+
+/* ─── Header ─── */
+.pay-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+.pay-modal-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; color: #0f172a; font-size: 1rem;
+}
+#pay-modal-close {
+  background: #f1f5f9; border: none; border-radius: 50%;
+  width: 32px; height: 32px; cursor: pointer;
+  font-size: 14px; color: #64748b;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+#pay-modal-close:hover { background:#fee2e2; color:#dc2626; }
+
+/* ─── Order Summary ─── */
+.pay-order-summary {
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  padding: 14px 24px;
+  border-bottom: 1px solid #fed7aa;
+}
+.pay-order-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.pay-order-row:last-child { margin-bottom: 0; }
+.pay-order-label { font-size: 0.82rem; color: #92400e; font-weight: 600; }
+.pay-order-value { font-size: 0.9rem; color: #431407; font-weight: 700; }
+.pay-order-divider { height: 1px; background: #fed7aa; margin: 8px 0; }
+.pay-order-fee {
+  font-size: 1.4rem; font-weight: 900;
+  color: #ea580c;
+}
+
+/* ─── Tabs ─── */
+.pay-tabs {
+  display: flex;
+  padding: 16px 24px 0;
+  gap: 10px;
+  border-bottom: 1px solid #f1f5f9;
+}
+.pay-tab-btn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 10px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-weight: 700; font-size: 0.9rem; color: #64748b;
+  cursor: pointer; transition: all 0.25s;
+  margin-bottom: -1px;
+}
+.pay-tab-btn.active {
+  background: #fff7ed;
+  border-color: #fd7e14;
+  color: #c2410c;
+  border-bottom-color: #fff7ed;
+}
+.pay-tab-btn:hover:not(.active) { background: #f1f5f9; color: #334155; }
+
+/* ─── Tab Content ─── */
+#pay-modal-box .pay-tab-content {
+  display: none !important;
+  padding: 20px 24px 4px;
+}
+#pay-modal-box .pay-tab-content.active {
+  display: block !important;
+}
+
+
+/* ─── Input Label ─── */
+.pay-input-label {
+  display: block;
+  font-size: 0.8rem; font-weight: 700; color: #475569;
+  margin-bottom: 7px; margin-top: 14px;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.pay-input-label:first-child { margin-top: 0; }
+
+/* ─── Inputs ─── */
+.pay-input {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+  background: #f8fafc;
+  transition: all 0.25s;
+  outline: none;
+  box-sizing: border-box;
+}
+.pay-input:focus {
+  border-color: #fd7e14;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(253,126,20,0.18);
+}
+.pay-input::placeholder { color: #94a3b8; font-weight: 500; }
+
+/* ─── UPI wrap ─── */
+.pay-upi-wrap {
+  position: relative;
+}
+.pay-upi-icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  pointer-events: none;
+}
+.pay-upi-wrap .pay-input { padding-left: 42px; }
+
+/* ─── UPI app chips ─── */
+.pay-upi-apps {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+  margin-top: 10px;
+}
+.pay-upi-app-label { font-size: 0.78rem; color: #94a3b8; font-weight: 600; margin-right: 4px; }
+.pay-upi-app-chip {
+  background: #f1f5f9; border: 1px solid #e2e8f0;
+  border-radius: 8px; padding: 3px 10px;
+  font-size: 0.78rem; font-weight: 700; color: #475569;
+}
+
+/* ─── Card row ─── */
+.pay-card-input-wrap { position: relative; }
+.pay-card-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); }
+.pay-card-input-wrap .pay-input { padding-left: 42px; }
+.pay-card-row { display: flex; gap: 12px; }
+.pay-card-half { flex: 1; }
+.pay-cvv-wrap { position: relative; }
+.pay-cvv-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); }
+.pay-cvv-wrap .pay-input { padding-right: 36px; }
+
+/* ─── Test hint ─── */
+.pay-test-hint {
+  background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px;
+  padding: 10px 14px; margin-top: 14px;
+  font-size: 0.8rem; color: #166534; line-height: 1.5;
+}
+.pay-test-hint code {
+  background: #dcfce7; border-radius: 5px; padding: 1px 6px;
+  font-family: monospace; font-weight: 700; color: #15803d;
+}
+
+/* ─── Modal Error ─── */
+#pay-modal-error {
+  display: none;
+  background: #fef2f2; border: 1.5px solid #fecaca;
+  border-radius: 10px; padding: 10px 16px;
+  color: #dc2626; font-size: 0.88rem; font-weight: 600;
+  margin: 12px 24px 0;
+}
+
+/* ─── Pay Button ─── */
+#pay-now-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: calc(100% - 48px);
+  margin: 16px 24px;
+  height: 52px;
+  background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%);
+  color: #fff;
+  border: none; border-radius: 14px;
+  font-size: 1rem; font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(249,115,22,0.45);
+  transition: all 0.3s;
+  letter-spacing: 0.02em;
+}
+#pay-now-btn:hover {
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+  box-shadow: 0 12px 32px rgba(234,88,12,0.55);
+  transform: translateY(-1px);
+}
+
+/* ─── Secured by ─── */
+.pay-secured-by {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: 0.78rem; color: #94a3b8; font-weight: 500;
+  padding-bottom: 18px;
+}
+.pay-secured-by strong { color: #64748b; }
+</style>
+
+<!-- Razorpay SDK -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+(function() {
+    'use strict';
+
+    const RAZORPAY_KEY = "{{ razorpay_key_id }}";
+    const CSRF_TOKEN = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+
+    // Fee badge: update when subject changes
+    const subjectSelect = document.getElementById('subject');
+    const feeBadge = document.getElementById('fee-badge');
+    const feeDisplay = document.getElementById('fee-amount-display');
+
+    subjectSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const fee = parseFloat(selectedOption.getAttribute('data-fee') || 0);
+        if (fee > 0) {
+            feeDisplay.textContent = '₹' + fee.toFixed(0);
+            feeBadge.style.display = 'block';
+        } else {
+            feeBadge.style.display = 'none';
+        }
+    });
+
+    // Form submit handler
+    const form = document.getElementById('olympiad-reg-form');
+    const submitBtn = document.getElementById('olympiad-submit-btn');
+    const btnText = document.getElementById('btn-text');
+    const btnSpinner = document.getElementById('btn-spinner');
+    const errorBox = document.getElementById('form-error-msg');
+
+    function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.style.display = 'block';
+        errorBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    function hideError() { errorBox.style.display = 'none'; }
+
+    function setLoading(loading) {
+        submitBtn.disabled = loading;
+        btnText.style.display = loading ? 'none' : 'inline';
+        btnSpinner.style.display = loading ? 'inline' : 'none';
+    }
+
+    function getFormData() {
+        return {
+            student_name: document.getElementById('student_name').value.trim(),
+            dob: document.getElementById('dob').value,
+            grade: document.getElementById('grade').value,
+            subject_id: subjectSelect.value,
+            subject_name: subjectSelect.options[subjectSelect.selectedIndex]?.text || '',
+            school: document.getElementById('school').value.trim(),
+            guardian_name: document.getElementById('guardian_name').value.trim(),
+            guardian_phone: document.getElementById('guardian_phone').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            city: document.getElementById('city').value.trim(),
+            experience: document.getElementById('experience').value.trim(),
+            fee: parseFloat(subjectSelect.options[subjectSelect.selectedIndex]?.getAttribute('data-fee') || 299),
+        };
+    }
+
+    function validateForm(d) {
+        if (!d.student_name) return 'Student Full Name is required.';
+        if (!d.dob) return 'Date of Birth is required.';
+        if (!d.grade) return 'Please select a Grade / Class.';
+        if (!d.subject_id) return 'Please select an Olympiad Subject.';
+        if (!d.school) return 'School / Institution Name is required.';
+        if (!d.guardian_name) return 'Parent / Guardian Name is required.';
+        if (!d.guardian_phone || d.guardian_phone.length < 10) return 'Enter a valid 10-digit phone number.';
+        if (!d.email || !d.email.includes('@')) return 'Enter a valid Email Address.';
+        if (!d.city) return 'City is required.';
+        return null;
+    }
+
+    // ─── Payment Modal ───
+    let currentFormData = null;
+    let currentOrderData = null;
+
+    // Tab switching
+    document.querySelectorAll('.pay-tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.pay-tab-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const targetId = 'tab-' + this.dataset.tab;
+            document.querySelectorAll('#pay-modal-box .pay-tab-content').forEach(c => {
+                c.classList.remove('active');
+                c.style.display = 'none';
+            });
+            const target = document.getElementById(targetId);
+            if (target) {
+                target.classList.add('active');
+                target.style.display = 'block';
+            }
+        });
+    });
+
+    // Close modal
+    document.getElementById('pay-modal-close').addEventListener('click', closePaymentModal);
+    document.getElementById('pay-modal-overlay').addEventListener('click', function(e) {
+        if (e.target === this) closePaymentModal();
+    });
+
+    function openPaymentModal(formData, orderData) {
+        currentFormData = formData;
+        currentOrderData = orderData;
+        document.getElementById('modal-student-name').textContent = formData.student_name;
+        document.getElementById('modal-subject').textContent = formData.subject_name;
+        document.getElementById('modal-fee').textContent = '₹' + formData.fee.toFixed(0);
+
+        // Reset tabs: show UPI by default
+        document.querySelectorAll('.pay-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('.pay-tab-btn[data-tab="upi"]').classList.add('active');
+        document.querySelectorAll('#pay-modal-box .pay-tab-content').forEach(c => {
+            c.classList.remove('active');
+            c.style.display = 'none';
+        });
+        const upiTab = document.getElementById('tab-upi');
+        if (upiTab) { upiTab.classList.add('active'); upiTab.style.display = 'block'; }
+
+        document.getElementById('pay-modal-overlay').classList.add('show');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => document.getElementById('upi-id-input').focus(), 200);
+    }
+
+    function closePaymentModal() {
+        document.getElementById('pay-modal-overlay').classList.remove('show');
+        document.body.style.overflow = '';
+        setLoading(false);
+        document.getElementById('pay-modal-error').style.display = 'none';
+    }
+
+    // Card number formatting
+    document.getElementById('card-number').addEventListener('input', function() {
+        let v = this.value.replace(/\D/g, '').substring(0, 16);
+        this.value = v.replace(/(.{4})/g, '$1 ').trim();
+    });
+    // Expiry formatting
+    document.getElementById('card-expiry').addEventListener('input', function() {
+        let v = this.value.replace(/\D/g, '').substring(0, 4);
+        if (v.length >= 2) v = v.substring(0,2) + '/' + v.substring(2);
+        this.value = v;
+    });
+    // Only digits for CVV
+    document.getElementById('card-cvv').addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '').substring(0, 4);
+    });
+
+    // Pay Now
+    document.getElementById('pay-now-btn').addEventListener('click', function() {
+        const activeTab = document.querySelector('.pay-tab-btn.active')?.dataset.tab || 'upi';
+        const modalError = document.getElementById('pay-modal-error');
+        modalError.style.display = 'none';
+
+        let prefill = {
+            name: currentFormData.guardian_name,
+            email: currentFormData.email,
+            contact: currentFormData.guardian_phone,
+        };
+        let method = '';
+
+        if (activeTab === 'upi') {
+            const upiId = document.getElementById('upi-id-input').value.trim();
+            if (!upiId || !upiId.includes('@')) {
+                modalError.textContent = 'Please enter a valid UPI ID (e.g. success@razorpay)';
+                modalError.style.display = 'block';
+                return;
+            }
+            prefill.vpa = upiId;
+            method = 'upi';
+        } else {
+            const cardNum = document.getElementById('card-number').value.replace(/\s/g, '');
+            const cardExp = document.getElementById('card-expiry').value;
+            const cardCvv = document.getElementById('card-cvv').value;
+            if (!cardNum || cardNum.length < 16) {
+                modalError.textContent = 'Please enter a valid 16-digit card number.';
+                modalError.style.display = 'block'; return;
+            }
+            if (!cardExp || !cardExp.includes('/')) {
+                modalError.textContent = 'Please enter card expiry (MM/YY).';
+                modalError.style.display = 'block'; return;
+            }
+            if (!cardCvv || cardCvv.length < 3) {
+                modalError.textContent = 'Please enter a valid CVV.';
+                modalError.style.display = 'block'; return;
+            }
+            method = 'card';
+        }
+
+        closePaymentModal();
+        openRazorpay(currentFormData, currentOrderData, method, prefill);
+    });
+
+    async function openRazorpay(d, orderData, method, prefill) {
+        const options = {
+            key: RAZORPAY_KEY,
+            amount: orderData.amount,
+            currency: orderData.currency || 'INR',
+            name: 'EduAiQ Olympiad',
+            description: 'Registration: ' + d.subject_name + ' | ' + d.student_name,
+            order_id: orderData.order_id,
+            prefill: prefill,
+            notes: { student_name: d.student_name, grade: d.grade, school: d.school, city: d.city },
+            theme: { color: '#fd7e14' },
+            handler: async function(response) {
+                setLoading(true);
+                try {
+                    const verifyRes = await fetch('/payments/api/payment/verify-signature/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
+                        body: JSON.stringify({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            amount: d.fee,
+                            description: 'Olympiad Registration - ' + d.subject_name,
+                            source_type: 'olympiad',
+                            registration_data: {
+                                olympiad_id: d.subject_id, student_name: d.student_name,
+                                email: d.email, guardian_phone: d.guardian_phone,
+                                grade: d.grade, school: d.school, city: d.city, dob: d.dob,
+                            },
+                        }),
+                    });
+                    const verifyData = await verifyRes.json();
+                    if (verifyData.status === 'success') {
+                        document.getElementById('success-roll-number').textContent =
+                            'Roll No: ' + (verifyData.roll_number || 'Assigned by Admin');
+                        document.getElementById('success-payment-id').textContent =
+                            'Payment ID: ' + response.razorpay_payment_id;
+                        document.getElementById('payment-success-overlay').classList.add('show');
+                        form.reset();
+                        feeBadge.style.display = 'none';
+                    } else {
+                        throw new Error(verifyData.message || 'Payment verification failed.');
+                    }
+                } catch (verifyErr) {
+                    showError('Payment received but verification failed: ' + verifyErr.message +
+                        '. Save Payment ID: ' + response.razorpay_payment_id);
+                } finally {
+                    setLoading(false);
+                }
+            },
+            modal: {
+                ondismiss: function() {
+                    setLoading(false);
+                    showError('Payment cancelled. Please try again.');
+                }
+            }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.on('payment.failed', function(response) {
+            setLoading(false);
+            showError('Payment failed: ' + (response.error.description || 'Unknown error.'));
+        });
+        rzp.open();
+    }
+
+    // Main form submit — validate → create order → show custom modal
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        hideError();
+
+        const d = getFormData();
+        const validationError = validateForm(d);
+        if (validationError) { showError(validationError); return; }
+
+        if (!RAZORPAY_KEY) {
+            showError('Payment gateway not configured. Contact support.');
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const orderRes = await fetch('/payments/api/payment/create-order/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
+                body: JSON.stringify({ amount: d.fee }),
+            });
+            const orderData = await orderRes.json();
+            if (orderData.status !== 'success') throw new Error(orderData.message || 'Failed to create order.');
+
+            setLoading(false);
+            // Show our custom payment modal
+            openPaymentModal(d, orderData);
+
+        } catch (err) {
+            setLoading(false);
+            showError(err.message || 'Something went wrong. Please try again.');
+        }
+    });
+
+})();
+</script>
 {% endblock %}

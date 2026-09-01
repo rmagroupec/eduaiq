@@ -33,11 +33,30 @@ SECRET_KEY = 'django-insecure-iuk_0(cjtlkif)$smm4clo*i6h&393&=+d2m@mi04_&34$pes)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
+
+# ── Dev security: disable HTTPS redirect so Razorpay works on HTTP ──
+SECURE_SSL_REDIRECT = False
+SECURE_HSTS_SECONDS = 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+# ── Razorpay / Chrome Private Network Access fix ──
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+    'https://api.razorpay.com',
+    'https://checkout.razorpay.com',
+]
 
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
 RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET")
 
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/admin-panel/'
 
 # Application definition
 
@@ -65,6 +84,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'payments.middleware.RazorpayCompatibilityMiddleware',  # Fix Razorpay CORS/PNA in Chrome
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
    # 'django.middleware.csrf.CsrfViewMiddleware',

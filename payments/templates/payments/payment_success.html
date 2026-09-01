@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful | EduAiQ</title>
+    <meta name="description" content="Your EduAiQ payment was successful. View your transaction details.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --green       : #10b981;
+            --green-light : #34d399;
+            --green-dim   : rgba(16,185,129,0.12);
+            --purple      : #7c3aed;
+            --purple-light: #a78bfa;
+            --blue        : #3b82f6;
+            --bg          : #060612;
+            --card        : rgba(255,255,255,0.04);
+            --border      : rgba(255,255,255,0.09);
+            --text        : #f1f5f9;
+            --muted       : rgba(255,255,255,0.38);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: relative;
+            overflow-x: hidden;
+            color: var(--text);
+        }
+
+        /* ── Ambient background glow ── */
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 20% 20%, rgba(16,185,129,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 60% at 80% 80%, rgba(124,58,237,0.10) 0%, transparent 60%),
+                radial-gradient(ellipse 70% 40% at 50% 50%, rgba(59,130,246,0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* ── Floating particles ── */
+        .particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--green);
+            opacity: 0;
+            animation: float-up linear infinite;
+        }
+        @keyframes float-up {
+            0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+            10%  { opacity: 0.6; }
+            90%  { opacity: 0.2; }
+            100% { transform: translateY(-20vh) scale(1); opacity: 0; }
+        }
+
+        /* ── Main wrapper ── */
+        .wrapper {
+            position: relative; z-index: 1;
+            width: 100%; max-width: 520px;
+            animation: slide-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        @keyframes slide-in {
+            from { opacity: 0; transform: translateY(40px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Card ── */
+        .card {
+            background: var(--card);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 48px 40px 40px;
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,0.03),
+                0 40px 100px rgba(0,0,0,0.6),
+                0 0 80px rgba(16,185,129,0.06);
+        }
+
+        /* ── Success icon ── */
+        .icon-wrap {
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            background: var(--green-dim);
+            display: grid; place-items: center;
+            margin: 0 auto 28px;
+            position: relative;
+        }
+        .icon-wrap::before {
+            content: '';
+            position: absolute; inset: -8px;
+            border-radius: 50%;
+            border: 2px solid var(--green);
+            opacity: 0.3;
+            animation: ring-pulse 2s ease-out infinite;
+        }
+        .icon-wrap::after {
+            content: '';
+            position: absolute; inset: -18px;
+            border-radius: 50%;
+            border: 1px solid var(--green);
+            opacity: 0.12;
+            animation: ring-pulse 2s ease-out 0.3s infinite;
+        }
+        @keyframes ring-pulse {
+            0%   { transform: scale(1);    opacity: 0.3; }
+            100% { transform: scale(1.25); opacity: 0; }
+        }
+
+        .checkmark-svg {
+            width: 52px; height: 52px;
+        }
+        .check-circle { fill: none; stroke: var(--green); stroke-width: 3; stroke-dasharray: 166; stroke-dashoffset: 166; animation: stroke-in 0.8s 0.3s ease forwards; }
+        .check-tick   { fill: none; stroke: var(--green); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 48; stroke-dashoffset: 48; animation: stroke-in 0.4s 0.9s ease forwards; }
+        @keyframes stroke-in { to { stroke-dashoffset: 0; } }
+
+        /* ── Header text ── */
+        .success-label {
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--green);
+            margin-bottom: 10px;
+        }
+        .success-title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #fff 30%, var(--green-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        .success-sub {
+            text-align: center;
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 36px;
+            line-height: 1.6;
+        }
+
+        /* ── Amount highlight ── */
+        .amount-box {
+            background: var(--green-dim);
+            border: 1px solid rgba(16,185,129,0.25);
+            border-radius: 16px;
+            padding: 20px 24px;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .amount-label { font-size: 11px; color: var(--green); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+        .amount-value {
+            font-size: 44px;
+            font-weight: 900;
+            letter-spacing: -2px;
+            background: linear-gradient(90deg, var(--green-light), #6ee7b7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .amount-desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+        /* ── Details grid ── */
+        .details-grid {
+            background: rgba(255,255,255,0.025);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 28px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 13px 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-row:hover { background: rgba(255,255,255,0.03); }
+        .detail-key { color: var(--muted); display: flex; align-items: center; gap: 8px; }
+        .detail-key .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--green); opacity: 0.5;
+        }
+        .detail-val {
+            font-weight: 600;
+            font-size: 12px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            color: var(--text);
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .method-badge {
+            background: rgba(59,130,246,0.15);
+            border: 1px solid rgba(59,130,246,0.3);
+            color: #60a5fa;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* ── Status badge ── */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--green-dim);
+            border: 1px solid rgba(16,185,129,0.25);
+            color: var(--green);
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 1.5s ease-in-out infinite; }
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* ── Action buttons ── */
+        .btn-group { display: flex; gap: 12px; }
+        .btn-primary {
+            flex: 1;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--green), #059669);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(16,185,129,0.35); filter: brightness(1.05); }
+        .btn-secondary {
+            flex: 1;
+            padding: 15px;
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.07); transform: translateY(-2px); }
+
+        /* ── Footer note ── */
+        .footer-note {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 11px;
+            color: var(--muted);
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .footer-note a { color: var(--purple-light); text-decoration: none; }
+        .footer-note a:hover { text-decoration: underline; }
+
+        /* ── Brand header ── */
+        .brand {
+            display: flex; align-items: center; gap: 10px;
+            justify-content: center; margin-bottom: 32px;
+        }
+        .brand-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--purple), #4f46e5);
+            border-radius: 12px;
+            display: grid; place-items: center;
+            font-size: 18px;
+        }
+        .brand-name { font-size: 20px; font-weight: 800; letter-spacing: -0.3px; }
+
+        /* ── Confetti ── */
+        .confetti-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 999; overflow: hidden; }
+        .confetti-piece {
+            position: absolute; top: -20px;
+            width: 10px; height: 10px;
+            opacity: 0;
+            animation: confetti-fall linear forwards;
+        }
+        @keyframes confetti-fall {
+            0%   { opacity: 1; transform: translateY(0) rotate(0deg); }
+            100% { opacity: 0; transform: translateY(110vh) rotate(720deg); }
+        }
+
+        /* ── Divider ── */
+        .divider {
+            display: flex; align-items: center; gap: 12px;
+            margin: 20px 0;
+            color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .divider::before, .divider::after {
+            content: ''; flex: 1; height: 1px; background: var(--border);
+        }
+
+        @media (max-width: 520px) {
+            .card { padding: 36px 24px 32px; border-radius: 20px; }
+            .success-title { font-size: 26px; }
+            .amount-value { font-size: 36px; }
+            .btn-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Confetti -->
+<div class="confetti-wrap" id="confetti"></div>
+
+<!-- Floating particles -->
+<div class="particles" id="particles"></div>
+
+<div class="wrapper">
+    <div class="card">
+
+        <!-- Brand -->
+        <div class="brand">
+            <div class="brand-icon">🎓</div>
+            <div class="brand-name">EduAiQ</div>
+        </div>
+
+        <!-- Animated checkmark -->
+        <div class="icon-wrap">
+            <svg class="checkmark-svg" viewBox="0 0 52 52">
+                <circle class="check-circle" cx="26" cy="26" r="25"/>
+                <path class="check-tick" d="M14 27l8 8 16-16"/>
+            </svg>
+        </div>
+
+        <!-- Header -->
+        <div class="success-label">✦ Verified &amp; Secure</div>
+        <div class="success-title">Payment Successful!</div>
+        <div class="success-sub">
+            Your transaction has been <strong style="color:#fff">verified &amp; recorded</strong> securely.<br>
+            A confirmation has been noted in our system.
+        </div>
+
+        <!-- Amount -->
+        <div class="amount-box">
+            <div class="amount-label">Amount Paid</div>
+            <div class="amount-value" id="displayAmount">₹---</div>
+            <div class="amount-desc" id="displayDesc">---</div>
+        </div>
+
+        <!-- Transaction Details -->
+        <div class="details-grid" id="detailsGrid">
+            <!-- filled by JS -->
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-group">
+            <a href="/" class="btn-primary" id="homeBtn">
+                🏠 Go to Home
+            </a>
+            <a href="/payments/test-payment/" class="btn-secondary">
+                ↩ New Payment
+            </a>
+        </div>
+
+        <div class="divider">transaction receipt</div>
+
+        <!-- Print / Download hint -->
+        <button onclick="window.print()" style="
+            width:100%; padding:12px; border-radius:12px;
+            background:transparent; border:1px solid var(--border);
+            color:var(--muted); font-size:13px; font-weight:600;
+            cursor:pointer; transition:all 0.2s;
+            display:flex; align-items:center; justify-content:center; gap:8px;"
+            onmouseover="this.style.background='rgba(255,255,255,0.05)'; this.style.color='#fff';"
+            onmouseout="this.style.background='transparent'; this.style.color='var(--muted)';">
+            🖨️ Print / Save Receipt
+        </button>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-note">
+        🔐 256-bit SSL Encrypted &nbsp;·&nbsp; Powered by
+        <a href="https://razorpay.com" target="_blank">Razorpay</a>
+        &nbsp;·&nbsp; <a href="/">EduAiQ</a>
+    </div>
+</div>
+
+<script>
+    // ── Read URL params ──
+    const params = new URLSearchParams(window.location.search);
+    const p = {
+        payment_id    : params.get('payment_id')     || '',
+        order_id      : params.get('order_id')       || '',
+        transaction_id: params.get('transaction_id') || '',
+        invoice_no    : params.get('invoice_no')     || '',
+        amount        : params.get('amount')         || '',
+        method        : params.get('method')         || '',
+        description   : params.get('description')   || 'EduAiQ Payment',
+    };
+
+    // ── Show amount ──
+    const rawAmount = parseFloat(p.amount) || 0;
+    document.getElementById('displayAmount').textContent =
+        rawAmount > 0 ? `₹${rawAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}` : '₹---';
+    document.getElementById('displayDesc').textContent = p.description;
+
+    // ── Build details rows ──
+    const rows = [
+        { key: 'Status',         val: '<span class="status-badge">Captured</span>', raw: true },
+        { key: 'Payment ID',     val: p.payment_id     || '—' },
+        { key: 'Order ID',       val: p.order_id       || '—' },
+        { key: 'Transaction #',  val: p.transaction_id ? `#${p.transaction_id}` : '—' },
+        { key: 'Invoice No',     val: p.invoice_no     || '—' },
+        { key: 'Method',         val: p.method
+              ? `<span class="method-badge">${p.method}</span>`
+              : '—',  raw: true },
+        { key: 'Date & Time',    val: new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) },
+    ];
+
+    const grid = document.getElementById('detailsGrid');
+    rows.forEach(({ key, val, raw }) => {
+        if (!val || val === '—' && key !== 'Status') return;
+        const row = document.createElement('div');
+        row.className = 'detail-row';
+        row.innerHTML = `
+            <span class="detail-key"><span class="dot"></span>${key}</span>
+            ${raw ? `<span>${val}</span>` : `<span class="detail-val" title="${val}">${val}</span>`}
+        `;
+        grid.appendChild(row);
+    });
+
+    // ── Confetti ──
+    function launchConfetti() {
+        const colors = ['#10b981','#34d399','#6ee7b7','#7c3aed','#a78bfa','#fbbf24','#3b82f6','#f472b6'];
+        const wrap   = document.getElementById('confetti');
+        for (let i = 0; i < 80; i++) {
+            setTimeout(() => {
+                const el = document.createElement('div');
+                el.className = 'confetti-piece';
+                const size = Math.random() * 10 + 6;
+                el.style.cssText = `
+                    left: ${Math.random() * 100}%;
+                    width: ${size}px;
+                    height: ${size}px;
+                    background: ${colors[Math.floor(Math.random() * colors.length)]};
+                    border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+                    animation-duration: ${Math.random() * 2 + 2}s;
+                    animation-delay: ${Math.random() * 1}s;
+                `;
+                wrap.appendChild(el);
+                setTimeout(() => el.remove(), 4000);
+            }, i * 30);
+        }
+    }
+
+    // ── Floating particles ──
+    function launchParticles() {
+        const wrap = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 4 + 2;
+            p.style.cssText = `
+                left: ${Math.random() * 100}%;
+                width: ${size}px; height: ${size}px;
+                animation-duration: ${Math.random() * 8 + 6}s;
+                animation-delay: ${Math.random() * 5}s;
+                opacity: 0.4;
+            `;
+            wrap.appendChild(p);
+        }
+    }
+
+    launchConfetti();
+    launchParticles();
+</script>
+
+</body>
+</html>
