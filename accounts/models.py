@@ -86,6 +86,15 @@ class User(AbstractUser):
         ]
     )
 
+    # Razorpay Details
+    razorpay_customer_id = models.CharField(
+        _('Razorpay Customer ID'),
+        max_length=50,
+        blank=True,
+        null=True,
+        help_text=_('ID of the customer created in Razorpay for tokenization.')
+    )
+
     # Personal Details
     profile_image = models.ImageField(
         _('Profile Image'),

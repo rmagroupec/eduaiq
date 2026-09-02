@@ -378,21 +378,48 @@ def create_razorpay_order(request):
             )
         )
 
+        customer_id = None
+        if request.user.is_authenticated:
+            if request.user.razorpay_customer_id:
+                customer_id = request.user.razorpay_customer_id
+            else:
+                try:
+                    customer_data = {
+                        "name": request.user.get_full_name() or request.user.username,
+                        "email": request.user.email,
+                        "contact": getattr(request.user, 'phone', '')
+                    }
+                    customer = client.customer.create(data=customer_data)
+                    customer_id = customer['id']
+                    request.user.razorpay_customer_id = customer_id
+                    request.user.save(update_fields=['razorpay_customer_id'])
+                except Exception as e:
+                    print(f"Error creating Razorpay customer: {e}")
+
         order_data = {
             'amount': amount_paise,
             'currency': 'INR',
             'payment_capture': 1
         }
-
+        
+        # If we have a customer_id, it is usually passed in the frontend Checkout options, not order_data, 
+        # but Razorpay order creation does not require customer_id unless it's a subscription or specific flow.
+        # We will pass it back in the JSON response to use in the frontend SDK.
+        
         order = client.order.create(data=order_data)
 
-        return JsonResponse({
+        response_data = {
             'status': 'success',
             'order_id': order['id'],
             'amount': amount_paise,
             'currency': 'INR',
             'key_id': settings.RAZORPAY_KEY_ID
-        })
+        }
+        
+        if customer_id:
+            response_data['customer_id'] = customer_id
+
+        return JsonResponse(response_data)
 
     except Exception as e:
         return JsonResponse({

@@ -316,79 +316,7 @@
                                         Pay ₹{{ exam.fee }} & Register Now <i class="fas fa-credit-card ms-2"></i>
                                     </button>
 
-                                    <!-- Olympiad Payment Gateway Modal -->
-                                    <div class="modal fade" id="olympiadPaymentModal" tabindex="-1" style="background: rgba(15,23,42,0.8); backdrop-filter: blur(8px);" aria-hidden="true">
-                                      <div class="modal-dialog modal-dialog-centered modal-lg">
-                                        <div class="modal-content" style="border-radius: 24px; border: 1px solid rgba(249,115,22,0.3); overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.35);">
-                                          <div class="modal-header" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #fff; padding: 20px 28px;">
-                                            <div class="d-flex align-items-center gap-2">
-                                              <i class="fas fa-trophy text-warning" style="font-size: 22px;"></i>
-                                              <h5 class="modal-title fw-bold mb-0 text-white">EduAiQ Olympiad Checkout & Payment</h5>
-                                            </div>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                          </div>
-                                          <div class="modal-body p-4" style="background: #f8fafc;">
-                                            <form action="{% url 'olympiad_entrance_enroll' exam.id %}" method="post" id="olyPayForm">
-                                              {% csrf_token %}
-                                              <input type="hidden" name="gateway_txn_id" id="olyTxnId" value="">
-                                              <div class="row g-4 text-start">
-                                                <div class="col-md-6">
-                                                  <div class="card p-3 border-0 shadow-sm" style="background: #fff; border-radius: 16px;">
-                                                    <span class="badge bg-warning text-dark fw-bold mb-2 align-self-start" style="font-size: 11px;">SELECTED OLYMPIAD EXAM</span>
-                                                    <h6 class="fw-bold text-dark mb-1">{{ exam.name }}</h6>
-                                                    <p class="text-muted small mb-3">Academic Year: {{ exam.academic_year }} | Target: {{ exam.class_group }}</p>
-                                                    <hr>
-                                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                                      <span class="text-secondary small">Exam Fee:</span>
-                                                      <strong class="text-dark">₹{{ exam.fee }}</strong>
-                                                    </div>
-                                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                                      <span class="text-secondary small">Roll Number Lock:</span>
-                                                      <span class="text-success small fw-bold">Included</span>
-                                                    </div>
-                                                    <hr>
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                      <span class="fw-bold text-dark">Total Amount:</span>
-                                                      <h4 class="fw-extrabold text-primary mb-0">₹{{ exam.fee }}</h4>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                  <h6 class="fw-bold mb-3 text-dark">Select Payment Method</h6>
-                                                  <div class="form-check p-3 mb-2 border bg-white d-flex align-items-center justify-content-between" style="border-radius: 12px;">
-                                                    <div>
-                                                      <input class="form-check-input" type="radio" name="payment_method" id="olyUpi" value="upi" checked>
-                                                      <label class="form-check-label fw-bold ms-2 small text-dark" for="olyUpi">
-                                                        📱 UPI / QR Code (GPay, PhonePe, Paytm)
-                                                      </label>
-                                                    </div>
-                                                  </div>
-                                                  <div class="form-check p-3 mb-2 border bg-white d-flex align-items-center justify-content-between" style="border-radius: 12px;">
-                                                    <div>
-                                                      <input class="form-check-input" type="radio" name="payment_method" id="olyCard" value="card">
-                                                      <label class="form-check-label fw-bold ms-2 small text-dark" for="olyCard">
-                                                        💳 Credit / Debit Card
-                                                      </label>
-                                                    </div>
-                                                  </div>
-                                                  <div class="form-check p-3 mb-3 border bg-white d-flex align-items-center justify-content-between" style="border-radius: 12px;">
-                                                    <div>
-                                                      <input class="form-check-input" type="radio" name="payment_method" id="olyNb" value="netbanking">
-                                                      <label class="form-check-label fw-bold ms-2 small text-dark" for="olyNb">
-                                                        🏛️ Net Banking / Institutional Transfer
-                                                      </label>
-                                                    </div>
-                                                  </div>
-                                                  <button type="submit" class="btn-enroll-primary w-100 py-3" onclick="document.getElementById('olyTxnId').value = 'TXN-OLY-' + Date.now();">
-                                                    Pay ₹{{ exam.fee }} & Complete Registration <i class="fas fa-lock-open ms-2"></i>
-                                                  </button>
-                                                </div>
-                                              </div>
-                                            </form>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
+                                    <!-- Olympiad Payment Gateway Modal Moved to Bottom of Page -->
                                 {% else %}
                                     <form action="{% url 'olympiad_entrance_enroll' exam.id %}" method="post">
                                         {% csrf_token %}
@@ -415,6 +343,164 @@
             </div>
         </div>
     </div>
+    </div>
 </section>
-{% endblock %}
 
+<!-- Olympiad Payment Gateway Modal -->
+<div class="modal fade" id="olympiadPaymentModal" tabindex="-1" style="background: rgba(15,23,42,0.8); backdrop-filter: blur(8px);" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="border-radius: 24px; border: 1px solid rgba(249,115,22,0.3); overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.35);">
+      <div class="modal-header" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #fff; padding: 20px 28px;">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fas fa-trophy text-warning" style="font-size: 22px;"></i>
+          <h5 class="modal-title fw-bold mb-0 text-white">EduAiQ Olympiad Checkout & Payment</h5>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4" style="background: #f8fafc;">
+        <form action="{% url 'olympiad_entrance_enroll' exam.id %}" method="post" id="olyPayForm">
+          {% csrf_token %}
+          <input type="hidden" name="gateway_txn_id" id="olyTxnId" value="">
+          <div class="row g-4 text-start">
+            <div class="col-md-6">
+              <div class="card p-3 border-0 shadow-sm" style="background: #fff; border-radius: 16px;">
+                <span class="badge bg-warning text-dark fw-bold mb-2 align-self-start" style="font-size: 11px;">SELECTED OLYMPIAD EXAM</span>
+                <h6 class="fw-bold text-dark mb-1">{{ exam.name }}</h6>
+                <p class="text-muted small mb-3">Academic Year: {{ exam.academic_year }} | Target: {{ exam.class_group }}</p>
+                <hr>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-secondary small">Exam Fee:</span>
+                  <strong class="text-dark">₹{{ exam.fee }}</strong>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-secondary small">Roll Number Lock:</span>
+                  <span class="text-success small fw-bold">Included</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="fw-bold text-dark">Total Amount:</span>
+                  <h4 class="fw-extrabold text-primary mb-0">₹{{ exam.fee }}</h4>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h6 class="fw-bold mb-3 text-dark">Select Payment Method</h6>
+              <div class="form-check p-3 mb-2 border bg-white d-flex align-items-center justify-content-between" style="border-radius: 12px;">
+                <div>
+                  <input class="form-check-input" type="radio" name="payment_method" id="olyUpi" value="upi" checked>
+                  <label class="form-check-label fw-bold ms-2 small text-dark" for="olyUpi">
+                    📱 UPI / QR Code (GPay, PhonePe, Paytm)
+                  </label>
+                </div>
+              </div>
+              <div class="form-check p-3 mb-2 border bg-white d-flex align-items-center justify-content-between" style="border-radius: 12px;">
+                <div>
+                  <input class="form-check-input" type="radio" name="payment_method" id="olyCard" value="card">
+                  <label class="form-check-label fw-bold ms-2 small text-dark" for="olyCard">
+                    💳 Credit / Debit Card
+                  </label>
+                </div>
+              </div>
+              <div class="form-check p-3 mb-3 border bg-white d-flex align-items-center justify-content-between" style="border-radius: 12px;">
+                <div>
+                  <input class="form-check-input" type="radio" name="payment_method" id="olyNb" value="netbanking">
+                  <label class="form-check-label fw-bold ms-2 small text-dark" for="olyNb">
+                    🏛️ Net Banking / Institutional Transfer
+                  </label>
+                </div>
+              </div>
+              <button type="button" class="btn-enroll-primary w-100 py-3" onclick="handleRazorpayCheckout(this, event)">
+                Pay ₹{{ exam.fee }} & Complete Registration <i class="fas fa-lock-open ms-2"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Razorpay SDK -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    async function handleRazorpayCheckout(btn, event) {
+        event.preventDefault();
+        
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Processing...';
+        btn.disabled = true;
+
+        const feeAmount = parseFloat("{{ exam.fee }}");
+        
+        // Get CSRF token from the form input
+        let csrfToken = '';
+        const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfInput) {
+            csrfToken = csrfInput.value;
+        }
+
+        try {
+            // 1. Create order
+            const orderRes = await fetch('/payments/api/payment/create-order/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                body: JSON.stringify({ amount: feeAmount }),
+            });
+            const orderData = await orderRes.json();
+            
+            if (orderData.status !== 'success') {
+                throw new Error(orderData.message || 'Failed to create order. Check console.');
+            }
+
+            // 2. Open Razorpay
+            const options = {
+                key: "{{ razorpay_key_id }}",
+                amount: orderData.amount,
+                currency: orderData.currency || 'INR',
+                name: 'EduAiQ Olympiad',
+                description: 'Entrance Exam: {{ exam.name }}',
+                order_id: orderData.order_id,
+                customer_id: orderData.customer_id || undefined,
+                prefill: {
+                    name: "{{ request.user.get_full_name|default:request.user.username|escapejs }}",
+                    email: "{{ request.user.email|escapejs }}",
+                    contact: "{{ request.user.phone|default:''|escapejs }}"
+                },
+                theme: { color: '#fd7e14' },
+                handler: function(response) {
+                    // On success, set the txn ID and submit form
+                    document.getElementById('olyTxnId').value = response.razorpay_payment_id;
+                    document.getElementById('olyPayForm').submit();
+                },
+                modal: {
+                    ondismiss: function() {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }
+                }
+            };
+            
+            const rzp = new Razorpay(options);
+            rzp.on('payment.failed', function(response) {
+                alert('Payment failed: ' + (response.error.description || 'Unknown error.'));
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+            
+            // Close the Bootstrap modal before opening Razorpay to prevent overlay conflict
+            const closeBtn = document.querySelector('#olympiadPaymentModal .btn-close');
+            if (closeBtn) closeBtn.click();
+            
+            setTimeout(() => {
+                rzp.open();
+            }, 300);
+
+        } catch (err) {
+            console.error('Razorpay Error:', err);
+            alert(err.message || 'Something went wrong. Please try again.');
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+</script>
+{% endblock %}

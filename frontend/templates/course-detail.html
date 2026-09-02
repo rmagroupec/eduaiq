@@ -1511,7 +1511,12 @@
     .then(data => {
         closePaymentModal();
         if (data.status === 'success') {
-            openRazorpayModal(currentCourseDetails, data);
+            const prefill = {
+                name: "{{ user.get_full_name }}",
+                email: "{{ user.email }}",
+                contact: "{{ user.phone }}",
+            };
+            executeRazorpayCheckout(currentCourseDetails, data, '', prefill);
         } else {
             alert('Failed to initialize payment: ' + (data.message || 'Unknown error'));
         }
@@ -1729,6 +1734,7 @@
           name: 'EduAiQ',
           description: 'Course Access: ' + course.title,
           order_id: orderData.order_id,
+          customer_id: orderData.customer_id || undefined,
           prefill: {
               name: prefill.name,
               email: prefill.email,
