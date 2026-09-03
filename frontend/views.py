@@ -1721,6 +1721,7 @@ def olympiad_entrance_detail(request, pk):
         'assigned_quizzes': assigned_quizzes,
         'direct_questions_count': direct_questions_count,
         'total_questions': total_questions,
+        'razorpay_key_id': settings.RAZORPAY_KEY_ID,
     })
 
 
