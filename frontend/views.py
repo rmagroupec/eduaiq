@@ -1422,6 +1422,8 @@ def single_page(request, slug):
     """Single page (generic)"""
     if slug == 'support':
         return render(request, "support.html")
+    elif slug == 'apply-for-franchise':
+        return render(request, "apply-for-franchise.html")
     return render(request, "single-page.html")
 
 

@@ -121,15 +121,15 @@
             </div>
             <div class="col-md-3">
               <label class="text-sm fw-semibold text-primary-light mb-8" for="class_grade">Class / Grade / Target Exam</label>
-              <input type="text" class="form-control radius-8" id="class_grade" name="class_grade" placeholder="e.g. Class 10, NEET 2027, JEE Main" value="Class 10">
+              <input type="text" class="form-control radius-8" id="class_grade" name="class_grade" placeholder="e.g. Class 10, NEET 2027, JEE Main">
             </div>
-            <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="section">Section</label>
-              <input type="text" class="form-control radius-8" id="section" name="section" placeholder="e.g. A, Morning" value="A">
+            <div class="col-sm-6">
+              <label for="section" class="form-label fw-semibold text-primary-light text-sm mb-8">Section / Batch <span class="text-danger">*</span></label>
+              <input type="text" class="form-control radius-8" id="section" name="section" placeholder="e.g. A, Morning">
             </div>
-            <div class="col-md-3">
-              <label class="text-sm fw-semibold text-primary-light mb-8" for="academic_year">Academic Year</label>
-              <input type="text" class="form-control radius-8" id="academic_year" name="academic_year" value="2026-27">
+            <div class="col-sm-6">
+              <label for="academic_year" class="form-label fw-semibold text-primary-light text-sm mb-8">Academic Year <span class="text-danger">*</span></label>
+              <input type="text" class="form-control radius-8" id="academic_year" name="academic_year">
             </div>
             <div class="col-md-3">
               <label class="text-sm fw-semibold text-primary-light mb-8" for="admission_date">Admission Date</label>
@@ -398,8 +398,8 @@
       formData.append('last_name', document.getElementById('last_name').value.trim());
       formData.append('admission_no', admission_no);
       formData.append('roll_number', document.getElementById('roll_number') ? document.getElementById('roll_number').value.trim() : '');
-      formData.append('class_grade', document.getElementById('class_grade').value.trim());
-      formData.append('section', document.getElementById('section').value.trim());
+      formData.append('class_grade', document.getElementById('class_grade') ? document.getElementById('class_grade').value.trim() : '');
+      formData.append('section', document.getElementById('section') ? document.getElementById('section').value.trim() : '');
       formData.append('academic_year', document.getElementById('academic_year') ? document.getElementById('academic_year').value.trim() : '2026-27');
       formData.append('admission_date', document.getElementById('admission_date') ? document.getElementById('admission_date').value : '');
       formData.append('status', document.getElementById('status') ? document.getElementById('status').value : 'active');

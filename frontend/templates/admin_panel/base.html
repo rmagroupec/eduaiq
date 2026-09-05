@@ -1613,6 +1613,29 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      window.showToast = function(message, type = 'success') {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        });
+        Toast.fire({
+          icon: type === 'danger' || type === 'error' ? 'error' : type,
+          title: message
+        });
+      };
+      // Polyfill for direct calls
+      function showToast(message, type = 'success') {
+        window.showToast(message, type);
+      }
+    </script>
     {% block js %}{% endblock %}
 
     {% if messages %}

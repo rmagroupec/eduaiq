@@ -1,0 +1,2381 @@
+[
+{
+  "model": "sessions.session",
+  "pk": "0ve66bh2dqdrs44h1poad18m29bid4cb",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAUBO_iGlk4ln-U9JzBWvs94wBypDipIu4OkVJAuzOzm4hYlxrXznMcSVyEEqffLSE_ue2AHmj3SeapLfOY5K7Ig3Z5m4hf18P9O6jo9VtrnwA7FLiBrSZ4g1wUWZfYkiN3DoY9PIOMNWAdgkIpXsP5pNho8f4AC-E41Q:1wx1cb:phdYm-VwaxK8kZH3VyXQyxAOk2NLb4U81fE3TRb2wuk",
+    "expire_date": "2026-09-03T12:11:49.216Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "10pc9fflzdfd986ag2wa3m5hdnf3732w",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAUBO_iGlk4ln-U9JzBWvs94wBypDipIu4OkVJAuzOzm4hYlxrXznMcSVyEEqffLSE_ue2AHmj3SeapLfOY5K7Ig3Z5m4hf18P9O6jo9VtrnwA7FLiBrSZ4g1wUWZfYkiN3DoY9PIOMNWAdgkIpXsP5pNho8f4AC-E41Q:1wwzng:P9PlJiz6eEpeQ5fRFAYQjQU0Fze0Wg9Heg5GLZplO_Y",
+    "expire_date": "2026-09-03T10:15:08.066Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "1bv3zvbxht4kelopl2581m9eu5en78fk",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hAoFBmX7j0DgRlGqgaS0q6Md7dNutDte-__twhxXUpYe57DROIiBitOvzBFfOa6G3rEem8SW13mKck9kYft8tYov65H-3dQYi_bGjEqHp22yTAYHr3eCKqztxqAwHnOSqfsaPCIidkbzd5ZSJA1EJL4fAEetDji:1wxku0:m1u9R_m-lT3Ti1atKaO4yFNtzMFWMI8z0GSjtB8ZkxE",
+    "expire_date": "2026-09-05T12:32:48.714Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "1eyxjmkfbhr36y38oclbsmi752udevyt",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAUBO_iGlk4ln-U9JzBWvs94wBypDipIu4OkVJAuzOzm4hYlxrXznMcSVyEEqffLSE_ue2AHmj3SeapLfOY5K7Ig3Z5m4hf18P9O6jo9VtrnwA7FLiBrSZ4g1wUWZfYkiN3DoY9PIOMNWAdgkIpXsP5pNho8f4AC-E41Q:1wwZor:onJWMvblFdrmLaCJoYQ8Ec6fYoHOUnbi15ONKLcBl-g",
+    "expire_date": "2026-09-02T06:30:37.255Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "2hchny5l0nz6r76nk5mgwuhw13ck8tmj",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSE8B-rSvd9AmAGkaiAp7cr479qkC93ec859sRC3tYZt5CXMiZ0ZsNPvhpEeue0g3WO7dU69rcuMfFf4QQe_9pSfl8P9O6hx1G_tUfjoispKARoAkhM6qUiQkj4TFOEnIrQOjNWyaCOLVUVbb0BTcpq9P9JZNxo:1wx02s:OXVS5526MBHTQtyW5Zh4NbfXZQQJNaPugVUMR_6B1bU",
+    "expire_date": "2026-09-03T10:30:50.123Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "312ncfbua2h12zntbvxxbg3xse74ep8g",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pBSpkNx6d4zkIEZpGpoUtqV8e7apAvd_vfef6lA21rC1mQJE6uzMladfsdI6SF1J3ynept1muu6TFHvij5o09eZ5Xk53L-DQq18a2QEFrEpmoTGmYGdZetp9Im6sUNxfebcozEAnIGBiZAQICc_ZJfV-wMV1Tif:1wx0FV:9JN0WGPVJ4bEQCTfRaUPaOIO2avwBn9iOFHKsaJjiGI",
+    "expire_date": "2026-09-03T10:43:53.953Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "3hkwrnbwclnr01ne6jmordzt09uw7xxt",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnY3vhDSZ8zWLveDQ6gRIqTCnF3iJQC2jcz76UybmvNW5Mlj6wuyqvT70ZYHjLtgO843WZd5mldRtK7og_adD-zPK-H-3dQsdVv3aG4CGhMCeCskzh4wy5ABC5pEGOF7AAhxgjUERnvE9vU0bkwkAdW7w_X0Dez:1wwvYP:LVE005IDyIgejNRuWhhtnuv0DuP1z8OgLYW3h-2HZO4",
+    "expire_date": "2026-09-03T05:43:05.365Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "3ud1ht9kiegy59euusalx3ed3tj8jsi1",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSE8pjxcuvcbCAyDVA0kpV0Z_12bdKHbe865LxbittawDVrCnNmZaWCn3zFFfFDbSb7Hdusce1uXOfFd4Qcd_NozPS-H-3dQ46jf2qBAZYXVylAhCc6DRFm81wqnMgmMyZMloUwB56RNDqTPtjgbTVIS2PsD8JY3Ww:1x0aS2:OQ6xBYpF-lWlHFW1BR00QvoorbisQRkDJtobJhg7exE",
+    "expire_date": "2026-09-13T07:59:38.542Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "4wq1c2ullp7zrqi3xrdpr5eerfu0f03p",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSHMgAy4dN9vIMMAtmrapI-V8d-1SRe6veec-1KJt7VP21LnNBR1UaBOv1tmedRxB-XO423SMo3rPGS9K_qgi-6mUp_Xw_076Hnpv7UwBrQ1N5MbATpA23wMwUB1KAWoeWiRyAtH7wjPZA1AEctRiNGo9wfO-jcL:1x1fkS:LvZTSWKpeRx4sElh6_huO8wEjkozknQs6VxzO7SaUZo",
+    "expire_date": "2026-09-16T07:51:08.833Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "5qke7k0im992am7n1zd4o5ruy9uz1ctd",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hAoOBSX7nsGMjCDVA0kpV0Z765NutDtf-_9lwi4rSVsnZcwk7gIY8Tpd4yYHlx3QnestyZTq-syR7kr8qBdTo34eT3cv4OCvXxr9o4V5-gBBlAJnNPKZDiPCnAAa6K3lm3SWcdsCbNnpISeHGp0Ko7i_QEAzDht:1x1E33:7UREMWyJWiRNhJ9j8d3tdnCqPhcWReM1Z_eFy297y54",
+    "expire_date": "2026-09-15T02:16:29.270Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "623lj08vzok417zsta7lnboemzvghpdh",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pBSpkNx6d4zkIEZpGpoUtqV8e7apAvd_vfef6lA21rC1mQJE6uzMladfsdI6SF1J3ynept1muu6TFHvij5o09eZ5Xk53L-DQq18a2QEFrEpmoTGmYGdZetp9Im6sUNxfebcozEAnIGBiZAQICc_ZJfV-wMV1Tif:1wwzYf:sT-lo9gvF66joRHZKoZyM3XE9g25EW05JE_9_BaFIlk",
+    "expire_date": "2026-09-03T09:59:37.757Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "6kpys69vl09tv3jdzk2puc52f3dbulev",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pBSpkNx6d4zkIEZpGpoUtqV8e7apAvd_vfef6lA21rC1mQJE6uzMladfsdI6SF1J3ynept1muu6TFHvij5o09eZ5Xk53L-DQq18a2QEFrEpmoTGmYGdZetp9Im6sUNxfebcozEAnIGBiZAQICc_ZJfV-wMV1Tif:1wx08m:tep0W9QfCx2HwGkwB6Y2GzGvQ2TMEUJZJ1umnEDHOJc",
+    "expire_date": "2026-09-03T10:36:56.954Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "71gt3vuft8y22f2jwra6bfaazc7jdoc3",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pBSpkNx6d4zkIEZpGpoUtqV8e7apAvd_vfef6lA21rC1mQJE6uzMladfsdI6SF1J3ynept1muu6TFHvij5o09eZ5Xk53L-DQq18a2QEFrEpmoTGmYGdZetp9Im6sUNxfebcozEAnIGBiZAQICc_ZJfV-wMV1Tif:1wwzoM:WJ33hiM4gpuGcaCQNgTu0uggk-DBQexxiTT2e_r_CX8",
+    "expire_date": "2026-09-03T10:15:50.467Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "7mfaqs0pcgj6ot2ltveg5wzsy1n6cq2o",
+  "fields": {
+    "session_data": ".eJxVjMEOgjAQRP-lZ9OwW0qrR-98A9ndroKaNqFwMv67kHDQ48x7M28z0LqMw1p1HqZkLsY15vRbMslT807Sg_K9WCl5mSe2u2IPWm1fkr6uh_t3MFIdt7WgRMDEHM9dxJAYbgidKIDz3jVBIZHzvOUWQTQET-Cx6VqnLIHQfL742TeB:1wz3na:TIqeN9Ei1Qfq_xdesV7TPvhTVNz1Lli4COgjkz-tfqU",
+    "expire_date": "2026-09-09T02:55:34.011Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "7y8xiqjr9jrb3c6cl7m7cn0mvlcxu4v6",
+  "fields": {
+    "session_data": ".eJxVjL0OwyAQg9-FuUIcObikY_c8AyIclLQVSPmZqr57iZShXSzLn-23cH7fstvXuLiZxVWAuPxmkw_PWA7AD1_uVYZatmWe5FGRJ13lWDm-bmf37yD7Nbf1YAC4C4CJFDXHTIRIijF6rSEp0sqaEDFy19GQhtDbHppoRGPAis8XvP82ig:1wmTPJ:jJYbhE2_joaEJHPucgykxGzVsPCelPKZqbwcdzfHpPg",
+    "expire_date": "2026-08-05T09:38:29.699Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "86gwhjc1si70yyyushzfndn2mz1vs379",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRe_StWlmCrXFpXvO0Mx0poIaSCisjHdXEha6_e-9_zKJtnVIW9UljWIuxjXm9Dsy5YdOO5E7TbfZ5nlal5HtrtiDVtvPos_r4f4dDFSHb00gGRVyEwkCInSoLRb1obBwcOQKtOCky-A9SUQpCuhZvOvOhSOa9wcQMzhC:1wxjJc:9r6TXQYkBYoeOEu2rgjJH99iIs_vLC4O_OVG88K2xuM",
+    "expire_date": "2026-09-05T10:51:08.576Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "89rb9a0u11kdo627mceee90c89j1u255",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pBSpkNx6d4zkIEZpGpoUtqV8e7apAvd_vfef6lA21rC1mQJE6uzMladfsdI6SF1J3ynept1muu6TFHvij5o09eZ5Xk53L-DQq18a2QEFrEpmoTGmYGdZetp9Im6sUNxfebcozEAnIGBiZAQICc_ZJfV-wMV1Tif:1wx0Az:-vtvy3TXPerGZjpUQotu9ckZ-P36XIwaQDr2lriMBU4",
+    "expire_date": "2026-09-03T10:39:13.806Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "9jv4ttmt3r3i6x9nelnmihrdudfa8m84",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQRO_iGllhg3-U9DmDtd61cQA5UpxUiLtjSymgG817M2_hcd-y32tc_cziKgDE6bcMSM9YOuEHlvsiaSnbOgfZFXnQKqeF4-t2uH8HGWvua-scozYqBEhjcAgtjsAO0mUgikpZJtusM5NmozSraFgPwKkpFsXnCxzHOLg:1x1gMp:AU7-pUlZZ57jTCTT7vclWEjkDVHoAYtt0A1hJ8_mBH0",
+    "expire_date": "2026-09-16T08:30:47.993Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "aau3jbf95dnogiaydazycl06nr8zy6pb",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSHMgAy4dN9vIMMAtmrapI-V8d-1SRe6veec-1KJt7VP21LnNBR1UaBOv1tmedRxB-XO423SMo3rPGS9K_qgi-6mUp_Xw_076Hnpv7UwBrQ1N5MbATpA23wMwUB1KAWoeWiRyAtH7wjPZA1AEctRiNGo9wfO-jcL:1wyoHS:9HeZYcW-kZRNg9k3ZKJ2aAaJBC0Lt82JQ0go2PhawbU",
+    "expire_date": "2026-09-08T10:21:22.531Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "am89qj8o2xe798vygl9ulkxx1xr9ml5h",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hCgDFaX7nsGMsOMUjWQlHZlvLuSdKHb_977LxVxW3PcmixxZnVWLqjD70iYHlI64TuWW9WplnWZSXdF77TpqbI8L7v7d5Cx5V6TDQ5GJOuIGK0IJZvA-2FktoBDMsF5AsPMV5P4yDDYAHLCbycM6v0BK-w40Q:1wy9G5:ZKCsvQsMkRrKe9aA-WPLUhynzpJAHEikgLAW7AtEHzs",
+    "expire_date": "2026-09-06T14:33:13.111Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "bei3jv7ioyudugqtjv717xgcd4voav66",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnY3vhDSZ8zWLveDQ6gRIqTCnF3iJQC2jcz76UybmvNW5Mlj6wuyqvT70ZYHjLtgO843WZd5mldRtK7og_adD-zPK-H-3dQsdVv3aG4CGhMCeCskzh4wy5ABC5pEGOF7AAhxgjUERnvE9vU0bkwkAdW7w_X0Dez:1wwZhQ:NRr8vGG_6dDFFUQI2td0ShZnZy5AyjhfR48IXNSybTk",
+    "expire_date": "2026-09-02T06:22:56.868Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "bn1761yotafxggztwnqf70iobj8i2iby",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAUBO_iGlk4ln-U9JzBWvs94wBypDipIu4OkVJAuzOzm4hYlxrXznMcSVyEEqffLSE_ue2AHmj3SeapLfOY5K7Ig3Z5m4hf18P9O6jo9VtrnwA7FLiBrSZ4g1wUWZfYkiN3DoY9PIOMNWAdgkIpXsP5pNho8f4AC-E41Q:1wx1cT:DU-ipE0bP6NRihNNHbk2koM0ly8GuaTsyPVqpCqEH1M",
+    "expire_date": "2026-09-03T12:11:41.801Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ceid3kyzc2ddzrv5osub6imtchksblsr",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAUBO_iGlk4ln-U9JzBWvs94wBypDipIu4OkVJAuzOzm4hYlxrXznMcSVyEEqffLSE_ue2AHmj3SeapLfOY5K7Ig3Z5m4hf18P9O6jo9VtrnwA7FLiBrSZ4g1wUWZfYkiN3DoY9PIOMNWAdgkIpXsP5pNho8f4AC-E41Q:1wx1cZ:ZcqMMA3mxLwR9DOz3p7OPp4OZNA-f4gQ9UmIdPcs06Q",
+    "expire_date": "2026-09-03T12:11:47.906Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "dar0v7dunhf09sgrqi2dk18jegjve5m1",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hAoOBSX7nsGMjCDVA0kpV0Z765NutDtf-_9lwi4rSVsnZcwk7gIY8Tpd4yYHlx3QnestyZTq-syR7kr8qBdTo34eT3cv4OCvXxr9o4V5-gBBlAJnNPKZDiPCnAAa6K3lm3SWcdsCbNnpISeHGp0Ko7i_QEAzDht:1x0X8e:M9zhwM8yxJcfcH-fM6j4bPuyoueaD4NpehCOEl3LKVo",
+    "expire_date": "2026-09-13T04:27:24.827Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "e37hnbaiyrdcgeza5rabtlq4yamqbfrk",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGln-4g0lPWewdu01DiBHipMKcXcSKQW0M_PeW0RclxrXznMcs7gIq8XpFxKmJ7fd5Ae2-yTT1JZ5JLkn8rBd3qbMr-vR_h1U7HVbB1KowJ29z1xMcNpZhazJDRq8NVC8TVAYcKOJkrVBF2KNAQYXIBnx-QL00DfT:1x0Wqu:P01zdhc1p5KCJ7PMnhcphLZISyJ0eu1XqhiuFrS-qm0",
+    "expire_date": "2026-09-13T04:09:04.687Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "eodpqkcs9pw2262s2d376tjsdwulz4pv",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hAoOBSX7nsGMjCDVA0kpV0Z765NutDtf-_9lwi4rSVsnZcwk7gIY8Tpd4yYHlx3QnestyZTq-syR7kr8qBdTo34eT3cv4OCvXxr9o4V5-gBBlAJnNPKZDiPCnAAa6K3lm3SWcdsCbNnpISeHGp0Ko7i_QEAzDht:1x0js3:1mpOyZzPhWZPLk1DMsXhJajAYMRzlyHHhmC4_x1Zy2Q",
+    "expire_date": "2026-09-13T18:03:07.262Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "etp66dqj4ubf3kju9uk6y6nn1mse2g3y",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnY3vhDSZ8zWLveDQ6gRIqTCnF3iJQC2jcz76UybmvNW5Mlj6wuyqvT70ZYHjLtgO843WZd5mldRtK7og_adD-zPK-H-3dQsdVv3aG4CGhMCeCskzh4wy5ABC5pEGOF7AAhxgjUERnvE9vU0bkwkAdW7w_X0Dez:1wwvYP:LVE005IDyIgejNRuWhhtnuv0DuP1z8OgLYW3h-2HZO4",
+    "expire_date": "2026-09-03T05:43:05.169Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "f8csu4w6qgp5yxxzqi7u35rs6ub6rflk",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAUBO_iGlk4ln-U9JzBWvs94wBypDipIu4OkVJAuzOzm4hYlxrXznMcSVyEEqffLSE_ue2AHmj3SeapLfOY5K7Ig3Z5m4hf18P9O6jo9VtrnwA7FLiBrSZ4g1wUWZfYkiN3DoY9PIOMNWAdgkIpXsP5pNho8f4AC-E41Q:1wwzfU:gsOOjU41uWLUI0nauqAleRgPPospeNW4UfH2NohrRsY",
+    "expire_date": "2026-09-03T10:06:40.481Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "feqgyd4clmsdjefudsfgmumcbc6c4the",
+  "fields": {
+    "session_data": ".eJxVjMEOwiAQBf-FsyHAAgWP3v0GsiwgVQNJaU_Gf9cmPej1zcx7sYDbWsM28hLmxM4MFDv9jhHpkdtO0h3brXPqbV3myHeFH3Twa0_5eTncv4OKo35rMn5CAwUFCSoAUllhZZSC0EfpvAKvnCHnMKeio0o6aSWthklGsNqw9wf11jcz:1x1cUT:ngaYCSz32PK9D_Csr-v3q_9_bU1iAx3Q90afpGDY3tg",
+    "expire_date": "2026-09-16T04:22:25.531Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "getwj5gohc53j1gw24c0eun00dv2v7ib",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAUBO_iGlk4ln-U9JzBWvs94wBypDipIu4OkVJAuzOzm4hYlxrXznMcSVyEEqffLSE_ue2AHmj3SeapLfOY5K7Ig3Z5m4hf18P9O6jo9VtrnwA7FLiBrSZ4g1wUWZfYkiN3DoY9PIOMNWAdgkIpXsP5pNho8f4AC-E41Q:1wx1cX:aNEuM8-dHlDQ-xYtsZC59TAfXIANONnoXCJF-hhlgTw",
+    "expire_date": "2026-09-03T12:11:45.415Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "gkg2xwio2co94f7kh07190cswvzqip37",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSHMgAy4dN9vIMMAtmrapI-V8d-1SRe6veec-1KJt7VP21LnNBR1UaBOv1tmedRxB-XO423SMo3rPGS9K_qgi-6mUp_Xw_076Hnpv7UwBrQ1N5MbATpA23wMwUB1KAWoeWiRyAtH7wjPZA1AEctRiNGo9wfO-jcL:1x1fov:Fx1Z3QsWgHEPV4OEh9VpKG-qk6pVamv8-XK2ZOOOGko",
+    "expire_date": "2026-09-16T07:55:45.876Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "gzxo7nchg4vq69xnl9nv718n4jjx0oj9",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pBSpkNx6d4zkIEZpGpoUtqV8e7apAvd_vfef6lA21rC1mQJE6uzMladfsdI6SF1J3ynept1muu6TFHvij5o09eZ5Xk53L-DQq18a2QEFrEpmoTGmYGdZetp9Im6sUNxfebcozEAnIGBiZAQICc_ZJfV-wMV1Tif:1wwzxZ:Cw7joFno41vyntWOWGz_O8odwczUhzLbkM3SSk77xqw",
+    "expire_date": "2026-09-03T10:25:21.260Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "hn3tkx74ky765tie26z2o65n41qe3tbd",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAUBO_iGlk4ln-U9JzBWvs94wBypDipIu4OkVJAuzOzm4hYlxrXznMcSVyEEqffLSE_ue2AHmj3SeapLfOY5K7Ig3Z5m4hf18P9O6jo9VtrnwA7FLiBrSZ4g1wUWZfYkiN3DoY9PIOMNWAdgkIpXsP5pNho8f4AC-E41Q:1wwznW:TEJMOrzn8ztxHjSw_d2FEm2s6S3JgLgC1afRWGYiyqM",
+    "expire_date": "2026-09-03T10:14:58.610Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "jxuwebm06mc7ki33in9g95e4jz08tqxi",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAUBO_iGlk4ln-U9JzBWvs94wBypDipIu4OkVJAuzOzm4hYlxrXznMcSVyEEqffLSE_ue2AHmj3SeapLfOY5K7Ig3Z5m4hf18P9O6jo9VtrnwA7FLiBrSZ4g1wUWZfYkiN3DoY9PIOMNWAdgkIpXsP5pNho8f4AC-E41Q:1wwzo7:v43OcFyZdWNftEt67TmKFBINLpCAVPFobwLI2Gecu9w",
+    "expire_date": "2026-09-03T10:15:35.086Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "my5qkqp83kgh9punoij2n1f7qwkhyplb",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hAoOBSX7nsGMjCDVA0kpV0Z765NutDtf-_9lwi4rSVsnZcwk7gIY8Tpd4yYHlx3QnestyZTq-syR7kr8qBdTo34eT3cv4OCvXxr9o4V5-gBBlAJnNPKZDiPCnAAa6K3lm3SWcdsCbNnpISeHGp0Ko7i_QEAzDht:1x0X8I:ynGuySkN0vGU1eyWPo7f9uwCxlJP9M8eRYeKeao6Ojw",
+    "expire_date": "2026-09-13T04:27:02.635Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "n86rq34v8imjn7euk6btwjdefr0br6hf",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQRO_iGllhg3-U9DmDtd61cQA5UpxUiLtjSymgG817M2_hcd-y32tc_cziKgDE6bcMSM9YOuEHlvsiaSnbOgfZFXnQKqeF4-t2uH8HGWvua-scozYqBEhjcAgtjsAO0mUgikpZJtusM5NmozSraFgPwKkpFsXnCxzHOLg:1wzF4h:v0-NyvEQ3fXA9hzWaOeuEcwlAn6zarCVy_F8qeYLK90",
+    "expire_date": "2026-09-09T14:57:59.153Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "nuudv0vmhrtjgvdrhld86pxezamypnam",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hCgDFaX7nsGMsOMUjWQlHZlvLuSdKHb_977LxVxW3PcmixxZnVWLqjD70iYHlI64TuWW9WplnWZSXdF77TpqbI8L7v7d5Cx5V6TDQ5GJOuIGK0IJZvA-2FktoBDMsF5AsPMV5P4yDDYAHLCbycM6v0BK-w40Q:1wzSBn:rLCIwE_ijB2INpyXKKkqEa8zJap9Pgsj_h50vCcaHQ4",
+    "expire_date": "2026-09-10T04:58:11.210Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "o2mln7qgu0e635slaqc24gdk7quyq3n6",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlm2179Q0nMGa71e4wBKpDipEHeHSCmgfTPzXiLhtra0dV7SWMRZBHH63TLSg6cdlDtOt1nSPK3LmOWuyIN2eZ0LPy-H-3fQsLdvzUOGAaFApMC5AjljIGoPsTKp6JmNRqdVJTDgjK4-WKqaB5WdZYvi_QHqGzfS:1wwa6W:b2AXyMmR0u38pBVi1DrE_EGbWak1fn3GIaFKFhGWX0Q",
+    "expire_date": "2026-09-02T06:48:52.197Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "p2gjxe2c21kr5cfoydi3m6djs6wra6ob",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGln2Ov5R0ucM1tq74ACKpXwqxN3BUgp45ZvRvETCfatpX3lJE4mzACtOv2fG8uC5E7rjfGuytHlbpiy7Ig-6yrERPy-H-xeouNbe9fSdRhuCYiw-orYMBMWgdmyNc-B9hMxWAekAOQMjRTVcFXhDg3h_ABJiN_Y:1wxkvl:oxaaKPLCKdCG4IGDwpsCJRQUXVIYjq2YInF4CT5UoxQ",
+    "expire_date": "2026-09-05T12:34:37.693Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "q6u6gcvzwpdzwudz0ncm267myvk1z8m0",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pBSpkNx6d4zkIEZpGpoUtqV8e7apAvd_vfef6lA21rC1mQJE6uzMladfsdI6SF1J3ynept1muu6TFHvij5o09eZ5Xk53L-DQq18a2QEFrEpmoTGmYGdZetp9Im6sUNxfebcozEAnIGBiZAQICc_ZJfV-wMV1Tif:1wwzYo:-u4xk1njEG0wemhNVQMgU575WvaslENkjX2HHUqAUYw",
+    "expire_date": "2026-09-03T09:59:46.420Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "q8a7bh6kqrbvdb0wbc31yvmcp9rkwgnl",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pBSpkNx6d4zkIEZpGpoUtqV8e7apAvd_vfef6lA21rC1mQJE6uzMladfsdI6SF1J3ynept1muu6TFHvij5o09eZ5Xk53L-DQq18a2QEFrEpmoTGmYGdZetp9Im6sUNxfebcozEAnIGBiZAQICc_ZJfV-wMV1Tif:1wwzoE:w2V9E-LBVXOKDbalqVs84RdlO-bp4T7x2eRZJNeS144",
+    "expire_date": "2026-09-03T10:15:42.852Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "qdb83yxuwe5kwom8ltl7mlzya89qr45v",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAUBO_iGlk4ln-U9JzBWvs94wBypDipIu4OkVJAuzOzm4hYlxrXznMcSVyEEqffLSE_ue2AHmj3SeapLfOY5K7Ig3Z5m4hf18P9O6jo9VtrnwA7FLiBrSZ4g1wUWZfYkiN3DoY9PIOMNWAdgkIpXsP5pNho8f4AC-E41Q:1wwznx:kcTWYLXzVy-Ly4UXqnhxjHENR8jbkPgHtTaD0aJq1Sk",
+    "expire_date": "2026-09-03T10:15:25.097Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "qyy5yu86aw09y49tvsho620yajhg58ai",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAUBO_iGlk4ln-U9JzBWvs94wBypDipIu4OkVJAuzOzm4hYlxrXznMcSVyEEqffLSE_ue2AHmj3SeapLfOY5K7Ig3Z5m4hf18P9O6jo9VtrnwA7FLiBrSZ4g1wUWZfYkiN3DoY9PIOMNWAdgkIpXsP5pNho8f4AC-E41Q:1wwzer:qovQomn2sIS4j5rvjtYj9papYzVDayVnmPG83BT5C30",
+    "expire_date": "2026-09-03T10:06:01.938Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "snt26ddlxkk5mkiecf9udbrmzt29802c",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pBSpkNx6d4zkIEZpGpoUtqV8e7apAvd_vfef6lA21rC1mQJE6uzMladfsdI6SF1J3ynept1muu6TFHvij5o09eZ5Xk53L-DQq18a2QEFrEpmoTGmYGdZetp9Im6sUNxfebcozEAnIGBiZAQICc_ZJfV-wMV1Tif:1wx0Cm:wtuaKK5RHe4iUXrVTehFck9mtaLwNjok3DpZumkvrZ4",
+    "expire_date": "2026-09-03T10:41:04.423Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "sp271xhmrnpwa85gjg73il9shmcrgzkw",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSHMgAy4dN9vIMMAtmrapI-V8d-1SRe6veec-1KJt7VP21LnNBR1UaBOv1tmedRxB-XO423SMo3rPGS9K_qgi-6mUp_Xw_076Hnpv7UwBrQ1N5MbATpA23wMwUB1KAWoeWiRyAtH7wjPZA1AEctRiNGo9wfO-jcL:1wyoJ9:O-Eq5pCgLo7Oj50WMC4YwAxnb6H4xjIhF2607H_H3Zw",
+    "expire_date": "2026-09-08T10:23:07.753Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "vmjkriwvrhexzoetqx6ch4ch7opq3bef",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAUBO_iGlk4ln-U9JzBWvs94wBypDipIu4OkVJAuzOzm4hYlxrXznMcSVyEEqffLSE_ue2AHmj3SeapLfOY5K7Ig3Z5m4hf18P9O6jo9VtrnwA7FLiBrSZ4g1wUWZfYkiN3DoY9PIOMNWAdgkIpXsP5pNho8f4AC-E41Q:1wu1pK:E71zJRWakGQpYOwde0qKZdiQ2e-09ML6k0ruaRhs3HM",
+    "expire_date": "2026-08-26T05:48:34.881Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "vnouja7m61lccvbwcdprxxzeatbywx5i",
+  "fields": {
+    "session_data": ".eJxVjEEOgjAQRe_StWkK05bBpXvP0MxMp4IaSCisjHdXEha6_e-9_zKJtnVIW9UljdmcDfTm9DsyyUOnneQ7TbfZyjyty8h2V-xBq73OWZ-Xw_07GKgO31odZgxBOHeMTew1NiCl9QIgXXSOXWAqJfYskFsPAm1BRE9EiOqDeX8AE2E4QQ:1x1gHl:nEmSA_3eC4MBXe2b20gGwALL_7eAM9CTv8ZrZtdgU_I",
+    "expire_date": "2026-09-16T08:25:33.330Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "wtlmhe4oxuapy3rejdvg6wz4dnw71qsw",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pBSpkNx6d4zkIEZpGpoUtqV8e7apAvd_vfef6lA21rC1mQJE6uzMladfsdI6SF1J3ynept1muu6TFHvij5o09eZ5Xk53L-DQq18a2QEFrEpmoTGmYGdZetp9Im6sUNxfebcozEAnIGBiZAQICc_ZJfV-wMV1Tif:1wx06p:KD7qF6JQAQu2-dbNUeYhYb3zo0ENtpMp3Kpcg0DiCGQ",
+    "expire_date": "2026-09-03T10:34:55.404Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "xz2kg0edoriiz3mngw5tp5an0uovbmzu",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAUBO_iGlk4ln-U9JzBWvs94wBypDipIu4OkVJAuzOzm4hYlxrXznMcSVyEEqffLSE_ue2AHmj3SeapLfOY5K7Ig3Z5m4hf18P9O6jo9VtrnwA7FLiBrSZ4g1wUWZfYkiN3DoY9PIOMNWAdgkIpXsP5pNho8f4AC-E41Q:1wwzno:y_8D4hfkGWpSKtv0ehXifrNe43oA4-opp3jmr49wQxw",
+    "expire_date": "2026-09-03T10:15:16.942Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "y7n0jrkvoa7wrn3yfvp8i40flnn6q3ke",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSHMgAy4dN9vIMMAtmrapI-V8d-1SRe6veec-1KJt7VP21LnNBR1UaBOv1tmedRxB-XO423SMo3rPGS9K_qgi-6mUp_Xw_076Hnpv7UwBrQ1N5MbATpA23wMwUB1KAWoeWiRyAtH7wjPZA1AEctRiNGo9wfO-jcL:1x13h7:I26IoDADaHv5z9NC4BOrZk61ZlG0kPs-JqYmblLukRg",
+    "expire_date": "2026-09-14T15:13:09.688Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ycmbxvdj3cx11tfze1h430gigqrp90vt",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGln-4g0lPWewdu01DiBHipMKcXcSKQW0M_PeW0RclxrXznMcs7gIq8XpFxKmJ7fd5Ae2-yTT1JZ5JLkn8rBd3qbMr-vR_h1U7HVbB1KowJ29z1xMcNpZhazJDRq8NVC8TVAYcKOJkrVBF2KNAQYXIBnx-QL00DfT:1wzRBm:eIk9ZWYzQHb_IkYmIGv3Ti5YiBORuxACFDuiOCHxx1E",
+    "expire_date": "2026-09-10T03:54:06.731Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ydrbam4i55vnsn8drwq6cvpqv63w7fs8",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pBSpkNx6d4zkIEZpGpoUtqV8e7apAvd_vfef6lA21rC1mQJE6uzMladfsdI6SF1J3ynept1muu6TFHvij5o09eZ5Xk53L-DQq18a2QEFrEpmoTGmYGdZetp9Im6sUNxfebcozEAnIGBiZAQICc_ZJfV-wMV1Tif:1wx0N0:PHliq4nibuHXoOI-vPAVEALTiVWZWMwsu_a0Gl1xUJM",
+    "expire_date": "2026-09-03T10:51:38.328Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ywspuiiouxctdli6gs2yfg6y8m5k0akc",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAUBO_iGlk4ln-U9JzBWvs94wBypDipIu4OkVJAuzOzm4hYlxrXznMcSVyEEqffLSE_ue2AHmj3SeapLfOY5K7Ig3Z5m4hf18P9O6jo9VtrnwA7FLiBrSZ4g1wUWZfYkiN3DoY9PIOMNWAdgkIpXsP5pNho8f4AC-E41Q:1wwzeb:2nZXjvWdBjKI3Y5Aw0UulpiNhwIloIiSgnYVoflmmIg",
+    "expire_date": "2026-09-03T10:05:45.644Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "z19o326fe261a5g56nep1jdkwiafk2qj",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pBSpkNx6d4zkIEZpGpoUtqV8e7apAvd_vfef6lA21rC1mQJE6uzMladfsdI6SF1J3ynept1muu6TFHvij5o09eZ5Xk53L-DQq18a2QEFrEpmoTGmYGdZetp9Im6sUNxfebcozEAnIGBiZAQICc_ZJfV-wMV1Tif:1wwzp0:iz5ecnnAsiMWbsVqMih-6ThVZcCA1g2KGHTFDVbShi0",
+    "expire_date": "2026-09-03T10:16:30.426Z"
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$kAsm8U8qi6786VeI17LsMk$bQ4a8mtV/TZ3ajN4xPgRW5o5Siayma5uHx+M7d19PDE=",
+    "last_login": "2026-09-02T07:55:45.871Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-07-22T09:38:06.728Z",
+    "phone": "",
+    "razorpay_customer_id": null,
+    "profile_image": "profile_images/2026/08/20/504108a6-8cbe-4e6c-a915-36aac817b73a.png",
+    "date_of_birth": null,
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "",
+    "mother_name": "",
+    "role": "",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "",
+    "shift": "",
+    "joining_date": null,
+    "school_name": "",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-07-22T09:38:07.407Z",
+    "updated_at": "2026-08-20T09:08:03.863Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$DISk8fLeEmFRBXmtv5d7N4$PCmw8V5OZaLHom4D0NU+UJpKMoz4Cgi3lZvnoNbWlCs=",
+    "last_login": "2026-08-20T07:41:07.127Z",
+    "is_superuser": false,
+    "username": "neha123",
+    "first_name": "Neha",
+    "last_name": "Sharma",
+    "email": "neha123@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-08-20T07:25:39.236Z",
+    "phone": "6745346753",
+    "razorpay_customer_id": null,
+    "profile_image": "profile_images/2026/08/20/165c3da6-b947-41cd-b262-fa4b22421fd8.png",
+    "date_of_birth": null,
+    "gender": "male",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "Rajesh Sharma",
+    "mother_name": "Sunita Sharma",
+    "role": "crm",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "full_time",
+    "shift": "Day Shift",
+    "joining_date": "2026-07-27",
+    "school_name": "Main Campus",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-08-20T07:25:41.893Z",
+    "updated_at": "2026-08-20T09:46:16.841Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "Tanu",
+    "first_name": "",
+    "last_name": "",
+    "email": "tanu@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-08-20T10:58:11.222Z",
+    "phone": "9998887771",
+    "razorpay_customer_id": null,
+    "profile_image": "",
+    "date_of_birth": null,
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "",
+    "mother_name": "",
+    "role": "employee",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "",
+    "shift": "",
+    "joining_date": null,
+    "school_name": "",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-08-20T10:58:11.222Z",
+    "updated_at": "2026-08-20T10:58:11.222Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$otChpdvjZhNIaSfDmpf9KS$KRnTFAhs5+/FXJ3Ur7sjJS32NU+yaeziv84aUH26G3k=",
+    "last_login": "2026-09-02T06:20:56.883Z",
+    "is_superuser": false,
+    "username": "admin1",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin1234@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-08-22T05:23:34.731Z",
+    "phone": "+919305988767",
+    "razorpay_customer_id": null,
+    "profile_image": "",
+    "date_of_birth": null,
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "",
+    "mother_name": "",
+    "role": "student",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "",
+    "shift": "",
+    "joining_date": null,
+    "school_name": "",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-08-22T05:23:35.665Z",
+    "updated_at": "2026-09-02T06:14:37.370Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$16cPESyQ47n2UO6qizuO60$EGgmzGFnOKWLJ4yOdbio3wKDiVZ66ItjCP57ZNYe4IQ=",
+    "last_login": "2026-09-02T08:30:47.987Z",
+    "is_superuser": false,
+    "username": "piyushrastogi1554",
+    "first_name": "Piyush",
+    "last_name": "Rastogi",
+    "email": "piyushrastogi1554@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-08-22T10:14:43.377Z",
+    "phone": "+917524071554",
+    "razorpay_customer_id": null,
+    "profile_image": "profile_images/2026/08/22/piyyuu_-_Piyush_Rastogi..jpg",
+    "date_of_birth": "2005-05-28",
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "",
+    "mother_name": "",
+    "role": "crm",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "part_time",
+    "shift": "Day Shift",
+    "joining_date": "2026-08-10",
+    "school_name": "",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-08-22T10:14:44.185Z",
+    "updated_at": "2026-08-22T10:25:21.233Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$sG1sQkcorpD4gyMpLZH6lP$+1wwbudb9bnsdlAt8YVIqKBbSdGQPLxfdsECQeyZ6Es=",
+    "last_login": "2026-08-22T11:43:19.187Z",
+    "is_superuser": false,
+    "username": "poonamkatware123",
+    "first_name": "Poonam",
+    "last_name": "Katware",
+    "email": "poonamkatware123@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-08-22T10:29:22.894Z",
+    "phone": "9699294369",
+    "razorpay_customer_id": null,
+    "profile_image": "",
+    "date_of_birth": "1993-01-14",
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "",
+    "mother_name": "",
+    "role": "employee",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "full_time",
+    "shift": "Day Shift",
+    "joining_date": "2026-08-18",
+    "school_name": "WFH",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-08-22T10:29:23.795Z",
+    "updated_at": "2026-08-22T10:29:47.606Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$F4MRl8ETnyNYd6yMydozoA$iMNXPFdVj97p8dt45AkGvn405CB2sBhfngigJyrWKlw=",
+    "last_login": "2026-08-22T12:32:48.708Z",
+    "is_superuser": false,
+    "username": "satyaanu1249",
+    "first_name": "Satya",
+    "last_name": "Vasamsetti",
+    "email": "satyaanu1249@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-08-22T10:34:23.236Z",
+    "phone": "8712063787",
+    "razorpay_customer_id": null,
+    "profile_image": "",
+    "date_of_birth": null,
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "Mr. Vasamsetti Srinivasu",
+    "mother_name": "Mrs. Vasamsetti Durga",
+    "role": "employee",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "full_time",
+    "shift": "morning",
+    "joining_date": "2026-08-10",
+    "school_name": "WFH",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-08-22T10:34:23.934Z",
+    "updated_at": "2026-08-22T10:34:23.934Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$B36EoUtARv0wk1NF2PDiYq$pIpW1wkPPcnY3Act8GiBCmQMi557BY3cEGeAQJFo0bk=",
+    "last_login": "2026-08-27T04:58:11.126Z",
+    "is_superuser": false,
+    "username": "jhaspj123",
+    "first_name": "Abhinav",
+    "last_name": "Kumar Jha",
+    "email": "jhaspj123@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-08-22T10:43:29.857Z",
+    "phone": "6201702572",
+    "razorpay_customer_id": null,
+    "profile_image": "",
+    "date_of_birth": null,
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "Mr. Avdhesh Jha",
+    "mother_name": "Mrs. Rukmini Devi",
+    "role": "employee",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "full_time",
+    "shift": "morning",
+    "joining_date": "2026-08-14",
+    "school_name": "WFH",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-08-22T10:43:30.812Z",
+    "updated_at": "2026-08-22T10:43:30.812Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$25NaQ4UwDD5VHvCYcJdTMf$XWEYenJWLzwlqCbIdGFiRQ3Z1CM88PFWcFkfyRNzqiw=",
+    "last_login": "2026-08-26T02:55:34.004Z",
+    "is_superuser": false,
+    "username": "kartikpandey372",
+    "first_name": "Kartik",
+    "last_name": "Pandey",
+    "email": "kartikpandey372@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-08-22T11:41:03.649Z",
+    "phone": "8052350041",
+    "razorpay_customer_id": null,
+    "profile_image": "",
+    "date_of_birth": null,
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "",
+    "mother_name": "",
+    "role": "sales",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "full_time",
+    "shift": "morning",
+    "joining_date": "2026-01-05",
+    "school_name": "WFH",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-08-22T11:41:04.446Z",
+    "updated_at": "2026-08-22T11:41:04.446Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$S9HGZukOmxoLw7UdCNZJGD$jMNRkMOoGZXWrxwCtKyWmL+nl8uEQMrxdlezY4+Hg9Y=",
+    "last_login": "2026-08-30T04:09:04.681Z",
+    "is_superuser": false,
+    "username": "sameekshasri292",
+    "first_name": "Sameeksha",
+    "last_name": "Hitkari",
+    "email": "sameekshasri292@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-08-24T01:37:31.021Z",
+    "phone": "7991502021",
+    "razorpay_customer_id": null,
+    "profile_image": "profile_images/2026/08/24/WhatsApp_Image_2026-08-20_at_5.23.05_PM.jpeg",
+    "date_of_birth": null,
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "",
+    "mother_name": "",
+    "role": "employee",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "full_time",
+    "shift": "morning",
+    "joining_date": "2026-08-14",
+    "school_name": "WFH",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-08-24T01:37:31.787Z",
+    "updated_at": "2026-08-24T01:37:31.787Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$Q9nwijl8eEWqDOUUyVEQjo$ii/FadlZOPPdq9tJgP3tdzUggM8mvjl3te+t3pSOxhM=",
+    "last_login": "2026-09-02T04:22:25.442Z",
+    "is_superuser": false,
+    "username": "naazbebo230",
+    "first_name": "NAZIYA",
+    "last_name": "KHATOON",
+    "email": "naazbebo230@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-08-26T05:20:13.797Z",
+    "phone": "6386983007",
+    "razorpay_customer_id": null,
+    "profile_image": "profile_images/2026/08/26/IMG_5237_VONHZkG.jpeg",
+    "date_of_birth": null,
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "Mohd. Shameem",
+    "mother_name": "Ms. Shaheen Bano",
+    "role": "employee",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "full_time",
+    "shift": "morning",
+    "joining_date": "2026-08-23",
+    "school_name": "WFH",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-08-26T05:20:14.547Z",
+    "updated_at": "2026-08-26T09:27:40.380Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$SBD3wgRP5sD1JQAtKzMwG1$Sphn1igg37ESZUGVNaZCMLLhlTHEOvu+O2/DPt5iT+k=",
+    "last_login": "2026-09-01T02:16:29.263Z",
+    "is_superuser": false,
+    "username": "twinkeldas153",
+    "first_name": "Twinkel",
+    "last_name": "Kumari Das",
+    "email": "twinkeldas153@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-08-30T04:23:49.791Z",
+    "phone": "6372935355",
+    "razorpay_customer_id": null,
+    "profile_image": "profile_images/2026/08/30/Screenshot_20260830_101418_Gallery.jpg",
+    "date_of_birth": null,
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "Mr. Babula kumar Das",
+    "mother_name": "Mrs. Basanti Das",
+    "role": "sales",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "full_time",
+    "shift": "morning",
+    "joining_date": "2026-08-17",
+    "school_name": "WFH",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-08-30T04:23:50.607Z",
+    "updated_at": "2026-08-30T04:44:50.364Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$jae7VRnwiZ5durVCdQULQd$U5S253u8KstC4AX5qJJVwI7uDwdZ8zCe46UEdYkil9M=",
+    "last_login": "2026-08-30T07:59:38.536Z",
+    "is_superuser": false,
+    "username": "tusharsolanki9845",
+    "first_name": "Tushar",
+    "last_name": "Solanki",
+    "email": "tusharsolanki9845@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-08-30T07:49:00.713Z",
+    "phone": "6396015608",
+    "razorpay_customer_id": null,
+    "profile_image": "",
+    "date_of_birth": null,
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "Mr. Mohan Singh Solanki",
+    "mother_name": "Mrs. Suman Solanki",
+    "role": "crm",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "full_time",
+    "shift": "morning",
+    "joining_date": null,
+    "school_name": "WFH",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-08-30T07:49:01.537Z",
+    "updated_at": "2026-08-30T07:49:01.537Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$PbS9ucPmRxhfsvchMwLdXb$2dwp4tDRng0a6A/c599qUmVpZRGGorBwK7HxWx+8xW4=",
+    "last_login": "2026-09-02T05:19:27.808Z",
+    "is_superuser": false,
+    "username": "ErAnsari",
+    "first_name": "",
+    "last_name": "",
+    "email": "ruviansari144@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-09-02T05:16:15.664Z",
+    "phone": "9236537748",
+    "razorpay_customer_id": null,
+    "profile_image": "",
+    "date_of_birth": null,
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "",
+    "mother_name": "",
+    "role": "student",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "",
+    "shift": "",
+    "joining_date": null,
+    "school_name": "",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-09-02T05:16:16.372Z",
+    "updated_at": "2026-09-02T05:16:16.372Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$XacGGzUvAIZXCaxT3UpG9b$Uz/cHd547hObWMkj6h+vmBeLvIsl3Xgo9QuXlIHRM8g=",
+    "last_login": "2026-09-02T07:31:06.271Z",
+    "is_superuser": false,
+    "username": "test",
+    "first_name": "",
+    "last_name": "",
+    "email": "test@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-09-02T05:22:50.330Z",
+    "phone": "+919305988768",
+    "razorpay_customer_id": null,
+    "profile_image": "profile_images/2026/09/02/images_1.jpeg",
+    "date_of_birth": null,
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "",
+    "mother_name": "",
+    "role": "institution",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "",
+    "shift": "",
+    "joining_date": null,
+    "school_name": "",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-09-02T05:22:51.094Z",
+    "updated_at": "2026-09-02T05:24:10.247Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$81QeaIX0ixRjLmPHp8qXyk$a6UaMZbobRMZX/WGpM9qDJRTGIeLl8QCIDwP8W3aiXI=",
+    "last_login": "2026-09-02T07:30:13.930Z",
+    "is_superuser": false,
+    "username": "student",
+    "first_name": "",
+    "last_name": "",
+    "email": "student1@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-09-02T07:27:47.233Z",
+    "phone": "9305988769",
+    "razorpay_customer_id": null,
+    "profile_image": "",
+    "date_of_birth": null,
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "",
+    "mother_name": "",
+    "role": "student",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "",
+    "shift": "",
+    "joining_date": null,
+    "school_name": "",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-09-02T07:27:47.997Z",
+    "updated_at": "2026-09-02T07:27:47.997Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$Qk3wJJDj2DS8Z3f6SCgXxl$zm7RM+8MSqXNp5xl4ykmcwGuZuZgJexw5VUcmW7k76Q=",
+    "last_login": "2026-09-02T07:39:04.897Z",
+    "is_superuser": false,
+    "username": "new",
+    "first_name": "",
+    "last_name": "",
+    "email": "new@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-09-02T07:38:57.741Z",
+    "phone": "9236537749",
+    "razorpay_customer_id": null,
+    "profile_image": "",
+    "date_of_birth": null,
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "",
+    "mother_name": "",
+    "role": "student",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "",
+    "shift": "",
+    "joining_date": null,
+    "school_name": "",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-09-02T07:38:58.716Z",
+    "updated_at": "2026-09-02T07:38:58.716Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$AUhLAshY9cGZOMW11NUS1b$3XVRBBXvPMUw1FH0VVVRoi61Kb1Yg2yrN/wcN0YFU8o=",
+    "last_login": "2026-09-02T08:25:33.246Z",
+    "is_superuser": false,
+    "username": "rohit_kumar",
+    "first_name": "",
+    "last_name": "",
+    "email": "pmrk8707@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-09-02T08:25:25.386Z",
+    "phone": "6394856756",
+    "razorpay_customer_id": null,
+    "profile_image": "",
+    "date_of_birth": null,
+    "gender": "prefer_not_to_say",
+    "caste_category": "general",
+    "marital_status": "single",
+    "father_name": "",
+    "mother_name": "",
+    "role": "student",
+    "qualification": "",
+    "experience": 0,
+    "contract_type": "",
+    "shift": "",
+    "joining_date": null,
+    "school_name": "",
+    "academic_year": "",
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "description": "",
+    "is_verified": false,
+    "status": "active",
+    "created_at": "2026-09-02T08:25:26.159Z",
+    "updated_at": "2026-09-02T08:25:26.159Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.department",
+  "pk": 1,
+  "fields": {
+    "name": "CRM & Sales",
+    "code": "",
+    "description": "",
+    "is_active": true,
+    "created_at": "2026-08-18T12:03:03.388Z"
+  }
+},
+{
+  "model": "accounts.department",
+  "pk": 2,
+  "fields": {
+    "name": "Admissions & Counseling",
+    "code": "ADMISSIONS",
+    "description": "",
+    "is_active": true,
+    "created_at": "2026-08-19T05:58:20.598Z"
+  }
+},
+{
+  "model": "accounts.department",
+  "pk": 3,
+  "fields": {
+    "name": "Human Resources (HR)",
+    "code": "HUMAN_RESO",
+    "description": "",
+    "is_active": true,
+    "created_at": "2026-08-19T07:03:05.479Z"
+  }
+},
+{
+  "model": "accounts.department",
+  "pk": 4,
+  "fields": {
+    "name": "Student Relations & Support",
+    "code": "STUDENT_RE",
+    "description": "",
+    "is_active": true,
+    "created_at": "2026-08-19T07:10:06.924Z"
+  }
+},
+{
+  "model": "accounts.department",
+  "pk": 5,
+  "fields": {
+    "name": "Administration & Operations",
+    "code": "ADMIN",
+    "description": "",
+    "is_active": true,
+    "created_at": "2026-08-19T07:12:29.186Z"
+  }
+},
+{
+  "model": "accounts.department",
+  "pk": 6,
+  "fields": {
+    "name": "General",
+    "code": "GENERAL",
+    "description": "",
+    "is_active": true,
+    "created_at": "2026-08-20T09:26:12.302Z"
+  }
+},
+{
+  "model": "accounts.department",
+  "pk": 7,
+  "fields": {
+    "name": "Finance & Accounts",
+    "code": "FINANCE_&_",
+    "description": "",
+    "is_active": true,
+    "created_at": "2026-08-20T09:26:46.735Z"
+  }
+},
+{
+  "model": "accounts.department",
+  "pk": 8,
+  "fields": {
+    "name": "Teaching & Faculty",
+    "code": "TEACHING_&",
+    "description": "",
+    "is_active": true,
+    "created_at": "2026-08-21T06:56:27.209Z"
+  }
+},
+{
+  "model": "accounts.department",
+  "pk": 9,
+  "fields": {
+    "name": "Marketing & Lead Gen",
+    "code": "MARKETING_",
+    "description": "",
+    "is_active": true,
+    "created_at": "2026-08-22T10:29:23.805Z"
+  }
+},
+{
+  "model": "accounts.designation",
+  "pk": 1,
+  "fields": {
+    "title": "Sales Manager",
+    "department": 1,
+    "description": "",
+    "created_at": "2026-08-18T12:03:03.397Z"
+  }
+},
+{
+  "model": "accounts.designation",
+  "pk": 2,
+  "fields": {
+    "title": "Admission Counselor",
+    "department": 2,
+    "description": "",
+    "created_at": "2026-08-19T05:58:20.605Z"
+  }
+},
+{
+  "model": "accounts.designation",
+  "pk": 3,
+  "fields": {
+    "title": "HR Manager",
+    "department": 3,
+    "description": "",
+    "created_at": "2026-08-19T07:03:05.492Z"
+  }
+},
+{
+  "model": "accounts.designation",
+  "pk": 4,
+  "fields": {
+    "title": "Relationship Manager",
+    "department": 4,
+    "description": "",
+    "created_at": "2026-08-19T07:10:06.941Z"
+  }
+},
+{
+  "model": "accounts.designation",
+  "pk": 5,
+  "fields": {
+    "title": "Sales Executive",
+    "department": 1,
+    "description": "",
+    "created_at": "2026-08-19T07:12:29.198Z"
+  }
+},
+{
+  "model": "accounts.designation",
+  "pk": 6,
+  "fields": {
+    "title": "System Administrator",
+    "department": 5,
+    "description": "",
+    "created_at": "2026-08-19T07:12:29.206Z"
+  }
+},
+{
+  "model": "accounts.designation",
+  "pk": 7,
+  "fields": {
+    "title": "Business Development Lead",
+    "department": 5,
+    "description": "",
+    "created_at": "2026-08-20T06:40:15.270Z"
+  }
+},
+{
+  "model": "accounts.designation",
+  "pk": 8,
+  "fields": {
+    "title": "Team Lead",
+    "department": 7,
+    "description": "",
+    "created_at": "2026-08-20T09:26:46.789Z"
+  }
+},
+{
+  "model": "accounts.designation",
+  "pk": 9,
+  "fields": {
+    "title": "Computer Science",
+    "department": 8,
+    "description": "",
+    "created_at": "2026-08-21T06:56:27.218Z"
+  }
+},
+{
+  "model": "accounts.designation",
+  "pk": 10,
+  "fields": {
+    "title": "CRM Manager",
+    "department": 1,
+    "description": "",
+    "created_at": "2026-08-22T10:14:44.219Z"
+  }
+},
+{
+  "model": "accounts.designation",
+  "pk": 11,
+  "fields": {
+    "title": "Telecaller Executive",
+    "department": 9,
+    "description": "",
+    "created_at": "2026-08-22T10:29:23.812Z"
+  }
+},
+{
+  "model": "accounts.employeeprofile",
+  "pk": 9,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "employee_id": "EMP-0001",
+    "department": 5,
+    "designation": 6,
+    "reporting_manager": null,
+    "joining_date": null,
+    "probation_end_date": null,
+    "emergency_contact_name": "",
+    "emergency_contact_phone": "",
+    "bank_account_number": "",
+    "bank_ifsc": "",
+    "bank_name": "",
+    "onboarding_status": "active",
+    "notes": "{\"initial_password\": \"Employee@123\"}",
+    "created_at": "2026-08-19T07:12:29.281Z",
+    "updated_at": "2026-08-20T09:44:27.624Z"
+  }
+},
+{
+  "model": "accounts.employeeprofile",
+  "pk": 11,
+  "fields": {
+    "user": [
+      "neha123"
+    ],
+    "employee_id": "10",
+    "department": 5,
+    "designation": 2,
+    "reporting_manager": null,
+    "joining_date": "2026-07-27",
+    "probation_end_date": null,
+    "emergency_contact_name": "",
+    "emergency_contact_phone": "",
+    "bank_account_number": "1234567890",
+    "bank_ifsc": "HDFC0001234",
+    "bank_name": "HDFC Bank",
+    "onboarding_status": "active",
+    "notes": "{\"date_of_birth\": \"\", \"father_name\": \"Rajesh Sharma\", \"mother_name\": \"Sunita Sharma\", \"work_location\": \"Main Campus\", \"blood_group\": \"B+\", \"medical_height\": \"65\", \"medical_weight\": \"58\", \"medical_date\": \"2026-08-20\", \"bank_account_number\": \"1234567890\", \"bankAccountNumber\": \"1234567890\", \"bank_name\": \"HDFC Bank\", \"bankName\": \"HDFC Bank\", \"ifsc_code\": \"HDFC0001234\", \"iFSCCode\": \"HDFC0001234\", \"national_id\": \"1234-5678-9012\", \"nationalIdentificationNumber\": \"1234-5678-9012\", \"epf_no\": \"EPF12345\", \"epfNo\": \"EPF12345\", \"basic_salary\": \"45000\", \"basicSalary\": \"45000\", \"current_address\": \"Delhi, India\", \"currentAddress\": \"Delhi, India\", \"permanent_address\": \"Delhi, India\", \"permanentAddress\": \"Delhi, India\", \"initial_password\": \"Employee@1234\"}",
+    "created_at": "2026-08-20T07:25:41.954Z",
+    "updated_at": "2026-08-20T09:46:16.852Z"
+  }
+},
+{
+  "model": "accounts.employeeprofile",
+  "pk": 14,
+  "fields": {
+    "user": [
+      "Tanu"
+    ],
+    "employee_id": "EMP-0017",
+    "department": null,
+    "designation": null,
+    "reporting_manager": null,
+    "joining_date": null,
+    "probation_end_date": null,
+    "emergency_contact_name": "",
+    "emergency_contact_phone": "",
+    "bank_account_number": "",
+    "bank_ifsc": "",
+    "bank_name": "",
+    "onboarding_status": "active",
+    "notes": "",
+    "created_at": "2026-08-21T05:50:44.399Z",
+    "updated_at": "2026-08-21T05:50:44.399Z"
+  }
+},
+{
+  "model": "accounts.employeeprofile",
+  "pk": 16,
+  "fields": {
+    "user": [
+      "piyushrastogi1554"
+    ],
+    "employee_id": "EDU-1029",
+    "department": 1,
+    "designation": 10,
+    "reporting_manager": null,
+    "joining_date": "2026-08-10",
+    "probation_end_date": null,
+    "emergency_contact_name": "",
+    "emergency_contact_phone": "",
+    "bank_account_number": "",
+    "bank_ifsc": "",
+    "bank_name": "",
+    "onboarding_status": "active",
+    "notes": "{\"date_of_birth\": \"2005-05-28\", \"father_name\": \"\", \"mother_name\": \"\", \"work_location\": \"\", \"blood_group\": \"\", \"medical_height\": \"\", \"medical_weight\": \"\", \"medical_date\": \"\", \"bank_account_number\": \"\", \"bankAccountNumber\": \"\", \"bank_name\": \"\", \"bankName\": \"\", \"ifsc_code\": \"\", \"iFSCCode\": \"\", \"national_id\": \"\", \"nationalIdentificationNumber\": \"\", \"epf_no\": \"\", \"epfNo\": \"\", \"basic_salary\": \"\", \"basicSalary\": \"\", \"current_address\": \"\", \"currentAddress\": \"\", \"permanent_address\": \"\", \"permanentAddress\": \"\", \"initial_password\": \"Piyush2005@\"}",
+    "created_at": "2026-08-22T10:14:44.226Z",
+    "updated_at": "2026-08-22T10:25:21.241Z"
+  }
+},
+{
+  "model": "accounts.employeeprofile",
+  "pk": 17,
+  "fields": {
+    "user": [
+      "poonamkatware123"
+    ],
+    "employee_id": "EDU-1141",
+    "department": 9,
+    "designation": 11,
+    "reporting_manager": null,
+    "joining_date": "2026-08-18",
+    "probation_end_date": null,
+    "emergency_contact_name": "",
+    "emergency_contact_phone": "",
+    "bank_account_number": "",
+    "bank_ifsc": "",
+    "bank_name": "",
+    "onboarding_status": "active",
+    "notes": "{\"date_of_birth\": \"1993-01-14\", \"father_name\": \"\", \"mother_name\": \"\", \"work_location\": \"WFH\", \"blood_group\": \"\", \"medical_height\": \"\", \"medical_weight\": \"\", \"medical_date\": \"\", \"bank_account_number\": \"\", \"bankAccountNumber\": \"\", \"bank_name\": \"\", \"bankName\": \"\", \"ifsc_code\": \"\", \"iFSCCode\": \"\", \"national_id\": \"\", \"nationalIdentificationNumber\": \"\", \"epf_no\": \"\", \"epfNo\": \"\", \"basic_salary\": \"\", \"basicSalary\": \"\", \"current_address\": \"\", \"currentAddress\": \"\", \"permanent_address\": \"\", \"permanentAddress\": \"\", \"initial_password\": \"Poonam1993@\"}",
+    "created_at": "2026-08-22T10:29:23.822Z",
+    "updated_at": "2026-08-22T10:29:47.637Z"
+  }
+},
+{
+  "model": "accounts.employeeprofile",
+  "pk": 18,
+  "fields": {
+    "user": [
+      "satyaanu1249"
+    ],
+    "employee_id": "EDU-1113",
+    "department": 9,
+    "designation": 11,
+    "reporting_manager": null,
+    "joining_date": "2026-08-10",
+    "probation_end_date": null,
+    "emergency_contact_name": "",
+    "emergency_contact_phone": "",
+    "bank_account_number": "",
+    "bank_ifsc": "",
+    "bank_name": "",
+    "onboarding_status": "active",
+    "notes": "{\"date_of_birth\": \"2002-04-06\", \"father_name\": \"Mr. Vasamsetti Srinivasu\", \"mother_name\": \"Mrs. Vasamsetti Durga\", \"work_location\": \"WFH\", \"blood_group\": \"\", \"medical_height\": \"\", \"medical_weight\": \"\", \"medical_date\": \"\", \"bank_account_number\": \"\", \"bank_name\": \"\", \"ifsc_code\": \"\", \"national_id\": \"\", \"epf_no\": \"\", \"basic_salary\": \"\", \"current_address\": \"\", \"permanent_address\": \"\", \"initial_password\": \"Satya2002@\"}",
+    "created_at": "2026-08-22T10:34:23.962Z",
+    "updated_at": "2026-08-22T10:34:23.966Z"
+  }
+},
+{
+  "model": "accounts.employeeprofile",
+  "pk": 20,
+  "fields": {
+    "user": [
+      "jhaspj123"
+    ],
+    "employee_id": "EDU-1051",
+    "department": 9,
+    "designation": 7,
+    "reporting_manager": null,
+    "joining_date": "2026-08-14",
+    "probation_end_date": null,
+    "emergency_contact_name": "",
+    "emergency_contact_phone": "",
+    "bank_account_number": "",
+    "bank_ifsc": "",
+    "bank_name": "",
+    "onboarding_status": "active",
+    "notes": "{\"date_of_birth\": \"2000-04-03\", \"father_name\": \"Mr. Avdhesh Jha\", \"mother_name\": \"Mrs. Rukmini Devi\", \"work_location\": \"WFH\", \"blood_group\": \"\", \"medical_height\": \"\", \"medical_weight\": \"\", \"medical_date\": \"\", \"bank_account_number\": \"\", \"bank_name\": \"\", \"ifsc_code\": \"\", \"national_id\": \"\", \"epf_no\": \"\", \"basic_salary\": \"\", \"current_address\": \"\", \"permanent_address\": \"\", \"initial_password\": \"Abhinav2000@\"}",
+    "created_at": "2026-08-22T10:43:30.832Z",
+    "updated_at": "2026-08-22T10:43:30.837Z"
+  }
+},
+{
+  "model": "accounts.employeeprofile",
+  "pk": 23,
+  "fields": {
+    "user": [
+      "kartikpandey372"
+    ],
+    "employee_id": "EDU-2026",
+    "department": 1,
+    "designation": 10,
+    "reporting_manager": null,
+    "joining_date": "2026-01-05",
+    "probation_end_date": null,
+    "emergency_contact_name": "",
+    "emergency_contact_phone": "",
+    "bank_account_number": "",
+    "bank_ifsc": "",
+    "bank_name": "",
+    "onboarding_status": "active",
+    "notes": "{\"date_of_birth\": \"2004-01-01\", \"father_name\": \"\", \"mother_name\": \"\", \"work_location\": \"WFH\", \"blood_group\": \"\", \"medical_height\": \"\", \"medical_weight\": \"\", \"medical_date\": \"\", \"bank_account_number\": \"\", \"bank_name\": \"\", \"ifsc_code\": \"\", \"national_id\": \"\", \"epf_no\": \"\", \"basic_salary\": \"\", \"current_address\": \"\", \"permanent_address\": \"\", \"initial_password\": \"Kartik2005@\"}",
+    "created_at": "2026-08-22T11:41:04.632Z",
+    "updated_at": "2026-08-22T11:41:04.638Z"
+  }
+},
+{
+  "model": "accounts.employeeprofile",
+  "pk": 24,
+  "fields": {
+    "user": [
+      "sameekshasri292"
+    ],
+    "employee_id": "EDU-1079",
+    "department": 9,
+    "designation": 7,
+    "reporting_manager": null,
+    "joining_date": "2026-08-14",
+    "probation_end_date": null,
+    "emergency_contact_name": "",
+    "emergency_contact_phone": "",
+    "bank_account_number": "",
+    "bank_ifsc": "",
+    "bank_name": "",
+    "onboarding_status": "active",
+    "notes": "{\"date_of_birth\": \"1997-07-20\", \"father_name\": \"\", \"mother_name\": \"\", \"work_location\": \"WFH\", \"blood_group\": \"\", \"medical_height\": \"\", \"medical_weight\": \"\", \"medical_date\": \"\", \"bank_account_number\": \"\", \"bank_name\": \"\", \"ifsc_code\": \"\", \"national_id\": \"\", \"epf_no\": \"\", \"basic_salary\": \"7500\", \"current_address\": \"Village n Post Sukhbasa Lakhimpur Kheri Uttar Pradesh \\r\\nPin code - 261505\", \"permanent_address\": \"Village n Post Sukhbasa Lakhimpur Kheri Uttar Pradesh \\r\\nPin code - 261505\", \"initial_password\": \"Sameeksha1997@\"}",
+    "created_at": "2026-08-24T01:37:31.820Z",
+    "updated_at": "2026-08-24T01:37:31.825Z"
+  }
+},
+{
+  "model": "accounts.employeeprofile",
+  "pk": 25,
+  "fields": {
+    "user": [
+      "naazbebo230"
+    ],
+    "employee_id": "EDU-1173",
+    "department": 9,
+    "designation": 7,
+    "reporting_manager": null,
+    "joining_date": "2026-08-23",
+    "probation_end_date": null,
+    "emergency_contact_name": "",
+    "emergency_contact_phone": "",
+    "bank_account_number": "",
+    "bank_ifsc": "",
+    "bank_name": "",
+    "onboarding_status": "active",
+    "notes": "{\"date_of_birth\": \"1987-04-10\", \"father_name\": \"Mohd. Shameem\", \"mother_name\": \"Ms. Shaheen Bano\", \"work_location\": \"WFH\", \"blood_group\": \"\", \"medical_height\": \"\", \"medical_weight\": \"\", \"medical_date\": \"\", \"bank_account_number\": \"\", \"bank_name\": \"\", \"ifsc_code\": \"\", \"national_id\": \"\", \"epf_no\": \"\", \"basic_salary\": \"\", \"current_address\": \"\", \"permanent_address\": \"H.No.1089 , shere gulishtan colony , barabanki , uttarpradesh\", \"initial_password\": \"Naaz1987@\"}",
+    "created_at": "2026-08-26T05:20:14.590Z",
+    "updated_at": "2026-08-26T05:20:14.596Z"
+  }
+},
+{
+  "model": "accounts.employeeprofile",
+  "pk": 26,
+  "fields": {
+    "user": [
+      "twinkeldas153"
+    ],
+    "employee_id": "EDU-1205",
+    "department": 9,
+    "designation": 7,
+    "reporting_manager": null,
+    "joining_date": "2026-08-17",
+    "probation_end_date": null,
+    "emergency_contact_name": "",
+    "emergency_contact_phone": "",
+    "bank_account_number": "",
+    "bank_ifsc": "",
+    "bank_name": "",
+    "onboarding_status": "active",
+    "notes": "{\"date_of_birth\": \"2000-10-25\", \"father_name\": \"Mr. Babula kumar Das\", \"mother_name\": \"Mrs. Basanti Das\", \"work_location\": \"WFH\", \"blood_group\": \"\", \"medical_height\": \"\", \"medical_weight\": \"\", \"medical_date\": \"\", \"bank_account_number\": \"\", \"bank_name\": \"\", \"ifsc_code\": \"\", \"national_id\": \"\", \"epf_no\": \"\", \"basic_salary\": \"\", \"current_address\": \"\", \"permanent_address\": \"\", \"initial_password\": \"Twinkel@2000\"}",
+    "created_at": "2026-08-30T04:23:50.639Z",
+    "updated_at": "2026-08-30T04:23:50.643Z"
+  }
+},
+{
+  "model": "accounts.employeeprofile",
+  "pk": 27,
+  "fields": {
+    "user": [
+      "tusharsolanki9845"
+    ],
+    "employee_id": "EDU-1085",
+    "department": 5,
+    "designation": 8,
+    "reporting_manager": null,
+    "joining_date": null,
+    "probation_end_date": null,
+    "emergency_contact_name": "",
+    "emergency_contact_phone": "",
+    "bank_account_number": "",
+    "bank_ifsc": "",
+    "bank_name": "",
+    "onboarding_status": "active",
+    "notes": "{\"date_of_birth\": \"2007-09-16\", \"father_name\": \"Mr. Mohan Singh Solanki\", \"mother_name\": \"Mrs. Suman Solanki\", \"work_location\": \"WFH\", \"blood_group\": \"\", \"medical_height\": \"\", \"medical_weight\": \"\", \"medical_date\": \"\", \"bank_account_number\": \"\", \"bank_name\": \"\", \"ifsc_code\": \"\", \"national_id\": \"\", \"epf_no\": \"\", \"basic_salary\": \"\", \"current_address\": \"\", \"permanent_address\": \"\", \"initial_password\": \"Tushar@2007\"}",
+    "created_at": "2026-08-30T07:49:01.598Z",
+    "updated_at": "2026-08-30T07:49:01.608Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 17,
+  "fields": {
+    "employee": 11,
+    "title": "ID Proof Submitted",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-20T07:25:41.996Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 18,
+  "fields": {
+    "employee": 11,
+    "title": "Work Email Created",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-20T07:25:42.019Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 19,
+  "fields": {
+    "employee": 11,
+    "title": "System Allocated",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-20T07:25:42.039Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 20,
+  "fields": {
+    "employee": 11,
+    "title": "HR Agreement Signed",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-20T07:25:42.055Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 33,
+  "fields": {
+    "employee": 16,
+    "title": "ID Proof Submitted",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T10:14:44.238Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 34,
+  "fields": {
+    "employee": 16,
+    "title": "Work Email Created",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T10:14:44.243Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 35,
+  "fields": {
+    "employee": 16,
+    "title": "System Allocated",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T10:14:44.247Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 36,
+  "fields": {
+    "employee": 16,
+    "title": "HR Agreement Signed",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T10:14:44.252Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 37,
+  "fields": {
+    "employee": 17,
+    "title": "ID Proof Submitted",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T10:29:23.833Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 38,
+  "fields": {
+    "employee": 17,
+    "title": "Work Email Created",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T10:29:23.838Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 39,
+  "fields": {
+    "employee": 17,
+    "title": "System Allocated",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T10:29:23.844Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 40,
+  "fields": {
+    "employee": 17,
+    "title": "HR Agreement Signed",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T10:29:23.848Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 41,
+  "fields": {
+    "employee": 18,
+    "title": "ID Proof Submitted",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T10:34:23.972Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 42,
+  "fields": {
+    "employee": 18,
+    "title": "Work Email Created",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T10:34:23.975Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 43,
+  "fields": {
+    "employee": 18,
+    "title": "System Allocated",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T10:34:23.979Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 44,
+  "fields": {
+    "employee": 18,
+    "title": "HR Agreement Signed",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T10:34:23.982Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 49,
+  "fields": {
+    "employee": 20,
+    "title": "ID Proof Submitted",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T10:43:30.844Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 50,
+  "fields": {
+    "employee": 20,
+    "title": "Work Email Created",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T10:43:30.849Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 51,
+  "fields": {
+    "employee": 20,
+    "title": "System Allocated",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T10:43:30.854Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 52,
+  "fields": {
+    "employee": 20,
+    "title": "HR Agreement Signed",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T10:43:30.859Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 61,
+  "fields": {
+    "employee": 23,
+    "title": "ID Proof Submitted",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T11:41:04.644Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 62,
+  "fields": {
+    "employee": 23,
+    "title": "Work Email Created",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T11:41:04.648Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 63,
+  "fields": {
+    "employee": 23,
+    "title": "System Allocated",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T11:41:04.652Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 64,
+  "fields": {
+    "employee": 23,
+    "title": "HR Agreement Signed",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-22T11:41:04.656Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 65,
+  "fields": {
+    "employee": 24,
+    "title": "ID Proof Submitted",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-24T01:37:31.831Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 66,
+  "fields": {
+    "employee": 24,
+    "title": "Work Email Created",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-24T01:37:31.836Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 67,
+  "fields": {
+    "employee": 24,
+    "title": "System Allocated",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-24T01:37:31.840Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 68,
+  "fields": {
+    "employee": 24,
+    "title": "HR Agreement Signed",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-24T01:37:31.844Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 69,
+  "fields": {
+    "employee": 25,
+    "title": "ID Proof Submitted",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-26T05:20:14.602Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 70,
+  "fields": {
+    "employee": 25,
+    "title": "Work Email Created",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-26T05:20:14.607Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 71,
+  "fields": {
+    "employee": 25,
+    "title": "System Allocated",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-26T05:20:14.611Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 72,
+  "fields": {
+    "employee": 25,
+    "title": "HR Agreement Signed",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-26T05:20:14.615Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 73,
+  "fields": {
+    "employee": 26,
+    "title": "ID Proof Submitted",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-30T04:23:50.648Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 74,
+  "fields": {
+    "employee": 26,
+    "title": "Work Email Created",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-30T04:23:50.653Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 75,
+  "fields": {
+    "employee": 26,
+    "title": "System Allocated",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-30T04:23:50.656Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 76,
+  "fields": {
+    "employee": 26,
+    "title": "HR Agreement Signed",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-30T04:23:50.660Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 77,
+  "fields": {
+    "employee": 27,
+    "title": "ID Proof Submitted",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-30T07:49:01.616Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 78,
+  "fields": {
+    "employee": 27,
+    "title": "Work Email Created",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-30T07:49:01.622Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 79,
+  "fields": {
+    "employee": 27,
+    "title": "System Allocated",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-30T07:49:01.627Z"
+  }
+},
+{
+  "model": "accounts.onboardingtask",
+  "pk": 80,
+  "fields": {
+    "employee": 27,
+    "title": "HR Agreement Signed",
+    "description": "",
+    "is_completed": false,
+    "completed_at": null,
+    "created_at": "2026-08-30T07:49:01.635Z"
+  }
+},
+{
+  "model": "accounts.attendance",
+  "pk": 1672,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "date": "2026-08-23",
+    "status": "WFH",
+    "academic_year": "Jun 2025/2026",
+    "check_in": null,
+    "check_out": null,
+    "check_in_ip": null,
+    "check_out_ip": null,
+    "check_in_location": "",
+    "check_out_location": "",
+    "check_in_latitude": null,
+    "check_in_longitude": null,
+    "check_out_latitude": null,
+    "check_out_longitude": null,
+    "remarks": "WFH Approved: dgfhjkj",
+    "created_at": "2026-08-21T09:20:54.039Z",
+    "updated_at": "2026-08-21T09:20:54.039Z"
+  }
+},
+{
+  "model": "accounts.attendance",
+  "pk": 1673,
+  "fields": {
+    "user": [
+      "piyushrastogi1554"
+    ],
+    "date": "2026-08-22",
+    "status": "L",
+    "academic_year": "Jun 2025/2026",
+    "check_in": "17:30:05.883",
+    "check_out": "23:16:08.674",
+    "check_in_ip": "49.36.144.97",
+    "check_out_ip": "49.36.144.97",
+    "check_in_location": "Gamma 1, Knowledge Park III, Greater Noida, Gautam Buddha Nagar, Uttar Pradesh, 201308, India",
+    "check_out_location": "Gamma 1, Knowledge Park III, Greater Noida, Gautam Buddha Nagar, Uttar Pradesh, 201308, India",
+    "check_in_latitude": 28.48732380039367,
+    "check_in_longitude": 77.49978088401254,
+    "check_out_latitude": 28.487327862551933,
+    "check_out_longitude": 77.4998054129377,
+    "remarks": "Late Check-In (05:30 PM) - Shift Start: 09:30 AM (+15m Grace)",
+    "created_at": "2026-08-22T11:59:02.705Z",
+    "updated_at": "2026-08-22T17:46:08.679Z"
+  }
+},
+{
+  "model": "accounts.attendance",
+  "pk": 1674,
+  "fields": {
+    "user": [
+      "piyushrastogi1554"
+    ],
+    "date": "2026-08-23",
+    "status": "L",
+    "academic_year": "Jun 2025/2026",
+    "check_in": "10:50:28.664",
+    "check_out": "19:42:04.563",
+    "check_in_ip": "49.36.144.97",
+    "check_out_ip": "49.36.144.97",
+    "check_in_location": "Location Permission Denied / Unavailable",
+    "check_out_location": "Gamma 1, Knowledge Park III, Greater Noida, Gautam Buddha Nagar, Uttar Pradesh, 201308, India",
+    "check_in_latitude": null,
+    "check_in_longitude": null,
+    "check_out_latitude": 28.487325978160243,
+    "check_out_longitude": 77.49980227228488,
+    "remarks": "Late Check-In (10:50 AM) - Shift Start: 09:30 AM (+15m Grace)",
+    "created_at": "2026-08-23T05:20:28.670Z",
+    "updated_at": "2026-08-23T14:12:04.565Z"
+  }
+},
+{
+  "model": "accounts.attendance",
+  "pk": 1675,
+  "fields": {
+    "user": [
+      "sameekshasri292"
+    ],
+    "date": "2026-08-24",
+    "status": "L",
+    "academic_year": "Jun 2025/2026",
+    "check_in": "10:35:17.092",
+    "check_out": null,
+    "check_in_ip": "106.219.190.219",
+    "check_out_ip": null,
+    "check_in_location": "Location Permission Denied / Unavailable",
+    "check_out_location": "",
+    "check_in_latitude": null,
+    "check_in_longitude": null,
+    "check_out_latitude": null,
+    "check_out_longitude": null,
+    "remarks": "Late Check-In (10:35 AM) - Shift Start: 09:30 AM (+15m Grace)",
+    "created_at": "2026-08-24T05:05:17.097Z",
+    "updated_at": "2026-08-24T05:05:17.097Z"
+  }
+},
+{
+  "model": "accounts.attendance",
+  "pk": 1676,
+  "fields": {
+    "user": [
+      "naazbebo230"
+    ],
+    "date": "2026-08-26",
+    "status": "L",
+    "academic_year": "Jun 2025/2026",
+    "check_in": "15:00:39.407",
+    "check_out": null,
+    "check_in_ip": "171.61.173.79",
+    "check_out_ip": null,
+    "check_in_location": "Location Permission Denied / Unavailable",
+    "check_out_location": "",
+    "check_in_latitude": null,
+    "check_in_longitude": null,
+    "check_out_latitude": null,
+    "check_out_longitude": null,
+    "remarks": "Late Check-In (03:00 PM) - Shift Start: 09:30 AM (+15m Grace)",
+    "created_at": "2026-08-26T09:30:39.410Z",
+    "updated_at": "2026-08-26T09:30:39.411Z"
+  }
+},
+{
+  "model": "accounts.attendance",
+  "pk": 1677,
+  "fields": {
+    "user": [
+      "piyushrastogi1554"
+    ],
+    "date": "2026-08-26",
+    "status": "L",
+    "academic_year": "Jun 2025/2026",
+    "check_in": "18:06:47.998",
+    "check_out": "22:43:05.713",
+    "check_in_ip": "122.161.172.79",
+    "check_out_ip": "122.161.172.79",
+    "check_in_location": "Nanpara, Bahraich, Uttar Pradesh, 271865, India",
+    "check_out_location": "Nanpara, Bahraich, Uttar Pradesh, 271865, India",
+    "check_in_latitude": 27.865475117439058,
+    "check_in_longitude": 81.49881125292312,
+    "check_out_latitude": 27.866025,
+    "check_out_longitude": 81.498577,
+    "remarks": "Late Check-In (06:06 PM) - Shift Start: 09:30 AM (+15m Grace)",
+    "created_at": "2026-08-26T12:36:35.223Z",
+    "updated_at": "2026-08-26T17:13:05.716Z"
+  }
+},
+{
+  "model": "accounts.attendance",
+  "pk": 1678,
+  "fields": {
+    "user": [
+      "sameekshasri292"
+    ],
+    "date": "2026-08-27",
+    "status": "P",
+    "academic_year": "Jun 2025/2026",
+    "check_in": "09:30:12.555",
+    "check_out": null,
+    "check_in_ip": "223.184.168.18",
+    "check_out_ip": null,
+    "check_in_location": "NH730C, Jalalabad, Shahjahanpur, Uttar Pradesh, 242221, India",
+    "check_out_location": "",
+    "check_in_latitude": 27.721266,
+    "check_in_longitude": 79.652931,
+    "check_out_latitude": null,
+    "check_out_longitude": null,
+    "remarks": "On-Time Check-In (09:30 AM)",
+    "created_at": "2026-08-27T03:55:18.495Z",
+    "updated_at": "2026-08-27T04:00:12.559Z"
+  }
+},
+{
+  "model": "accounts.attendance",
+  "pk": 1679,
+  "fields": {
+    "user": [
+      "naazbebo230"
+    ],
+    "date": "2026-08-27",
+    "status": "P",
+    "academic_year": "Jun 2025/2026",
+    "check_in": "09:34:57.562",
+    "check_out": "17:21:07.659",
+    "check_in_ip": "171.61.175.101",
+    "check_out_ip": "171.61.175.101",
+    "check_in_location": "Location Permission Denied / Unavailable",
+    "check_out_location": "Location Permission Denied / Unavailable",
+    "check_in_latitude": null,
+    "check_in_longitude": null,
+    "check_out_latitude": null,
+    "check_out_longitude": null,
+    "remarks": "On-Time Check-In (09:34 AM)",
+    "created_at": "2026-08-27T04:04:57.566Z",
+    "updated_at": "2026-08-27T11:51:07.662Z"
+  }
+},
+{
+  "model": "accounts.attendance",
+  "pk": 1680,
+  "fields": {
+    "user": [
+      "jhaspj123"
+    ],
+    "date": "2026-08-27",
+    "status": "L",
+    "academic_year": "Jun 2025/2026",
+    "check_in": "10:30:07.899",
+    "check_out": null,
+    "check_in_ip": "152.59.142.77",
+    "check_out_ip": null,
+    "check_in_location": 

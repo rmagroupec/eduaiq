@@ -136,8 +136,7 @@
 <script>
 $(document).ready(function() {
   function getCsrfToken() {
-    const match = document.cookie.match(/csrftoken=([^;]+)/);
-    return match ? match[1] : null;
+    return document.querySelector('[name=csrfmiddlewaretoken]')?.value || '';
   }
 
   function loadUsers() {
@@ -190,9 +189,47 @@ $(document).ready(function() {
       },
       error: function(xhr) {
         $('#submitBtn').prop('disabled', false).html('Save Lead');
-        let msg = 'Failed to save lead.';
-        if (xhr.responseJSON && xhr.responseJSON.errors) msg = JSON.stringify(xhr.responseJSON.errors, null, 2);
-        showToast(msg, 'error');
+        let errorMsg = 'Failed to save lead. Please check your inputs.';
+        
+        let errors = xhr.responseJSON;
+        if (errors && errors.errors) {
+            errors = errors.errors;
+        }
+        
+        if (errors && typeof errors === 'object') {
+            let errorLines = [];
+            for (let field in errors) {
+                if (errors.hasOwnProperty(field)) {
+                    let fieldName = field.replace(/_/g, ' ');
+                    fieldName = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+                    let fieldErrs = errors[field];
+                    let fieldErrorStr = Array.isArray(fieldErrs) ? fieldErrs.join(' ') : fieldErrs;
+                    if (field === 'detail' || field === 'non_field_errors') {
+                        errorLines.push(fieldErrorStr);
+                    } else {
+                        errorLines.push(`<b>${fieldName}:</b> ${fieldErrorStr}`);
+                    }
+                }
+            }
+            if (errorLines.length > 0) {
+                errorMsg = errorLines.join('<br>');
+            }
+        }
+        
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                html: errorMsg,
+                confirmButtonColor: '#d33',
+                customClass: {
+                    popup: 'radius-16',
+                    confirmButton: 'btn btn-danger radius-8 px-20 py-10'
+                }
+            });
+        } else {
+            showToast(errorMsg.replace(/<br>/g, '\n'), 'error');
+        }
       }
     });
   });

@@ -73,8 +73,8 @@
 
         <!-- Version -->
         <div class="col-md-4">
-          <label class="form-label" for="version">Version <span class="text-danger">*</span></label>
-          <input type="number" id="version" name="version" class="form-control" value="1" min="1" required/>
+          <label for="version" class="form-label fw-semibold text-primary-light text-sm mb-8">Version <span class="text-danger">*</span></label>
+          <input type="number" id="version" name="version" class="form-control" min="1" required/>
         </div>
 
         <!-- Dynamic Upload Mode Fields -->
@@ -201,7 +201,7 @@
     const formData = new FormData(form);
 
     try {
-      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '';
       const response = await fetch(`${API_BASE_URL}/courses/courses/`, {
         method: 'POST',
         headers: {
