@@ -1,0 +1,1452 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Learning Dashboard - EduAiQ{% endblock %}
+
+{% block content %}
+
+<style>
+  .dashboard-hero-wrap {
+    background: radial-gradient(circle at 88% 50%, rgba(249, 115, 22, 0.22) 0%, rgba(234, 88, 12, 0.06) 40%, rgba(15, 23, 42, 0) 70%), 
+                linear-gradient(135deg, #0b0f19 0%, #0f172a 45%, #1e293b 100%);
+    color: #ffffff;
+    padding: 3.25rem 0 2.75rem 0;
+    position: relative;
+    overflow: hidden;
+    border-top: 3px solid #f97316;
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .dashboard-hero-wrap::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -10%;
+    width: 450px;
+    height: 450px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, rgba(249, 115, 22, 0) 70%);
+    pointer-events: none;
+    filter: blur(40px);
+  }
+
+  .user-avatar-glow {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.1));
+    backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(249, 115, 22, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.65rem;
+    color: #f97316;
+    box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.3);
+  }
+
+  .my-learning-section {
+    background: #f8fafc;
+    min-height: calc(100vh - 200px);
+    padding-bottom: 5rem;
+  }
+
+  /* Stat Cards */
+  .stat-card-v2 {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .stat-card-v2:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 35px -10px rgba(249, 115, 22, 0.18);
+    border-color: #cbd5e1;
+  }
+
+  .stat-icon-v2 {
+    width: 56px;
+    height: 56px;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+
+  .stat-card-v2:hover .stat-icon-v2 {
+    transform: scale(1.12) rotate(-6deg);
+  }
+
+  .icon-blue { background: linear-gradient(135deg, #f97316, #ea580c); }
+  .icon-emerald { background: linear-gradient(135deg, #10b981, #059669); }
+  .icon-purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+  .icon-amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+  .stat-content-v2 h6 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #64748b;
+    margin: 0 0 0.25rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .stat-content-v2 p {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    line-height: 1;
+  }
+
+  /* Exam Cards */
+  .exam-card-v2 {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .exam-card-v2:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 45px -10px rgba(249, 115, 22, 0.2);
+    border-color: #fdba74;
+  }
+
+  .exam-card-v2 .badge {
+    font-size: 0.825rem;
+    font-weight: 700;
+    padding: 0.45rem 1rem;
+    border-radius: 50rem;
+  }
+
+  /* Navigation Filter Tabs & Learning Pills */
+  .filter-tabs {
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  .filter-tabs .nav-link {
+    color: #64748b;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 0.75rem 1.5rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .filter-tabs .nav-link:hover {
+    color: #ea580c;
+  }
+
+  .filter-tabs .nav-link.active {
+    color: #ea580c;
+    border-bottom-color: #ea580c;
+    background: transparent;
+  }
+
+  #learningTabs .nav-link {
+    color: #475569;
+    transition: all 0.3s ease;
+  }
+
+  #learningTabs .nav-link:hover:not(.active) {
+    color: #ea580c;
+    background: #fff7ed;
+  }
+
+  #learningTabs .nav-link.active {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 18px rgba(234, 88, 12, 0.35) !important;
+  }
+
+  #learningTabs .nav-link.active i {
+    color: #ffffff !important;
+  }
+
+  /* Course & Exam Cards Logo Color Theme Styling */
+  .enrollment-card, .exam-card-v2 {
+    background: #ffffff;
+    border-radius: 1.25rem;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .enrollment-card:hover, .exam-card-v2:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px -10px rgba(249, 115, 22, 0.2) !important;
+    border-color: #fdba74 !important;
+  }
+
+  /* Hero Banner Buttons Hover Effects */
+  .btn-hero-catalog {
+    background: #ffffff;
+    color: #ea580c;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.25);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn-hero-catalog:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 28px rgba(249, 115, 22, 0.45);
+    color: #c2410c;
+    background: #ffffff;
+  }
+
+  .btn-hero-catalog i {
+    transition: transform 0.3s ease;
+  }
+
+  .btn-hero-catalog:hover i {
+    transform: scale(1.2) rotate(10deg);
+  }
+
+  .btn-hero-syllabus {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn-hero-syllabus:hover {
+    transform: translateY(-3px) scale(1.03);
+    background: rgba(249, 115, 22, 0.25);
+    border-color: rgba(249, 115, 22, 0.6);
+    box-shadow: 0 10px 25px rgba(249, 115, 22, 0.35);
+    color: #ffffff;
+  }
+
+  .btn-hero-syllabus i {
+    transition: transform 0.3s ease;
+  }
+
+  .btn-hero-syllabus:hover i {
+    transform: translateY(-2px);
+  }
+
+  /* All Card Buttons Hover Effects */
+  .my-learning-section .btn-primary,
+  .my-learning-section .btn-success,
+  .my-learning-section .btn-warning,
+  .my-learning-section .btn-outline-primary {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35) !important;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  .my-learning-section .btn-primary:hover,
+  .my-learning-section .btn-success:hover,
+  .my-learning-section .btn-warning:hover,
+  .my-learning-section .btn-outline-primary:hover {
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 22px rgba(234, 88, 12, 0.55) !important;
+    transform: translateY(-3px) scale(1.03) !important;
+  }
+
+  .my-learning-section .btn i {
+    transition: transform 0.3s ease;
+  }
+
+  .my-learning-section .btn:hover i {
+    transform: translateX(4px);
+  }
+
+  /* Card Text & Icon Colors */
+  .my-learning-section .text-primary,
+  .my-learning-section .text-success,
+  .my-learning-section .text-warning {
+    color: #ea580c !important;
+  }
+
+  .enrollment-image {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    background: #f1f5f9;
+    position: relative;
+  }
+
+  .enrollment-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .enrollment-card:hover .enrollment-image img {
+    transform: scale(1.06);
+  }
+
+  .enrollment-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 50rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .enrollment-body {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .enrollment-body h5 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: #0f172a;
+    line-height: 1.35;
+  }
+
+  .progress-bar-wrapper {
+    background: #f1f5f9;
+    height: 8px;
+    border-radius: 50rem;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f97316, #ea580c);
+    border-radius: 50rem;
+    transition: width 0.4s ease;
+  }
+
+  /* Quick Shortcut Banner Cards */
+  .shortcut-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .shortcut-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 30px -5px rgba(249, 115, 22, 0.18);
+    border-color: #fdba74;
+    color: #ea580c;
+  }
+
+  /* Equal-Height Hub Cards Suite (Student ID, Admit Cards, Certificates) */
+  .hub-card-pro {
+    background: #ffffff;
+    border-radius: 24px;
+    border: 1.5px solid #ffedd5;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hub-card-pro:hover {
+    transform: translateY(-5px);
+    border-color: #fd7e14;
+    box-shadow: 0 18px 40px rgba(249, 115, 22, 0.16);
+  }
+
+  .hub-card-header {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    color: #ffffff;
+    padding: 18px 20px;
+    text-align: center;
+    position: relative;
+    border-bottom: 2.5px solid #fd7e14;
+  }
+
+  .hub-card-header h6 {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 15px;
+    margin: 0;
+    letter-spacing: 0.3px;
+  }
+
+  .hub-card-header small {
+    color: #fd7e14 !important;
+    font-weight: 600;
+    font-size: 11.5px;
+  }
+
+  .hub-card-body {
+    padding: 22px;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .btn-brand-orange {
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 800 !important;
+    border-radius: 50rem !important;
+    padding: 10px 20px !important;
+    box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35) !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+  }
+
+  .btn-brand-orange:hover {
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+    box-shadow: 0 8px 22px rgba(234, 88, 12, 0.55) !important;
+    transform: translateY(-2px) !important;
+    color: #ffffff !important;
+  }
+
+  .btn-brand-navy {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(253, 126, 20, 0.4) !important;
+    font-weight: 700 !important;
+    border-radius: 50rem !important;
+    padding: 9px 18px !important;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2) !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+  }
+
+  .btn-brand-navy:hover {
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border-color: #fd7e14 !important;
+    transform: translateY(-2px) !important;
+  }
+
+  /* Mobile & Tablet Responsiveness for Student Dashboard */
+  @media screen and (max-width: 991px) {
+    .dashboard-hero-wrap {
+      padding: 30px 0 !important;
+    }
+    .dashboard-hero-wrap h2 {
+      font-size: 1.45rem !important;
+    }
+    .my-learning-section {
+      padding: 30px 0 !important;
+    }
+    #learningTabs {
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      padding-bottom: 8px !important;
+    }
+    #learningTabs .nav-item {
+      white-space: nowrap !important;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .stat-card-v2 {
+      padding: 1rem !important;
+      gap: 0.85rem !important;
+    }
+    .stat-icon-v2 {
+      width: 44px !important;
+      height: 44px !important;
+      font-size: 1.2rem !important;
+    }
+    .stat-content-v2 p {
+      font-size: 1.4rem !important;
+    }
+    .dashboard-hero-wrap .d-flex.flex-md-row {
+      text-align: center !important;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .dashboard-hero-wrap .btn {
+      width: 100% !important;
+      font-size: 13px !important;
+    }
+    .stat-content-v2 h6 {
+      font-size: 0.72rem !important;
+    }
+  }
+</style>
+
+<!-- Hero Dashboard Banner -->
+<section class="dashboard-hero-wrap">
+  <div class="container">
+    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-4">
+      <div class="d-flex align-items-center gap-3 text-center text-md-start">
+        <div class="user-avatar-glow">
+          <i class="fas fa-user-graduate"></i>
+        </div>
+        <div>
+          <span class="badge px-3 py-1 rounded-pill text-uppercase fw-bold mb-1 shadow-sm" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #ffffff; font-size: 0.72rem; letter-spacing: 0.06em;">Student Portal</span>
+          <h2 class="text-white fw-bold mb-1" style="font-size: 1.85rem;">Welcome back, {{ request.user.first_name|default:request.user.username }}! 👋</h2>
+          <p class="mb-0 fs-6" style="color: #94a3b8;">Manage your Olympiad Entrance Exams, active courses, and learning achievements.</p>
+        </div>
+      </div>
+
+      <div class="d-flex flex-wrap gap-2 justify-content-center">
+        <a href="/edit-profile/" class="btn btn-warning rounded-pill px-4 py-2.5 fw-bold shadow-sm text-dark">
+          <i class="fas fa-user-edit me-2"></i> Edit Profile
+        </a>
+        <a href="/olympiad-entrance/" class="btn btn-hero-catalog rounded-pill px-4 py-2.5 fw-bold shadow-sm">
+          <i class="fas fa-trophy me-2 text-warning"></i> Entrance Catalog
+        </a>
+        <a href="/olympiad-curriculum/" class="btn btn-hero-syllabus rounded-pill px-4 py-2.5 fw-bold">
+          <i class="fas fa-file-pdf me-2 opacity-75"></i> Olympiad Syllabus
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="my-learning-section py-5">
+  <div class="container">
+
+    <!-- Top Dashboard Statistics -->
+    <div class="row g-4 mb-5">
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card-v2">
+          <div class="stat-icon-v2 icon-blue">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <div class="stat-content-v2">
+            <h6>Assigned Courses</h6>
+            <p>{{ total_assigned_courses }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card-v2">
+          <div class="stat-icon-v2 icon-emerald">
+            <i class="fas fa-book-reader"></i>
+          </div>
+          <div class="stat-content-v2">
+            <h6>Assigned AI Books</h6>
+            <p>{{ total_assigned_books }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card-v2">
+          <div class="stat-icon-v2 icon-amber">
+            <i class="fas fa-file-signature"></i>
+          </div>
+          <div class="stat-content-v2">
+            <h6>Assigned Quizzes</h6>
+            <p>{{ total_assigned_quizzes }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card-v2">
+          <div class="stat-icon-v2 icon-purple">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="stat-content-v2">
+            <h6>Avg Progress</h6>
+            <p>{{ avg_progress }}%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSTITUTION ALLOTTED RESOURCES TABS -->
+    <div class="b2b-learning-tabs-wrap mb-5">
+      <ul class="nav nav-pills nav-justified bg-white p-2 rounded-4 shadow-sm border mb-4" id="learningTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active fw-bold py-3 rounded-3" id="courses-tab" data-bs-toggle="pill" data-bs-target="#courses-pane" type="button" role="tab">
+            <i class="fas fa-graduation-cap text-primary me-2"></i> Assigned Courses ({{ total_assigned_courses }})
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link fw-bold py-3 rounded-3" id="books-tab" data-bs-toggle="pill" data-bs-target="#books-pane" type="button" role="tab">
+            <i class="fas fa-book-reader text-success me-2"></i> Assigned AI Books ({{ total_assigned_books }})
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link fw-bold py-3 rounded-3" id="quizzes-tab" data-bs-toggle="pill" data-bs-target="#quizzes-pane" type="button" role="tab">
+            <i class="fas fa-file-signature text-warning me-2"></i> Assigned Assessments ({{ total_assigned_quizzes }})
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link fw-bold py-3 rounded-3" id="entrance-tab" data-bs-toggle="pill" data-bs-target="#entrance-pane" type="button" role="tab">
+            <i class="fas fa-trophy text-danger me-2"></i> Olympiad Entrance ({{ total_entrance_count }})
+          </button>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="learningTabsContent">
+        
+        <!-- PANE 1: ASSIGNED COURSES -->
+        <div class="tab-pane fade show active" id="courses-pane" role="tabpanel">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <h4 class="fw-bold text-dark mb-1"><i class="fas fa-graduation-cap text-primary me-2"></i> Institution Allotted Courses</h4>
+              <p class="text-muted small mb-0">Courses assigned to your account by your Institution Administrator.</p>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            {% for item in assigned_courses_data %}
+              <div class="col-md-6 col-lg-4">
+                <div class="enrollment-card">
+                  <div class="enrollment-image">
+                    <a href="/course/?slug={{ item.course.slug }}">
+                      <img src="{% if item.course.thumbnail %}{{ item.course.thumbnail.url }}{% else %}{% static 'assets/img/blog-default-indian.jpg' %}{% endif %}" alt="{{ item.course.title }}">
+                    </a>
+                    {% if item.is_completed %}
+                      <span class="enrollment-badge bg-success">✅ Completed</span>
+                    {% endif %}
+                  </div>
+                  
+                  <div class="enrollment-body">
+                    <a href="/course/?slug={{ item.course.slug }}" class="text-dark text-decoration-none">
+                      <h5 class="fw-bold">{{ item.course.title }}</h5>
+                    </a>
+                    <p class="text-muted small mb-3">{{ item.course.category.name|default:'Skill Development Course' }}</p>
+                    
+                    <div class="mb-3">
+                      <div class="d-flex justify-content-between small text-muted mb-1">
+                        <span>Course Progress</span>
+                        <strong>{{ item.progress_pct|floatformat:0 }}%</strong>
+                      </div>
+                      <div class="progress-bar-wrapper">
+                        <div class="progress-bar-fill" style="width: {{ item.progress_pct|floatformat:0 }}%"></div>
+                      </div>
+                    </div>
+
+                    <!-- 6-Month Challenge & 50% Off Reward Box -->
+                    {% if item.is_completed %}
+                      {% if item.qualified_50_off %}
+                        <div class="mb-3 p-2.5 rounded-3 border border-warning" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);">
+                          <div class="d-flex align-items-center justify-content-between mb-1">
+                            <span class="text-xs fw-bold text-dark"><i class="fas fa-gift text-warning me-1"></i> 50% Scholarship Reward</span>
+                            <span class="badge bg-success text-white" style="font-size: 10px;">Unlocked 🎉</span>
+                          </div>
+                          <div class="d-flex align-items-center justify-content-between bg-white p-1.5 rounded border border-warning-subtle">
+                            <code class="fw-bold text-primary small" id="voucherCode_{{ item.course.id }}">{{ item.coupon_code }}</code>
+                            <button class="btn btn-xs btn-outline-warning text-dark fw-bold px-2 py-0.5" style="font-size: 10.5px;" onclick="navigator.clipboard.writeText('{{ item.coupon_code }}'); alert('50% Off Voucher Code Copied: {{ item.coupon_code }}');">
+                              <i class="far fa-copy me-1"></i> Copy
+                            </button>
+                          </div>
+                        </div>
+                      {% else %}
+                        <div class="mb-3 p-2 rounded-3 border text-muted" style="background: #f8fafc; font-size: 11.5px;">
+                          <i class="fas fa-check-circle text-success me-1"></i> Completed (Standard Timeline)
+                        </div>
+                      {% endif %}
+                    {% else %}
+                      <div class="mb-3 p-2 rounded-3 border" style="background: linear-gradient(135deg, #f8fafc 0%, #fff7ed 100%); font-size: 12px; border-color: #ffedd5 !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                          <span class="text-dark fw-semibold" style="font-size: 11.5px;"><i class="fas fa-bolt text-warning me-1"></i> 6-Month Challenge</span>
+                          {% if item.days_remaining > 0 %}
+                            <span class="badge bg-warning text-dark fw-bold" style="font-size: 10.5px;">{{ item.days_remaining }}d left for 50% OFF</span>
+                          {% else %}
+                            <span class="badge bg-secondary text-white" style="font-size: 10px;">Challenge Expired</span>
+                          {% endif %}
+                        </div>
+                        <small class="text-muted d-block mt-1" style="font-size: 10.5px;">Finish chapters & assignments in 6 months to unlock 50% off.</small>
+                      </div>
+                    {% endif %}
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                      <a href="/course/?slug={{ item.course.slug }}" class="btn btn-sm btn-primary rounded-pill px-4 fw-bold w-100 text-center">
+                        {% if item.is_completed %}Review Course{% else %}Start / Resume Learning{% endif %}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <div class="col-12 text-center py-5">
+                <div class="p-5 bg-white rounded-4 border text-muted shadow-xs">
+                  <i class="fas fa-graduation-cap fa-3x mb-3 text-primary opacity-50"></i>
+                  <h5 class="fw-bold text-dark mb-2">No Standard Courses Assigned Yet</h5>
+                  <p class="mb-0 text-secondary small">Contact your Institution Administrator to allot courses for your learning track.</p>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- PANE 2: ASSIGNED AI BOOKS -->
+        <div class="tab-pane fade" id="books-pane" role="tabpanel">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <h4 class="fw-bold text-dark mb-1"><i class="fas fa-book-reader text-success me-2"></i> Institution Allotted AI Books</h4>
+              <p class="text-muted small mb-0">Digital AI Study Guides & interactive e-books provided by your Institution.</p>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            {% for item in assigned_books_data %}
+              <div class="col-md-6 col-lg-4">
+                <div class="enrollment-card">
+                  <div class="enrollment-image">
+                    <img src="{% if item.book.thumbnail %}{{ item.book.thumbnail.url }}{% else %}{% static 'assets/img/blog-default-indian.jpg' %}{% endif %}" alt="{{ item.book.title }}">
+                    <span class="enrollment-badge bg-success">📖 AI Book Access</span>
+                  </div>
+                  
+                  <div class="enrollment-body">
+                    <h5 class="fw-bold">{{ item.book.title }}</h5>
+                    <p class="text-muted small mb-3">Interactive Digital AI Study Guide</p>
+                    
+                    <div class="d-flex justify-content-end align-items-center mt-auto pt-3 border-top">
+                      <a href="/book-reader/{{ item.book.slug }}/" class="btn btn-sm btn-success rounded-pill px-4 fw-bold">
+                        <i class="fas fa-book-open me-1"></i> Read Book
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <div class="col-12 text-center py-5">
+                <div class="p-5 bg-white rounded-4 border text-muted shadow-xs">
+                  <i class="fas fa-book fa-3x mb-3 text-success opacity-50"></i>
+                  <h5 class="fw-bold text-dark mb-2">No AI Books Assigned Yet</h5>
+                  <p class="mb-0 text-secondary small">Contact your Institution Administrator to request digital AI book access.</p>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- PANE 3: ASSIGNED ASSESSMENTS & QUIZZES -->
+        <div class="tab-pane fade" id="quizzes-pane" role="tabpanel">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <h4 class="fw-bold text-dark mb-1"><i class="fas fa-file-signature text-warning me-2"></i> Institution Assigned Assessments</h4>
+              <p class="text-muted small mb-0">Quizzes and evaluations pushed by your Institution to test your knowledge.</p>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            {% for qitem in assigned_quizzes_data %}
+              <div class="col-lg-6">
+                <div class="exam-card-v2">
+                  <div class="p-4 flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                      <span class="badge {{ qitem.badge_class }} shadow-xs">{{ qitem.status_label }}</span>
+                      <span class="badge bg-light text-dark border"><i class="fas fa-shield-alt text-primary me-1"></i> Encrypted Test</span>
+                    </div>
+
+                    <h5 class="fw-bold text-dark mb-1 fs-5">{{ qitem.quiz.lesson.title }}</h5>
+                    <p class="text-muted small mb-3"><i class="fas fa-book-open me-1 text-primary"></i> Course: {{ qitem.course_title }}</p>
+
+                    <div class="p-3 bg-light rounded-3 mb-3 border">
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="small text-muted"><i class="far fa-clock text-primary me-1"></i> Time Limit:</span>
+                        <strong class="text-dark small">{{ qitem.time_limit }} Minutes</strong>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span class="small text-muted"><i class="fas fa-bullseye text-primary me-1"></i> Passing Score:</span>
+                        <strong class="text-dark small">{{ qitem.passing_score }}%</strong>
+                      </div>
+                      {% if qitem.latest_attempt and qitem.latest_attempt.submitted_at %}
+                        <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+                          <span class="small text-muted"><i class="fas fa-star text-warning me-1"></i> Score Obtained:</span>
+                          <strong class="text-success small">{{ qitem.latest_attempt.score_pct|floatformat:1 }}% ({% if qitem.latest_attempt.passed %}PASSED{% else %}NEEDS RETAKE{% endif %})</strong>
+                        </div>
+                      {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                      <span class="small text-muted">Assigned by Institution</span>
+                      <a href="/quiz/?id={{ qitem.quiz.id }}" class="btn btn-sm btn-warning rounded-pill px-4 py-2 fw-bold shadow-sm text-dark">
+                        {% if qitem.status_label == 'Completed' %}Retake Assessment{% else %}Take Assessment{% endif %} <i class="fas fa-arrow-right ms-1"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <div class="col-12 text-center py-5">
+                <div class="p-5 bg-white rounded-4 border text-muted shadow-xs">
+                  <i class="fas fa-file-signature fa-3x mb-3 text-warning opacity-50"></i>
+                  <h5 class="fw-bold text-dark mb-2">No Assessments Assigned Yet</h5>
+                  <p class="mb-0 text-secondary small">Assessments pushed by your Institution will appear here once published.</p>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- PANE 4: OLYMPIAD ENTRANCE EXAMS -->
+        <div class="tab-pane fade" id="entrance-pane" role="tabpanel">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <h4 class="fw-bold text-dark mb-1"><i class="fas fa-trophy text-danger me-2"></i> Olympiad Entrance Examinations</h4>
+              <p class="text-muted small mb-0">Your registered Olympiad Entrance Examinations & Roll Numbers.</p>
+            </div>
+            <a href="/olympiad-entrance/" class="btn btn-sm btn-outline-primary rounded-pill px-4 py-2 fw-bold">
+              <i class="fas fa-search me-1"></i> Browse Catalog
+            </a>
+          </div>
+
+          {% if entrance_registrations %}
+            <div class="row g-4">
+              {% for reg in entrance_registrations %}
+                <div class="col-lg-6">
+                  <div class="exam-card-v2">
+                    <div class="p-4 flex-grow-1">
+                      <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="badge {{ reg.status_badge_class }} shadow-xs">{{ reg.status_label }}</span>
+                        <small class="text-muted"><i class="far fa-calendar-alt me-1"></i> {{ reg.registered_at|date:"d M Y" }}</small>
+                      </div>
+
+                      <h5 class="fw-bold text-dark mb-2 fs-5">{{ reg.olympiad.name }}</h5>
+                      
+                      <div class="p-3 bg-light rounded-3 mb-3 border">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                          <span class="small text-muted"><i class="fas fa-id-card text-primary me-1"></i> Candidate Roll No:</span>
+                          <strong class="text-primary font-monospace fs-6">{{ reg.roll_number }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <span class="small text-muted"><i class="fas fa-layer-group text-primary me-1"></i> Class Target:</span>
+                          <strong class="text-dark small">{{ reg.olympiad.class_group }}</strong>
+                        </div>
+                      </div>
+
+                      <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <span class="small text-secondary fw-semibold">
+                          <i class="far fa-clock text-primary me-1"></i> {{ reg.olympiad.exam_duration_minutes }} Minutes
+                        </span>
+
+                        {% if reg.is_completed %}
+                          <a href="{% url 'olympiad_entrance_result' reg.olympiad.id %}" class="btn btn-sm btn-success rounded-pill px-4 py-2 fw-bold shadow-sm">
+                            <i class="fas fa-poll me-1"></i> View Result Status
+                          </a>
+                        {% else %}
+                          <a href="{% url 'olympiad_entrance_attempt' reg.olympiad.id %}" class="btn btn-sm btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm">
+                            <i class="fas fa-play me-1"></i> {{ reg.action_label }}
+                          </a>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="p-5 bg-white rounded-4 border text-center text-muted shadow-xs">
+              <div class="trophy-icon-circle mx-auto mb-3 text-warning">
+                <i class="fas fa-award fa-3x"></i>
+              </div>
+              <h5 class="fw-bold text-dark mb-2">No Entrance Exams Registered Yet</h5>
+              <p class="mb-3 text-secondary small">Enroll in an Olympiad Entrance Exam to showcase your academic talent and earn scholarships.</p>
+              <a href="/olympiad-entrance/" class="btn btn-primary rounded-pill px-4 py-2 fw-bold">
+                <i class="fas fa-trophy me-2"></i> Explore Entrance Exams
+              </a>
+            </div>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- STUDENT ID CARD, ADMIT CARDS & CERTIFICATES HUB (SINGLE CARDS - ZERO INNER SCROLLING) -->
+    <div class="row g-4 mb-5 align-items-stretch">
+      
+      <!-- 1. STUDENT ID CARD SECTION -->
+      <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+        <div class="hub-card-pro shadow-sm h-100 d-flex flex-column">
+          <div class="hub-card-header">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div class="d-flex align-items-center gap-1.5">
+                <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" style="height: 24px; object-fit: contain; filter: brightness(0) invert(1);">
+                <small style="color: #fd7e14 !important; font-weight: 700; font-size: 11px;">{{ id_card.institution_name }}</small>
+              </div>
+              <span class="badge fw-bold" style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); color: #ffffff; font-size: 9.5px; padding: 4px 9px; border-radius: 6px; letter-spacing: 0.5px;">OFFICIAL ID</span>
+            </div>
+            <h6 class="text-center mb-0"><i class="fas fa-id-card me-1.5" style="color: #fd7e14;"></i> Student Identity Card</h6>
+          </div>
+          <div class="hub-card-body p-4 d-flex flex-column justify-content-between flex-grow-1">
+            <div>
+              <div class="text-center mb-3">
+                <div style="width: 80px; height: 80px; min-width: 80px; min-height: 80px; max-width: 80px; max-height: 80px; border-radius: 50% !important; aspect-ratio: 1 / 1; margin: 0 auto; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border: 3px solid #fd7e14; box-shadow: 0 4px 14px rgba(249, 115, 22, 0.3); flex-shrink: 0;">
+                  <i class="fas fa-user-graduate fs-2" style="color: #fd7e14;"></i>
+                </div>
+              </div>
+
+              <h5 class="fw-bold text-dark text-center mb-1">{{ id_card.full_name }}</h5>
+              <p class="text-muted small text-center mb-3"><i class="fas fa-envelope me-1" style="color: #ea580c;"></i> {{ id_card.email }}</p>
+
+              <div class="p-3 bg-light rounded-3 text-start small mb-3 border">
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Roll No:</span>
+                  <strong class="font-monospace fs-6" style="color: #ea580c;">{{ id_card.roll_number }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Role:</span>
+                  <strong class="text-dark">{{ id_card.role }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Status:</span>
+                  <span class="badge bg-success-subtle text-success fw-bold px-2 py-0.5 rounded">Active Student</span>
+                </div>
+                <div class="d-flex justify-content-between mb-0">
+                  <span class="text-muted">Joined Date:</span>
+                  <strong class="text-dark">{{ id_card.joined_date|date:"d M Y" }}</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom Action Button -->
+            <div class="pt-2 w-100">
+              <button class="btn btn-brand-orange w-100 py-2.5 shadow-sm" onclick="showStudentIdCardModal()">
+                <i class="fas fa-id-card me-1.5"></i> Print / Download ID Card
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. EXAM ADMIT CARD SECTION (SINGLE CARD VIEW - NO SCROLL) -->
+      <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+        <div class="hub-card-pro shadow-sm h-100 d-flex flex-column">
+          <div class="hub-card-header">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <small style="color: #fd7e14 !important; font-weight: 700; font-size: 11px;">EXAM PASS</small>
+              <span class="badge fw-bold" style="background: rgba(255,255,255,0.15); color: #fdba74; font-size: 9.5px; padding: 4px 8px; border-radius: 6px;">CBT ENTRANCE</span>
+            </div>
+            <h6 class="text-center mb-0 mt-1"><i class="fas fa-ticket-alt me-1.5" style="color: #fd7e14;"></i> Exam Admit Card</h6>
+          </div>
+          <div class="hub-card-body p-4 d-flex flex-column justify-content-between flex-grow-1">
+            {% if admit_cards_list %}
+              {% with admit=admit_cards_list.0 %}
+                <div>
+                  {% if admit_cards_list|length > 1 %}
+                    <!-- Selector if student has multiple active entrance exams -->
+                    <div class="mb-2">
+                      <select class="form-select form-select-sm border-warning-subtle text-xs fw-bold" onchange="switchAdmitCard(this.value)">
+                        {% for a in admit_cards_list %}
+                          <option value="{{ forloop.counter0 }}">Exam: {{ a.exam_name }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% endif %}
+
+                  <div id="activeAdmitCardBox">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <h6 class="fw-bold text-dark mb-1" id="admitExamName" style="line-height: 1.4;">{{ admit.exam_name }}</h6>
+                    </div>
+
+                    <div class="p-3 bg-light rounded-3 border mb-3">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted"><i class="fas fa-id-badge text-primary me-1"></i> Roll No:</span>
+                        <span class="badge text-white font-monospace fs-6" style="background: #0F172A; border: 1.5px solid #fd7e14;" id="admitRollNo">{{ admit.roll_number }}</span>
+                      </div>
+                      <div class="d-flex justify-content-between text-muted small mb-2">
+                        <span><i class="fas fa-layer-group text-primary me-1"></i> Class Target:</span>
+                        <strong class="text-dark" id="admitClassGroup">{{ admit.class_group }}</strong>
+                      </div>
+                      <div class="d-flex justify-content-between text-muted small mb-2">
+                        <span><i class="far fa-clock text-primary me-1"></i> Duration:</span>
+                        <strong class="text-dark" id="admitDuration">{{ admit.duration_minutes }} Mins</strong>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <span class="small text-muted"><i class="fas fa-laptop-code text-success me-1"></i> Exam Mode:</span>
+                        <span class="badge bg-success text-white fw-bold">CBT Online Exam</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex gap-2 pt-2 w-100">
+                  <button class="btn btn-brand-orange flex-grow-1 py-2.5 shadow-sm" id="btnDownloadAdmitCard" onclick="showAdmitCardModal('{{ admit.exam_name|escapejs }}', '{{ admit.roll_number|escapejs }}', '{{ id_card.full_name|escapejs }}', '{{ admit.class_group|escapejs }}', '{{ admit.duration_minutes }}')">
+                    <i class="fas fa-file-download me-1"></i> Admit Card
+                  </button>
+                  <a href="{{ admit.action_url }}" id="btnStartExamLink" class="btn btn-brand-navy flex-grow-1 py-2.5 text-center shadow-sm">
+                    <i class="fas fa-play me-1"></i> <span id="btnStartExamText">{{ admit.action_label }}</span>
+                  </a>
+                </div>
+              {% endwith %}
+            {% else %}
+              <div class="text-center py-4 my-auto">
+                <div class="w-64-px h-64-px rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                  <i class="fas fa-check-circle fa-2x text-success"></i>
+                </div>
+                <h6 class="fw-bold text-dark mb-1">No Pending Exams</h6>
+                <p class="text-muted small mb-0">All registered entrance exams are completed.</p>
+              </div>
+              <div class="pt-2 w-100">
+                <a href="/olympiad-entrance/" class="btn btn-brand-orange w-100 py-2.5 text-center shadow-sm">
+                  <i class="fas fa-trophy me-1"></i> Explore New Exams
+                </a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. MY CERTIFICATES SECTION (SINGLE CARD VIEW - NO SCROLL) -->
+      <div class="col-lg-4 col-md-12 mb-4 mb-lg-0">
+        <div class="hub-card-pro shadow-sm h-100 d-flex flex-column">
+          <div class="hub-card-header">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <small style="color: #fd7e14 !important; font-weight: 700; font-size: 11px;">ACADEMIC MERIT</small>
+              <span class="badge fw-bold" style="background: rgba(255,255,255,0.15); color: #fdba74; font-size: 9.5px; padding: 4px 8px; border-radius: 6px;">VERIFIED</span>
+            </div>
+            <h6 class="text-center mb-0 mt-1"><i class="fas fa-award me-1.5" style="color: #fd7e14;"></i> My Certificate</h6>
+          </div>
+          <div class="hub-card-body p-4 d-flex flex-column justify-content-between flex-grow-1">
+            {% if certificates_list %}
+              {% with cert=certificates_list.0 %}
+                <div>
+                  {% if certificates_list|length > 1 %}
+                    <!-- Selector if student has multiple earned certificates -->
+                    <div class="mb-2">
+                      <select class="form-select form-select-sm border-warning-subtle text-xs fw-bold" onchange="switchCertificate(this.value)">
+                        {% for c in certificates_list %}
+                          <option value="{{ forloop.counter0 }}">Certificate: {{ c.title }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% endif %}
+
+                  <div id="activeCertificateBox">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <h6 class="fw-bold text-dark mb-1" id="certTitle" style="line-height: 1.4;">{{ cert.title }}</h6>
+                      <span class="badge text-white px-2.5 py-1" style="background: #10b981;" id="certScore">Score: {{ cert.score_pct|floatformat:0 }}%</span>
+                    </div>
+
+                    <div class="p-3 bg-light rounded-3 border mb-3" style="border-color: #ffedd5 !important;">
+                      <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="fas fa-medal fs-4" style="color: #ea580c;"></i>
+                        <div>
+                          <span class="small text-muted d-block" style="font-size: 11px;">Award Recognition</span>
+                          <strong class="text-dark small" id="certAward">{{ cert.award }}</strong>
+                        </div>
+                      </div>
+
+                      <div class="p-2 bg-white rounded border text-muted extra-small font-monospace text-break">
+                        <i class="fas fa-shield-alt text-warning me-1"></i> <span id="certSerialNo">ID: {{ cert.serial_no }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Download Certificate Action Button -->
+                <div class="pt-2 w-100">
+                  <a href="{{ cert.cert_url }}" target="_blank" id="btnDownloadCertLink" class="btn btn-brand-orange w-100 py-2.5 text-center shadow-sm">
+                    <i class="fas fa-download me-1.5"></i> Download Certificate (PDF)
+                  </a>
+                </div>
+              {% endwith %}
+            {% else %}
+              <div class="text-center py-4 my-auto">
+                <div class="w-64-px h-64-px rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                  <i class="fas fa-award fa-2x text-warning"></i>
+                </div>
+                <h6 class="fw-bold text-dark mb-1">No Certificates Earned Yet</h6>
+                <p class="text-muted small mb-0">Complete an Olympiad Entrance Exam or Course to unlock your official Certificate.</p>
+              </div>
+              <div class="pt-2 w-100">
+                <a href="/olympiad-entrance/" class="btn btn-brand-navy w-100 py-2.5 text-center shadow-sm">
+                  <i class="fas fa-trophy me-1"></i> Explore Entrance Exams
+                </a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Client-side Switcher for Multiple Admit Cards & Certificates -->
+    <script>
+      window.admitCardsData = {{ admit_cards_json|default:"[]"|safe }};
+      window.certificatesData = {{ certificates_json|default:"[]"|safe }};
+
+      function switchAdmitCard(index) {
+        if (window.admitCardsData && window.admitCardsData[index]) {
+          const item = window.admitCardsData[index];
+          document.getElementById('admitExamName').textContent = item.exam_name;
+          document.getElementById('admitRollNo').textContent = item.roll_number;
+          document.getElementById('admitClassGroup').textContent = item.class_group;
+          document.getElementById('admitDuration').textContent = item.duration_minutes + ' Mins';
+          const linkBtn = document.getElementById('btnStartExamLink');
+          if (linkBtn) {
+            linkBtn.href = item.action_url;
+            const textSpan = document.getElementById('btnStartExamText');
+            if (textSpan) textSpan.textContent = item.action_label;
+          }
+          document.getElementById('btnDownloadAdmitCard').setAttribute('onclick', `showAdmitCardModal('${item.exam_name}', '${item.roll_number}', '{{ id_card.full_name|escapejs }}', '${item.class_group}', '${item.duration_minutes}')`);
+        }
+      }
+
+      function switchCertificate(index) {
+        if (window.certificatesData && window.certificatesData[index]) {
+          const item = window.certificatesData[index];
+          document.getElementById('certTitle').textContent = item.title;
+          document.getElementById('certScore').textContent = 'Score: ' + Math.round(item.score_pct || 0) + '%';
+          document.getElementById('certAward').textContent = item.award;
+          document.getElementById('certSerialNo').textContent = 'ID: ' + item.serial_no;
+          document.getElementById('btnDownloadCertLink').href = item.cert_url;
+        }
+      }
+    </script>
+
+
+    <!-- QUICK SHORTCUT RESOURCES GRID -->
+    <div class="mt-5 pt-4 border-top">
+      <h5 class="fw-bold text-dark mb-3">Quick Resources & Shortcuts</h5>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <a href="/olympiad-curriculum/" class="shortcut-card">
+            <div class="fs-2 text-primary"><i class="fas fa-book"></i></div>
+            <div>
+              <h6 class="fw-bold mb-1">Olympiad Syllabus</h6>
+              <span class="small text-muted">Download syllabus & exam pattern</span>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-4">
+          <a href="/skill-development/" class="shortcut-card">
+            <div class="fs-2 text-success"><i class="fas fa-laptop-code"></i></div>
+            <div>
+              <h6 class="fw-bold mb-1">Skill Development</h6>
+              <span class="small text-muted">Explore AI, Coding & Tech courses</span>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-4">
+          <a href="/ai-lab/" class="shortcut-card">
+            <div class="fs-2 text-purple"><i class="fas fa-robot"></i></div>
+            <div>
+              <h6 class="fw-bold mb-1">AI Lab & Books</h6>
+              <span class="small text-muted">Access AI tools & study material</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Student Learning Dashboard interactive handlers
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log("EduAiQ B2B Student Dashboard Initialized.");
+  });
+
+  // Isolated Single Card Print Engine (Prints ONLY the target ID Card or Admit Card)
+  function printSingleCard(elementId, docTitle) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    const printWindow = window.open('', '_blank', 'width=750,height=800');
+    printWindow.document.open();
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>${docTitle}</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="/static/admin_assets/css/lib/bootstrap.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <style>
+          body {
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+            color: #1e293b;
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+          }
+          .printable-box {
+            width: 100%;
+            max-width: 480px;
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2.5px solid #0f172a;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+          }
+          @media print {
+            body {
+              padding: 0;
+              margin: 0;
+              min-height: auto;
+            }
+            .printable-box {
+              box-shadow: none !important;
+              border: 2.5px solid #0f172a !important;
+              max-width: 100% !important;
+              page-break-inside: avoid;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="printable-box">
+          ${el.innerHTML}
+        </div>
+        <script>
+          window.onload = function() {
+            window.focus();
+            window.print();
+            setTimeout(function() { window.close(); }, 1500);
+          };
+        <\/script>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  }
+
+  // Student Official Identity Card Modal
+  function showStudentIdCardModal() {
+    const modalHTML = `
+      <div class="modal fade show" id="studentIdModal" tabindex="-1" style="display: block; background: rgba(15,23,42,0.85); backdrop-filter: blur(8px); z-index: 1080;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+          <div class="modal-content" style="border-radius: 20px; border: 2px solid #fd7e14; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.4);">
+            
+            <!-- Modal Header -->
+            <div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); color: #fff; padding: 14px 20px; position: relative; border-bottom: 3px solid #fd7e14;">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                  <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" style="height: 28px; filter: brightness(0) invert(1);">
+                  <span class="badge fw-bold" style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); color: #fff; font-size: 10px;">STUDENT ID PASS</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white" onclick="document.getElementById('studentIdModal').remove()"></button>
+              </div>
+            </div>
+
+            <!-- Printable ID Card Body -->
+            <div class="modal-body p-3.5" style="background: #ffffff;" id="printableIdCardArea">
+              
+              <!-- Card Top Brand Banner -->
+              <div class="p-3 text-center text-white rounded-3 mb-3" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-bottom: 3px solid #fd7e14;">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <small style="color: #fd7e14 !important; font-weight: 700; font-size: 11px;">{{ id_card.institution_name }}</small>
+                  <span class="badge fw-bold" style="background: #fd7e14; color: #fff; font-size: 9px; padding: 3px 8px; border-radius: 4px;">OFFICIAL ID CARD</span>
+                </div>
+                <h6 class="fw-bold mb-0 text-white"><i class="fas fa-university text-warning me-1.5"></i> EduAiQ Academic Network</h6>
+              </div>
+
+              <!-- Student Profile -->
+              <div class="text-center mb-3">
+                <div style="width: 80px; height: 80px; min-width: 80px; min-height: 80px; border-radius: 50% !important; aspect-ratio: 1/1; margin: 0 auto 10px auto; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border: 3px solid #fd7e14; box-shadow: 0 4px 12px rgba(249,115,22,0.25);">
+                  <i class="fas fa-user-graduate fs-2" style="color: #fd7e14;"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-0">{{ id_card.full_name }}</h5>
+                <p class="text-muted small mb-2">{{ id_card.email }}</p>
+                <span class="badge bg-success-subtle text-success fw-bold px-2.5 py-1 rounded-pill" style="font-size: 11px;">
+                  <i class="fas fa-check-circle me-1"></i> Verified & Active Student
+                </span>
+              </div>
+
+              <!-- Student Metadata Grid -->
+              <div class="p-3 bg-light rounded-3 border mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-muted small fw-semibold">Candidate Roll No:</span>
+                  <span class="font-monospace fw-bold fs-6" style="color: #ea580c;">{{ id_card.roll_number }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-muted small fw-semibold">Academic Role:</span>
+                  <strong class="text-dark small">{{ id_card.role }}</strong>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-muted small fw-semibold">Institution / Academy:</span>
+                  <strong class="text-dark small text-truncate" style="max-width: 220px;">{{ id_card.institution_name }}</strong>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="text-muted small fw-semibold">Date of Joining:</span>
+                  <strong class="text-dark small">{{ id_card.joined_date|date:"d M Y" }}</strong>
+                </div>
+              </div>
+
+              <!-- Barcode / QR Security Stamp -->
+              <div class="d-flex justify-content-between align-items-center pt-2 border-top extra-small text-muted">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fas fa-qrcode fs-3 text-dark"></i>
+                  <span class="font-monospace" style="font-size: 10px;">ID-SEC: {{ id_card.roll_number }} &bull; VERIFIED</span>
+                </div>
+                <div class="text-end font-monospace" style="font-size: 10px;">
+                  EduAiQ Registrar
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer bg-light p-2.5 d-flex justify-content-between align-items-center">
+              <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" onclick="document.getElementById('studentIdModal').remove()">Close</button>
+              <button type="button" class="btn btn-sm btn-brand-orange rounded-pill px-4 py-2 fw-bold shadow-sm" onclick="printSingleCard('printableIdCardArea', 'EduAiQ Official Student Identity Card')">
+                <i class="fas fa-print me-1.5"></i> Print / Download ID Card (PDF)
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+
+    let existing = document.getElementById('studentIdModal');
+    if (existing) existing.remove();
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+  }
+
+  // Examination Admit Card Modal
+  function showAdmitCardModal(examName, rollNo, studentName, classGroup, duration) {
+    const modalHTML = `
+      <div class="modal fade show" id="admitCardModal" tabindex="-1" style="display: block; background: rgba(15,23,42,0.85); backdrop-filter: blur(8px); z-index: 1080;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 660px;">
+          <div class="modal-content" style="border-radius: 20px; border: 2px solid #fd7e14; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.4);">
+            
+            <!-- Compact Header -->
+            <div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); color: #fff; padding: 16px 22px; position: relative; border-bottom: 3px solid #fd7e14;">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                  <div style="background: #ffffff; padding: 4px 10px; border-radius: 8px; border: 1px solid #fd7e14;">
+                    <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" style="height: 36px;">
+                  </div>
+                  <div>
+                    <h5 class="fw-bold mb-0 text-white fs-6"><i class="fas fa-ticket-alt text-warning me-2"></i> Official Examination Hall Ticket</h5>
+                    <small class="text-warning font-monospace extra-small">EduAiQ National Olympiad 2026</small>
+                  </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" onclick="document.getElementById('admitCardModal').remove()"></button>
+              </div>
+            </div>
+
+            <!-- Compact Body -->
+            <div class="modal-body p-3.5" style="background: #ffffff;" id="printableAdmitCard">
+              <div class="p-3.5 rounded-3 bg-white border" style="border-color: #ffedd5 !important;">
+                
+                <!-- Exam Title & Roll Number -->
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom flex-wrap gap-2">
+                  <div>
+                    <span class="badge bg-warning text-dark extra-small fw-bold mb-1">NATIONAL ENTRANCE EXAM</span>
+                    <h5 class="fw-extrabold text-dark mb-0 fs-6">${examName}</h5>
+                  </div>
+                  <div>
+                    <span class="text-muted extra-small d-block text-uppercase fw-bold text-end">ROLL NO</span>
+                    <div class="d-inline-block px-3 py-1.5 rounded-3 font-monospace fw-extrabold fs-6" style="background: #fff7ed; border: 1.5px solid #fd7e14; color: #ea580c !important; white-space: nowrap;">
+                      ${rollNo}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Candidate Info Grid -->
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <div class="p-2.5 rounded-3 bg-light border">
+                      <span class="text-muted extra-small text-uppercase fw-bold d-block">Candidate Name</span>
+                      <strong class="text-dark small text-truncate d-block fw-bold">${studentName}</strong>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="p-2.5 rounded-3 bg-light border">
+                      <span class="text-muted extra-small text-uppercase fw-bold d-block">Target Class / Category</span>
+                      <strong class="text-dark small d-block fw-bold">${classGroup}</strong>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="p-2.5 rounded-3 bg-light border">
+                      <span class="text-muted extra-small text-uppercase fw-bold d-block">Examination Mode</span>
+                      <strong class="text-success small d-block fw-bold"><i class="fas fa-desktop me-1"></i> CBT Online Test</strong>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="p-2.5 rounded-3 bg-light border">
+                      <span class="text-muted extra-small text-uppercase fw-bold d-block">Test Duration</span>
+                      <strong class="text-dark small d-block fw-bold"><i class="far fa-clock text-primary me-1"></i> ${duration} Minutes</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Short Essential Rules -->
+                <div class="p-2.5 rounded-3 mb-3" style="background: #fff7ed; border: 1px solid #ffedd5;">
+                  <strong class="text-dark extra-small d-block mb-1"><i class="fas fa-info-circle text-warning me-1"></i> Exam Day Instructions:</strong>
+                  <ul class="text-muted extra-small mb-0 ps-3">
+                    <li>Keep Candidate Roll Number (<strong>${rollNo}</strong>) ready before test start time.</li>
+                    <li>Ensure desktop/laptop browser with internet connection during CBT exam.</li>
+                  </ul>
+                </div>
+
+                <!-- Pass Verification Footer -->
+                <div class="d-flex justify-content-between align-items-center pt-2 border-top extra-small">
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="fas fa-qrcode fs-4 text-dark"></i>
+                    <span class="text-muted font-monospace">VERIFIED ENTRY PASS &bull; ${rollNo}</span>
+                  </div>
+                  <div class="text-end text-muted font-monospace">
+                    EduAiQ Academic Board
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Compact Footer -->
+            <div class="modal-footer bg-light p-2.5 d-flex justify-content-between align-items-center">
+              <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" onclick="document.getElementById('admitCardModal').remove()">Close</button>
+              <button type="button" class="btn btn-sm btn-brand-orange rounded-pill px-4 py-2 fw-bold shadow-sm" onclick="printSingleCard('printableAdmitCard', 'EduAiQ Examination Admit Card - ${rollNo}')">
+                <i class="fas fa-print me-1.5"></i> Print / Download Admit Card (PDF)
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+
+    let existing = document.getElementById('admitCardModal');
+    if (existing) existing.remove();
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+  }
+</script>
+
+{% endblock %}

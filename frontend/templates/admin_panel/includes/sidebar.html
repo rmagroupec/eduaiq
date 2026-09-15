@@ -1,0 +1,785 @@
+{% load static %}
+<aside class="sidebar">
+  <button type="button" class="sidebar-close-btn">
+    <iconify-icon icon="radix-icons:cross-2"></iconify-icon>
+  </button>
+  <div class="">
+    <div class="sidebar-logo d-flex align-items-center justify-content-center position-relative px-3 py-3">
+      <a href="/admin-panel/dashboard/" class="d-flex align-items-center justify-content-center w-100">
+        <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" class="light-logo" style="max-height: 90px; width: auto; object-fit: contain;">
+        <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" class="dark-logo" style="max-height: 90px; width: auto; object-fit: contain;">
+        <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" class="logo-icon" style="max-height: 54px; width: auto; object-fit: contain;">
+      </a>
+      <button type="button" class="text-xxl d-xl-flex d-none line-height-1 sidebar-toggle text-neutral-500 position-absolute end-0 me-3"
+        aria-label="Collapse Sidebar">
+        <i class="ri-contract-left-line"></i>
+      </button>
+    </div>
+  </div>
+  <!-- User Info start -->
+  <div class="mx-16 py-12">
+    <div class="dropdown profile-dropdown">
+      <button type="button"
+        class="profile-dropdown__button d-flex align-items-center justify-content-between p-10 w-100 overflow-hidden bg-neutral-50 radius-12 "
+        data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+        <span class="d-flex align-items-start gap-10">
+          <img src="{% if request.user.profile_image %}{{ request.user.profile_image.url }}{% else %}{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}{% endif %}" alt="Profile Picture"
+            class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0">
+          <span class="profile-dropdown__contents">
+            <span class="h6 mb-0 text-md d-block text-primary-light">{% if request.user.is_authenticated %}{{ request.user.first_name|default:request.user.username|title }}{% else %}Admin User{% endif %}</span>
+            <span class="text-secondary-light text-sm mb-0 d-block">
+              {% if request.user.is_superuser or request.user.role == 'admin' %}Super Admin
+              {% elif request.user.role == 'institution' %}Institution Admin
+              {% elif request.user.employee_profile and request.user.employee_profile.designation %}{{ request.user.employee_profile.designation.title }}
+              {% else %}{{ request.user.role|default:"Staff"|title }}{% endif %}
+            </span>
+          </span>
+        </span>
+        <span class="profile-dropdown__icon pe-8 text-xl d-flex line-height-1">
+          <i class="ri-arrow-right-s-line"></i>
+        </span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+        <li>
+          <a href="/admin-panel/view-profile/"
+            class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6">
+            <i class="ri-user-3-line"></i>
+            My Profile
+          </a>
+        </li>
+        <li>
+          <a href="/admin-panel/logout/"
+            class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6">
+            <i class="ri-shut-down-line"></i>
+            Log Out
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- User Info end -->
+  <div class="sidebar-menu-area">
+    <ul class="sidebar-menu" id="sidebar-menu">
+
+      {% if request.user.role == 'institution' %}
+      <!-- INSTITUTION ADMIN RESTRICTED MENU -->
+      <li class="sidebar-menu-header" style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #f73859; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
+        Institution Portal
+      </li>
+      <li>
+        <a href="/admin-panel/dashboard/">
+          <i class="ri-home-4-line"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin-panel/courses/">
+          <i class="ri-book-open-line"></i>
+          <span>My Allowed Courses</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin-panel/courses/?type=book">
+          <i class="ri-book-read-line"></i>
+          <span>My Allowed AI Books</span>
+        </a>
+      </li>
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-graduation-cap-line"></i>
+          <span>Institution Students</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/student-list/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Enrolled Students
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-new-student/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add New Student
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="/admin-panel/view-profile/">
+          <i class="ri-user-3-line"></i>
+          <span>My Profile</span>
+        </a>
+      </li>
+
+      {% elif request.user.role == 'teacher' %}
+      <!-- TEACHER PORTAL RESTRICTED MENU -->
+      <li class="sidebar-menu-header" style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #ff9f43; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
+        Academic Teacher Portal
+      </li>
+      <li>
+        <a href="/admin-panel/dashboard/">
+          <i class="ri-home-4-line"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin-panel/student-list/">
+          <i class="ri-graduation-cap-line"></i>
+          <span>Students Roster</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin-panel/courses/">
+          <i class="ri-book-open-line"></i>
+          <span>Courses Catalog</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin-panel/employee-attendance/">
+          <i class="ri-calendar-check-line"></i>
+          <span>My Attendance</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin-panel/wfh-requests/">
+          <i class="ri-calendar-close-line"></i>
+          <span>Leave & WFH Requests</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'teacher_manage_exam_results' %}">
+          <i class="ri-bar-chart-box-line"></i>
+          <span>Manage Exam Results</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'admin_assignments_list' %}">
+          <i class="ri-file-edit-line"></i>
+          <span>Assignments & Grading</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin-panel/view-profile/">
+          <i class="ri-user-3-line"></i>
+          <span>My Profile</span>
+        </a>
+      {% elif request.user.role == 'student' %}
+      <!-- STUDENT PORTAL RESTRICTED MENU -->
+      <li class="sidebar-menu-header" style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
+        Student Learning Portal
+      </li>
+      <li>
+        <a href="/admin-panel/dashboard/">
+          <i class="ri-home-4-line"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin-panel/courses/">
+          <i class="ri-book-open-line"></i>
+          <span>My Enrolled Courses</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin-panel/courses/?type=book">
+          <i class="ri-book-read-line"></i>
+          <span>AI Books</span>
+        </a>
+      </li>
+      <li>
+        <a href="/my-learning/">
+          <i class="ri-graduation-cap-line"></i>
+          <span>My Learning & Exams</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin-panel/view-profile/">
+          <i class="ri-user-3-line"></i>
+          <span>My Profile</span>
+        </a>
+      </li>
+
+      {% elif request.user.role == 'parent' %}
+      <!-- PARENT PORTAL RESTRICTED MENU -->
+      <li class="sidebar-menu-header" style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
+        Child Profile
+      </li>
+      <li>
+        <a href="/parent/dashboard/">
+          <i class="ri-home-4-line"></i>
+          <span>Dashboard Overview</span>
+        </a>
+      </li>
+      <li>
+        <a href="/parent/attendance/">
+          <i class="ri-calendar-check-line"></i>
+          <span>Attendance</span>
+        </a>
+      </li>
+      <li>
+        <a href="/parent/exam-results/">
+          <i class="ri-bar-chart-box-line"></i>
+          <span>Exam Results</span>
+        </a>
+      </li>
+      <li>
+        <a href="#fee-section">
+          <i class="ri-wallet-3-line"></i>
+          <span>Fee Details</span>
+        </a>
+      </li>
+      <li>
+        <a href="/parent/assignments/">
+          <i class="ri-file-edit-line"></i>
+          <span>Assignments</span>
+        </a>
+      </li>
+
+      {% elif not request.user.is_superuser and request.user.role != 'admin' %}
+      <!-- SALES & EMPLOYEE PORTAL RESTRICTED MENU -->
+      <li class="sidebar-menu-header" style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #487fff; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
+        Sales & CRM Portal
+      </li>
+      <li>
+        <a href="/admin-panel/dashboard/">
+          <i class="ri-home-4-line"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <!-- SALES CRM MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-line-chart-line"></i>
+          <span>Sales CRM</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/crm-dashboard/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Pipeline Overview
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/leads/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Institution Leads (B2B)
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-new-lead/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Lead
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/student-inquiries/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Student Inquiries (B2C)
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-student-inquiry/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Inquiry
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/opportunities/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Deals & Opportunities
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-opportunity/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Opportunity
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- INSTITUTIONS VIEW -->
+      <li>
+        <a href="/admin-panel/institution-list/">
+          <i class="ri-building-line"></i>
+          <span>Institutions</span>
+        </a>
+      </li>
+
+      <!-- ATTENDANCE -->
+      <li>
+        <a href="/admin-panel/employee-attendance/">
+          <i class="ri-calendar-check-line"></i>
+          <span>Attendance</span>
+        </a>
+      </li>
+
+      <!-- LEAVE & WFH REQUESTS -->
+      <li>
+        <a href="/admin-panel/wfh-requests/">
+          <i class="ri-calendar-close-line"></i>
+          <span>Leave & WFH Requests</span>
+        </a>
+      </li>
+
+      <!-- MY PROFILE -->
+      <li>
+        <a href="/admin-panel/view-profile/">
+          <i class="ri-user-3-line"></i>
+          <span>My Profile</span>
+        </a>
+      </li>
+
+      {% else %}
+      <!-- SUPERADMIN FULL MENU -->
+      <li>
+        <a href="/admin-panel/dashboard/">
+          <i class="ri-home-4-line"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <!-- SALES CRM MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-line-chart-line"></i>
+          <span>Sales CRM</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/crm-dashboard/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Pipeline Overview
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/leads/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Institution Leads (B2B)
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-new-lead/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Lead
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/student-inquiries/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Student Inquiries (B2C)
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-student-inquiry/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Inquiry
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/opportunities/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Deals & Opportunities
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-opportunity/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Opportunity
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/employee-list/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Employee Directory
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- INSTITUTIONS MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-building-line"></i>
+          <span>Institutions</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/institution-list/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Institution List
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-new-institution/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Institution
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- COURSES & CURRICULUM MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-book-open-line"></i>
+          <span>Courses & Content</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/courses/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              All Courses
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-new-course/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add New Course
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/categories/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Categories
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/modules/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Course Modules
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/lessons/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Lessons
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'admin_assignments_list' %}">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Assignments & Grading
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- AI BOOKS MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-file-pdf-line"></i>
+          <span>AI Books</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/books/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              AI Books List
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/books/add/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add New AI Book
+            </a>
+          </li>
+          <li>
+            <a href="/ai-books/" target="_blank">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Public Reader Showcase
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- STUDENTS MANAGEMENT MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-graduation-cap-line"></i>
+          <span>Students</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/student-list/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Student List
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-new-student/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add New Student
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- TEACHERS MANAGEMENT MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-user-follow-line"></i>
+          <span>Teachers</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/teacher-list/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Teacher List
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-new-teacher/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add New Teacher
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- QUIZ MANAGEMENT MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-question-line"></i>
+          <span>Quiz Management</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/quizzes/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Quiz List
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-quiz/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Quiz
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/question-bank/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Question Bank
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/quiz-attempts/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Quiz Attempts
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/quiz-results/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Quiz Results
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- OLYMPIAD ENTRANCE MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-trophy-line"></i>
+          <span>Olympiad Entrance</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/olympiad-entrance/" target="_blank">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Entrance Catalog
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/olympiad-entrance/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Manage Entrance Exams
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- LEARNING & ENROLLMENTS MODULE -->
+      <li>
+        <a href="/admin-panel/enrollments/">
+          <i class="ri-user-star-line"></i>
+          <span>Student Enrollments</span>
+        </a>
+      </li>
+
+      <!-- WEBSITE & CONTENT: TEAM & BLOGS MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-team-line"></i>
+          <span>Team Members</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/team/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Team Directory
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/team/add/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add Team Member
+            </a>
+          </li>
+          <li>
+            <a href="/team/" target="_blank">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Public Team Page ↗
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-article-line"></i>
+          <span>Blog & Articles</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/blogs/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              All Blog Posts
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/blogs/add/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Add New Blog
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/blog-categories/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Blog Categories
+            </a>
+          </li>
+          <li>
+            <a href="/blog/" target="_blank">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Public Blog Page ↗
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- HR & EMPLOYEE ONBOARDING MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-user-add-line"></i>
+          <span>HR & Onboarding</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/employee-list/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Employee Directory
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/add-new-employee/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              + Employee Onboarding
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/department/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Departments
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/designation/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Designations
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/wfh-requests/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Leave & WFH Requests
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/employee-attendance/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Attendance & Salary Count
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/payroll/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Payroll & Salary Slips
+            </a>
+          </li>
+        </ul>
+      </li>
+
+
+      <!-- EXPENSE MANAGEMENT MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-money-dollar-circle-line"></i>
+          <span>Expense Management</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/expense-list/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Expense Records
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/expense-list/?head=Company+Billing">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Company Billing Expenses
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/expense-head/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Expense Heads / Categories
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- BILLING & FEES MODULE -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">
+          <i class="ri-bill-line"></i>
+          <span>Billing & Invoices</span>
+        </a>
+        <ul class="sidebar-submenu">
+          <li>
+            <a href="/admin-panel/fees-collect/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Fee Collection
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/transaction/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Transaction History
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- AUDIT TRAIL MODULE -->
+      <li>
+        <a href="/admin-panel/audit-logs/">
+          <i class="ri-shield-keyhole-line"></i>
+          <span>Admin Audit Logs</span>
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</aside>

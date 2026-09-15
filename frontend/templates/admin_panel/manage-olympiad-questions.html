@@ -1,0 +1,235 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Manage Questions & Quizzes - {{ exam.name }}{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h6 class="fw-semibold mb-0">Manage Exam Questions & Quizzes</h6>
+    <div class="text-sm mt-1">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="{% url 'admin_olympiad_entrance_list' %}">/ Olympiad Entrance</a>
+      <span class="text-secondary-light">/ Questions Manager</span>
+    </div>
+  </div>
+  <a href="{% url 'admin_olympiad_entrance_list' %}" class="btn btn-outline-secondary radius-8 d-flex align-items-center gap-2">
+    <i class="ri-arrow-left-line"></i> Back to Exam List
+  </a>
+</div>
+
+<!-- Exam Summary Card -->
+<div class="card radius-12 border border-neutral-200 shadow-1 mb-24 bg-white p-24">
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+    <div>
+      <span class="badge bg-primary-100 text-primary-600 px-12 py-6 radius-50 text-xs font-semibold uppercase">{{ exam.level }}</span>
+      <h5 class="fw-bold text-neutral-900 mt-2 mb-1">{{ exam.name }}</h5>
+      <p class="text-neutral-500 text-sm mb-0">Target: {{ exam.class_group }} | Duration: {{ exam.exam_duration_minutes }} Mins | Fee: ₹{{ exam.fee }}</p>
+    </div>
+    <div class="d-flex gap-3">
+      <div class="text-center p-12 bg-neutral-100 radius-8">
+        <h6 class="mb-0 font-bold text-primary-600">{{ direct_questions|length }}</h6>
+        <small class="text-neutral-500 text-xs">Direct Questions</small>
+      </div>
+      <div class="text-center p-12 bg-neutral-100 radius-8">
+        <h6 class="mb-0 font-bold text-success-600">{{ assigned_quizzes|length }}</h6>
+        <small class="text-neutral-500 text-xs">Assigned Quizzes</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Left Side: Forms to Add Questions or Assign Quizzes -->
+  <div class="col-lg-6">
+    <!-- Add New Direct Question Form -->
+    <div class="card radius-12 border border-neutral-200 shadow-1 mb-24">
+      <div class="card-header p-24 bg-white border-bottom border-neutral-200">
+        <h6 class="mb-0 fw-bold"><i class="ri-add-circle-line text-primary me-2"></i> Add New Direct Question</h6>
+      </div>
+      <div class="card-body p-24">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="add_question">
+
+          <div class="row gy-3 mb-16">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Question Format</label>
+              <select name="question_type" class="form-select radius-8" required>
+                {% for q_val, q_label in question_types %}
+                  <option value="{{ q_val }}">{{ q_label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Difficulty & Marks</label>
+              <div class="input-group">
+                <select name="difficulty" class="form-select radius-8">
+                  {% for d_val, d_label in difficulties %}
+                    <option value="{{ d_val }}" {% if d_val == 'medium' %}selected{% endif %}>{{ d_label }}</option>
+                  {% endfor %}
+                </select>
+                <input type="number" name="marks" class="form-control radius-8" value="1" min="1" placeholder="Marks" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-16">
+            <label class="form-label fw-bold">Question Statement <span class="text-danger">*</span></label>
+            <textarea name="question_text" class="form-control radius-8" rows="3" placeholder="Type the question text here..." required></textarea>
+          </div>
+
+          <div class="row gy-2 mb-16">
+            <div class="col-md-6">
+              <label class="form-label text-xs fw-bold">Option A</label>
+              <input type="text" name="option_a" class="form-control radius-8 text-sm" placeholder="Option A text">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-xs fw-bold">Option B</label>
+              <input type="text" name="option_b" class="form-control radius-8 text-sm" placeholder="Option B text">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-xs fw-bold">Option C</label>
+              <input type="text" name="option_c" class="form-control radius-8 text-sm" placeholder="Option C text">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-xs fw-bold">Option D</label>
+              <input type="text" name="option_d" class="form-control radius-8 text-sm" placeholder="Option D text">
+            </div>
+          </div>
+
+          <div class="mb-16">
+            <label class="form-label fw-bold text-danger">Correct Option Key <span class="text-danger">*</span></label>
+            <input type="text" name="correct_option" class="form-control radius-8" placeholder="e.g. 'a', 'b', 'true', 'a,c', or numerical '42'" required>
+            <small class="text-neutral-500">For MCQ enter single letter ('a'), for Multi-select enter 'a,c'.</small>
+          </div>
+
+          <div class="mb-20">
+            <label class="form-label fw-bold">Solution Explanation</label>
+            <textarea name="explanation" class="form-control radius-8" rows="2" placeholder="Step-by-step solution for student reference..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary-600 w-100 radius-8 fw-bold">
+            <i class="ri-add-line me-1"></i> Add Question to Exam
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Assign Existing Course Quiz Form -->
+    <div class="card radius-12 border border-neutral-200 shadow-1 mb-24">
+      <div class="card-header p-24 bg-white border-bottom border-neutral-200">
+        <h6 class="mb-0 fw-bold"><i class="ri-links-line text-success me-2"></i> Assign Quiz from Course Bank</h6>
+      </div>
+      <div class="card-body p-24">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="assign_quiz">
+
+          <div class="mb-16">
+            <label class="form-label fw-bold">Select Quiz</label>
+            <select name="quiz_id" class="form-select radius-8" required>
+              <option value="">-- Choose Quiz from Course Bank --</option>
+              {% for qz in available_quizzes %}
+                <option value="{{ qz.id }}">{{ qz.lesson.title }} ({{ qz.questions.count }} Questions)</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-20">
+            <label class="form-label fw-bold">Custom Section Name</label>
+            <input type="text" name="section_name" class="form-control radius-8" placeholder="e.g. Section A - Logical Reasoning">
+          </div>
+
+          <button type="submit" class="btn btn-success-600 w-100 radius-8 fw-bold">
+            <i class="ri-link me-1"></i> Attach Quiz to Entrance Exam
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side: Lists of Existing Questions & Quizzes -->
+  <div class="col-lg-6">
+    <!-- Direct Questions List -->
+    <div class="card radius-12 border border-neutral-200 shadow-1 mb-24">
+      <div class="card-header p-24 bg-white border-bottom border-neutral-200 d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-bold"><i class="ri-question-line text-primary me-2"></i> Direct Exam Questions ({{ direct_questions|length }})</h6>
+      </div>
+      <div class="card-body p-24">
+        {% if direct_questions %}
+          <div class="d-flex flex-column gap-3">
+            {% for q in direct_questions %}
+              <div class="p-16 border radius-8 bg-neutral-50 position-relative">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <span class="badge bg-primary-100 text-primary-600 radius-50 text-xs">{{ q.get_question_type_display }} | {{ q.marks }} Mark(s)</span>
+                  <form method="post" class="d-inline" onsubmit="return confirm('Delete this question?');">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete_question">
+                    <input type="hidden" name="question_id" value="{{ q.id }}">
+                    <button type="submit" class="btn btn-sm btn-outline-danger radius-4 p-1 text-xs" title="Delete Question">
+                      <i class="ri-delete-bin-line"></i>
+                    </button>
+                  </form>
+                </div>
+
+                <p class="fw-bold text-neutral-900 mb-2 text-sm">{{ q.question_text }}</p>
+
+                <div class="row g-2 text-xs text-neutral-600 mb-2">
+                  {% if q.option_a %}<div class="col-6">A: {{ q.option_a }}</div>{% endif %}
+                  {% if q.option_b %}<div class="col-6">B: {{ q.option_b }}</div>{% endif %}
+                  {% if q.option_c %}<div class="col-6">C: {{ q.option_c }}</div>{% endif %}
+                  {% if q.option_d %}<div class="col-6">D: {{ q.option_d }}</div>{% endif %}
+                </div>
+
+                <div class="text-xs text-success-600 font-monospace fw-bold">
+                  ✓ Correct Answer: {{ q.correct_option }}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-4 text-neutral-500">
+            <i class="ri-questionnaire-line fs-1 mb-2 opacity-50"></i>
+            <p class="mb-0 text-sm">No direct questions added yet. Fill the form on the left to add questions.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Assigned Quizzes List -->
+    <div class="card radius-12 border border-neutral-200 shadow-1 mb-24">
+      <div class="card-header p-24 bg-white border-bottom border-neutral-200">
+        <h6 class="mb-0 fw-bold"><i class="ri-folders-line text-success me-2"></i> Attached Course Quizzes ({{ assigned_quizzes|length }})</h6>
+      </div>
+      <div class="card-body p-24">
+        {% if assigned_quizzes %}
+          <div class="d-flex flex-column gap-3">
+            {% for oq in assigned_quizzes %}
+              <div class="p-16 border radius-8 bg-white d-flex justify-content-between align-items-center">
+                <div>
+                  <span class="badge bg-success-100 text-success-600 radius-50 text-xs mb-1">{{ oq.section_name|default:"Section Quiz" }}</span>
+                  <h6 class="fw-bold mb-1 text-sm">{{ oq.quiz.lesson.title }}</h6>
+                  <small class="text-neutral-500 text-xs">{{ oq.quiz.questions.count }} Questions in this Quiz</small>
+                </div>
+                <form method="post" onsubmit="return confirm('Remove quiz from this exam?');">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="remove_quiz">
+                  <input type="hidden" name="olympiad_quiz_id" value="{{ oq.id }}">
+                  <button type="submit" class="btn btn-sm btn-outline-danger radius-4 p-2 text-xs">
+                    <i class="ri-delete-bin-line"></i> Remove
+                  </button>
+                </form>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-4 text-neutral-500">
+            <p class="mb-0 text-sm">No quizzes assigned to this exam yet.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

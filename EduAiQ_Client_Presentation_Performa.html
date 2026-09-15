@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EduAiQ - Client Presentation & Demo Performa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 14mm 14mm 14mm 14mm;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #1e293b;
+      background: #ffffff;
+      line-height: 1.5;
+      font-size: 13px;
+      margin: 0;
+      padding: 0;
+    }
+    .header-banner {
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      color: #ffffff;
+      padding: 24px 28px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      border-bottom: 4px solid #ea580c;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.15);
+    }
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      margin: 0;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+    }
+    .brand-title span {
+      color: #fd7e14;
+    }
+    .brand-subtitle {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    .badge-pill {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-orange {
+      background: #fff7ed;
+      color: #ea580c;
+      border: 1px solid #ffedd5;
+    }
+    .badge-navy {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .section-card {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      page-break-inside: avoid;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1.5px solid #f1f5f9;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title .step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #ea580c;
+      color: #ffffff;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .script-box {
+      background: #f8fafc;
+      border-left: 4px solid #ea580c;
+      padding: 12px 16px;
+      border-radius: 0 10px 10px 0;
+      margin: 10px 0;
+      font-style: normal;
+      color: #334155;
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+    .script-box strong {
+      color: #0f172a;
+    }
+
+    .pillar-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .pillar-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      page-break-inside: avoid;
+    }
+    .pillar-item h4 {
+      margin: 0 0 6px 0;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pillar-item p {
+      margin: 0;
+      font-size: 12px;
+      color: #475569;
+      line-height: 1.45;
+    }
+    .pillar-item .screen-tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: #ea580c;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    table.pro-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+    table.pro-table th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+      text-align: left;
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+    }
+    table.pro-table td {
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    table.pro-table tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    .faq-item {
+      margin-bottom: 10px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    .faq-q {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 12.5px;
+      margin-bottom: 3px;
+    }
+    .faq-a {
+      font-size: 12px;
+      color: #475569;
+    }
+
+    .footer-bar {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 11px;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 10px;
+    }
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Banner -->
+  <div class="header-banner">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h1 class="brand-title">Edu<span>AiQ</span> Platform</h1>
+        <div class="brand-subtitle">Complete Client Presentation & Demo Performa | 360° AI-Powered Education Ecosystem</div>
+      </div>
+      <div>
+        <span class="badge-pill badge-navy">Official Pitch Deck Guide</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 1: Hook & Opening Pitch -->
+  <div class="section-card">
+    <div class="section-header">
+      <h2 class="section-title">
+        <span class="step-num">1</span> High-Impact Opening & Hook (2 Minutes)
+      </h2>
+      <span class="badge-pill badge-orange">Introduction</span>
+    </div>
+    <p style="margin: 0 0 6px 0; font-size: 12px; color: #64748b;"><strong>Objective:</strong> Client ko batana ki EduAiQ ek generic website nahi, balki complete 360° Digital Education & Business Ecosystem hai.</p>
+    <div class="script-box">
+      <strong>🗣️ Presentation Script:</strong><br>
+      <em>"Hello! Aaj main aapko <strong>EduAiQ</strong> ka walkthrough dikhane ja rahi hoon. EduAiQ sirf ek regular e-learning portal nahi hai, balki ek comprehensive <strong>360° AI-Powered Education Ecosystem</strong> hai jo 4 main pillars ko connect karta hai: <strong>Students</strong> (Courses, AI Books & Olympiads), <strong>Institutions</strong> (Schools & Colleges Management), <strong>Franchise Network</strong> (Growth Partners & Lead CRM), aur <strong>Management</strong> (Real-time Analytics Dashboard). Aaiye main aapko iska live demo dikhati hoon..."</em>
+    </div>
+  </div>
+
+  <!-- Step 2: 6 Core Pillars Live Walkthrough -->
+  <div class="section-card">
+    <div class="section-header">
+      <h2 class="section-title">
+        <span class="step-num">2</span> Live Platform Walkthrough (6 Core Pillars)
+      </h2>
+      <span class="badge-pill badge-orange">Core Demo Flow</span>
+    </div>
+
+    <div class="pillar-grid">
+      
+      <!-- Pillar 1 -->
+      <div class="pillar-item">
+        <span class="screen-tag">📍 Screen: Homepage (/)</span>
+        <h4>1. Student Experience & Modern UI</h4>
+        <p>
+          • Modern responsive brand interface (Navy & Golden Orange).<br>
+          • Direct access to AI Books, Quizzes, Olympiads & Fee portal.<br>
+          <strong>🗣️ Talk:</strong> <em>"Clean, modern aur student-friendly UI jisse students easily courses aur assessments explore karte hain."</em>
+        </p>
+      </div>
+
+      <!-- Pillar 2 -->
+      <div class="pillar-item">
+        <span class="screen-tag">📍 Screen: /olympiad-entrance/</span>
+        <h4>2. Olympiad Entrance Exam System</h4>
+        <p>
+          • National-level entrance tests with auto roll numbers.<br>
+          • Timer-based exam mode, syllabus PDFs & instant results.<br>
+          <strong>🗣️ Talk:</strong> <em>"Hamara flagship Olympiad Engine jo national scale tests aur bulk student registrations drive karta hai."</em>
+        </p>
+      </div>
+
+      <!-- Pillar 3 -->
+      <div class="pillar-item">
+        <span class="screen-tag">📍 Screen: /ai-books/ & /admin-panel/quizzes/</span>
+        <h4>3. AI Books & Proctoring Quiz Engine</h4>
+        <p>
+          • Digital AI Books reader & continuous evaluation.<br>
+          • AI Anti-Cheating Proctoring Lock & automated scoring.<br>
+          <strong>🗣️ Talk:</strong> <em>"Secure assessment engine with question shuffling aur AI proctoring fair evaluation ensure karta hai."</em>
+        </p>
+      </div>
+
+      <!-- Pillar 4 -->
+      <div class="pillar-item">
+        <span class="screen-tag">📍 Screen: /institution/login/</span>
+        <h4>4. Multi-Tenant Institution Portal</h4>
+        <p>
+          • Dedicated portal for Schools and Colleges.<br>
+          • Manage student batches, track syllabus & verify progress.<br>
+          <strong>🗣️ Talk:</strong> <em>"B2B ready! Schools/Colleges platform se tie-up karke apne batch ko digitalize kar sakte hain."</em>
+        </p>
+      </div>
+
+      <!-- Pillar 5 -->
+      <div class="pillar-item">
+        <span class="screen-tag">📍 Screen: /apply-for-franchise/ & Leads</span>
+        <h4>5. Built-in Education CRM & Franchise</h4>
+        <p>
+          • Lead Lifecycle: <code>New ➔ Demo ➔ Converted</code>.<br>
+          • Territory tracking, referral codes & automated commissions.<br>
+          <strong>🗣️ Talk:</strong> <em>"Built-in CRM franchise leads ko track karta hai aur direct institution creation se link karta hai."</em>
+        </p>
+      </div>
+
+      <!-- Pillar 6 -->
+      <div class="pillar-item">
+        <span class="screen-tag">📍 Screen: /admin-panel/dashboard/</span>
+        <h4>6. Executive Command Center</h4>
+        <p>
+          • Real-time ApexCharts graphs & growth trends.<br>
+          • Interactive <code>[ 📊 Graph | 📋 Table ]</code> view switchers.<br>
+          <strong>🗣️ Talk:</strong> <em>"Live graphical dashboard jo revenue, active registrations aur entity growth single screen par deta hai."</em>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- Step 3: Key Value Propositions & ROI -->
+  <div class="section-card">
+    <div class="section-header">
+      <h2 class="section-title">
+        <span class="step-num">3</span> Key Value Propositions & Client ROI
+      </h2>
+      <span class="badge-pill badge-orange">Business Value</span>
+    </div>
+
+    <table class="pro-table">
+      <thead>
+        <tr>
+          <th style="width: 25%;">Platform Feature</th>
+          <th style="width: 45%;">What It Delivers</th>
+          <th style="width: 30%;">Client Benefit / ROI</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>All-in-One Architecture</strong></td>
+          <td>LMS + Olympiads + CRM + Institution Portal combined in single system.</td>
+          <td>Zero need for multiple expensive software subscriptions.</td>
+        </tr>
+        <tr>
+          <td><strong>Dual Revenue Model</strong></td>
+          <td>B2C course/exam sales + B2B School institutional annual subscriptions.</td>
+          <td>Multiple recurring revenue streams for the business.</td>
+        </tr>
+        <tr>
+          <td><strong>AI Proctoring & Security</strong></td>
+          <td>Encrypted quiz bank, anti-cheating mode, and role-based permissions.</td>
+          <td>High academic trust, fair tests & data safety.</td>
+        </tr>
+        <tr>
+          <td><strong>Interactive Graphical UI</strong></td>
+          <td>Live ApexCharts visual analytics & instant table/graph toggles.</td>
+          <td>Executive control and superior user satisfaction.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Step 4: Common Client Questions & Answers (FAQs) -->
+  <div class="section-card">
+    <div class="section-header">
+      <h2 class="section-title">
+        <span class="step-num">4</span> Handling Client Questions (FAQs)
+      </h2>
+      <span class="badge-pill badge-orange">Q&A Strategy</span>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Q1: "Kya hum naye courses ya Olympiad exams khud add kar sakte hain?"</div>
+      <div class="faq-a"><strong>Ans:</strong> <em>"Ji bilkul! Admin panel me dedicated forms hain jahan se aap unlimited courses, lessons, AI books aur Olympiad entrance exams bina kisi coding ke add kar sakte hain."</em></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Q2: "Kya schools aur colleges ko alag dashboard milta hai?"</div>
+      <div class="faq-a"><strong>Ans:</strong> <em>"Haan, institutions ke pass apna multi-tenant login portal hota hai jahan wo sirf apne assigned students aur courses ko independently manage kar sakte hain."</em></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Q3: "CRM me leads aur franchise kaise manage hoti hain?"</div>
+      <div class="faq-a"><strong>Ans:</strong> <em>"Leads 'New' se lekar 'Converted' stage tak move hoti hain, aur jab lead close hoti hai to wo automatic platform par registered institution me convert ho jati hai with commission tracking."</em></div>
+    </div>
+  </div>
+
+  <!-- Step 5: Confident Closing -->
+  <div class="section-card" style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border-color: #fd7e14;">
+    <div class="section-header" style="border-color: rgba(234, 88, 12, 0.2);">
+      <h2 class="section-title" style="color: #ea580c;">
+        <span class="step-num" style="background: #0f172a;">5</span> Confident Closing & Call to Action (1 Minute)
+      </h2>
+      <span class="badge-pill" style="background: #0f172a; color: #ffffff;">Next Steps</span>
+    </div>
+    <div class="script-box" style="background: #ffffff; border-color: #0f172a;">
+      <strong>🗣️ Closing Pitch Script:</strong><br>
+      <em>"EduAiQ ek complete scalable digital education business model hai jo ready-to-deploy hai. Hum isko aapke brand requirements aur business goals ke according customize kar sakte hain. Aap batayein ki aap sabse pehle kaunsa module rollout karna chahenge?"</em>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    EduAiQ Platform &copy; 2026 | Confidential Client Presentation & Architecture Guide | Generated for Executive Pitch
+  </div>
+
+</body>
+</html>

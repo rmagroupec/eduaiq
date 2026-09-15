@@ -1,0 +1,333 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Category Management - EduAIQ Admin{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Categories</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/ Categories</span>
+    </div>
+  </div>
+  <button class="btn btn-primary-600 d-flex align-items-center gap-6" onclick="openAddCategoryModal()">
+    <span class="d-flex text-md"><i class="ri-add-large-line"></i></span>
+    Add Category
+  </button>
+</div>
+
+<div class="card h-100">
+  <div class="card-body p-24">
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Color Swatch</th>
+            <th>Name</th>
+            <th>Slug</th>
+            <th>Description</th>
+            <th>Order</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="categoryTableBody">
+          <tr>
+            <td colspan="8" class="text-center py-4 text-muted">
+              <i class="ri-loader-4-line ri-spin align-middle me-2"></i> Loading categories...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Category Modal -->
+<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="categoryModalLabel">Add New Category</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="categoryForm" onsubmit="submitCategory(event)">
+          <input type="hidden" id="catId" name="id" value="">
+          <div class="mb-3">
+            <label for="catName" class="form-label">Category Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="catName" name="name" required oninput="generateCatSlug()">
+          </div>
+          <div class="mb-3">
+            <label for="catSlug" class="form-label">Slug <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="catSlug" name="slug" required>
+          </div>
+          <div class="mb-3">
+            <label for="catColor" class="form-label">Color Swatch <span class="text-danger">*</span></label>
+            <input type="color" class="form-control form-control-color" id="catColor" name="color_code" value="#0d6efd">
+          </div>
+          <div class="mb-3">
+            <label for="catOrder" class="form-label">Display Order <span class="text-danger">*</span></label>
+            <input type="number" class="form-control" id="catOrder" name="order" value="1" min="1" required>
+          </div>
+          <div class="mb-3">
+            <label for="catDesc" class="form-label">Description</label>
+            <textarea class="form-control" id="catDesc" name="description" rows="3"></textarea>
+          </div>
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="catIsActive" name="is_active" checked>
+            <label class="form-check-label" for="catIsActive">Active (visible in category dropdowns and listings)</label>
+          </div>
+          <div class="text-end">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary btn-sm" id="saveCatBtn">Save Category</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+
+  function generateCatSlug() {
+    const catId = document.getElementById('catId').value;
+    // Don't auto-generate slug on edit if user hasn't explicitly cleared it
+    if (catId) return;
+
+    const nameVal = document.getElementById('catName').value;
+    const slugVal = nameVal.toLowerCase()
+                           .replace(/[^a-z0-9\s-]/g, '')
+                           .replace(/\s+/g, '-')
+                           .replace(/-+/g, '-');
+    document.getElementById('catSlug').value = slugVal;
+  }
+
+  function openAddCategoryModal() {
+    document.getElementById('categoryForm').reset();
+    document.getElementById('catId').value = '';
+    document.getElementById('categoryModalLabel').textContent = 'Add New Category';
+    document.getElementById('saveCatBtn').textContent = 'Save Category';
+    document.getElementById('catIsActive').checked = true;
+    document.getElementById('catColor').value = '#0d6efd';
+    document.getElementById('catOrder').value = '1';
+
+    const modalEl = document.getElementById('categoryModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+  }
+
+  function editCategory(id, name, slug, color, order, desc, isActive) {
+    document.getElementById('catId').value = id;
+    document.getElementById('catName').value = name || '';
+    document.getElementById('catSlug').value = slug || '';
+    document.getElementById('catColor').value = color || '#0d6efd';
+    document.getElementById('catOrder').value = order || 1;
+    document.getElementById('catDesc').value = desc || '';
+    document.getElementById('catIsActive').checked = Boolean(isActive);
+
+    document.getElementById('categoryModalLabel').textContent = 'Edit Category';
+    document.getElementById('saveCatBtn').textContent = 'Update Category';
+
+    const modalEl = document.getElementById('categoryModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+  }
+
+  async function loadAdminCategories() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/categories/?exclude_books=false`);
+      const data = await response.json();
+      const tbody = document.getElementById('categoryTableBody');
+      const results = data.results || [];
+
+      if (results.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No categories found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = results.map(c => `
+        <tr>
+          <td>${c.id}</td>
+          <td>
+            <div style="width: 40px; height: 20px; background-color: ${c.color_code || '#0d6efd'}; border-radius: 4px; border: 1px solid #ccc;"></div>
+          </td>
+          <td class="fw-semibold text-dark">${escapeHtml(c.name)}</td>
+          <td><code>${escapeHtml(c.slug)}</code></td>
+          <td class="text-muted text-sm">${escapeHtml(c.description || '-')}</td>
+          <td>${c.order}</td>
+          <td>
+            <span class="badge ${c.is_active ? 'bg-success' : 'bg-secondary'}">
+              ${c.is_active ? 'Active' : 'Inactive'}
+            </span>
+          </td>
+          <td>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-primary" onclick="editCategory(${c.id}, '${escapeJs(c.name)}', '${escapeJs(c.slug)}', '${escapeJs(c.color_code || '#0d6efd')}', ${c.order}, '${escapeJs(c.description || '')}', ${c.is_active})">
+                <i class="ri-edit-line"></i> Edit
+              </button>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteCategory(${c.id}, '${escapeJs(c.name)}')">
+                <i class="ri-delete-bin-line"></i> Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    } catch (e) {
+      console.error(e);
+      document.getElementById('categoryTableBody').innerHTML = `
+        <tr>
+          <td colspan="8" class="text-center py-4 text-danger">Failed to load categories.</td>
+        </tr>
+      `;
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function escapeJs(str) {
+    if (!str) return '';
+    return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n');
+  }
+
+  async function submitCategory(e) {
+    e.preventDefault();
+    const catId = document.getElementById('catId').value;
+    const isEdit = Boolean(catId);
+
+    const payload = {
+      name: document.getElementById('catName').value.trim(),
+      slug: document.getElementById('catSlug').value.trim(),
+      color_code: document.getElementById('catColor').value,
+      order: parseInt(document.getElementById('catOrder').value, 10) || 1,
+      description: document.getElementById('catDesc').value.trim(),
+      is_active: document.getElementById('catIsActive').checked
+    };
+
+    const url = isEdit ? `${API_BASE_URL}/courses/categories/${catId}/` : `${API_BASE_URL}/courses/categories/`;
+    const method = isEdit ? 'PUT' : 'POST';
+
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(payload),
+        credentials: 'include'
+      });
+
+      const resData = await response.json();
+      if (response.ok || resData.success) {
+        showToast(isEdit ? 'Category updated successfully!' : 'Category added successfully!', 'success');
+        const modalEl = document.getElementById('categoryModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+        document.getElementById('categoryForm').reset();
+        loadAdminCategories();
+      } else {
+        showToast('Failed to save category: ' + JSON.stringify(resData.errors || resData.error), 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Error saving category.', 'error');
+    }
+  }
+
+  function deleteCategory(id, name) {
+    if (typeof Swal !== 'undefined') {
+      Swal.fire({
+        title: 'Delete Category?',
+        text: `Are you sure you want to delete the category "${name}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, Delete',
+        customClass: {
+          popup: 'radius-16 border-0 shadow-lg',
+          confirmButton: 'btn btn-danger radius-8 px-20 py-8 text-sm me-2',
+          cancelButton: 'btn btn-secondary radius-8 px-20 py-8 text-sm'
+        },
+        buttonsStyling: false
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+            const response = await fetch(`${API_BASE_URL}/courses/categories/${id}/`, {
+              method: 'DELETE',
+              headers: {
+                'X-CSRFToken': csrfToken
+              },
+              credentials: 'include'
+            });
+
+            const resData = await response.json().catch(() => ({}));
+            if (response.ok || resData.success) {
+              Swal.fire({ icon: 'success', title: 'Deleted!', text: resData.message || 'Category deleted successfully.', timer: 1500, showConfirmButton: false });
+              loadAdminCategories();
+            } else {
+              Swal.fire({ icon: 'error', title: 'Delete Failed', text: resData.error || 'Server error occurred.' });
+            }
+          } catch (e) {
+            console.error(e);
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error deleting category.' });
+          }
+        }
+      });
+    } else if (typeof showDeleteToast === 'function') {
+      showDeleteToast(name, async function() {
+        try {
+          const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+          const response = await fetch(`${API_BASE_URL}/courses/categories/${id}/`, {
+            method: 'DELETE',
+            headers: { 'X-CSRFToken': csrfToken },
+            credentials: 'include'
+          });
+          const resData = await response.json().catch(() => ({}));
+          if (response.ok || resData.success) {
+            if (typeof showToast === 'function') showToast(resData.message || 'Category deleted successfully!', 'success');
+            loadAdminCategories();
+          } else {
+            if (typeof showToast === 'function') showToast(resData.error || 'Failed to delete category.', 'error');
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    }
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener('DOMContentLoaded', loadAdminCategories);
+</script>
+{% endblock %}

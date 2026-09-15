@@ -1,0 +1,417 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Result - {{ exam.name }}{% endblock %}
+
+{% block content %}
+<style>
+    /* Main Hero Card */
+    .result-hero-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06);
+        background: #ffffff;
+        transition: box-shadow 0.3s ease;
+    }
+
+    .result-hero-card:hover {
+        box-shadow: 0 18px 35px -8px rgba(249, 115, 22, 0.12);
+    }
+    
+    /* Sleek Navy Header */
+    .result-header-sleek {
+        background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+        color: #ffffff;
+        padding: 14px 20px;
+        border-bottom: 2.5px solid #fd7e14;
+    }
+
+    .trophy-glow-sm {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(249, 115, 22, 0.18);
+        border: 1.5px solid #fd7e14;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #fdba74;
+        font-size: 17px;
+        flex-shrink: 0;
+    }
+
+    /* Stat Box - Sleek Compact Cards */
+    .stat-box-pro {
+        border-radius: 10px;
+        padding: 10px 12px;
+        transition: all 0.25s ease;
+        text-align: center;
+    }
+
+    .stat-box-score {
+        background: #fff7ed;
+        border: 1px solid #ffedd5;
+    }
+
+    .stat-box-pct {
+        background: #ecfdf5;
+        border: 1px solid #d1fae5;
+    }
+
+    .stat-box-status {
+        background: #faf5ff;
+        border: 1px solid #f3e8ff;
+    }
+
+    .stat-box-pro:hover {
+        transform: translateY(-2px);
+    }
+
+    .stat-label-pro {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #64748b;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+    }
+
+    .stat-num-score {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: #ea580c;
+        line-height: 1;
+    }
+
+    .stat-num-pct {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: #059669;
+        line-height: 1;
+    }
+
+    /* Compact Accuracy Bar */
+    .accuracy-card-pro {
+        background: #ffffff;
+        border: 1px solid #f1f5f9;
+        border-left: 3.5px solid #f97316;
+        border-radius: 8px;
+        padding: 10px 14px;
+    }
+
+    .progress-bar-slim {
+        height: 7px;
+        border-radius: 50rem;
+        background-color: #f1f5f9;
+        overflow: hidden;
+    }
+
+    .progress-fill-gradient {
+        height: 100%;
+        border-radius: 50rem;
+        background: linear-gradient(90deg, #f97316 0%, #ea580c 100%);
+        transition: width 0.8s ease;
+    }
+
+    /* Small Professional Action Buttons */
+    .btn-action-sm-primary {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        color: #ffffff !important;
+        border: none;
+        border-radius: 50rem;
+        padding: 6px 18px;
+        font-size: 13px;
+        font-weight: 700;
+        box-shadow: 0 3px 10px rgba(249, 115, 22, 0.28);
+        transition: all 0.25s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-action-sm-primary:hover {
+        background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+        box-shadow: 0 5px 15px rgba(234, 88, 12, 0.4);
+        transform: translateY(-1px);
+        color: #ffffff !important;
+    }
+
+    .btn-action-sm-outline {
+        background: #ffffff;
+        color: #334155 !important;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 50rem;
+        padding: 6px 16px;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.25s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-action-sm-outline:hover {
+        background: #fff7ed;
+        border-color: #fd7e14;
+        color: #ea580c !important;
+        transform: translateY(-1px);
+    }
+
+    /* Question Review Accordion */
+    .question-acc-item {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px !important;
+        margin-bottom: 8px;
+        overflow: hidden;
+    }
+
+    .question-acc-btn {
+        background: #ffffff;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #1e293b;
+        padding: 10px 14px;
+        box-shadow: none !important;
+    }
+
+    .question-acc-btn:not(.collapsed) {
+        background: #fff7ed;
+        color: #c2410c;
+    }
+
+    .badge-ans-correct {
+        background: #dcfce7;
+        color: #15803d;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 4px;
+    }
+
+    .badge-ans-incorrect {
+        background: #fee2e2;
+        color: #b91c1c;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 4px;
+    }
+</style>
+
+<section class="py-4" style="background: #f8fafc; min-height: 80vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                
+                {% if is_published %}
+                    <!-- PUBLISHED RESULT CARD -->
+                    <div class="card result-hero-card">
+                        
+                        <!-- Header -->
+                        <div class="d-flex align-items-center justify-content-between result-header-sleek">
+                            <div class="d-flex align-items-center gap-2.5">
+                                <div class="trophy-glow-sm" title="Result Status">
+                                    <i class="fas {% if attempt.passed %}fa-trophy{% else %}fa-award{% endif %}"></i>
+                                </div>
+                                <div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <h5 class="text-white fw-bold mb-0" style="font-size: 15.5px;">
+                                            {% if attempt.passed %}Exam Passed!{% else %}Exam Result Summary{% endif %}
+                                        </h5>
+                                        <span class="badge rounded-pill fw-bold text-white px-2 py-0.5" style="background: #fd7e14; font-size: 9.5px; letter-spacing: 0.5px;">
+                                            {{ exam.level|upper|default:"NATIONAL" }}
+                                        </span>
+                                    </div>
+                                    <div class="text-white-50 small mt-0.5" style="font-size: 12px;">
+                                        {{ exam.name }} &bull; Roll: <strong class="text-warning font-monospace">{{ registration.roll_number }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-none d-sm-inline-flex align-items-center bg-white bg-opacity-10 px-2.5 py-1 rounded-pill border border-white border-opacity-25 text-white-50" style="font-size: 11.5px;">
+                                <i class="far fa-clock me-1 text-warning"></i> {{ attempt.submitted_at|date:"d M Y, h:i A" }}
+                            </div>
+                        </div>
+
+                        <div class="card-body p-3 p-md-3.5">
+                            
+                            <!-- Stats Grid (Compact & Balanced) -->
+                            <div class="row g-2 mb-3">
+                                <div class="col-4">
+                                    <div class="stat-box-pro stat-box-score">
+                                        <div class="stat-label-pro">
+                                            <i class="fas fa-bullseye text-warning"></i> Score
+                                        </div>
+                                        <div class="stat-num-score">
+                                            {{ attempt.raw_score|floatformat:0 }} <small class="text-muted fw-normal fs-7">/ {{ attempt.total_marks|floatformat:0 }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="stat-box-pro stat-box-pct">
+                                        <div class="stat-label-pro">
+                                            <i class="fas fa-chart-line text-success"></i> Percent
+                                        </div>
+                                        <div class="stat-num-pct">{{ attempt.score_pct|floatformat:1 }}%</div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="stat-box-pro stat-box-status d-flex flex-column justify-content-center align-items-center">
+                                        <div class="stat-label-pro">
+                                            <i class="fas fa-check-circle text-primary"></i> Status
+                                        </div>
+                                        <div>
+                                            {% if attempt.passed %}
+                                                <span class="badge bg-success text-white fw-bold px-2 py-0.5 rounded" style="font-size: 11px;">PASSED</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary text-white fw-bold px-2 py-0.5 rounded" style="font-size: 11px;">COMPLETED</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Overall Accuracy Progress Bar -->
+                            <div class="accuracy-card-pro mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-bold text-dark" style="font-size: 12.5px;"><i class="fas fa-chart-pie text-warning me-1"></i> Accuracy</span>
+                                    <span class="fw-bold text-success" style="font-size: 12.5px;">{{ attempt.score_pct|floatformat:1 }}%</span>
+                                </div>
+                                <div class="progress-bar-slim">
+                                    <div class="progress-fill-gradient" style="width: {{ attempt.score_pct|floatformat:0 }}%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Small Professional Action Buttons -->
+                            <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 pt-1 pb-2 border-bottom">
+                                <a href="{% url 'olympiad_entrance_list' %}" class="btn-action-sm-outline">
+                                    <i class="fas fa-th-large"></i> Exam Catalog
+                                </a>
+                                <a href="{% url 'olympiad_entrance_certificate' exam.id %}" class="btn-action-sm-primary">
+                                    <i class="fas fa-certificate"></i> View & Print Certificate
+                                </a>
+                            </div>
+
+                            <!-- Question & Solution Analysis -->
+                            {% if review_questions %}
+                                <div class="mt-3 text-start">
+                                    <h6 class="fw-bold text-dark mb-2" style="font-size: 13.5px;"><i class="fas fa-list-check text-warning me-1.5"></i> Question Analysis</h6>
+                                    <div class="accordion" id="questionReviewAccordion">
+                                        {% for q in review_questions %}
+                                            <div class="accordion-item question-acc-item">
+                                                <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                                                    <button class="accordion-button collapsed question-acc-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}">
+                                                        {% if q.is_correct %}
+                                                            <span class="badge-ans-correct me-2">✓ Correct</span>
+                                                        {% else %}
+                                                            <span class="badge-ans-incorrect me-2">✗ Incorrect</span>
+                                                        {% endif %}
+                                                        <span class="text-truncate" style="max-width: 82%;">Q{{ forloop.counter }}: {{ q.text|truncatechars:55 }}</span>
+                                                    </button>
+                                                </h2>
+                                                <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#questionReviewAccordion">
+                                                    <div class="accordion-body bg-light p-3">
+                                                        <p class="fw-bold text-dark mb-2 small">{{ q.text }}</p>
+                                                        <div class="d-flex flex-wrap gap-3 small mb-2">
+                                                            <span>Your Answer: <strong class="{% if q.is_correct %}text-success{% else %}text-danger{% endif %}">{{ q.user_ans }}</strong></span>
+                                                            <span>Correct Answer: <strong class="text-success">{{ q.correct_ans }}</strong></span>
+                                                            <span>Marks: <strong>{{ q.marks }}</strong></span>
+                                                        </div>
+                                                        {% if q.explanation %}
+                                                            <div class="p-2.5 bg-white border rounded small text-secondary">
+                                                                <strong class="text-dark"><i class="fas fa-lightbulb text-warning me-1"></i> Solution:</strong><br>
+                                                                {{ q.explanation }}
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                        </div>
+                    </div>
+
+                {% else %}
+                    <!-- LOCKED / SCHEDULED RESULT ANNOUNCEMENT CARD -->
+                    <div class="card result-hero-card">
+                        <div class="result-header-sleek text-center py-3">
+                            <div class="trophy-glow-sm mx-auto mb-2" title="Locked Result">
+                                <i class="fas fa-lock text-warning"></i>
+                            </div>
+                            <h5 class="text-white fw-bold mb-1">Result Scheduled for Publication</h5>
+                            <span class="badge bg-white bg-opacity-10 text-white-50 px-3 py-1 rounded-pill" style="font-size: 11.5px;">
+                                <i class="fas fa-check-circle me-1 text-success"></i> Exam Submitted Successfully
+                            </span>
+                        </div>
+
+                        <div class="card-body p-4 text-center">
+                            <div class="badge bg-warning-subtle text-warning-emphasis fs-7 px-3 py-1.5 rounded-pill mb-3">
+                                <i class="fas fa-clock me-1"></i> Result Policy: {{ exam.get_result_display_mode_display }}
+                            </div>
+
+                            <p class="text-secondary small mb-3">
+                                Thank you for attempting <strong>{{ exam.name }}</strong>! Your responses are safely recorded.
+                            </p>
+
+                            <div class="accuracy-card-pro text-center mb-3">
+                                <h6 class="fw-bold text-dark mb-1"><i class="fas fa-clock text-primary me-1"></i> Result Unlocks At</h6>
+                                {% if unlock_time %}
+                                    <div class="fs-5 fw-bold text-primary my-1">{{ unlock_time|date:"d F Y, h:i A" }}</div>
+                                    <div class="small text-muted font-monospace mt-1" id="unlockCountdown">Calculating...</div>
+                                {% else %}
+                                    <div class="fs-6 fw-bold text-primary my-1">Admin Publication Pending</div>
+                                    <small class="text-muted">Results will be visible once released.</small>
+                                {% endif %}
+                            </div>
+
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="{% url 'olympiad_entrance_list' %}" class="btn-action-sm-primary">
+                                    <i class="fas fa-arrow-left"></i> Return to Catalog
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if unlock_time %}
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const unlockTs = new Date("{{ unlock_time|date:'c' }}").getTime();
+                                const countdownEl = document.getElementById('unlockCountdown');
+
+                                const timer = setInterval(() => {
+                                    const nowTs = new Date().getTime();
+                                    const diff = unlockTs - nowTs;
+
+                                    if (diff <= 0) {
+                                        clearInterval(timer);
+                                        countdownEl.innerText = "Unlocking now... Refreshing!";
+                                        setTimeout(() => { location.reload(); }, 1500);
+                                        return;
+                                    }
+
+                                    const hours = Math.floor(diff / (1000 * 60 * 60));
+                                    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                                    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                                    countdownEl.innerText = `Time Remaining: ${hours}h ${mins}m ${secs}s`;
+                                }, 1000);
+                            });
+                        </script>
+                    {% endif %}
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

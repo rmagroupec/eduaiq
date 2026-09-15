@@ -1,0 +1,643 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
+
+{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+<div class="">
+<h1 class="fw-semibold mb-4 h6 text-primary-light">Income List </h1>
+<div class="">
+<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
+<span class="text-secondary-light">/ Income List </span>
+</div>
+</div>
+<button class="btn btn-primary-600 d-flex align-items-center gap-6" type="button" data-bs-toggle="modal" data-bs-target="#addIncomeModal">
+<span class="d-flex text-md">
+<i class="ri-add-large-line"></i>
+</span>
+                Add Income
+            </button>
+</div>
+<div class="mt-24">
+<div class="card h-100">
+<div class="card-body p-0 dataTable-wrapper">
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-16 px-20 py-12 border-bottom border-neutral-200">
+<div class="d-flex flex-wrap align-items-center gap-16">
+<div class="dropdown">
+<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
+<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
+<i class="ri-file-upload-line text-md line-height-1"></i>
+                                        Export
+                                    </span>
+<span class="">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<ul class="dropdown-menu p-12 border bg-base shadow">
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
+<i class="ri-file-3-line"></i>
+                                            PDF
+                                        </button>
+</li>
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
+<i class="ri-file-excel-line"></i>
+                                            Excel
+                                        </button>
+</li>
+</ul>
+</div>
+<form class="navbar-search dt-search m-0">
+    {% csrf_token %}
+<input aria-controls="dataTable" class="dt-input bg-transparent radius-4" name="search" placeholder="Search..." type="text"/>
+<iconify-icon class="icon" icon="ion:search-outline"></iconify-icon>
+</form>
+</div>
+<div class="d-flex align-items-center gap-8 text-secondary-light">
+<span class="">
+                                Rows per page:
+                            </span>
+<div class="dt-length">
+<select aria-controls="dataTable" class="dt-input form-control form-select" name="dataTable_length">
+<option value="5">5</option>
+<option selected="" value="10">10</option>
+<option value="25">25</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+</div>
+</div>
+</div>
+<div class="p-0">
+<table class="table bordered-table mb-0 data-table" data-page-length="10" id="dataTable">
+<thead>
+<tr>
+<th scope="col">
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                S.L
+                                            </label>
+</div>
+</th>
+<th scope="col">Invoice</th>
+<th scope="col">Name</th>
+<th scope="col">Description</th>
+<th scope="col">Income Head</th>
+<th scope="col">Payment Type</th>
+<th scope="col">Amount</th>
+<th scope="col">Date</th>
+<th scope="col">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">02</label>
+</div>
+</td>
+<td>1002</td>
+<td>Sports Fund</td>
+<td>Football tournament registration fees</td>
+<td>Sports</td>
+<td>Online</td>
+<td>₹420</td>
+<td>12 Jan 2024</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i>Edit
+                                                    </button>
+</li>
+<li>
+<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+                                                    </button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">03</label>
+</div>
+</td>
+<td>1003</td>
+<td>Exam Fees</td>
+<td>Mid-term exam fee collection</td>
+<td>Examination</td>
+<td>Bank Transfer</td>
+<td>₹1,200</td>
+<td>20 Jan 2024</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i>Edit
+                                                    </button>
+</li>
+<li>
+<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+                                                    </button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">04</label>
+</div>
+</td>
+<td>1004</td>
+<td>Admission</td>
+<td>New student admission fees</td>
+<td>Admission</td>
+<td>Cheque</td>
+<td>₹2,500</td>
+<td>03 Feb 2024</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i>Edit
+                                                    </button>
+</li>
+<li>
+<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+                                                    </button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">05</label>
+</div>
+</td>
+<td>1005</td>
+<td>Science Lab</td>
+<td>Lab maintenance fund collection</td>
+<td>Laboratory</td>
+<td>Cash</td>
+<td>₹780</td>
+<td>14 Feb 2024</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i>Edit
+                                                    </button>
+</li>
+<li>
+<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+                                                    </button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">06</label>
+</div>
+</td>
+<td>1006</td>
+<td>Donation</td>
+<td>Alumni donation for scholarship</td>
+<td>Donation</td>
+<td>Online</td>
+<td>₹5,000</td>
+<td>28 Feb 2024</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i>Edit
+                                                    </button>
+</li>
+<li>
+<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+                                                    </button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">07</label>
+</div>
+</td>
+<td>1007</td>
+<td>Library Sale</td>
+<td>Sale of old library books</td>
+<td>Library</td>
+<td>Cash</td>
+<td>₹350</td>
+<td>03 Mar 2024</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i>Edit
+                                                    </button>
+</li>
+<li>
+<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+                                                    </button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">08</label>
+</div>
+</td>
+<td>1008</td>
+<td>Transport Fees</td>
+<td>Monthly bus service collection</td>
+<td>Transport</td>
+<td>Cash</td>
+<td>₹980</td>
+<td>12 Mar 2024</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i>Edit
+                                                    </button>
+</li>
+<li>
+<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+                                                    </button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">09</label>
+</div>
+</td>
+<td>1009</td>
+<td>Event Income</td>
+<td>Annual cultural program tickets</td>
+<td>Event</td>
+<td>Online</td>
+<td>₹2,300</td>
+<td>22 Mar 2024</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i>Edit
+                                                    </button>
+</li>
+<li>
+<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+                                                    </button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">10</label>
+</div>
+</td>
+<td>1010</td>
+<td>Miscellaneous</td>
+<td>Other small income sources</td>
+<td>General</td>
+<td>Cash</td>
+<td>₹250</td>
+<td>30 Mar 2024</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i>Edit
+                                                    </button>
+</li>
+<li>
+<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+                                                    </button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Add Income Modal -->
+<div class="modal fade" id="addIncomeModal" tabindex="-1" aria-labelledby="addIncomeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content radius-16 border-0 shadow">
+      <div class="modal-header border-bottom px-24 py-16">
+        <h6 class="modal-title fw-bold text-primary-light" id="addIncomeModalLabel">Add Income Record</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-24">
+        <form id="addIncomeForm" onsubmit="handleIncomeSubmit(event)">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label text-sm fw-semibold text-primary-light">Income Name / Source <span class="text-danger">*</span></label>
+              <input type="text" class="form-control radius-8" id="incTitle" name="title" placeholder="e.g. Sports Fund, Exam Fees" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-sm fw-semibold text-primary-light">Income Head <span class="text-danger">*</span></label>
+              <select class="form-select radius-8" id="incHead" name="income_head" required>
+                <option value="" selected disabled>Select Income Head</option>
+                <option value="General">General</option>
+                <option value="Sports">Sports</option>
+                <option value="Examination">Examination</option>
+                <option value="Admission">Admission</option>
+                <option value="Laboratory">Laboratory</option>
+                <option value="Donation">Donation</option>
+                <option value="Library">Library</option>
+                <option value="Transport">Transport</option>
+                <option value="Event">Event</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-sm fw-semibold text-primary-light">Amount (₹) <span class="text-danger">*</span></label>
+              <input type="number" step="0.01" class="form-control radius-8" id="incAmount" name="amount" placeholder="0.00" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-sm fw-semibold text-primary-light">Payment Type <span class="text-danger">*</span></label>
+              <select class="form-select radius-8" id="incPaymentType" name="payment_type" required>
+                <option value="Cash">Cash</option>
+                <option value="Online">Online / UPI</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Cheque">Cheque</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-sm fw-semibold text-primary-light">Date <span class="text-danger">*</span></label>
+              <input type="date" class="form-control radius-8" id="incDate" name="income_date" required>
+            </div>
+            <div class="col-12">
+              <label class="form-label text-sm fw-semibold text-primary-light">Description / Notes</label>
+              <textarea class="form-control radius-8" id="incDescription" name="description" rows="2" placeholder="Brief note..."></textarea>
+            </div>
+          </div>
+          <div class="d-flex align-items-center justify-content-end gap-12 mt-24">
+            <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary-600 radius-8 px-20 text-white">Save Income</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script>
+
+    let table;
+    let editingIncomeRow = null;
+
+    document.getElementById('incDate').valueAsDate = new Date();
+
+    const incomeActionDropdownHtml = `
+        <div class="btn-group">
+            <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+                <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
+                <li>
+                    <button onclick="window.open('/payments/invoice/trx/1/?download=pdf', '_blank')" class="dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+                        <i class="ri-file-download-line text-lg"></i> Download Invoice
+                    </button>
+                </li>
+                <li>
+                    <button onclick="window.open('/payments/invoice/trx/1/', '_blank')" class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+                        <i class="ri-eye-line"></i> View Receipt
+                    </button>
+                </li>
+                <li>
+                    <button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+                        <i class="ri-edit-2-line"></i> Edit
+                    </button>
+                </li>
+                <li>
+                    <button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+                        <i class="ri-delete-bin-6-line"></i> Delete
+                    </button>
+                </li>
+            </ul>
+        </div>
+    `;
+
+    // Global Delete Delegate
+    $(document).on('click', '.delete-row-btn, [data-bs-target="#exampleModalDelete"]', function (e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        window.showConfirmModal({
+            title: 'Delete Income Record',
+            message: 'Are you sure you want to delete this income record?',
+            icon: 'ri-delete-bin-6-line',
+            iconBgClass: 'bg-danger-100',
+            iconColorClass: 'text-danger-600',
+            confirmText: 'Yes, Delete',
+            confirmBtnClass: 'btn-danger',
+            onConfirm: function () {
+                $row.fadeOut(250, function () {
+                    $row.remove();
+                    if (window.showToast) window.showToast('Income record deleted successfully!', 'info');
+                });
+            }
+        });
+    });
+
+    // Global Edit Delegate
+    $(document).on('click', '.edit-row-btn, .edit-sidebar-btn', function (e) {
+        e.preventDefault();
+        editingIncomeRow = $(this).closest('tr');
+
+        const title = editingIncomeRow.find('td:nth-child(3)').text().trim();
+        const description = editingIncomeRow.find('td:nth-child(4)').text().trim();
+        const category = editingIncomeRow.find('td:nth-child(5)').text().trim();
+        const paymentType = editingIncomeRow.find('td:nth-child(6)').text().trim();
+        const amountVal = editingIncomeRow.find('td:nth-child(7)').text().replace(/[^0-9.]/g, '').trim();
+
+        $('#incTitle').val(title);
+        $('#incDescription').val(description);
+        if (category) $('#incHead').val(category);
+        if (paymentType) $('#incPaymentType').val(paymentType);
+        $('#incAmount').val(amountVal);
+
+        $('#addIncomeModalLabel').text('Edit Income Record');
+        $('#addIncomeForm button[type=submit]').text('Update Income');
+
+        const modalEl = document.getElementById('addIncomeModal');
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modalInstance.show();
+    });
+
+    // Data Table init
+    $('.data-table').each(function () {
+        const $table = $(this);
+        const tableInstance = new DataTable(this);
+
+        $table.closest('.dataTable-wrapper').find('.dt-search .dt-input').on('keyup', function () {
+            tableInstance.search(this.value).draw();
+        });
+
+        $table.closest('.dataTable-wrapper').find('.dt-length .dt-input').on('change', function () {
+            const value = $(this).val();
+            tableInstance.page.len(value).draw();
+        });
+    });
+
+    $('#addIncomeModal').on('show.bs.modal', function () {
+        if (!editingIncomeRow) {
+            $('#addIncomeModalLabel').text('Add Income Record');
+            $('#addIncomeForm button[type=submit]').text('Add Income');
+            document.getElementById('addIncomeForm').reset();
+            document.getElementById('incDate').valueAsDate = new Date();
+        }
+    });
+
+    $('#addIncomeModal').on('hidden.bs.modal', function () {
+        editingIncomeRow = null;
+        $('#addIncomeModalLabel').text('Add Income Record');
+        $('#addIncomeForm button[type=submit]').text('Add Income');
+    });
+
+    async function handleIncomeSubmit(e) {
+        e.preventDefault();
+        const title = $('#incTitle').val().trim();
+        const category = $('#incHead').val() || 'General';
+        const amount = parseFloat($('#incAmount').val()) || 0;
+        const paymentType = $('#incPaymentType').val();
+        const date = $('#incDate').val();
+        const description = $('#incDescription').val().trim();
+
+        if (editingIncomeRow) {
+            editingIncomeRow.find('td:nth-child(3)').text(title);
+            editingIncomeRow.find('td:nth-child(4)').text(description || 'Income entry');
+            editingIncomeRow.find('td:nth-child(5)').text(category);
+            editingIncomeRow.find('td:nth-child(6)').text(paymentType);
+            editingIncomeRow.find('td:nth-child(7)').text('₹' + amount.toLocaleString('en-IN', {minimumFractionDigits: 2}));
+            editingIncomeRow.find('td:nth-child(8)').text(date);
+
+            editingIncomeRow = null;
+            const modalEl = document.getElementById('addIncomeModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) modalInstance.hide();
+            document.getElementById('addIncomeForm').reset();
+            window.showToast('Income updated successfully!', 'success');
+            return;
+        }
+
+        window.showToast('Income recorded successfully!', 'success');
+        const modalEl = document.getElementById('addIncomeModal');
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        if (modalInstance) modalInstance.hide();
+        document.getElementById('addIncomeForm').reset();
+
+        const invId = Math.floor(1000 + Math.random() * 9000);
+        const rowCount = $('#dataTable tbody tr').length + 1;
+        const newRow = `
+            <tr>
+                <td>
+                    <div class="form-check style-check d-flex align-items-center">
+                        <input class="form-check-input" type="checkbox"/>
+                        <label class="form-check-label">${String(rowCount).padStart(2, '0')}</label>
+                    </div>
+                </td>
+                <td>${invId}</td>
+                <td class="fw-semibold text-dark">${title}</td>
+                <td>${description || 'Income entry'}</td>
+                <td>${category}</td>
+                <td>${paymentType}</td>
+                <td class="fw-bold text-success-600">₹${amount.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                <td>${date}</td>
+                <td>${incomeActionDropdownHtml}</td>
+            </tr>
+        `;
+        $('#dataTable tbody').append(newRow);
+    }
+    </script>
+{% endblock %}

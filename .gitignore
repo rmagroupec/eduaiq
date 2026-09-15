@@ -1,0 +1,26 @@
+# Virtual environment
+env/
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Django
+db.sqlite3
+/staticfiles/
+/media/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+
+accounts.zip
+*.zip
+
+# Environment variables
+.env
+.env.*
+!.env.example

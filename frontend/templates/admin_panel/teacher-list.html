@@ -1,0 +1,404 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
+
+{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+<div class="">
+<h1 class="fw-semibold mb-4 h6 text-primary-light">Teacher List</h1>
+<div class="">
+<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
+<a class="text-secondary-light hover-text-primary hover-underline d-none" href="javascript:void(0)"> /
+        Teacher</a>
+<span class="text-secondary-light">/ Teacher List</span>
+</div>
+<div class="d-flex align-items-center gap-2">
+  {% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'superadmin' or request.user.role == 'super_admin' or is_main_admin %}
+  <button class="btn btn-outline-success-600 d-flex align-items-center gap-6 radius-8" id="exportTeachersCsvBtn">
+    <i class="ri-download-2-line text-md"></i> Export CSV
+  </button>
+  {% endif %}
+  <a class="btn btn-primary-600 d-flex align-items-center gap-6 radius-8" href="/admin-panel/add-new-teacher/">
+    <span class="d-flex text-md">
+      <i class="ri-add-large-line"></i>
+    </span>
+    Add Teacher
+  </a>
+</div>
+</div>
+<div class="mt-24">
+<div class="card h-100">
+<div class="card-body p-0 dataTable-wrapper">
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-16 px-20 py-12 border-bottom border-neutral-200">
+<div class="d-flex flex-wrap align-items-center gap-16">
+{% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'superadmin' or request.user.role == 'super_admin' or is_main_admin %}
+<div class="dropdown">
+<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
+<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
+<i class="ri-file-upload-line text-md line-height-1"></i>
+                                        Export
+                                    </span>
+<span class="">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<ul class="dropdown-menu p-12 border bg-base shadow">
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
+<i class="ri-file-3-line"></i>
+                                            PDF
+                                        </button>
+</li>
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
+<i class="ri-file-excel-line"></i>
+                                            Excel
+                                        </button>
+</li>
+</ul>
+</div>
+{% endif %}
+<form class="navbar-search dt-search m-0">
+    {% csrf_token %}
+<input aria-controls="dataTable" class="dt-input bg-transparent radius-4" name="search" placeholder="Search..." type="text"/>
+<iconify-icon class="icon" icon="ion:search-outline"></iconify-icon>
+</form>
+<div class="dropdown">
+<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
+<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
+                                        Filter
+                                    </span>
+<span class="">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<div class="dropdown-menu border bg-base shadow dropdown-menu-lg p-0">
+<div class="d-flex align-items-center justify-content-between border-bottom py-8 px-16">
+<span class="fw-semibold text-lg text-primary-light">Filter</span>
+<button type="button">
+<i class="ri-close-large-line"></i>
+</button>
+</div>
+<form action="#" class="p-16">
+    {% csrf_token %}
+<div class="row g-3">
+<div class="col-12">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="subject">Gender</label>
+<select class="form-control form-select" id="subject">
+<option value="Select">Select Subject</option>
+<option value="Match">Match</option>
+<option value="English">English</option>
+<option value="Bangla">Bangla</option>
+<option value="Economics">Economics</option>
+<option value="Physics">Physics</option>
+</select>
+</div>
+<div class="col-12">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="status">Status</label>
+<select class="form-control form-select" id="status">
+<option value="Select">Select Status</option>
+<option value="Active">Active</option>
+<option value="Inactive">Inactive</option>
+</select>
+</div>
+<div class="col-6">
+<button class="btn btn-danger-200 text-danger-600 w-100" type="reset">Reset</button>
+</div>
+<div class="col-6">
+<button class="btn btn-primary-600 w-100" type="submit">Apply</button>
+</div>
+</div>
+</form>
+</div>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8 text-secondary-light">
+<span class="">
+                                Rows per page:
+                            </span>
+<div class="dt-length">
+<select aria-controls="dataTable" class="dt-input form-control form-select" name="dataTable_length">
+<option value="5">5</option>
+<option selected="" value="10">10</option>
+<option value="25">25</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+</div>
+</div>
+</div>
+<div class="p-0">
+<table class="table bordered-table mb-0 data-table" data-page-length="10" id="dataTable">
+<thead>
+<tr>
+<th scope="col">
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                S.L
+                                            </label>
+</div>
+</th>
+<th scope="col">ID</th>
+<th scope="col">Name</th>
+<th scope="col">Subject</th>
+<th scope="col">Class</th>
+<th scope="col">Email</th>
+<th scope="col">Phone Number</th>
+<th scope="col">Join Date</th>
+<th scope="col">Status</th>
+<th scope="col">Action</th>
+</tr>
+</thead>
+  <tbody id="teacherTableBody">
+    <!-- Dynamically populated from API -->
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+$(document).ready(function() {
+    let dataTableInstance = null;
+
+    function fetchTeachers() {
+        $.ajax({
+            url: '/accounts/api/employee/onboard/',
+            type: 'GET',
+            success: function(resp) {
+                if ($.fn.DataTable && $.fn.DataTable.isDataTable('#dataTable')) {
+                    $('#dataTable').DataTable().clear().destroy();
+                }
+
+                const tbody = $('#teacherTableBody');
+                tbody.empty();
+
+                if (resp.status === 'success' && resp.data && resp.data.length > 0) {
+                    // Filter for teacher/faculty accounts or display teacher role accounts
+                    const teachers = resp.data.filter(function(emp) {
+                        const r = (emp.role || '').toLowerCase();
+                        const d = (emp.department || '').toLowerCase();
+                        const des = (emp.designation || '').toLowerCase();
+                        return r === 'teacher' || d.includes('teach') || d.includes('faculty') || d.includes('academic') || des.includes('teacher') || des.includes('prof') || des.includes('faculty') || des.includes('instructor');
+                    });
+
+                    // If no specific teachers filtered, use any returned employees if role is default
+                    const displayList = teachers.length > 0 ? teachers : resp.data.filter(emp => emp.role === 'teacher');
+
+                    if (displayList.length > 0) {
+                        displayList.forEach(function(tch, index) {
+                            const sl = String(index + 1).padStart(2, '0');
+                            const avatarNum = (index % 6) + 1;
+                            const avatarUrl = tch.profile_image || ("{% static 'admin_assets/images/thumbs/teacher-avatar-img' %}" + avatarNum + ".png");
+                            
+                            const statusBadge = (tch.status === 'Active' || tch.status === 'active') ?
+                                '<span class="bg-success-100 text-success-600 px-24 py-4 radius-4 fw-medium text-sm">Active</span>' :
+                                '<span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span>';
+
+                            const viewUrl = `/admin-panel/teacher-details/?name=${encodeURIComponent(tch.full_name)}&email=${encodeURIComponent(tch.email)}&id=${tch.id}`;
+
+                            const rowHtml = `
+                            <tr>
+                                <td>
+                                    <div class="form-check style-check d-flex align-items-center">
+                                        <input class="form-check-input" type="checkbox"/>
+                                        <label class="form-check-label">${sl}</label>
+                                    </div>
+                                </td>
+                                <td><span class="text-primary-600 fw-bold">${tch.employee_id || ('TCH' + tch.id)}</span></td>
+                                <td>
+                                    <a href="${viewUrl}" class="d-flex align-items-center cursor-pointer text-decoration-none">
+                                        <img alt="${tch.full_name}" class="flex-shrink-0 me-12 radius-8" src="${avatarUrl}" width="40" height="40"/>
+                                        <div>
+                                            <h6 class="text-md mb-0 fw-medium flex-grow-1 text-neutral-800 hover-text-primary">${tch.full_name}</h6>
+                                        </div>
+                                    </a>
+                                </td>
+                                <td>${tch.department || 'Academic & Faculty'}</td>
+                                <td>${tch.designation || 'Teacher'}</td>
+                                <td>${tch.email || 'N/A'}</td>
+                                <td>${tch.phone || 'N/A'}</td>
+                                <td>${tch.joining_date || '-'}</td>
+                                <td>${statusBadge}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+                                            <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
+                                            <li>
+                                                <a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="${viewUrl}">
+                                                    <i class="ri-user-3-line"></i> View Profile
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/add-new-teacher/?user_id=${tch.user_id || ''}&emp_id=${tch.id}">
+                                                    <i class="ri-edit-line text-primary-600"></i> Edit Profile
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6 delete-teacher-btn" data-id="${tch.id}" data-name="${tch.full_name}">
+                                                    <i class="ri-delete-bin-6-line"></i> Delete Teacher
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>`;
+                            tbody.append(rowHtml);
+                        });
+                    } else {
+                        tbody.html(`
+                            <tr>
+                                <td colspan="10" class="text-center py-40 text-secondary-light">
+                                    <i class="ri-user-unfollow-line text-xxl d-block mb-8"></i>
+                                    No registered teachers found. Click "Add Teacher" to create one.
+                                </td>
+                            </tr>
+                        `);
+                    }
+                } else {
+                    tbody.html(`
+                        <tr>
+                            <td colspan="10" class="text-center py-40 text-secondary-light">
+                                <i class="ri-user-unfollow-line text-xxl d-block mb-8"></i>
+                                No registered teachers found. Click "Add Teacher" to create one.
+                            </td>
+                        </tr>
+                    `);
+                }
+
+                if ($.fn.DataTable && $('#dataTable tbody tr').length > 0 && !tbody.find('td[colspan]').length) {
+                    dataTableInstance = $('#dataTable').DataTable({
+                        destroy: true,
+                        pageLength: 10,
+                        searching: true,
+                        paging: true,
+                        info: false,
+                        lengthChange: false
+                    });
+                }
+            },
+            error: function(err) {
+                console.error("Error fetching teachers:", err);
+                $('#teacherTableBody').html(`
+                    <tr>
+                        <td colspan="10" class="text-center py-40 text-secondary-light">
+                            <i class="ri-user-unfollow-line text-xxl d-block mb-8"></i>
+                            No registered teachers found. Click "Add Teacher" to create one.
+                        </td>
+                    </tr>
+                `);
+            }
+        });
+    }
+
+    fetchTeachers();
+
+    // Search input handler
+    $('.dt-search .dt-input').on('keyup', function () {
+        if (dataTableInstance) {
+            dataTableInstance.search(this.value).draw();
+        }
+    });
+
+    // Page length change handler
+    $('.dt-length .dt-input').on('change', function () {
+        if (dataTableInstance) {
+            dataTableInstance.page.len($(this).val()).draw();
+        }
+    });
+
+    // Delete Teacher with SweetAlert2 confirmation
+    $(document).on('click', '.delete-teacher-btn', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const tchId = $(this).data('id');
+        const tchName = $(this).data('name') || 'this teacher';
+
+        Swal.fire({
+            title: 'Delete Teacher?',
+            text: `Are you sure you want to delete "${tchName}"? This action cannot be undone.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, Delete',
+            customClass: {
+                popup: 'radius-16 border-0 shadow-lg',
+                confirmButton: 'btn btn-danger radius-8 px-20 py-8 text-sm me-2',
+                cancelButton: 'btn btn-secondary radius-8 px-20 py-8 text-sm'
+            },
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/accounts/api/employee/${tchId}/delete/`,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    data: JSON.stringify({ id: tchId }),
+                    contentType: 'application/json',
+                    success: function(resp) {
+                        if (resp.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: resp.message || 'Teacher deleted successfully.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            fetchTeachers();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Delete Failed',
+                                text: resp.message || 'Failed to delete teacher.'
+                            });
+                        }
+                    },
+                    error: function(err) {
+                        const msg = err.responseJSON && err.responseJSON.message ? err.responseJSON.message : 'Error deleting teacher.';
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: msg
+                        });
+                    }
+                });
+            }
+        });
+    });
+
+    $('#exportTeachersCsvBtn').on('click', function () {
+        let csv = [];
+        let rows = document.querySelectorAll("table tr");
+        for (let i = 0; i < rows.length; i++) {
+            let row = [], cols = rows[i].querySelectorAll("td, th");
+            for (let j = 0; j < cols.length - 1; j++) {
+                let text = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""');
+                row.push('"' + text.trim() + '"');
+            }
+            csv.push(row.join(","));
+        }
+        let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+        let downloadLink = document.createElement("a");
+        downloadLink.download = `Teacher_Directory_${new Date().toISOString().slice(0, 10)}.csv`;
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    });
+});
+</script>
+{% endblock %}

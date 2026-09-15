@@ -1,0 +1,463 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}EduAIQ{% endblock %}</title>
+    <meta name="description" content="{% block description %}EduAIQ - AI Powered Education Platform{% endblock %}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'assets/img/favicon.png' %}">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/bootstrap/css/bootstrap.min.css' %}" media="all">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/fontawesome/css/all.min.css' %}">
+
+    <!-- ElementsKit -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/elementskit-icon-pack/assets/css/ekiticons.css' %}">
+
+    <!-- Progress Bar -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/progressbar-fill-visible/css/progressBar.css' %}">
+
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/jquery-ui/jquery-ui.min.css' %}">
+
+    <!-- Modal Video -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/modal-video/modal-video.min.css' %}">
+
+    <!-- Fancybox -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/fancybox/dist/jquery.fancybox.min.css' %}">
+
+    <!-- Slick Slider -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/slick/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/slick/slick-theme.css' %}">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;500;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+    <!-- PDF.js Library for DRM HTML5 Canvas PDF Viewing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <style>
+        video::-webkit-media-controls-enclosure {
+            overflow: hidden !important;
+        }
+    </style>
+
+    {% block css %}
+    {% endblock %}
+
+</head>
+
+<body>
+
+    <!-- Site Loader -->
+    <div class="site-loader" id="siteLoader">
+        <div class="preloader-content">
+            <img alt="" src="{% static 'assets/img/loader1.gif' %}">
+        </div>
+    </div>
+    <script>
+        // Force-hide the loader quickly, overriding any slower timer in custom.js
+        (function () {
+            function hideSiteLoaderFast() {
+                var loader = document.getElementById('siteLoader');
+                if (loader) {
+                    loader.style.transition = 'opacity 0.15s ease';
+                    loader.style.opacity = '0';
+                    setTimeout(function () {
+                        loader.style.display = 'none';
+                    }, 150);
+                }
+            }
+            // Hide as soon as DOM is ready (no need to wait for full window load)
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                setTimeout(hideSiteLoaderFast, 100);
+            } else {
+                document.addEventListener('DOMContentLoaded', function () {
+                    setTimeout(hideSiteLoaderFast, 100);
+                });
+            }
+        })();
+    </script>
+
+    <div id="page" class="full-page">
+
+        <!-- Header -->
+        {% include 'partials/header.html' %}
+
+        <!-- Main Content -->
+        <main id="content">
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <!-- Footer -->
+        {% include 'partials/footer.html' %}
+
+        <!-- Back to top -->
+        <a class="to-top-icon" href="#" id="backTotop">
+            <i class="fas fa-chevron-up"></i>
+        </a>
+
+        <!-- Modern Spotlight Search Modal -->
+        <div class="header-search-form header-search-overlay" id="headerSearchModal">
+            <div class="header-search-backdrop"></div>
+            <div class="header-search-dialog">
+                <div class="header-search-card">
+                    <form class="header-search-form-box" action="/courses/" method="get" role="search">
+                        <div class="search-input-wrapper">
+                            <i class="fas fa-search search-leading-icon"></i>
+                            <input type="text" 
+                                   name="search" 
+                                   class="search-spotlight-input" 
+                                   placeholder="Search courses, mentors, AI Lab, Olympiads..." 
+                                   autocomplete="off"
+                                   id="spotlightSearchInput">
+                            <div class="search-actions-group">
+                                <span class="search-kbd-badge d-none d-md-inline-flex">ESC</span>
+                                <button type="button" class="search-modal-close-btn search-close" aria-label="Close search">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Quick Suggestion Links -->
+                    <div class="search-suggestions-container">
+                        <div class="search-suggestions-title">
+                            <i class="fas fa-fire text-orange me-1"></i> Popular Searches
+                        </div>
+                        <div class="search-tags-row">
+                            <a href="/courses/?search=AI" class="search-tag-chip" onclick="window.location.href='/courses/?search=AI';">
+                                <i class="fas fa-robot text-primary-gold"></i> AI & Machine Learning
+                            </a>
+                            <a href="/courses/?search=Python" class="search-tag-chip" onclick="window.location.href='/courses/?search=Python';">
+                                <i class="fab fa-python text-primary-gold"></i> Python Programming
+                            </a>
+                            <a href="/olympiads/" class="search-tag-chip" onclick="window.location.href='/olympiads/';">
+                                <i class="fas fa-trophy text-primary-gold"></i> Olympiad Exams
+                            </a>
+                            <a href="/ai-lab/" class="search-tag-chip" onclick="window.location.href='/ai-lab/';">
+                                <i class="fas fa-microchip text-primary-gold"></i> AI Lab
+                            </a>
+                            <a href="/skill-development/" class="search-tag-chip" onclick="window.location.href='/skill-development/';">
+                                <i class="fas fa-code text-primary-gold"></i> Skill Development
+                            </a>
+                            <a href="/team/" class="search-tag-chip" onclick="window.location.href='/team/';">
+                                <i class="fas fa-users text-primary-gold"></i> Meet Mentors
+                            </a>
+                            <a href="/ai-books/" class="search-tag-chip" onclick="window.location.href='/ai-books/';">
+                                <i class="fas fa-book-open text-primary-gold"></i> AI Books
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="search-modal-bottom-bar">
+                        <div class="d-flex align-items-center gap-3 text-muted text-xs">
+                            <span><kbd>↵</kbd> Press Enter to search</span>
+                            <span class="d-none d-sm-inline"><kbd>ESC</kbd> to close</span>
+                        </div>
+                        <a href="/courses/" class="view-all-courses-link text-xs fw-semibold text-orange">
+                            Browse all courses <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- jQuery -->
+    <script src="{% static 'assets/vendors/jquery/jquery.js' %}"></script>
+
+    <!-- Bootstrap -->
+    <script src="{% static 'assets/vendors/bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <!-- Waypoints -->
+    <script src="{% static 'assets/vendors/waypoint/jquery.waypoints.min.js' %}"></script>
+
+    <!-- jQuery UI -->
+    <script src="{% static 'assets/vendors/jquery-ui/jquery-ui.min.js' %}"></script>
+
+    <!-- Progress Bar -->
+    <script src="{% static 'assets/vendors/progressbar-fill-visible/js/progressBar.min.js' %}"></script>
+
+    <!-- Counter -->
+    <script src="{% static 'assets/vendors/countdown-date-loop-counter/loopcounter.js' %}"></script>
+    <script src="{% static 'assets/vendors/counterup/jquery.counterup.js' %}"></script>
+
+    <!-- Modal Video -->
+    <script src="{% static 'assets/vendors/modal-video/jquery-modal-video.min.js' %}"></script>
+
+    <!-- Masonry -->
+    <script src="{% static 'assets/vendors/masonry/masonry.pkgd.min.js' %}"></script>
+
+    <!-- Fancybox -->
+    <script src="{% static 'assets/vendors/fancybox/dist/jquery.fancybox.min.js' %}"></script>
+
+    <!-- Slick -->
+    <script src="{% static 'assets/vendors/slick/slick.min.js' %}"></script>
+
+    <!-- Slick Nav -->
+    <script src="{% static 'assets/vendors/slick-nav/jquery.slicknav.js' %}"></script>
+
+    <!-- Custom JS -->
+    <script src="{% static 'assets/js/custom.js' %}"></script>
+
+    {% block js %}
+    {% endblock %}
+
+    <!-- Global Institution Access Required Modal Popup -->
+    <style>
+        .access-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px auto;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(234, 88, 12, 0.08) 100%);
+            border: 1.5px solid rgba(249, 115, 22, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.15);
+            transition: transform 0.3s ease;
+        }
+        .access-icon-wrapper i {
+            font-size: 26px;
+            color: #ea580c;
+            margin: 0;
+        }
+        .access-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 8px;
+            letter-spacing: -0.4px;
+        }
+        .access-desc {
+            font-size: 13.5px;
+            color: #64748b;
+            line-height: 1.55;
+            margin-bottom: 22px;
+            max-width: 380px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .btn-access-login-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #ffffff !important;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+            border: none !important;
+            padding: 10px 22px !important;
+            border-radius: 50px !important;
+            box-shadow: 0 4px 14px rgba(234, 88, 12, 0.3) !important;
+            cursor: pointer;
+            transition: all 0.25s ease !important;
+            text-decoration: none !important;
+        }
+        .btn-access-login-pill:hover {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 6px 18px rgba(234, 88, 12, 0.4) !important;
+            transform: translateY(-1px) scale(1.01) !important;
+        }
+        .btn-access-browse-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #334155 !important;
+            background: #ffffff !important;
+            border: 1.5px solid #cbd5e1 !important;
+            padding: 10px 22px !important;
+            border-radius: 50px !important;
+            cursor: pointer;
+            transition: all 0.25s ease !important;
+            text-decoration: none !important;
+        }
+        .btn-access-browse-pill:hover {
+            background: #f8fafc !important;
+            color: #0f172a !important;
+            border-color: #94a3b8 !important;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08) !important;
+            transform: translateY(-1px) scale(1.01) !important;
+        }
+        .access-badge-footer {
+            font-size: 12px;
+            font-weight: 500;
+            color: #94a3b8;
+        }
+    </style>
+
+    <div class="modal fade" id="institutionAccessModal" tabindex="-1" aria-labelledby="institutionAccessModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
+            <div class="modal-content" style="border-radius: 20px; border: 1px solid rgba(226, 232, 240, 0.8); overflow: hidden; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18); position: relative; background: #ffffff;">
+                
+                <!-- Top Accent Line -->
+                <div style="height: 4px; background: linear-gradient(90deg, #f97316 0%, #fb923c 50%, #6366f1 100%);"></div>
+
+                <!-- Close Button -->
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3 shadow-none" data-bs-dismiss="modal" aria-label="Close" style="z-index: 10; font-size: 11px;"></button>
+
+                <div class="modal-body text-center p-4">
+                    <div class="access-icon-wrapper">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3 class="access-title">Institution Access Required</h3>
+                    <p class="access-desc">
+                        This AI Book is assigned to authorized partner institutions and enrolled students. 
+                        Please log in with your institution account or enroll to read the complete book.
+                    </p>
+                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 mb-3">
+                        <a href="{% url 'institution_login' %}" class="btn-access-login-pill">
+                            <i class="fas fa-unlock-alt me-1"></i> Log In to Read
+                        </a>
+                        <button type="button" class="btn-access-browse-pill" data-bs-dismiss="modal">
+                            <i class="fas fa-book me-1"></i> Browse All Books
+                        </button>
+                    </div>
+                    <div class="pt-2 border-top" style="border-color: #f1f5f9 !important;">
+                        <div class="access-badge-footer">
+                            <i class="fas fa-shield-alt text-warning me-1"></i> Institution Verified Content &bull; Encrypted Reader
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Lead / Form Submission Success Modal Popup -->
+    <div class="modal fade" id="globalSuccessModal" tabindex="-1" aria-labelledby="globalSuccessModalLabel" aria-hidden="true" style="z-index: 9999;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
+            <div class="modal-content text-center p-4" style="border-radius: 24px; border: none; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25); background: #ffffff; overflow: hidden; position: relative;">
+                
+                <!-- Decorative Top Accent Bar -->
+                <div style="height: 5px; background: linear-gradient(90deg, #22c55e 0%, #16a34a 50%, #15803d 100%); position: absolute; top: 0; left: 0; right: 0;"></div>
+
+                <!-- Close X Button -->
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3 shadow-none" data-bs-dismiss="modal" aria-label="Close" style="z-index: 10; font-size: 12px;"></button>
+
+                <!-- Animated Icon Circle -->
+                <div class="my-3 d-inline-flex align-items-center justify-content-center mx-auto" style="width: 84px; height: 84px; border-radius: 50%; background: #f0fdf4; border: 3px solid #bbf7d0; box-shadow: 0 10px 25px rgba(34, 197, 94, 0.25);">
+                    <i class="fas fa-check-circle text-success" style="font-size: 44px; color: #16a34a !important;"></i>
+                </div>
+
+                <h3 class="fw-bold mb-2 text-dark" id="globalSuccessModalTitle" style="font-size: 22px; color: #0f172a !important;">Submitted Successfully!</h3>
+                <p class="text-secondary mb-4 px-2" id="globalSuccessModalMessage" style="font-size: 14.5px; line-height: 1.6; color: #475569 !important;">
+                    Thank you! Your details have been submitted successfully. Our team will contact you shortly.
+                </p>
+
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-success radius-50 py-3 px-4 fw-bold text-white shadow-sm" data-bs-dismiss="modal" onclick="closeSuccessModal()" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important; border: none !important; border-radius: 50px !important; font-size: 15px; letter-spacing: 0.3px;">
+                        <i class="fas fa-check me-2"></i> OK, Got It!
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSuccessModal(title, message) {
+            var titleEl = document.getElementById('globalSuccessModalTitle');
+            var msgEl = document.getElementById('globalSuccessModalMessage');
+            if (title && titleEl) titleEl.innerText = title;
+            if (message && msgEl) msgEl.innerText = message;
+            
+            var modalEl = document.getElementById('globalSuccessModal');
+            if (modalEl) {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                    modal.show();
+                } else if (typeof $ !== 'undefined' && $.fn.modal) {
+                    $(modalEl).modal('show');
+                } else {
+                    alert((title ? title + "\n\n" : "") + (message || 'Submitted successfully!'));
+                }
+            }
+        }
+
+        function closeSuccessModal() {
+            var modalEl = document.getElementById('globalSuccessModal');
+            if (modalEl) {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    var modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+                } else if (typeof $ !== 'undefined' && $.fn.modal) {
+                    $(modalEl).modal('hide');
+                }
+            }
+        }
+
+        function openInstitutionModal(e) {
+            if (e) e.preventDefault();
+            var modalEl = document.getElementById('institutionAccessModal');
+            if (modalEl) {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                    modal.show();
+                } else if (typeof $ !== 'undefined' && $.fn.modal) {
+                    $(modalEl).modal('show');
+                }
+            }
+        }
+
+        {% if not request.user.is_authenticated %}
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.addEventListener('click', function(e) {
+                var target = e.target.closest('a[href*="/book-reader/"], .btn-read-online');
+                if (target) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openInstitutionModal(e);
+                }
+            }, true);
+        });
+        {% endif %}
+    </script>
+
+    <!-- Course Media & PDF Download Protection Interceptor -->
+    <script>
+        (function() {
+            'use strict';
+
+            // Intercept direct file download links for PDF & MP4 on course pages
+            document.addEventListener('click', function(e) {
+                var link = e.target.closest('a');
+                if (link) {
+                    var href = (link.getAttribute('href') || '').toLowerCase();
+                    var hasDownload = link.hasAttribute('download');
+                    if (hasDownload || href.endsWith('.pdf') || href.endsWith('.mp4') || href.endsWith('.webm') || href.endsWith('.avi') || href.endsWith('.zip')) {
+                        var p = window.location.pathname.toLowerCase();
+                        if (p.indexOf('/lesson') !== -1 || p.indexOf('/course') !== -1 || p.indexOf('/book-reader') !== -1) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            alert('⚠️ DOWNLOADING PROHIBITED: Course video, text, and PDF materials cannot be downloaded.');
+                            return false;
+                        }
+                    }
+                }
+            }, true);
+        })();
+    </script>
+
+</body>
+
+</html>

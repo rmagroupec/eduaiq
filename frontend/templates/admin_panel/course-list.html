@@ -1,0 +1,279 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Course List - EduAIQ Admin{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 id="pageTitle" class="fw-semibold mb-4 h6 text-primary-light">Course List</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span id="pageBreadcrumb" class="text-secondary-light">/ Course List</span>
+    </div>
+  </div>
+  {% if user.is_superuser or user.role == 'admin' or user.role == 'superadmin' %}
+  <a id="addBtn" class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/courses/add/">
+    <span class="d-flex text-md">
+      <i class="ri-add-large-line"></i>
+    </span>
+    Add Course
+  </a>
+  {% endif %}
+</div>
+
+<div class="card h-100">
+  <div class="card-body p-0">
+    <div
+      class="d-flex align-items-center justify-content-between flex-wrap gap-16 px-20 py-12 border-bottom border-neutral-200">
+      <div class="d-flex flex-wrap align-items-center gap-16">
+        <form class="navbar-search dt-search m-0" onsubmit="event.preventDefault(); loadAdminCourses();">
+          <input id="adminCourseSearch" class="form-control bg-transparent radius-4" placeholder="Search courses..."
+            type="text" onkeyup="loadAdminCourses()" />
+        </form>
+      </div>
+    </div>
+
+    <div class="table-responsive p-20">
+      <table class="table table-bordered align-middle" id="coursesTable">
+        <thead class="table-light">
+          <tr>
+            <th id="thThumb">Thumbnail</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Delivery Mode</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Version</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="coursesTableBody">
+          <tr>
+            <td colspan="8" class="text-center py-5 text-muted">
+              <i class="ri-loader-4-line ri-spin align-middle me-2"></i> Loading data...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center px-20 py-12 border-top border-neutral-200">
+      <span class="text-secondary-light text-sm" id="paginationInfo">Showing 0 to 0 of 0 entries</span>
+      <div class="d-flex align-items-center gap-2">
+        <button id="prevPageBtn" class="btn btn-sm btn-outline-secondary" onclick="changePage(-1)"
+          disabled>Previous</button>
+        <button id="nextPageBtn" class="btn btn-sm btn-outline-secondary" onclick="changePage(1)" disabled>Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+  const IS_SUPERADMIN = {% if user.is_superuser or user.role == 'admin' or user.role == 'superadmin' %}true{% else %} false{% endif %};
+  const urlParams = new URLSearchParams(window.location.search);
+  const isBookView = urlParams.get('type') === 'book';
+
+  let currentPage = 1;
+  let totalPages = 1;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (isBookView) {
+      document.title = "Allowed AI Books - EduAIQ Admin";
+      const pageTitle = document.getElementById('pageTitle');
+      const pageBreadcrumb = document.getElementById('pageBreadcrumb');
+      const searchInput = document.getElementById('adminCourseSearch');
+      const addBtn = document.getElementById('addBtn');
+      const thThumb = document.getElementById('thThumb');
+
+      if (pageTitle) pageTitle.textContent = 'Allowed AI Books';
+      if (pageBreadcrumb) pageBreadcrumb.textContent = '/ Allowed AI Books';
+      if (searchInput) searchInput.placeholder = 'Search AI books...';
+      if (thThumb) thThumb.textContent = 'Cover';
+      if (addBtn) {
+        addBtn.href = '/admin-panel/books/add/';
+        addBtn.innerHTML = `<span class="d-flex text-md"><i class="ri-add-large-line"></i></span> Add AI Book`;
+      }
+    }
+    loadAdminCourses();
+  });
+
+  document.getElementById('adminCourseSearch').addEventListener('keyup', () => {
+    currentPage = 1;
+    loadAdminCourses();
+  });
+
+  function changePage(direction) {
+    currentPage += direction;
+    loadAdminCourses();
+  }
+
+  async function loadAdminCourses() {
+    const searchVal = document.getElementById('adminCourseSearch').value.trim();
+    let url = isBookView ? `${API_BASE_URL}/courses/courses/?type=book&only_allowed=true&page=${currentPage}` : `${API_BASE_URL}/courses/courses/?exclude_books=true&only_allowed=true&page=${currentPage}`;
+    if (searchVal) {
+      url += `&q=${encodeURIComponent(searchVal)}`;
+    }
+
+    try {
+      const response = await fetch(url, { credentials: 'include' });
+      const data = await response.json();
+      const results = data.results || [];
+      const tbody = document.getElementById('coursesTableBody');
+      totalPages = data.total_pages || 1;
+
+      const startEntry = results.length > 0 ? (data.page - 1) * data.page_size + 1 : 0;
+      const endEntry = startEntry + results.length - 1;
+      document.getElementById('paginationInfo').textContent = `Showing ${startEntry} to ${endEntry} of ${data.count || 0} entries`;
+
+      document.getElementById('prevPageBtn').disabled = (data.page <= 1);
+      document.getElementById('nextPageBtn').disabled = (data.page >= totalPages);
+
+      if (results.length === 0) {
+        const itemType = isBookView ? 'AI books' : 'courses';
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No ${itemType} found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = results.map(c => `
+        <tr>
+          <td>
+            <img src="${c.thumbnail || 'https://via.placeholder.com/80x50'}" alt="${c.title}" style="width: ${isBookView ? '60px' : '80px'}; height: ${isBookView ? '80px' : '50px'}; object-fit: cover; border-radius: 4px;">
+          </td>
+          <td class="fw-semibold text-dark">${c.title}</td>
+          <td>${c.category_name || 'N/A'}</td>
+          <td class="text-capitalize">${(c.delivery_mode || '').replace('_', ' ')}</td>
+          <td class="fw-bold">₹${c.price}</td>
+          <td>
+            <span class="badge ${getStatusBadgeClass(c.status)}">
+              ${(c.status || '').replace('_', ' ')}
+            </span>
+          </td>
+          <td>v${c.version || 1}</td>
+          <td>
+            <div class="d-flex gap-2">
+              <a class="btn btn-sm btn-outline-info" href="/admin-panel/courses/details/?slug=${c.slug}">
+                <i class="ri-eye-line"></i> View
+              </a>
+              ${(isBookView && c.pdf_file) ? `
+              <a class="btn btn-sm btn-success text-white" href="/book-reader/${c.slug}/" target="_blank">
+                <i class="ri-book-read-line"></i> Read Book
+              </a>
+              ` : ''}
+              ${IS_SUPERADMIN ? `
+              <a class="btn btn-sm btn-outline-primary" href="/admin-panel/courses/edit/?slug=${c.slug}">
+                <i class="ri-edit-line"></i> Edit
+              </a>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteCourse('${c.slug}', '${c.title.replace(/'/g, "\\'")}')">
+                <i class="ri-delete-bin-line"></i> Delete
+              </button>
+              ` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    } catch (e) {
+      console.error(e);
+      document.getElementById('coursesTableBody').innerHTML = `
+        <tr>
+          <td colspan="8" class="text-center py-4 text-danger">Failed to load from API.</td>
+        </tr>
+      `;
+    }
+  }
+
+  function getStatusBadgeClass(status) {
+    switch (status) {
+      case 'published': return 'bg-success';
+      case 'draft': return 'bg-secondary';
+      case 'in_review': return 'bg-warning text-dark';
+      case 'changes_requested': return 'bg-info text-dark';
+      case 'archived': return 'bg-dark';
+      default: return 'bg-primary';
+    }
+  }
+
+  function deleteCourse(slug, title) {
+    if (typeof Swal !== 'undefined') {
+      Swal.fire({
+        title: 'Delete Course?',
+        text: `Are you sure you want to delete the course "${title}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, Delete',
+        customClass: {
+          popup: 'radius-16 border-0 shadow-lg',
+          confirmButton: 'btn btn-danger radius-8 px-20 py-8 text-sm me-2',
+          cancelButton: 'btn btn-secondary radius-8 px-20 py-8 text-sm'
+        },
+        buttonsStyling: false
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+            const response = await fetch(`${API_BASE_URL}/courses/courses/${slug}/`, {
+              method: 'DELETE',
+              headers: {
+                'X-CSRFToken': csrfToken
+              },
+              credentials: 'include'
+            });
+
+            if (response.ok) {
+              Swal.fire({ icon: 'success', title: 'Deleted!', text: 'Course deleted successfully.', timer: 1500, showConfirmButton: false });
+              loadAdminCourses();
+            } else {
+              const data = await response.json();
+              Swal.fire({ icon: 'error', title: 'Delete Failed', text: data.error || 'Server error' });
+            }
+          } catch (e) {
+            console.error(e);
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error deleting course.' });
+          }
+        }
+      });
+    } else if (typeof showDeleteToast === 'function') {
+      showDeleteToast(title, async function () {
+        try {
+          const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+          const response = await fetch(`${API_BASE_URL}/courses/courses/${slug}/`, {
+            method: 'DELETE',
+            headers: { 'X-CSRFToken': csrfToken },
+            credentials: 'include'
+          });
+          if (response.ok) {
+            if (typeof showToast === 'function') showToast('Course deleted successfully!', 'success');
+            loadAdminCourses();
+          } else {
+            const data = await response.json();
+            if (typeof showToast === 'function') showToast('Failed to delete course: ' + (data.error || 'Server error'), 'error');
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    }
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener('DOMContentLoaded', loadAdminCourses);
+</script>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends "admin_panel/base.html" %}
+
+{% block title %}Exam Results - Parent Dashboard{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h5 class="fw-bold text-dark mb-1">
+      <i class="ri-bar-chart-box-line text-info me-2"></i>Exam Results & Performance
+    </h5>
+    <p class="text-neutral-600 text-sm mb-0">Detailed academic performance for <strong class="text-dark">{{ child.user.get_full_name }}</strong></p>
+  </div>
+  <div>
+    <a href="/parent/dashboard/" class="btn btn-outline-primary text-sm px-12 py-8"><i class="ri-arrow-left-line me-1"></i>Back to Dashboard</a>
+  </div>
+</div>
+
+{% if child %}
+<!-- KPI Cards -->
+<div class="row g-3 mb-24">
+  <div class="col-md-6">
+    <div class="card p-16 d-flex flex-row align-items-center justify-content-between radius-8 border">
+      <div>
+        <span class="text-secondary-light text-sm d-block fw-semibold mb-4">Total Graded Exams</span>
+        <h5 class="mb-0 text-dark fw-bold">{{ total_graded }}</h5>
+      </div>
+      <div class="text-info-600 bg-info-100 p-8 rounded-circle">
+        <i class="ri-file-list-3-line text-2xl line-height-1"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card p-16 d-flex flex-row align-items-center justify-content-between radius-8 border">
+      <div>
+        <span class="text-secondary-light text-sm d-block fw-semibold mb-4">Overall Pass Rate</span>
+        <h5 class="mb-0 text-success fw-bold">{{ pass_rate }}%</h5>
+      </div>
+      <div class="text-success-600 bg-success-100 p-8 rounded-circle">
+        <i class="ri-pie-chart-line text-2xl line-height-1"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detailed Quiz Results Table -->
+<div class="card mb-24 radius-8 border shadow-sm">
+  <div class="card-header bg-white border-bottom">
+    <h6 class="mb-0 fw-bold"><i class="ri-questionnaire-line me-2 text-primary"></i>Quiz & Assessment History</h6>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0" style="border-collapse: separate; border-spacing: 0 8px; padding: 0 16px;">
+        <thead>
+          <tr style="background-color: transparent;">
+            <th class="ps-4 text-secondary-light text-uppercase text-xs fw-bold letter-spacing-1 border-bottom-0 pb-2">Assessment Title</th>
+            <th class="text-secondary-light text-uppercase text-xs fw-bold letter-spacing-1 border-bottom-0 pb-2">Subject/Course</th>
+            <th class="text-center text-secondary-light text-uppercase text-xs fw-bold letter-spacing-1 border-bottom-0 pb-2">Score %</th>
+            <th class="text-center text-secondary-light text-uppercase text-xs fw-bold letter-spacing-1 border-bottom-0 pb-2">Points</th>
+            <th class="text-center text-secondary-light text-uppercase text-xs fw-bold letter-spacing-1 border-bottom-0 pb-2">Status</th>
+            <th class="text-secondary-light text-uppercase text-xs fw-bold letter-spacing-1 border-bottom-0 pb-2">Date Taken</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for attempt in quiz_attempts %}
+          <tr style="background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.04)';">
+            <td class="ps-4 fw-bold text-dark border-0 py-3" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;">{{ attempt.quiz.lesson.title }}</td>
+            <td class="text-secondary fw-medium border-0 py-3">{{ attempt.quiz.lesson.module.course.title|default:"-" }}</td>
+            <td class="text-center fw-bold {% if attempt.passed %}text-success{% else %}text-danger{% endif %} border-0 py-3">{{ attempt.score_pct }}%</td>
+            <td class="text-center font-monospace text-secondary fw-medium border-0 py-3">{{ attempt.score_marks }} / {{ attempt.quiz.total_marks }}</td>
+            <td class="text-center border-0 py-3">
+              {% if attempt.status == 'graded' %}
+                {% if attempt.passed %}
+                  <span class="badge bg-success-focus text-success-main px-3 py-2 rounded-pill fw-semibold"><i class="ri-checkbox-circle-fill me-1"></i>Passed</span>
+                {% else %}
+                  <span class="badge bg-danger-focus text-danger-main px-3 py-2 rounded-pill fw-semibold"><i class="ri-close-circle-fill me-1"></i>Failed</span>
+                {% endif %}
+              {% else %}
+                <span class="badge bg-warning-focus text-warning-main px-3 py-2 rounded-pill fw-semibold"><i class="ri-time-line me-1"></i>Pending</span>
+              {% endif %}
+            </td>
+            <td class="text-neutral-500 text-sm border-0 py-3" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">{{ attempt.started_at|date:"M d, Y h:i A" }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-4 text-muted">No quiz or assessment records found for this student.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Olympiad Results Table -->
+{% if olympiad_regs %}
+<div class="card mb-24 radius-8 border shadow-sm">
+  <div class="card-header bg-white border-bottom">
+    <h6 class="mb-0 fw-bold"><i class="ri-trophy-line me-2 text-warning"></i>Olympiad Entrance Results</h6>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-3">Olympiad Exam</th>
+            <th>Roll Number</th>
+            <th class="text-center">Score %</th>
+            <th class="text-center">Result Status</th>
+            <th>Exam Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for reg in olympiad_regs %}
+          <tr>
+            <td class="ps-3 fw-medium text-dark">{{ reg.olympiad.name }}</td>
+            <td class="text-muted font-monospace">{{ reg.roll_number|default:"Pending" }}</td>
+            <td class="text-center fw-bold text-primary">{{ reg.attempt.score_pct|default:"0" }}%</td>
+            <td class="text-center">
+              <span class="badge bg-info-focus text-info-main px-2 py-1">{{ reg.get_status_display }}</span>
+            </td>
+            <td class="text-muted text-sm">{{ reg.registered_at|date:"M d, Y" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% else %}
+<div class="alert alert-warning d-flex align-items-center gap-2 mt-24">
+  <i class="ri-alert-line text-xl"></i>
+  Aapke profile se koi bachha (child) linked nahi hai. Kripya admin se sampark karein.
+</div>
+{% endif %}
+
+{% endblock %}

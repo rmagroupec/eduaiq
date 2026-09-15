@@ -1,0 +1,597 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Olympiads - EduAiQ | Math, Science & AI Competitions For Students{% endblock %}
+
+{% block description %}EduAiQ Olympiads test and reward student skill in Math, Science, and AI through structured competitions, certificates, and prizes — open to schools across India.{% endblock %}
+
+{% block css %}
+<style>
+    /* EduAiQ Olympiads Page - Logo Theme Alignment */
+    .title-divider, .title-divider-center {
+        background-color: #ea580c !important;
+    }
+
+    .about-section .about-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+        margin-bottom: 24px !important;
+    }
+
+    /* Counter Cards */
+    .counter-inner {
+        margin-top: 40px !important;
+    }
+    .counter-item {
+        background: #ffffff !important;
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 24px 16px !important;
+        box-shadow: 0 6px 20px rgba(234, 88, 12, 0.05) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-align: center;
+    }
+    .counter-item:hover {
+        transform: translateY(-4px) !important;
+        border-color: #f97316 !important;
+        box-shadow: 0 12px 28px rgba(234, 88, 12, 0.15) !important;
+    }
+    .counter-no {
+        color: #ea580c !important;
+        font-weight: 800 !important;
+        font-size: 2.2rem !important;
+        line-height: 1 !important;
+        margin-bottom: 8px !important;
+    }
+    .Completed {
+        color: #334155 !important;
+        font-weight: 700 !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Subject Feature Cards */
+    .home-feature-section {
+        padding: 70px 0 !important;
+        background-color: #f8fafc !important;
+    }
+    .feature-section-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+    }
+    .feature-wrapper {
+        margin-top: 40px !important;
+    }
+    .feature-type {
+        background: #ffffff !important;
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 32px 24px !important;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative;
+    }
+    .feature-type:hover {
+        transform: translateY(-5px) !important;
+        border-color: #f97316 !important;
+        box-shadow: 0 14px 32px rgba(234, 88, 12, 0.18) !important;
+    }
+    .feature-icon {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        width: 64px !important;
+        height: 64px !important;
+        line-height: 64px !important;
+        border-radius: 18px !important;
+        box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35) !important;
+        margin-bottom: 20px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.5rem !important;
+    }
+    .feature-icon .meta-no {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+    }
+    .feature-heading {
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        margin-bottom: 12px !important;
+    }
+    .right-arrow-link {
+        color: #ea580c !important;
+        font-weight: 700 !important;
+        transition: transform 0.3s ease !important;
+    }
+    .feature-type:hover .right-arrow-link {
+        transform: translateX(6px) !important;
+        color: #c2410c !important;
+    }
+
+    /* How to Take Part Section */
+    .home-service {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+        color: #ffffff !important;
+        padding: 80px 0 !important;
+    }
+    .home-service h2 {
+        color: #ffffff !important;
+        font-weight: 800 !important;
+    }
+    .service-content {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 24px !important;
+        margin-bottom: 30px !important;
+    }
+    @media (max-width: 991px) {
+        .service-content {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+    }
+    @media (max-width: 575px) {
+        .service-content {
+            grid-template-columns: 1fr !important;
+        }
+    }
+    .course-type {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 18px !important;
+        padding: 24px 20px !important;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        text-align: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: 100% !important;
+    }
+    .course-type:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: #ea580c !important;
+        box-shadow: 0 12px 30px rgba(234, 88, 12, 0.25) !important;
+        transform: translateY(-6px) !important;
+    }
+    .course-icon i {
+        background: #ffffff !important;
+        color: #ea580c !important;
+        transition: all 0.3s ease !important;
+        width: 54px !important;
+        height: 54px !important;
+        line-height: 54px !important;
+        border-radius: 50% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 20px !important;
+        margin-bottom: 14px !important;
+    }
+    .course-type:hover .course-icon i {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        transform: scale(1.08) !important;
+    }
+    .course-title a {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        transition: color 0.2s ease !important;
+        text-decoration: none !important;
+    }
+    .course-type:hover .course-title a {
+        color: #ea580c !important;
+    }
+    .course-durations {
+        color: #94a3b8 !important;
+        font-size: 13px !important;
+        margin-bottom: 0 !important;
+    }
+    .course-form {
+        grid-column: span 2 !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 20px !important;
+        padding: 24px 28px !important;
+    }
+    @media (max-width: 991px) {
+        .course-form {
+            grid-column: span 2 !important;
+        }
+    }
+    @media (max-width: 575px) {
+        .course-form {
+            grid-column: span 1 !important;
+        }
+    }
+    .course-form h3 {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 1.15rem !important;
+        margin-bottom: 16px !important;
+    }
+    .course-field input {
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 12px !important;
+        background: rgba(15, 23, 42, 0.7) !important;
+        color: #ffffff !important;
+        padding: 10px 16px !important;
+        width: 100% !important;
+    }
+    .course-field input:focus {
+        border-color: #f97316 !important;
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.25) !important;
+        outline: none !important;
+    }
+
+    /* Buttons Styling */
+    .button-round-primary, .button-round-secondary {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        border-radius: 50rem !important;
+        padding: 12px 28px !important;
+        box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-transform: uppercase !important;
+        border: none !important;
+        text-decoration: none !important;
+        display: inline-block !important;
+    }
+    .button-round-primary:hover, .button-round-secondary:hover {
+        transform: translateY(-2px) scale(1.02) !important;
+        box-shadow: 0 10px 28px rgba(234, 88, 12, 0.55) !important;
+        color: #ffffff !important;
+    }
+
+    /* Fact Section / Call to Action - High Contrast Visibility */
+    .home-fact-section {
+        padding: 80px 0 !important;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+        color: #ffffff !important;
+        position: relative !important;
+    }
+    .home-fact-section .fact-section-title {
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        font-size: 2.2rem !important;
+    }
+    .home-fact-section .fact-section-info {
+        color: #cbd5e1 !important;
+        font-size: 1.05rem !important;
+        line-height: 1.6 !important;
+        opacity: 0.95 !important;
+    }
+    .home-fact-section .fact-list ul li {
+        color: #f8fafc !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+    }
+    .home-fact-section .fact-list ul li i {
+        color: #f97316 !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="inner-banner-wrap">
+<div class="inner-baner-container" style="background-image: url({% static 'assets/img/blog-default-indian.jpg' %});">
+<div class="container">
+<div class="inner-banner-content">
+<h1 class="inner-title">Olympiads</h1>
+<div class="breadcrumb-content">
+<ul class="breadcrumb">
+
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+<section class="about-section">
+<div class="container">
+<div class="title-divider-center"></div>
+<h2 class="about-title text-center">Compete. Get Measured. Get Recognized.</h2>
+<div class="row">
+<div class="col-md-6">
+<p class="about-describe info-left">
+                                EduAiQ Olympiads are structured competitions in Math, Science, and AI, built to
+                                measure a student's real understanding — not just memorization. Each Olympiad
+                                follows a fixed curriculum so students and schools know exactly what to prepare for.
+                            </p>
+</div>
+<div class="col-md-6">
+<p class="about-describe info-right">
+                                Every participant receives a performance report, and top performers earn
+                                certificates, medals, and scholarships toward EduAiQ's AI Lab and Skill Development
+                                programs — turning one exam into an ongoing learning path.
+                            </p>
+</div>
+</div>
+<div class="counter-inner">
+<div class="counter-item-wrap row g-3">
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
+<div class="counter-no">
+<span class="counter">3</span>
+</div>
+<div class="Completed">
+                                    Olympiad Subjects
+                                </div>
+</div>
+</div>
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
+<div class="counter-no">
+<span class="counter">22</span>k+
+                                </div>
+<div class="Completed">
+                                    Students Registered
+                                </div>
+</div>
+</div>
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
+<div class="counter-no">
+<span class="counter">400</span>+
+                                </div>
+<div class="Completed">
+                                    Participating Schools
+                                </div>
+</div>
+</div>
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
+<div class="counter-no">
+<span class="counter">2</span>
+</div>
+<span class="Completed">
+                                    Olympiad Cycles Per Year
+                                </span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="home-feature-section">
+<div class="container">
+<div class="row">
+<div class="col-lg-6 offset-lg-3">
+<div class="title-divider"></div>
+<h2 class="feature-section-title text-center">Olympiad Subjects</h2>
+<p class="feature-section-info text-center">
+                                Choose one subject or all three — each has its own curriculum, difficulty levels,
+                                and result timeline.
+                            </p>
+</div>
+</div>
+<div class="feature-wrapper">
+<div class="feature-type" onclick="window.location.href='/olympiad-entrance/'" style="cursor: pointer;">
+<div class="feature-icon">
+<h5 class="meta-no">1</h5>
+<i class="fas fa-chart-line"></i>
+</div>
+<h4 class="feature-heading"><a href="/olympiad-entrance/" style="color: inherit; text-decoration: none;">Math Olympiad</a></h4>
+<p class="feature-info">Logic, arithmetic, and problem-solving levels from primary
+                                school through senior secondary.</p>
+<a class="right-arrow-link" href="/olympiad-entrance/">
+<i class="fas fa-long-arrow-alt-right"></i>
+</a>
+</div>
+<div class="feature-type" onclick="window.location.href='/olympiad-entrance/'" style="cursor: pointer;">
+<div class="feature-icon">
+<h5 class="meta-no">2</h5>
+<i aria-hidden="true" class="fas fa-microscope"></i>
+</div>
+<h4 class="feature-heading"><a href="/olympiad-entrance/" style="color: inherit; text-decoration: none;">Science Olympiad</a></h4>
+<p class="feature-info">Physics, chemistry, and biology fundamentals with an emphasis
+                                on applied reasoning over rote recall.</p>
+<a class="right-arrow-link" href="/olympiad-entrance/">
+<i class="fas fa-long-arrow-alt-right"></i>
+</a>
+</div>
+<div class="feature-type" onclick="window.location.href='/olympiad-entrance/'" style="cursor: pointer;">
+<div class="feature-icon">
+<h5 class="meta-no">3</h5>
+<i class="fas fa-brain"></i>
+</div>
+<h4 class="feature-heading"><a href="/olympiad-entrance/" style="color: inherit; text-decoration: none;">AI Olympiad</a></h4>
+<p class="feature-info">Introductory AI concepts and logic puzzles — a first taste of
+                                the skills built out further in the AI Lab.</p>
+<a class="right-arrow-link" href="/olympiad-entrance/">
+<i class="fas fa-long-arrow-alt-right"></i>
+</a>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Dedicated Olympiad Entrance Exam Callout Banner -->
+<section class="py-5" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff;">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill fs-7">
+                        <i class="fas fa-bolt me-1"></i> LIVE NOW
+                    </span>
+                    <span class="text-warning fw-bold small">Official Entrance Exams & Practice Quizzes</span>
+                </div>
+                <h2 class="text-white fw-extrabold display-6 mb-3">EduAiQ Olympiad Entrance Examination Portal</h2>
+                <p class="text-slate-300 fs-5 mb-0" style="color: #cbd5e1; max-width: 720px;">
+                    Register and attempt official entrance exams online. Experience timed quizzes, automatic scoring, medal tiers (Gold, Silver, Bronze), and official downloadable merit certificates.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="/olympiad-entrance/" class="btn btn-warning btn-lg px-4 py-3 rounded-pill fw-bold text-dark shadow-lg d-inline-flex align-items-center gap-2">
+                    <i class="fas fa-edit"></i> ACCESS ENTRANCE EXAMS
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="home-service">
+<div class="pattern-overlay"></div>
+<div class="container">
+<div class="service-wrapper">
+<div class="pattern-circle overlay"></div>
+
+<!-- Row 1: Section Head + Steps 1-3 -->
+<div class="service-content">
+<div class="section-head">
+<div class="title-divider"></div>
+<h2>How To Take Part</h2>
+<div class="service-btn d-flex flex-wrap gap-2 mt-3">
+<a class="button-round-primary" href="/olympiad-entrance/">ENTRANCE EXAMS</a>
+<a class="button-round-secondary" href="/olympiad-form/">OLYMPIAD FORM</a>
+</div>
+</div>
+
+<div class="course-type">
+<div class="course-icon">
+<i aria-hidden="true" class="fas fa-file-signature"></i>
+</div>
+<h4 class="course-title">
+<a href="/olympiad-form/">1. Register</a>
+</h4>
+<p class="course-durations">Individually or via school</p>
+</div>
+
+<div class="course-type">
+<div class="course-icon">
+<i aria-hidden="true" class="fas fa-book-open"></i>
+</div>
+<h4 class="course-title">
+<a href="/olympiad-curriculum/">2. Prepare</a>
+</h4>
+<p class="course-durations">Fixed curriculum, no surprises</p>
+</div>
+
+<div class="course-type">
+<div class="course-icon">
+<i class="fas fa-laptop-code"></i>
+</div>
+<h4 class="course-title">
+<a href="/olympiad-entrance/">3. Take Exam</a>
+</h4>
+<p class="course-durations">Online, at scheduled time</p>
+</div>
+</div>
+
+<!-- Row 2: Steps 4-5 & School Inquiry Form (span 2) -->
+<div class="service-content">
+<div class="course-type">
+<div class="course-icon">
+<i aria-hidden="true" class="fas fa-trophy"></i>
+</div>
+<h4 class="course-title">
+<a href="/my-learning/">4. Get Results</a>
+</h4>
+<p class="course-durations">Detailed performance report</p>
+</div>
+
+<div class="course-type">
+<div class="course-icon">
+<i aria-hidden="true" class="fas fa-user-graduate"></i>
+</div>
+<h4 class="course-title">
+<a href="/skill-development/">5. Keep Learning</a>
+</h4>
+<p class="course-durations">Top scorers earn scholarships</p>
+</div>
+
+<div class="course-form">
+<h3>Registering A School? Talk To Us First</h3>
+<div id="olySuccessMsg" class="alert alert-success d-none mb-3 radius-12 p-3 text-sm fw-semibold" style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
+    <i class="fas fa-check-circle me-2"></i><span id="olySuccessText">Thank you! Your inquiry has been received. Our team will contact you shortly.</span>
+</div>
+<form id="olympiadSchoolForm" class="course-field">
+    {% csrf_token %}
+    <div class="row g-2">
+        <div class="col-sm-6 mb-2">
+            <input name="name" id="olyName" placeholder="Your Name *" type="text" required />
+        </div>
+        <div class="col-sm-6 mb-2">
+            <input name="email" id="olyEmail" placeholder="Your Email *" type="email" required />
+        </div>
+        <div class="col-sm-7 mb-2">
+            <input name="institution" id="olyInstitution" placeholder="School / Institution Name *" type="text" required />
+        </div>
+        <div class="col-sm-5">
+            <button class="button-round-secondary w-100" id="olySubmitBtn" type="submit">GET DETAILS</button>
+        </div>
+    </div>
+</form>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<section class="home-fact-section">
+<div class="overlay"></div>
+<div class="container">
+<div class="row align-items-center">
+<div class="col-lg-7">
+<div class="fact-section-head">
+<div class="title-divider"></div>
+<h2 class="fact-section-title">Bring EduAiQ Olympiads To Your School</h2>
+<p class="fact-section-info">
+                                    We partner directly with schools to manage registration, conduct online or offline
+                                    exams, and provide school-wide analytics and certificates for every participant.
+                                </p>
+<div class="fact-list">
+<ul class="list-unstyled">
+<li class="mb-3 d-flex align-items-center"><i class="fas fa-check-circle me-2" style="color: #f97316; font-size: 18px;"></i> <span>Zero registration hassle — EduAiQ manages student onboarding.</span></li>
+<li class="mb-3 d-flex align-items-center"><i class="fas fa-check-circle me-2" style="color: #f97316; font-size: 18px;"></i> <span>School and student performance reports generated automatically.</span></li>
+<li class="mb-3 d-flex align-items-center"><i class="fas fa-check-circle me-2" style="color: #f97316; font-size: 18px;"></i> <span>National and regional ranking certificates for all top scorers.</span></li>
+</ul>
+</div>
+<div class="service-btn mt-4">
+<a class="button-round-secondary" href="/olympiad-form/">FILL OLYMPIAD FORM</a>
+</div>
+</div>
+</div>
+<div class="col-lg-5">
+<figure class="figure-round-border shadow-lg overflow-hidden" style="border-radius: 20px;">
+<img alt="EduAiQ Smart Learning Classroom" class="w-100 h-100 object-fit-cover" src="{% static 'assets/img/eduaiq-smart-classroom.jpg' %}"/>
+</figure>
+</div>
+</div>
+</div>
+</section>
+
+<script>
+document.getElementById('olympiadSchoolForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('olySubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+    try {
+        const formData = new FormData(this);
+        formData.append('lead_source', 'Olympiad School Registration');
+        formData.append('subject', 'Olympiad School Inquiry');
+        const res = await fetch('/crm/api/leads/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        });
+        document.getElementById('olySuccessMsg').classList.remove('d-none');
+        this.reset();
+    } catch(err) {
+        document.getElementById('olySuccessMsg').classList.remove('d-none');
+        this.reset();
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'GET DETAILS';
+    }
+});
+</script>
+{% endblock %}

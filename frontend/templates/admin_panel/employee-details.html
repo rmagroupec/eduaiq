@@ -1,0 +1,1560 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
+
+{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+<div class="">
+<h1 class="fw-semibold mb-4 h6 text-primary-light">Employee Details</h1>
+<div class="">
+<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
+<a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/employee-list/"> /
+                        HRM</a>
+<span class="text-secondary-light">/ Employee Details</span>
+</div>
+</div>
+<button class="btn btn-primary-600 d-flex align-items-center gap-6 bg-base text-primary-light bg-hover-primary-600 login-details-btn" data-bs-toggle="modal" data-bs-target="#loginDetailsModal" data-username="marvin.mckinney@eduaiq.com" data-role="Employee" type="button">
+<span class="d-flex text-md">
+<i class="ri-lock-2-line"></i>
+</span>
+                Login Details
+            </button>
+</div>
+<div class="mt-24">
+<div class="card h-100">
+<div class="card-body p-24">
+<div class="d-flex gap-32 flex-md-row flex-column">
+        <div class="max-w-300-px w-100 text-center">
+            <figure class="mb-24 w-120-px h-120-px mx-auto rounded-circle overflow-hidden border border-2 border-primary-600 shadow-sm">
+                <img id="empDetailImg" alt="Employee Photo" class="w-100 h-100 object-fit-cover" src="{% static 'admin_assets/images/thumbs/teacher-details-img.png' %}" onerror="this.onerror=null; this.src='{% static 'admin_assets/images/thumbs/teacher-details-img.png' %}';"/>
+            </figure>
+            <h2 id="empDetailName" class="h6 text-primary-light mb-16 fw-semibold">Employee Profile</h2>
+            <p class="mb-0">ID: <span id="empDetailId" class="text-primary-600 fw-semibold"> --</span></p>
+            <p class="mb-0">Role / Subject: <span id="empDetailRole" class="text-primary-light fw-semibold">Employee</span></p>
+            
+            <div class="mt-20 d-flex flex-column gap-12 w-100">
+                <div class="d-flex gap-12 w-100">
+                    <button class="btn border fw-medium border-danger-600 bg-hover-danger-200 text-danger-600 text-md d-flex justify-content-center align-items-center gap-8 flex-grow-1 px-12 py-8 radius-8" data-bs-target="#exampleModalDelete" data-bs-toggle="modal" type="button">
+                        <span class="d-flex text-lg"><i class="ri-delete-bin-2-line"></i></span> Suspend
+                    </button>
+                    <a id="empDetailEditBtn" class="btn btn-primary-600 border fw-medium border-primary-600 text-md d-flex justify-content-center align-items-center gap-8 flex-grow-1 px-12 py-8 radius-8" href="/admin-panel/add-new-employee/">
+                        <span class="d-flex text-lg"><i class="ri-edit-line"></i></span> Edit
+                    </a>
+                </div>
+                {% if request.user.role != 'admin' and not request.user.is_superuser %}
+                <button class="btn btn-info-600 text-white fw-medium text-md d-flex justify-content-center align-items-center gap-8 w-100 px-12 py-8 radius-8 apply-wfh-btn" data-bs-toggle="modal" data-bs-target="#wfhApplyModal" type="button">
+                    <span class="d-flex text-lg"><i class="ri-home-wifi-line"></i></span> Apply WFH Request
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        <div class="">
+            <span class="h-100 w-1-px bg-neutral-200"></span>
+        </div>
+        <div class="flex-grow-1">
+            <div class="pb-16 border-bottom d-flex align-items-center justify-content-between gap-20">
+                <h3 class="h6 text-primary-light text-lg mb-0 fw-semibold">Personal Info</h3>
+                <span id="empDetailStatusBadge" class="bg-success-100 text-success-600 px-16 py-4 radius-4 fw-medium text-sm">Active</span>
+            </div>
+            <div class="mt-16 d-flex flex-column gap-8">
+                <div class="d-flex gap-4">
+                    <span class="fw-semibold text-sm text-primary-light w-110-px">Department</span>
+                    <span id="empDetailDept" class="fw-normal text-sm text-secondary-light">: CRM & Sales</span>
+                </div>
+                <div class="d-flex gap-4">
+                    <span class="fw-semibold text-sm text-primary-light w-110-px">Contract Type</span>
+                    <span id="empDetailContract" class="fw-normal text-sm text-secondary-light">: Permanent</span>
+                </div>
+                <div class="d-flex gap-4">
+                    <span class="fw-semibold text-sm text-primary-light w-110-px">Shift</span>
+                    <span id="empDetailShift" class="fw-normal text-sm text-secondary-light">: Morning</span>
+                </div>
+                <div class="d-flex gap-4">
+                    <span class="fw-semibold text-sm text-primary-light w-110-px">Work Location</span>
+                    <span id="empDetailLocation" class="fw-normal text-sm text-secondary-light">: 2nd Floor</span>
+                </div>
+                <div class="d-flex gap-4">
+                    <span class="fw-semibold text-sm text-primary-light w-110-px">Date Of Birth</span>
+                    <span id="empDetailDOB" class="fw-normal text-sm text-secondary-light">: N/A</span>
+                </div>
+                <div class="d-flex gap-4">
+                    <span class="fw-semibold text-sm text-primary-light w-110-px">Gender</span>
+                    <span id="empDetailGender" class="fw-normal text-sm text-secondary-light">: Male</span>
+                </div>
+                <div class="d-flex gap-4">
+                    <span class="fw-semibold text-sm text-primary-light w-110-px">Join Date</span>
+                    <span id="empDetailJoinDate" class="fw-normal text-sm text-secondary-light">: N/A</span>
+                </div>
+                <div class="d-flex gap-4">
+                    <span class="fw-semibold text-sm text-primary-light w-110-px">Phone Number</span>
+                    <span id="empDetailPhone" class="fw-normal text-sm text-primary-600">: N/A</span>
+                </div>
+                <div class="d-flex gap-4">
+                    <span class="fw-semibold text-sm text-primary-light w-110-px">Email</span>
+                    <span id="empDetailEmail" class="fw-normal text-sm text-primary-600">: N/A</span>
+                </div>
+            </div>
+        </div>
+</div>
+</div>
+</div>
+<div class="my-16">
+<ul class="nav nav-pills bordered-tab mb-3" id="pills-tab" role="tablist">
+<li class="nav-item" role="presentation">
+<button aria-controls="pills-employeeDetails" aria-selected="true" class="nav-link d-flex align-items-center gap-8 text-secondary-light fw-medium text-sm text-hover-primary-600 text-capitalize bg-transparent px-20 py-12 active" data-bs-target="#pills-employeeDetails" data-bs-toggle="pill" id="pills-employeeDetails-tab" role="tab" type="button">
+<span class="d-flex tab-icon line-height-1 text-md">
+<i class="ri-group-line"></i>
+</span>
+                            employee Details
+                        </button>
+</li>
+<li class="nav-item" role="presentation">
+<button aria-controls="pills-attendance" aria-selected="false" class="nav-link d-flex align-items-center gap-8 text-secondary-light fw-medium text-sm text-hover-primary-600 text-capitalize bg-transparent px-20 py-12" data-bs-target="#pills-attendance" data-bs-toggle="pill" id="pills-attendance-tab" role="tab" type="button">
+<span class="d-flex tab-icon line-height-1 text-md">
+<i class="ri-calendar-check-line"></i>
+</span>
+                            Attendance
+                        </button>
+</li>
+<li class="nav-item" role="presentation">
+<button aria-controls="pills-leave" aria-selected="false" class="nav-link d-flex align-items-center gap-8 text-secondary-light fw-medium text-sm text-hover-primary-600 text-capitalize bg-transparent px-20 py-12" data-bs-target="#pills-leave" data-bs-toggle="pill" id="pills-leave-tab" role="tab" type="button">
+<span class="d-flex tab-icon line-height-1 text-md">
+<i class="ri-login-box-line"></i>
+</span>
+                            Leave
+                        </button>
+</li>
+<li class="nav-item" role="presentation">
+<button aria-controls="pills-payroll" aria-selected="false" class="nav-link d-flex align-items-center gap-8 text-secondary-light fw-medium text-sm text-hover-primary-600 text-capitalize bg-transparent px-20 py-12" data-bs-target="#pills-payroll" data-bs-toggle="pill" id="pills-payroll-tab" role="tab" type="button">
+<span class="d-flex tab-icon line-height-1 text-md">
+<i class="ri-money-dollar-box-line"></i>
+</span>
+                            Payroll 
+                        </button>
+</li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+
+<div aria-labelledby="pills-employeeDetails-tab" class="tab-pane fade show active" id="pills-employeeDetails" role="tabpanel" tabindex="0">
+<div class="row gy-4">
+<div class="col-md-12">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Profile Detail</h6>
+</div>
+<div class="card-body p-0">
+<div class="p-20">
+<div class="row gy-4">
+<div class="col-md-3 col-sm-6">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Date of Birth
+                                                        </h6>
+<span class="">10 Nov 1995</span>
+</div>
+</div>
+<div class="col-md-3 col-sm-6">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Martial Status
+                                                        </h6>
+<span class="">Married </span>
+</div>
+</div>
+<div class="col-md-3 col-sm-6">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Qualification
+                                                        </h6>
+<span class="">MBA</span>
+</div>
+</div>
+<div class="col-md-3 col-sm-6">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Experience</h6>
+<span class="">7 Years</span>
+</div>
+</div>
+<div class="col-md-3 col-sm-6">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Father Name </h6>
+<span class="">Ralph Edwards</span>
+</div>
+</div>
+<div class="col-md-3 col-sm-6">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Mother Name</h6>
+<span class="">Floyd Miles</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Previous School Details</h6>
+</div>
+<div class="card-body p-0">
+<div class="p-20">
+<div class="row gy-4">
+<div class="col-sm-12">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Previous School
+                                                            Name</h6>
+<span class="">Stuyvesant High School</span>
+</div>
+</div>
+<div class="col-sm-12">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Current School
+                                                            Name</h6>
+<span class="">Bronx High School of Science</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Address</h6>
+</div>
+<div class="card-body p-0">
+<div class="p-20">
+<div class="row gy-4">
+<div class="col-sm-12">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Current Address
+                                                        </h6>
+<span class="">8502 Preston Rd. Inglewood, Maine 98380</span>
+</div>
+</div>
+<div class="col-sm-12">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Permanent Address
+                                                        </h6>
+<span class="">2118 Thornridge Cir. Syracuse, Connecticut
+                                                            35624</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Bank Details</h6>
+</div>
+<div class="card-body p-0">
+<div class="p-20">
+<div class="row gy-4">
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Bank Name</h6>
+<span class="">Bank of America</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Branch</h6>
+<span class="">New York</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">IFSC Code</h6>
+<span class="">5283209832</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Medical Details</h6>
+</div>
+<div class="card-body p-0">
+<div class="p-20">
+<div class="row gy-4">
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Blood Group</h6>
+<span class="">O+</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Height</h6>
+<span class="">5.2</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Weight</h6>
+<span class="">60kg</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Documents</h6>
+</div>
+<div class="card-body p-20">
+<div class="p-10 border radius-8">
+<div class="d-flex align-items-center justify-content-between gap-20">
+<div class="d-flex align-items-center gap-12">
+<span class="w-36-px h-36-px radius-4 bg-neutral-50 d-flex justify-content-center align-items-center text-xl">
+<i class="ri-file-text-line"></i>
+</span>
+<span class="text-md text-secondary-light">BirthCertificate.pdf</span>
+</div>
+<button class="w-36-px h-36-px radius-4 bg-primary-50 bg-hover-primary-100 text-primary-600 d-flex justify-content-center align-items-center text-xl download-doc-btn" data-filename="BirthCertificate.pdf" title="Download Document" type="button">
+<i class="ri-download-2-line"></i>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Social Media</h6>
+</div>
+<div class="card-body p-0">
+<div class="p-20">
+<div class="row gy-4">
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Facebook</h6>
+<span class="">www.facebook.com</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">LinkedIn</h6>
+<span class="">www.linkedin.com</span>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="">
+<h6 class="text-md mb-2 fw-medium flex-grow-1">Instagram</h6>
+<span class="">www.instagram.com</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<div aria-labelledby="pills-attendance-tab" class="tab-pane fade" id="pills-attendance" role="tabpanel" tabindex="0">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex flex-wrap align-items-center justify-content-between gap-12">
+<h6 class="text-lg fw-semibold mb-0">Attendance Overview</h6>
+<div class="d-flex align-items-center gap-12 flex-wrap">
+<button type="button" id="punchInBtn" class="btn btn-sm bg-success-600 text-white radius-8 d-flex align-items-center gap-2 font-medium px-16 py-8">
+<i class="ri-fingerprint-line text-lg"></i> Punch In
+</button>
+<button type="button" id="punchOutBtn" class="btn btn-sm bg-warning-600 text-white radius-8 d-flex align-items-center gap-2 font-medium px-16 py-8 d-none">
+<i class="ri-logout-box-r-line text-lg"></i> Punch Out
+</button>
+<button type="button" class="btn btn-sm bg-info-600 text-white radius-8 d-flex align-items-center gap-2 font-medium px-16 py-8 apply-wfh-btn" data-bs-toggle="modal" data-bs-target="#wfhApplyModal">
+<i class="ri-home-wifi-line text-lg"></i> Apply WFH
+</button>
+</div>
+</div>
+<div class="card-body p-0">
+<div class="px-20 pt-20">
+<div class="row row-cols-xxl-5 row-cols-lg-3 row-cols-sm-2 row-cols-1 g-3">
+<div class="col">
+<div class="card px-20 py-28 shadow-2 radius-8 h-100 border border-neutral-200 shadow-none gradient-bg-end-7">
+<div class="card-body p-0">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+<div>
+<h6 class="fw-semibold mb-2" id="attTotalPresent">0</h6>
+<span class="fw-medium text-secondary-light text-sm">Total Present</span>
+</div>
+<span class="mb-0 w-48-px h-48-px bg-success-600 text-white flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+<img alt="Present Icon" src="{% static 'admin_assets/images/icons/attendence-icon1.png' %}"/>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div class="col">
+<div class="card px-20 py-28 shadow-2 radius-8 h-100 border border-neutral-200 shadow-none gradient-bg-end-8">
+<div class="card-body p-0">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+<div>
+<h6 class="fw-semibold mb-2" id="attTotalAbsent">0</h6>
+<span class="fw-medium text-secondary-light text-sm">Total Absent</span>
+</div>
+<span class="mb-0 w-48-px h-48-px bg-danger-600 text-white flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+<img alt="Absent Icon" src="{% static 'admin_assets/images/icons/attendence-icon2.png' %}"/>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div class="col">
+<div class="card px-20 py-28 shadow-2 radius-8 h-100 border border-neutral-200 shadow-none gradient-bg-end-9">
+<div class="card-body p-0">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+<div>
+<h6 class="fw-semibold mb-2" id="attHalfDay">0</h6>
+<span class="fw-medium text-secondary-light text-sm">Half Day</span>
+</div>
+<span class="mb-0 w-48-px h-48-px bg-purple-600 text-white flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+<img alt="Calendar Icon" src="{% static 'admin_assets/images/icons/attendence-icon3.png' %}"/>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div class="col">
+<div class="card px-20 py-28 shadow-2 radius-8 h-100 border border-neutral-200 shadow-none gradient-bg-end-10">
+<div class="card-body p-0">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+<div>
+<h6 class="fw-semibold mb-2" id="attTotalLate">0</h6>
+<span class="fw-medium text-secondary-light text-sm">Total Late</span>
+</div>
+<span class="mb-0 w-48-px h-48-px bg-info-600 text-white flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+<img alt="Clock Icon" src="{% static 'admin_assets/images/icons/attendence-icon4.png' %}"/>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div class="col">
+<div class="card px-20 py-28 shadow-2 radius-8 h-100 border border-neutral-200 shadow-none gradient-bg-end-11">
+<div class="card-body p-0">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+<div>
+<h6 class="fw-semibold mb-2" id="attTotalHoliday">0</h6>
+<span class="fw-medium text-secondary-light text-sm">Total Holiday</span>
+</div>
+<span class="mb-0 w-48-px h-48-px bg-orange text-white flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+<img alt="Holiday Icon" src="{% static 'admin_assets/images/icons/attendence-icon5.png' %}"/>
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-24 mb-16 mx-20">
+<div class="d-flex flex-wrap align-items-center gap-24 justify-content-between flex-wrap">
+<div class="d-flex flex-wrap align-items-center gap-16">
+<div class="">
+<select class="form-control form-select" id="attendanceSessionSelect">
+<option value="Jun 2025/2026">Jun 2025/2026</option>
+<option value="Jun 2026/2027">Jun 2026/2027</option>
+<option value="Jun 2027/2028">Jun 2027/2028</option>
+<option value="Jun 2028/2029">Jun 2028/2029</option>
+</select>
+</div>
+<div class="dropdown">
+<button aria-expanded="false" class="px-12 py-8 border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
+<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
+<i class="ri-file-upload-line text-md line-height-1"></i>
+                                                        Export
+                                                    </span>
+<span class="">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<ul class="dropdown-menu p-12 border bg-base shadow">
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
+<i class="ri-file-3-line"></i>
+                                                            PDF
+                                                        </button>
+</li>
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
+<i class="ri-file-excel-line"></i>
+                                                            Excel
+                                                        </button>
+</li>
+</ul>
+</div>
+</div>
+<div class="d-flex align-items-center flex-wrap gap-8">
+<p class="text-primary-light text-sm fw-medium mb-0">
+                                                Present:
+                                                <span class="fw-semibold text-success-600">P </span>
+</p>
+<p class="text-primary-light text-sm fw-medium mb-0">
+                                                Absent:
+                                                <span class="fw-semibold text-danger-600">A </span>
+</p>
+<p class="text-primary-light text-sm fw-medium mb-0">
+                                                Holiday:
+                                                <span class="fw-semibold text-warning-600">H </span>
+</p>
+<p class="text-primary-light text-sm fw-medium mb-0">
+                                                Late:
+                                                <span class="fw-semibold text-info-600">L </span>
+</p>
+<p class="text-primary-light text-sm fw-medium mb-0">
+                                                Half Day:
+                                                <span class="fw-semibold text-purple-600">F </span>
+</p>
+</div>
+</div>
+</div>
+<div class="table-responsive overflow-x-auto">
+<table class="table mb-0 table-heading-dark-mode">
+<thead>
+<tr>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">Month
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">1</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">2</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">3</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">4</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">5</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">6</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">7</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">8</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">9</th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">10
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">11
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">12
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">13
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">14
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">15
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">16
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">17
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">18
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">19
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">20
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">21
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">22
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">23
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">24
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">25
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">26
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">27
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">28
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">29
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">30
+                                                </th>
+<th class="bg-neutral-100 text-sm text-primary-light px-10 py-16">31
+                                                </th>
+</tr>
+</thead>
+<tbody id="attendanceMatrixBody">
+  <!-- Populated dynamically via JS / Backend API -->
+</tbody>
+</table>
+</div>
+
+<!-- WEEKLY ATTENDANCE VIEW (SUNDAY TO SATURDAY) -->
+<div class="mt-24 pt-20 border-top mx-20 mb-20">
+    <div class="d-flex align-items-center justify-content-between mb-16 flex-wrap gap-12">
+        <h6 class="text-md fw-semibold mb-0"><i class="ri-calendar-check-line text-primary-600 me-2"></i> Weekly Attendance Grid (Sunday to Saturday)</h6>
+        <div class="d-flex align-items-center gap-12">
+            <select class="form-control form-select radius-8 py-4 px-12 text-sm" id="weeklyMonthSelect">
+                <option value="0">January</option>
+                <option value="1">February</option>
+                <option value="2">March</option>
+                <option value="3">April</option>
+                <option value="4">May</option>
+                <option value="5" selected>June</option>
+                <option value="6">July</option>
+                <option value="7">August</option>
+                <option value="8">September</option>
+                <option value="9">October</option>
+                <option value="10">November</option>
+                <option value="11">December</option>
+            </select>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table bordered-table text-center mb-0 align-middle w-100" id="weeklySundayToSaturdayTable">
+            <thead>
+                <tr class="bg-neutral-100">
+                    <th scope="col" class="text-danger-600 fw-bold py-12">Sunday</th>
+                    <th scope="col" class="text-primary-light fw-semibold py-12">Monday</th>
+                    <th scope="col" class="text-primary-light fw-semibold py-12">Tuesday</th>
+                    <th scope="col" class="text-primary-light fw-semibold py-12">Wednesday</th>
+                    <th scope="col" class="text-primary-light fw-semibold py-12">Thursday</th>
+                    <th scope="col" class="text-primary-light fw-semibold py-12">Friday</th>
+                    <th scope="col" class="text-warning-700 fw-bold py-12">Saturday</th>
+                </tr>
+            </thead>
+            <tbody id="weeklySundayToSaturdayBody">
+                <tr>
+                    <td colspan="7" class="text-center py-20 text-secondary-light">Loading weekly calendar...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- DAY-WISE ATTENDANCE LOG TABLE -->
+<div class="mt-24 pt-20 border-top mx-20 mb-20">
+    <div class="d-flex align-items-center justify-content-between mb-16">
+        <h6 class="text-md fw-semibold mb-0"><i class="ri-calendar-todo-line text-primary-600 me-2"></i> Day-Wise Detailed Log</h6>
+        <div class="d-flex align-items-center gap-12">
+            <span class="badge bg-neutral-100 text-secondary-light px-12 py-6 radius-4 text-xs font-semibold" id="dayWiseRecordCount">0 Days Recorded</span>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table bordered-table mb-0 table-heading-dark-mode w-100" id="dayWiseAttendanceTable">
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Day (Sun-Sat)</th>
+                    <th scope="col">Check In</th>
+                    <th scope="col">Check Out</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Remarks</th>
+                </tr>
+            </thead>
+            <tbody id="dayWiseTableBody">
+                <tr>
+                    <td colspan="6" class="text-center py-20 text-secondary-light">Loading attendance records...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+</div>
+</div>
+
+
+<div aria-labelledby="pills-leave-tab" class="tab-pane fade" id="pills-leave" role="tabpanel" tabindex="0">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-10 px-20 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Leave </h6>
+<button class="apply-leave-btn trigger-leave-modal btn btn-primary-600 d-flex align-items-center gap-6 py-8 text-sm" data-bs-toggle="modal" data-bs-target="#leaveApplyModal" type="button">
+<span class="d-flex text-sm">
+<i class="ri-calendar-close-line"></i>
+</span>
+                                    Apply Leave
+                                </button>
+</div>
+<div class="card-body p-0 dataTable-wrapper">
+<div class="d-flex flex-wrap align-items-center gap-24 justify-content-between px-20 py-12">
+<div class="d-flex flex-wrap align-items-center gap-16">
+<form class="navbar-search dt-search m-0">
+    {% csrf_token %}
+<input aria-controls="dataTable" class="dt-input bg-transparent radius-4" name="search" placeholder="Search..." type="text"/>
+<iconify-icon class="icon" icon="ion:search-outline"></iconify-icon>
+</form>
+<div class="">
+<select class="form-control form-select">
+<option value="Year 2025/2026">Year 2025/2026</option>
+<option value="Year 2026/2027">Year 2026/2027</option>
+<option value="Year 2027/2028">Year 2027/2028</option>
+<option value="Year 2028/2029">Year 2028/2029</option>
+</select>
+</div>
+<div class="dropdown">
+<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
+<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
+<i class="ri-file-upload-line text-md line-height-1"></i>
+                                                    Export
+                                                </span>
+<span class="">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<ul class="dropdown-menu p-12 border bg-base shadow">
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
+<i class="ri-file-3-line"></i>
+                                                        PDF
+                                                    </button>
+</li>
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
+<i class="ri-file-excel-line"></i>
+                                                        Excel
+                                                    </button>
+</li>
+</ul>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8 text-secondary-light">
+<span class="">
+                                            Rows per page:
+                                        </span>
+<div class="dt-length">
+<select aria-controls="dataTable" class="dt-input form-control form-select" name="dataTable_length">
+<option value="5">5</option>
+<option selected="" value="10">10</option>
+<option value="25">25</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+</div>
+</div>
+</div>
+<table class="table bordered-table mb-0 table-heading-dark-mode w-100" id="leaveDataTable">
+<thead>
+<tr>
+<th scope="col">
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                        S.L
+                                                    </label>
+</div>
+</th>
+<th scope="col">Leave Type</th>
+<th scope="col">Date</th>
+<th scope="col">Duration</th>
+<th scope="col">Apply Date</th>
+<th scope="col">Status</th>
+</tr>
+</thead>
+<tbody id="leaveTableBody">
+<tr>
+<td colspan="6" class="text-center py-24 text-secondary-light">No leave applications found for this employee.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+<div aria-labelledby="pills-payroll-tab" class="tab-pane fade" id="pills-payroll" role="tabpanel" tabindex="0">
+<div class="shadow-1 radius-12 bg-base h-100 overflow-hidden">
+<div class="card-header border-bottom bg-base py-10 px-20 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Payroll </h6>
+</div>
+<div class="card-body p-0 dataTable-wrapper">
+<div class="d-flex flex-wrap align-items-center gap-24 justify-content-between px-20 py-16">
+<div class="d-flex flex-wrap align-items-center gap-16">
+<form class="navbar-search dt-search m-0">
+    {% csrf_token %}
+<input aria-controls="dataTable" class="dt-input bg-transparent radius-4" name="search" placeholder="Search..." type="text"/>
+<iconify-icon class="icon" icon="ion:search-outline"></iconify-icon>
+</form>
+<div class="">
+<select class="form-control form-select">
+<option value="Year 2025/2026">Year 2025/2026</option>
+<option value="Year 2026/2027">Year 2026/2027</option>
+<option value="Year 2027/2028">Year 2027/2028</option>
+<option value="Year 2028/2029">Year 2028/2029</option>
+</select>
+</div>
+<div class="dropdown">
+<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
+<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
+<i class="ri-file-upload-line text-md line-height-1"></i>
+                                                    Export
+                                                </span>
+<span class="">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<ul class="dropdown-menu p-12 border bg-base shadow">
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
+<i class="ri-file-3-line"></i>
+                                                        PDF
+                                                    </button>
+</li>
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
+<i class="ri-file-excel-line"></i>
+                                                        Excel
+                                                    </button>
+</li>
+</ul>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8 text-secondary-light">
+<span class="">
+                                            Rows per page:
+                                        </span>
+<div class="dt-length">
+<select aria-controls="dataTable" class="dt-input form-control form-select" name="dataTable_length">
+<option value="5">5</option>
+<option selected="" value="10">10</option>
+<option value="25">25</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+</div>
+</div>
+</div>
+<table class="table bordered-table mb-0 table-heading-dark-mode w-100 data-table" data-page-length="10" id="dataTableTwo">
+<thead>
+<tr>
+<th scope="col">
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                        S.L
+                                                    </label>
+</div>
+</th>
+<th scope="col">Invoice ID</th>
+<th scope="col">Salary For</th>
+<th scope="col">Date</th>
+<th scope="col">Net Salary</th>
+<th scope="col">Payment Method</th>
+<th scope="col">Status</th>
+<th scope="col">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">01</label>
+</div>
+</td>
+<td><span class="text-primary-600">AD52365</span></td>
+<td>Jan 2025</td>
+<td>07 Jan 2025</td>
+<td>$5,000</td>
+<td>Bank</td>
+<td>
+<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                            Paid
+                                        </span>
+</td>
+<td>
+<button class="bg-neutral-200 bg-hover-neutral-300 text-neutral-600 px-20 py-4 radius-4 fw-medium text-sm" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
+                                            View Payslip
+                                        </button>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">02</label>
+</div>
+</td>
+<td><span class="text-primary-600">AD52366</span></td>
+<td>Feb 2025</td>
+<td>08 Feb 2025</td>
+<td>$4,800</td>
+<td>Cash</td>
+<td>
+<span class="bg-warning-100 text-warning-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                            Pending
+                                        </span>
+</td>
+<td>
+<button class="bg-neutral-200 bg-hover-neutral-300 text-neutral-600 px-20 py-4 radius-4 fw-medium text-sm" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
+                                            View Payslip
+                                        </button>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">03</label>
+</div>
+</td>
+<td><span class="text-primary-600">AD52367</span></td>
+<td>Mar 2025</td>
+<td>09 Mar 2025</td>
+<td>$5,100</td>
+<td>Bank</td>
+<td>
+<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                            Paid
+                                        </span>
+</td>
+<td>
+<button class="bg-neutral-200 bg-hover-neutral-300 text-neutral-600 px-20 py-4 radius-4 fw-medium text-sm" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
+                                            View Payslip
+                                        </button>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">04</label>
+</div>
+</td>
+<td><span class="text-primary-600">AD52368</span></td>
+<td>Apr 2025</td>
+<td>06 Apr 2025</td>
+<td>$4,950</td>
+<td>Online</td>
+<td>
+<span class="bg-danger-100 text-danger-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                            Failed
+                                        </span>
+</td>
+<td>
+<button class="bg-neutral-200 bg-hover-neutral-300 text-neutral-600 px-20 py-4 radius-4 fw-medium text-sm" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
+                                            View Payslip
+                                        </button>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">05</label>
+</div>
+</td>
+<td><span class="text-primary-600">AD52369</span></td>
+<td>May 2025</td>
+<td>05 May 2025</td>
+<td>$5,200</td>
+<td>Bank</td>
+<td>
+<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                            Paid
+                                        </span>
+</td>
+<td>
+<button class="bg-neutral-200 bg-hover-neutral-300 text-neutral-600 px-20 py-4 radius-4 fw-medium text-sm" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
+                                            View Payslip
+                                        </button>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">06</label>
+</div>
+</td>
+<td><span class="text-primary-600">AD52370</span></td>
+<td>Jun 2025</td>
+<td>06 Jun 2025</td>
+<td>$4,600</td>
+<td>Cash</td>
+<td>
+<span class="bg-warning-100 text-warning-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                            Pending
+                                        </span>
+</td>
+<td>
+<button class="bg-neutral-200 bg-hover-neutral-300 text-neutral-600 px-20 py-4 radius-4 fw-medium text-sm" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
+                                            View Payslip
+                                        </button>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">07</label>
+</div>
+</td>
+<td><span class="text-primary-600">AD52371</span></td>
+<td>Jul 2025</td>
+<td>08 Jul 2025</td>
+<td>$5,300</td>
+<td>Bank</td>
+<td>
+<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                            Paid
+                                        </span>
+</td>
+<td>
+<button class="bg-neutral-200 bg-hover-neutral-300 text-neutral-600 px-20 py-4 radius-4 fw-medium text-sm" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
+                                            View Payslip
+                                        </button>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">08</label>
+</div>
+</td>
+<td><span class="text-primary-600">AD52372</span></td>
+<td>Aug 2025</td>
+<td>05 Aug 2025</td>
+<td>$4,750</td>
+<td>Online</td>
+<td>
+<span class="bg-warning-100 text-warning-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                            Pending
+                                        </span>
+</td>
+<td>
+<button class="bg-neutral-200 bg-hover-neutral-300 text-neutral-600 px-20 py-4 radius-4 fw-medium text-sm" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
+                                            View Payslip
+                                        </button>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">09</label>
+</div>
+</td>
+<td><span class="text-primary-600">AD52373</span></td>
+<td>Sep 2025</td>
+<td>06 Sep 2025</td>
+<td>$5,400</td>
+<td>Bank</td>
+<td>
+<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                            Paid
+                                        </span>
+</td>
+<td>
+<button class="bg-neutral-200 bg-hover-neutral-300 text-neutral-600 px-20 py-4 radius-4 fw-medium text-sm" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
+                                            View Payslip
+                                        </button>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">10</label>
+</div>
+</td>
+<td><span class="text-primary-600">AD52374</span></td>
+<td>Oct 2025</td>
+<td>07 Oct 2025</td>
+<td>$4,850</td>
+<td>Cash</td>
+<td>
+<span class="bg-danger-100 text-danger-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                            Failed
+                                        </span>
+</td>
+<td>
+<button class="bg-neutral-200 bg-hover-neutral-300 text-neutral-600 px-20 py-4 radius-4 fw-medium text-sm" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
+                                            View Payslip
+                                        </button>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">11</label>
+</div>
+</td>
+<td><span class="text-primary-600">AD52375</span></td>
+<td>Nov 2025</td>
+<td>06 Nov 2025</td>
+<td>$5,150</td>
+<td>Bank</td>
+<td>
+<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                            Paid
+                                        </span>
+</td>
+<td>
+<button class="bg-neutral-200 bg-hover-neutral-300 text-neutral-600 px-20 py-4 radius-4 fw-medium text-sm" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
+                                            View Payslip
+                                        </button>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">12</label>
+</div>
+</td>
+<td><span class="text-primary-600">AD52376</span></td>
+<td>Dec 2025</td>
+<td>08 Dec 2025</td>
+<td>$5,000</td>
+<td>Online</td>
+<td>
+<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">
+                                            Paid
+                                        </span>
+</td>
+<td>
+<button class="bg-neutral-200 bg-hover-neutral-300 text-neutral-600 px-20 py-4 radius-4 fw-medium text-sm" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
+                                            View Payslip
+                                        </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script>
+
+    // Data Table start
+    let table = new DataTable('#dataTable');
+    let tableTwo = new DataTable('#dataTableTwo');
+    let tableThree = new DataTable('#dataTableThree');
+    let tableFour = new DataTable('#dataTableFour');
+    let firstSemesterTable = new DataTable('#firstSemesterTable');
+    let monthlyTestJun = new DataTable('#monthlyTestJun');
+    let weeklyTestJun = new DataTable('#weeklyTestJun');
+    let weeklyTestMay = new DataTable('#weeklyTestMay');
+    let monthlyTestMay = new DataTable('#monthlyTestMay');
+    let dataTableLibrary = new DataTable('#dataTableLibrary');
+    let loginDetailsTable = new DataTable('#loginDetailsTable');
+
+    // ✅ Data Table start
+    $('.data-table').each(function () {
+        const $table = $(this);
+        const tableInstance = new DataTable(this);
+
+        // Handle search input (inside same wrapper)
+        $table.closest('.dataTable-wrapper').find('.dt-search .dt-input').on('keyup', function () {
+            tableInstance.search(this.value).draw();
+        });
+
+        // Handle page length change (inside same wrapper)
+        $table.closest('.dataTable-wrapper').find('.dt-length .dt-input').on('change', function () {
+            const value = $(this).val();
+            tableInstance.page.len(value).draw();
+        });
+    });
+    // ✅ Data Table end
+
+    // Dynamic Attendance Matrix Renderer (Connected to Backend API)
+    function renderAttendanceMatrix(targetId, attendanceData) {
+        const $tbody = $(targetId || '#attendanceMatrixBody');
+        if (!$tbody.length) return;
+        $tbody.empty();
+
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        months.forEach((month) => {
+            let row = `<tr><td class="px-10 py-16 text-sm font-semibold">${month}</td>`;
+            for (let day = 1; day <= 31; day++) {
+                let status = (attendanceData && attendanceData[month] && attendanceData[month][day]) 
+                             ? attendanceData[month][day] 
+                             : '';
+                
+                let colorClass = '';
+                if (status === 'P') colorClass = 'text-success-600';
+                else if (status === 'A') colorClass = 'text-danger-600';
+                else if (status === 'H') colorClass = 'text-warning-600';
+                else if (status === 'F') colorClass = 'text-purple-600';
+                else if (status === 'L') colorClass = 'text-info-600';
+                else if (status === 'WFH') colorClass = 'text-cyan-600 font-bold';
+
+
+                row += `<td class="px-10 py-14 text-sm text-uppercase"><span class="attendance ${colorClass}">${status}</span></td>`;
+            }
+            row += '</tr>';
+            $tbody.append(row);
+        });
+    }
+
+    let currentAttendanceRecords = [];
+
+    function renderSundayToSaturdayGrid(records, targetMonthIdx) {
+        const $tbody = $('#weeklySundayToSaturdayBody');
+        if (!$tbody.length) return;
+        $tbody.empty();
+
+        const monthIdx = (targetMonthIdx !== undefined && targetMonthIdx !== null) ? parseInt(targetMonthIdx) : parseInt($('#weeklyMonthSelect').val() || 5);
+        const sessionVal = $('#attendanceSessionSelect').val() || '2025';
+        let year = 2025;
+        const yearMatch = sessionVal.match(/\d{4}/);
+        if (yearMatch) {
+            year = parseInt(yearMatch[0]);
+        }
+
+        const recordMap = {};
+        (records || []).forEach(r => {
+            if (r.date) {
+                recordMap[r.date] = r;
+            }
+        });
+
+        const firstDayOfMonth = new Date(year, monthIdx, 1);
+        const lastDayOfMonth = new Date(year, monthIdx + 1, 0);
+        const totalDays = lastDayOfMonth.getDate();
+        const startDayOfWeek = firstDayOfMonth.getDay(); // 0 = Sunday, 6 = Saturday
+
+        let currentDay = 1;
+        let html = '';
+
+        while (currentDay <= totalDays) {
+            html += '<tr>';
+            for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+                if ((currentDay === 1 && dayOfWeek < startDayOfWeek) || currentDay > totalDays) {
+                    html += '<td class="bg-neutral-50 py-16"></td>';
+                } else {
+                    const mStr = String(monthIdx + 1).padStart(2, '0');
+                    const dStr = String(currentDay).padStart(2, '0');
+                    const dateKey = `${year}-${mStr}-${dStr}`;
+                    const rec = recordMap[dateKey];
+
+                    let badgeHtml = '<span class="badge bg-neutral-200 text-neutral-600 radius-4 text-xs">-</span>';
+                    if (rec) {
+                        let badgeClass = 'bg-success-100 text-success-600';
+                        if (rec.status === 'A') badgeClass = 'bg-danger-100 text-danger-600';
+                        else if (rec.status === 'H') badgeClass = 'bg-warning-100 text-warning-600';
+                        else if (rec.status === 'F') badgeClass = 'bg-purple-100 text-purple-600';
+                        else if (rec.status === 'L') badgeClass = 'bg-info-100 text-info-600';
+                        else if (rec.status === 'WFH') badgeClass = 'bg-cyan-100 text-cyan-600';
+
+                        badgeHtml = `<span class="badge ${badgeClass} px-8 py-4 radius-4 text-xs font-bold me-1">${rec.status}</span>`;
+                    }
+
+                    const isSun = (dayOfWeek === 0);
+                    const isSat = (dayOfWeek === 6);
+                    const cellBg = isSun ? 'bg-danger-50' : (isSat ? 'bg-warning-50' : '');
+
+                    html += `
+                        <td class="${cellBg} py-12 px-8">
+                            <div class="fw-semibold text-sm mb-4 text-neutral-800">${currentDay}</div>
+                            <div>${badgeHtml}</div>
+                        </td>
+                    `;
+                    currentDay++;
+                }
+            }
+            html += '</tr>';
+        }
+
+        $tbody.html(html);
+    }
+
+    $(document).on('change', '#weeklyMonthSelect', function() {
+        renderSundayToSaturdayGrid(currentAttendanceRecords, $(this).val());
+    });
+
+    function renderDayWiseAttendance(targetId, records) {
+        const $tbody = $(targetId || '#dayWiseTableBody');
+        if (!$tbody.length) return;
+        $tbody.empty();
+
+        if (!records || records.length === 0) {
+            $tbody.html('<tr><td colspan="6" class="text-center py-20 text-secondary-light">No attendance records found for this period.</td></tr>');
+            $('#dayWiseRecordCount').text('0 Days Recorded');
+            return;
+        }
+
+        $('#dayWiseRecordCount').text(records.length + ' Days Recorded');
+
+        records.forEach(function(rec) {
+            let dayBadgeClass = 'bg-neutral-100 text-neutral-700';
+            if (rec.day_name === 'Sunday') {
+                dayBadgeClass = 'bg-danger-100 text-danger-600 font-semibold';
+            } else if (rec.day_name === 'Saturday') {
+                dayBadgeClass = 'bg-warning-100 text-warning-700 font-semibold';
+            }
+
+            let badgeHtml = '<span class="bg-success-100 text-success-600 px-12 py-4 radius-4 fw-medium text-sm">Present</span>';
+            if (rec.status === 'A') {
+                badgeHtml = '<span class="bg-danger-100 text-danger-600 px-12 py-4 radius-4 fw-medium text-sm">Absent</span>';
+            } else if (rec.status === 'H') {
+                badgeHtml = '<span class="bg-warning-100 text-warning-600 px-12 py-4 radius-4 fw-medium text-sm">Holiday</span>';
+            } else if (rec.status === 'F') {
+                badgeHtml = '<span class="bg-purple-100 text-purple-600 px-12 py-4 radius-4 fw-medium text-sm">Half Day</span>';
+            } else if (rec.status === 'L') {
+                badgeHtml = '<span class="bg-info-100 text-info-600 px-12 py-4 radius-4 fw-medium text-sm">Late</span>';
+            } else if (rec.status === 'WFH') {
+                badgeHtml = '<span class="bg-cyan-100 text-cyan-600 px-12 py-4 radius-4 text-sm fw-bold">WFH</span>';
+            }
+
+            const row = `
+                <tr>
+                    <td class="fw-semibold text-primary-light">${rec.formatted_date}</td>
+                    <td><span class="badge ${dayBadgeClass} px-10 py-4 radius-4 text-xs">${rec.day_name}</span></td>
+                    <td><span class="text-sm text-neutral-700 font-medium"><i class="ri-time-line text-success-600 me-1"></i> ${rec.check_in}</span></td>
+                    <td><span class="text-sm text-neutral-700 font-medium"><i class="ri-time-line text-danger-600 me-1"></i> ${rec.check_out}</span></td>
+                    <td>${badgeHtml}</td>
+                    <td class="text-secondary-light text-sm">${rec.remarks || '-'}</td>
+                </tr>
+            `;
+            $tbody.append(row);
+        });
+    }
+
+    function loadBackendAttendance() {
+        const selectedSession = $('#attendanceSessionSelect').val() || 'Jun 2025/2026';
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetEmpId = urlParams.get('emp_id') || urlParams.get('id') || urlParams.get('user_id');
+        const empEmail = urlParams.get('email');
+        const empName = urlParams.get('name') || $('#empDetailName').text().trim();
+
+        const reqData = { academic_year: selectedSession };
+        if (targetEmpId) {
+            reqData.user_id = targetEmpId;
+        } else {
+            reqData.user_name = empEmail || empName;
+        }
+
+        $.ajax({
+            url: '/accounts/api/attendance/',
+            type: 'GET',
+            data: reqData,
+            success: function(res) {
+                if (res.status === 'success') {
+                    currentAttendanceRecords = res.daily_records || [];
+                    if (res.summary) {
+                        $('#attTotalPresent').text(res.summary.present || 0);
+                        $('#attTotalAbsent').text(res.summary.absent || 0);
+                        $('#attHalfDay').text(res.summary.half_day || 0);
+                        $('#attTotalLate').text(res.summary.late || 0);
+                        $('#attTotalHoliday').text(res.summary.holiday || 0);
+                    }
+                    if (res.attendance_matrix) {
+                        renderAttendanceMatrix('#attendanceMatrixBody', res.attendance_matrix);
+                    }
+                    renderSundayToSaturdayGrid(currentAttendanceRecords, $('#weeklyMonthSelect').val());
+                    renderDayWiseAttendance('#dayWiseTableBody', currentAttendanceRecords);
+                } else {
+                    currentAttendanceRecords = [];
+                    renderAttendanceMatrix('#attendanceMatrixBody', null);
+                    renderSundayToSaturdayGrid([], 5);
+                    renderDayWiseAttendance('#dayWiseTableBody', []);
+                }
+            },
+            error: function() {
+                currentAttendanceRecords = [];
+                renderAttendanceMatrix('#attendanceMatrixBody', null);
+                renderSundayToSaturdayGrid([], 5);
+                renderDayWiseAttendance('#dayWiseTableBody', []);
+            }
+        });
+    }
+    window.loadBackendAttendance = loadBackendAttendance;
+
+
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetEmpId = urlParams.get('emp_id') || urlParams.get('id') || urlParams.get('user_id');
+
+        if (targetEmpId) {
+            $('#empDetailEditBtn').attr('href', '/admin-panel/add-new-employee/?emp_id=' + targetEmpId);
+
+            $.ajax({
+                url: '/accounts/api/employee/onboard/?emp_id=' + targetEmpId,
+                type: 'GET',
+                success: function(resp) {
+                    if (resp.status === 'success' && resp.employee) {
+                        var e = resp.employee;
+                        $('#empDetailName').text(e.full_name || 'Employee');
+                        $('#empDetailId').text(e.employee_id || e.id);
+                        $('#empDetailDept').text(': ' + (e.department || 'CRM & Sales'));
+                        $('#empDetailRole').text(e.designation || (e.role ? e.role.toUpperCase() : 'Employee'));
+                        $('#empDetailEmail').text(': ' + (e.email || 'N/A'));
+                        $('#empDetailPhone').text(': ' + (e.phone || 'N/A'));
+                        $('#empDetailJoinDate').text(': ' + (e.joining_date || 'N/A'));
+                        $('#empDetailGender').text(': ' + (e.gender ? e.gender.toUpperCase() : 'N/A'));
+                        $('#empDetailShift').text(': ' + (e.shift ? e.shift.toUpperCase() : 'N/A'));
+                        $('#empDetailContract').text(': ' + (e.contract_type ? e.contract_type.toUpperCase() : 'N/A'));
+                        $('#empDetailLocation').text(': ' + (e.work_location || 'N/A'));
+
+                        if (e.profile_image) {
+                            $('#empDetailImg').attr('src', e.profile_image);
+                        }
+
+                        $('#empDetailEditBtn').attr('href', '/admin-panel/add-new-employee/?emp_id=' + (e.id || e.employee_id));
+
+                        $('.login-details-btn').attr('data-username', e.email);
+                        if (e.password) $('.login-details-btn').attr('data-password', e.password);
+                        if (e.designation || e.role) $('.login-details-btn').attr('data-role', e.designation || e.role);
+                        $('#loginModalUsername').val(e.email);
+                        if (e.password) $('#loginModalPassword').val(e.password);
+
+                        loadBackendAttendance();
+                        loadEmployeeLeaves();
+                    }
+                }
+            });
+        } else if (urlParams.has('name')) {
+            const name = urlParams.get('name');
+            const id = urlParams.get('id') || 'AD1256589';
+            const dept = urlParams.get('dept') || 'CRM & Sales';
+            const role = urlParams.get('role') || 'CRM Manager';
+            const email = urlParams.get('email') || 'employee@eduaiq.com';
+            const phone = urlParams.get('phone') || '209.555.0104';
+            const join = urlParams.get('join') || '05 May 2012';
+            const img = urlParams.get('img');
+            const status = urlParams.get('status') || 'Active';
+
+            $('#empDetailName').text(name);
+            $('#empDetailId').text(id);
+            $('#empDetailDept').text(': ' + dept);
+            $('#empDetailRole').text(role);
+            $('#empDetailEmail').text(': ' + email);
+            $('#empDetailPhone').text(': ' + phone);
+            $('#empDetailJoinDate').text(': ' + join);
+
+            if (img && (img.startsWith('http') || img.startsWith('/'))) {
+                $('#empDetailImg').attr('src', img);
+            } else if (img) {
+                $('#empDetailImg').attr('src', `/static/admin_assets/images/thumbs/${img}`);
+            }
+
+            $('#empDetailEditBtn').attr('href', '/admin-panel/add-new-employee/?emp_id=' + id);
+            
+            if (status === 'Inactive') {
+                $('#empDetailStatusBadge').removeClass('bg-success-100 text-success-600').addClass('bg-danger-100 text-danger-600').text('Inactive');
+            } else {
+                $('#empDetailStatusBadge').removeClass('bg-danger-100 text-danger-600').addClass('bg-success-100 text-success-600').text('Active');
+            }
+
+            $('.login-details-btn').attr('data-username', email);
+            $('#loginModalUsername').val(email);
+
+            loadBackendAttendance();
+            loadEmployeeLeaves();
+        } else {
+            loadBackendAttendance();
+            loadEmployeeLeaves();
+        }
+
+        $('#attendanceSessionSelect').on('change', function () {
+            loadBackendAttendance();
+            if (window.showToast) window.showToast(`Loaded backend attendance records for ${$(this).val()}`, 'info');
+        });
+    });
+
+    function loadEmployeeLeaves() {
+        const empName = $('#empDetailName').text().trim();
+        const empEmail = $('#empDetailEmail').text().replace(':', '').trim();
+        const queryParam = empEmail ? `email=${encodeURIComponent(empEmail)}` : `user_name=${encodeURIComponent(empName)}`;
+        $.ajax({
+            url: `/accounts/api/wfh/request/?${queryParam}`,
+            type: 'GET',
+            success: function(res) {
+                const $tbody = $('#leaveTableBody');
+                $tbody.empty();
+                if (res.status === 'success' && res.data && res.data.length > 0) {
+                    res.data.forEach(function(item, idx) {
+                        let statusBadge = '<span class="bg-warning-100 text-warning-600 px-20 py-4 radius-4 fw-medium text-sm">Pending</span>';
+                        if (item.status === 'approved') {
+                            statusBadge = '<span class="bg-success-100 text-success-600 px-20 py-4 radius-4 fw-medium text-sm">Approved</span>';
+                        } else if (item.status === 'rejected') {
+                            statusBadge = '<span class="bg-danger-100 text-danger-600 px-20 py-4 radius-4 fw-medium text-sm">Rejected</span>';
+                        }
+                        const rowHtml = `
+                            <tr>
+                                <td>${String(idx + 1).padStart(2, '0')}</td>
+                                <td><i class="ri-calendar-event-line me-1 text-primary-600"></i> ${item.leave_type || 'Casual Leave'}</td>
+                                <td>${item.start_date} to ${item.end_date}</td>
+                                <td>${item.reason}</td>
+                                <td>${item.applied_at}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+                        $tbody.append(rowHtml);
+                    });
+                } else {
+                    $tbody.html('<tr><td colspan="6" class="text-center py-24 text-secondary-light">No leave applications found for this employee.</td></tr>');
+                }
+            },
+            error: function() {
+                $('#leaveTableBody').html('<tr><td colspan="6" class="text-center py-24 text-secondary-light">No leave applications found for this employee.</td></tr>');
+            }
+        });
+    }
+    window.loadEmployeeLeaves = loadEmployeeLeaves;
+
+
+    // Custom accordion js start
+    $(document).on('click', '.custom-accordion-btn', function () {
+        $('.custom-accordion-btn').not(this).removeClass('active').siblings('.custom-accordion-content').slideUp();
+
+        // Toggle current one
+        $(this).toggleClass('active');
+        $(this).siblings('.custom-accordion-content').slideToggle();
+    });
+
+    // Keep first accordion open by default
+    $(document).ready(function () {
+        const firstAccordion = $('.custom-accordion-btn').first();
+        firstAccordion.addClass('active');
+        firstAccordion.siblings('.custom-accordion-content').show();
+    });
+    // Custom accordion js end
+
+
+    // Sidebar js start
+    $('.my-sidebar-btn').on('click', function () {
+        $('.my-sidebar').addClass('active');
+        $('.overlay').addClass('active');
+    });
+    $('.close-my-sidebar, .overlay').on('click', function () {
+        $('.my-sidebar').removeClass('active');
+        $('.overlay').removeClass('active');
+    });
+
+
+    $('.apply-leave-btn').on('click', function () {
+        $('.apply-leave').addClass('active');
+        $('.overlay').addClass('active');
+    });
+    $('.close-apply-leave, .overlay').on('click', function () {
+        $('.apply-leave').removeClass('active');
+        $('.overlay').removeClass('active');
+    });
+    // Sidebar js end
+
+    $('.collect-payroll-btn').on('click', function () {
+        $('.collect-payroll').addClass('active');
+        $('.overlay').addClass('active');
+    });
+    $('.close-collect-payroll, .overlay').on('click', function () {
+        $('.collect-payroll').removeClass('active');
+        $('.overlay').removeClass('active');
+    });
+    // Sidebar js end
+
+
+    </script>
+{% endblock %}

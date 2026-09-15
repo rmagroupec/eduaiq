@@ -1,0 +1,843 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
+
+{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Add New Employee</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/employee-list/"> / Employee List</a>
+      <span class="text-secondary-light">/ Add New Employee</span>
+    </div>
+  </div>
+</div>
+
+<form id="addEmployeeForm" action="#" class="mt-24">
+    {% csrf_token %}
+<div class="row gy-3">
+
+<!-- 1. Personal Info -->
+<div class="col-lg-12">
+<div class="shadow-1 radius-12 bg-base overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Personal Info</h6>
+</div>
+<div class="card-body p-20">
+<!-- Profile Upload Row -->
+<div class="row mb-24 align-items-center pb-20 border-bottom">
+<div class="col-12">
+<label class="text-sm fw-semibold text-primary-light d-block mb-12">Employee Profile Picture</label>
+<div class="d-flex align-items-center gap-24">
+<div class="position-relative d-inline-block">
+<img id="profileImagePreview" src="{% static 'admin_assets/images/thumbs/teacher-avatar-img1.png' %}" alt="Profile Image" class="w-100-px h-100-px rounded-circle object-fit-cover border border-3 border-primary-600 shadow-sm" style="width: 100px; height: 100px;" />
+<label for="profileUploadInput" class="position-absolute bottom-0 end-0 bg-primary-600 text-white rounded-circle d-flex align-items-center justify-content-center cursor-pointer shadow hover-bg-primary-700" style="width: 32px; height: 32px; right: -4px; bottom: -4px;" title="Upload Profile Picture">
+<i class="ri-camera-fill text-md"></i>
+</label>
+<input type="file" id="profileUploadInput" name="profile_picture" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" class="d-none" />
+</div>
+<div>
+<h6 class="text-md fw-semibold mb-4 text-primary-light">Upload Profile Photo</h6>
+<p class="text-xs text-secondary-light mb-8">Allowed formats: JPG, JPEG, PNG, WEBP (Recommended size: 200x200px, Max: 5MB)</p>
+<div class="d-flex align-items-center gap-2">
+<label for="profileUploadInput" class="btn btn-sm btn-primary-50 text-primary-600 border border-primary-200 radius-8 d-inline-flex align-items-center gap-1 cursor-pointer fw-medium px-16 py-6">
+<i class="ri-upload-cloud-2-line text-lg"></i> Choose Image
+</label>
+<button type="button" id="removeProfileImgBtn" class="btn btn-sm btn-outline-danger radius-8 px-12 py-6 text-xs d-none">Remove</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="row gy-3">
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeID">Employee ID <span class="text-danger-600">*</span></label>
+<input class="form-control" id="employeeID" placeholder="Enter Employee ID" type="text"/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="fullName">Full Name <span class="text-danger-600">*</span></label>
+<input class="form-control" id="fullName" placeholder="Enter your Full Name" type="text" required/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeDepartment">Department</label>
+<select class="form-control form-select" id="employeeDepartment">
+<option disabled="" selected="" value="">Select a Department</option>
+<option value="Teaching & Faculty">Teaching & Faculty</option>
+<option value="CRM & Sales">CRM & Sales</option>
+<option value="Admissions & Counseling">Admissions & Counseling</option>
+<option value="Marketing & Lead Gen">Marketing & Lead Gen</option>
+<option value="Student Relations & Support">Student Relations & Support</option>
+<option value="Academic Management">Academic Management</option>
+<option value="Finance & Accounts">Finance & Accounts</option>
+<option value="Human Resources (HR)">Human Resources (HR)</option>
+<option value="Administration & Operations">Administration & Operations</option>
+</select>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeDesignation">Designation</label>
+<select class="form-control form-select" id="employeeDesignation">
+<option disabled="" selected="" value="">Select a Designation</option>
+<option value="CRM Manager">CRM Manager</option>
+<option value="Sales Executive">Sales Executive</option>
+<option value="Admission Counselor">Admission Counselor</option>
+<option value="Business Development Lead">Business Development Lead</option>
+<option value="Relationship Manager">Relationship Manager</option>
+<option value="Telecaller Executive">Telecaller Executive</option>
+<option value="Marketing Specialist">Marketing Specialist</option>
+<option value="Academic Coordinator">Academic Coordinator</option>
+<option value="Team Lead">Team Lead</option>
+<option value="Accountant">Accountant</option>
+<option value="HR Manager">HR Manager</option>
+</select>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="gender">Gender</label>
+<select class="form-control form-select" id="gender">
+<option value="" disabled selected>Select Gender</option>
+<option value="Male">Male</option>
+<option value="Female">Female</option>
+<option value="Other">Other</option>
+<option value="Prefer not to say">Prefer not to say</option>
+</select>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="dateOfBirth">Date Of Birth <span class="text-danger-600">*</span></label>
+<input class="form-control" id="dateOfBirth" type="date"/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="fathersName">Fathers Name</label>
+<input class="form-control" id="fathersName" placeholder="Enter Fathers Name" type="text"/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="mothersName">Mothers Name</label>
+<input class="form-control" id="mothersName" placeholder="Enter Mothers Name" type="text"/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="meritalStatus">Marital Status</label>
+<select class="form-control form-select" id="meritalStatus">
+<option value="" disabled selected>Select Marital Status</option>
+<option value="Single">Single / Unmarried</option>
+<option value="Married">Married</option>
+<option value="Divorced">Divorced</option>
+<option value="Widowed">Widowed</option>
+</select>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="contractType">Contract Type</label>
+<select class="form-control form-select" id="contractType">
+<option value="" disabled selected>Select Contract Type</option>
+<option value="Full Time">Full Time / Permanent</option>
+<option value="Contractual">Contractual</option>
+<option value="Part Time">Part Time</option>
+<option value="Hourly">Hourly</option>
+<option value="Intern">Internship</option>
+</select>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeShift">Shift</label>
+<select class="form-control form-select" id="employeeShift">
+<option value="" disabled selected>Select a Shift</option>
+<option value="Day Shift">Day / Morning Shift</option>
+<option value="Night Shift">Night Shift</option>
+<option value="Evening Shift">Evening Shift</option>
+<option value="Flexible Shift">Flexible Shift</option>
+</select>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="workLocation">Work Location</label>
+<input class="form-control" id="workLocation" placeholder="Enter work location" type="text"/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="joinDate">Join Date</label>
+<input class="form-control" id="joinDate" type="date"/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="phoneNumber">Phone Number <span class="text-danger-600">*</span></label>
+<input class="form-control" id="phoneNumber" placeholder="Enter Phone Number" type="tel"/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeEmails">Email <span class="text-danger-600">*</span></label>
+<input class="form-control" id="employeeEmails" placeholder="Enter Email" type="text"/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Employee Photo</label>
+<div class="drop-zone height-44-px p-4 d-flex justify-content-center align-items-center text-center fw-medium text-md cursor-pointer border border-neutral-400 radius-8 border-dashed bg-hover-neutral-200">
+<span class="drop-zone__prompt">Drag &amp; drop a file here or click</span>
+<input class="drop-zone__input" name="myFile" type="file"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 2. Medical Details -->
+<div class="col-lg-12">
+<div class="shadow-1 radius-12 bg-base overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Medical Details</h6>
+</div>
+<div class="card-body p-20">
+<div class="row gy-3">
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bloodGroup">Blood Group</label>
+<select class="form-control form-select" id="bloodGroup">
+<option disabled="" selected="" value="">Select Blood Group</option>
+<option value="A+">A+</option>
+<option value="B+">B+</option>
+<option value="AB+">AB+</option>
+<option value="O+">O+</option>
+<option value="A-">A-</option>
+<option value="B-">B-</option>
+<option value="AB-">AB-</option>
+<option value="O-">O-</option>
+</select>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="medicalHeight">Medical Height (In Inch)</label>
+<input class="form-control" id="medicalHeight" placeholder="Enter height" type="text"/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="medicalWeight">Medical Weight (In Kg)</label>
+<input class="form-control" id="medicalWeight" placeholder="Enter weight" type="text"/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="medicalDate">As On Date</label>
+<input class="form-control" id="medicalDate" type="date"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 3. Bank Info -->
+<div class="col-lg-12">
+<div class="shadow-1 radius-12 bg-base overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Bank Info</h6>
+</div>
+<div class="card-body p-20">
+<div class="row gy-3">
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bankAccountNumber">Bank Account Number</label>
+<input class="form-control" id="bankAccountNumber" placeholder="Enter Bank Account Number" type="text"/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="bankName">Bank Name</label>
+<input class="form-control" id="bankName" placeholder="Enter Bank Name" type="text"/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="iFSCCode">IFSC Code</label>
+<input class="form-control" id="iFSCCode" placeholder="Enter IFSC Code" type="text"/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="nationalIdentificationNumber">National Identification Number</label>
+<input class="form-control" id="nationalIdentificationNumber" placeholder="Enter National Identification Number" type="text"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 4. Documents Info -->
+<div class="col-lg-12">
+<div class="shadow-1 radius-12 bg-base overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Documents Info</h6>
+</div>
+<div class="card-body p-20">
+<div class="row gy-3">
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="docName">Document Name</label>
+<input class="form-control" id="docName" placeholder="Enter Document Name" type="text"/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8">Document File</label>
+<div class="drop-zone height-44-px p-4 d-flex justify-content-center align-items-center text-center fw-medium text-md cursor-pointer border border-neutral-400 radius-8 border-dashed bg-hover-neutral-200">
+<span class="drop-zone__prompt">Drag &amp; drop a file here or click</span>
+<input class="drop-zone__input" name="myFile" type="file"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 5. Payroll Info -->
+<div class="col-lg-12">
+<div class="shadow-1 radius-12 bg-base overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Payroll Info</h6>
+</div>
+<div class="card-body p-20">
+<div class="row gy-3">
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="epfNo">EPF No</label>
+<input class="form-control" id="epfNo" placeholder="Enter EPF No" type="text"/>
+</div>
+</div>
+<div class="col-xxl-3 col-xl-4 col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="basicSalary">Basic Salary</label>
+<input class="form-control" id="basicSalary" placeholder="Enter Basic Salary" type="text"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 6. Address Details -->
+<div class="col-lg-12">
+<div class="shadow-1 radius-12 bg-base overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Address Details</h6>
+</div>
+<div class="card-body p-20">
+<div class="row gy-3">
+<div class="col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="currentAddress">Current Address</label>
+<textarea class="form-control" id="currentAddress" placeholder="Enter Current Address" rows="3"></textarea>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="permanentAddress">Permanent Address</label>
+<textarea class="form-control" id="permanentAddress" placeholder="Enter Permanent Address" rows="3"></textarea>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- 8. Access Rights & Login Details -->
+<div class="col-lg-12">
+<div class="shadow-1 radius-12 bg-base overflow-hidden">
+<div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+<h6 class="text-lg fw-semibold mb-0">Access Level & Reporting Structure</h6>
+</div>
+<div class="card-body p-20">
+<div class="row gy-3">
+<div class="col-md-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeRole">System Access Level / Role <span class="text-danger-600">*</span></label>
+<select class="form-control form-select" id="employeeRole">
+<option value="teacher">Faculty / Educator Access (Teaching & Academic)</option>
+<option value="sales" selected>Sales & CRM Executive (Portal Access)</option>
+<option value="employee">Staff Employee (Restricted Portal)</option>
+<option value="crm">CRM Manager / Team Lead</option>
+<option value="admin">HR / Operational Admin</option>
+</select>
+<span class="text-xs text-secondary-light mt-4 d-block">Defines sidebar menu permissions & system access level.</span>
+</div>
+</div>
+<div class="col-md-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="reportingManager">Assign Under / Reporting Manager</label>
+<select class="form-control form-select" id="reportingManager">
+<option value="">Direct Super Admin / Top Management</option>
+<!-- Populated dynamically via API -->
+</select>
+<span class="text-xs text-secondary-light mt-4 d-block">Select the supervisor/manager under whom this employee will report.</span>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="myEmail">Login Email <span class="text-danger-600">*</span></label>
+<input class="form-control" id="myEmail" name="myEmail" placeholder="Enter Email" type="email" required/>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="your-password">Login Password <span class="text-danger-600">*</span></label>
+<div class="position-relative">
+<input class="form-control" id="your-password" name="your-password" placeholder="Enter your password" type="password" style="padding-right: 45px;" required/>
+<span class="toggle-password cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" style="z-index: 10;">
+  <i class="ri-eye-line text-xl"></i>
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-12">
+<div class="d-flex align-items-center justify-content-center gap-3 mt-8">
+<button class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-50 py-11 radius-8" type="reset">
+                            Reset
+                        </button>
+<button class="btn btn-primary-600 border border-primary-600 text-md px-28 py-12 radius-8" type="submit" id="saveEmployeeBtn">
+                            Save Changes
+                        </button>
+</div>
+</div>
+</form>
+{% endblock %}
+
+{% block js %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+
+    // ================== Profile Image Upload Preview ==================
+    var defaultAvatarUrl = "{% static 'admin_assets/images/thumbs/teacher-avatar-img1.png' %}";
+    $('#profileUploadInput').on('change', function() {
+        var file = this.files[0];
+        if (file) {
+            var allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
+            var ext = file.name.split('.').pop().toLowerCase();
+            if (!allowedExts.includes(ext)) {
+                Swal.fire({ icon: 'warning', title: 'Invalid Image Format', text: 'Only JPG, JPEG, PNG, and WEBP files are allowed.' });
+                $(this).val('');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                Swal.fire({ icon: 'warning', title: 'File Too Large', text: 'Profile picture must be less than 5MB.' });
+                $(this).val('');
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#profileImagePreview').attr('src', e.target.result);
+                $('#removeProfileImgBtn').removeClass('d-none');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    $('#removeProfileImgBtn').on('click', function() {
+        $('#profileUploadInput').val('');
+        $('#profileImagePreview').attr('src', defaultAvatarUrl);
+        $(this).addClass('d-none');
+    });
+
+    // ================== Password Show Hide Js Start ==========
+    $(document).on('click', '.toggle-password', function () {
+        var $icon = $(this).find('i');
+        var $input = $('#your-password');
+        if ($input.length === 0) {
+            $input = $(this).siblings('input');
+        }
+        if ($input.attr("type") === "password") {
+            $input.attr("type", "text");
+            $icon.removeClass("ri-eye-line").addClass("ri-eye-off-line");
+        } else {
+            $input.attr("type", "password");
+            $icon.removeClass("ri-eye-off-line").addClass("ri-eye-line");
+        }
+    });
+    // ========================= Password Show Hide Js End ===========================
+
+    // Helper function to set select dropdown option by value or text flexibly
+    function setDropdownValue($select, targetVal) {
+        if (targetVal === null || targetVal === undefined || String(targetVal).trim() === '' || !$select.length) return;
+        targetVal = String(targetVal).trim();
+
+        // 1. Direct match attempt
+        $select.val(targetVal);
+        if ($select.val() && String($select.val()).toLowerCase() === targetVal.toLowerCase()) {
+            return;
+        }
+
+        // 2. Case-insensitive & normalized match on option value or text
+        var targetNorm = targetVal.toLowerCase().replace(/[^a-z0-9+\-]/g, '');
+        var matched = false;
+
+        $select.find('option').each(function() {
+            var optVal = ($(this).val() || '').toLowerCase().replace(/[^a-z0-9+\-]/g, '');
+            var optText = ($(this).text() || '').toLowerCase().replace(/[^a-z0-9+\-]/g, '');
+
+            if ((optVal && optVal === targetNorm) || (optText && optText === targetNorm) || (optVal && targetNorm && optVal.includes(targetNorm)) || (optText && targetNorm && optText.includes(targetNorm))) {
+                $(this).prop('selected', true);
+                matched = true;
+                return false;
+            }
+        });
+
+        // 3. Fallback: If no option matched, append option dynamically so dropdown is never blank
+        if (!matched && targetVal) {
+            $select.append(`<option value="${targetVal}" selected>${targetVal}</option>`);
+            $select.val(targetVal);
+        }
+    }
+
+    // ========================== AJAX Form Submit Handler ===========================
+    $(document).ready(function() {
+        // Clear any stored drafts completely
+        localStorage.removeItem('eduaiq_add_employee_draft');
+
+        // Check if editing existing employee via URL query param (?user_id=... or ?emp_id=... or ?id=...)
+        var urlParams = new URLSearchParams(window.location.search);
+        var editUserId = urlParams.get('user_id');
+        var editEmpId = urlParams.get('emp_id') || urlParams.get('id');
+        var targetEditId = editUserId || editEmpId;
+        var pendingReportingManagerId = null;
+
+        if (targetEditId) {
+            $('#pageHeaderTitle').text('Edit Employee Profile');
+            $('#saveEmployeeBtn').html('<i class="ri-save-line me-1"></i> Update Employee Profile');
+            $('#your-password').attr('placeholder', 'Leave blank to keep existing password');
+            $('#your-password').removeAttr('required');
+
+            var queryUrl = '/accounts/api/employee/onboard/?user_id=' + (editUserId || '') + '&emp_id=' + (editEmpId || targetEditId);
+
+            // Fetch single employee details and pre-fill form
+            $.ajax({
+                url: queryUrl,
+                type: 'GET',
+                success: function(resp) {
+                    if (resp.status === 'success' && resp.employee) {
+                        var e = resp.employee;
+                        $('#employeeID').val(e.employee_id || '');
+                        $('#fullName').val(e.full_name || '');
+                        if (e.first_name) $('#firstName').val(e.first_name);
+                        if (e.last_name) $('#lastName').val(e.last_name);
+                        
+                        $('#myEmail').val(e.email || '');
+                        if ($('#employeeEmails').length) $('#employeeEmails').val(e.email || '');
+                        $('#phoneNumber').val(e.phone || '');
+                        if (e.password) $('#your-password').val(e.password);
+                        
+                        setDropdownValue($('#employeeDepartment'), e.department);
+                        setDropdownValue($('#employeeDesignation'), e.designation);
+                        setDropdownValue($('#employeeRole'), e.role);
+                        
+                        if (e.reporting_manager_id) {
+                            pendingReportingManagerId = e.reporting_manager_id;
+                            setDropdownValue($('#reportingManager'), e.reporting_manager_id);
+                        }
+
+                        setDropdownValue($('#gender'), e.gender);
+                        if (e.date_of_birth) $('#dateOfBirth').val(e.date_of_birth);
+                        if (e.father_name) $('#fathersName').val(e.father_name);
+                        if (e.mother_name) $('#mothersName').val(e.mother_name);
+                        setDropdownValue($('#meritalStatus'), e.marital_status);
+                        setDropdownValue($('#contractType'), e.contract_type);
+                        setDropdownValue($('#employeeShift'), e.shift);
+                        if (e.work_location) $('#workLocation').val(e.work_location);
+                        if (e.joining_date) $('#joinDate').val(e.joining_date);
+
+                        var bg = e.blood_group || e.bloodGroup || '';
+                        if (bg) setDropdownValue($('#bloodGroup'), bg);
+                        $('#medicalHeight').val(e.medical_height || e.medicalHeight || '');
+                        $('#medicalWeight').val(e.medical_weight || e.medicalWeight || '');
+                        $('#medicalDate').val(e.medical_date || e.medicalDate || '');
+
+                        $('#bankAccountNumber').val(e.bank_account_number || e.bankAccountNumber || '');
+                        $('#bankName').val(e.bank_name || e.bankName || '');
+                        $('#iFSCCode').val(e.ifsc_code || e.iFSCCode || '');
+                        $('#nationalIdentificationNumber').val(e.national_id || e.nationalIdentificationNumber || '');
+
+                        $('#epfNo').val(e.epf_no || e.epfNo || '');
+                        $('#basicSalary').val(e.basic_salary || e.basicSalary || '');
+
+                        $('#currentAddress').val(e.current_address || e.currentAddress || '');
+                        $('#permanentAddress').val(e.permanent_address || e.permanentAddress || '');
+
+                        if (e.facebook) $('#facebookLink').val(e.facebook);
+                        if (e.linkedin) $('#linkedInLink').val(e.linkedin);
+                        if (e.instagram) $('#instagramLink').val(e.instagram);
+
+                        if (e.profile_image) {
+                            $('#profileImagePreview').attr('src', e.profile_image);
+                            $('#removeProfileImgBtn').removeClass('d-none');
+                        }
+                    }
+                }
+            });
+        }
+
+        // Fetch existing managers/employees for Reporting Manager dropdown
+        $.ajax({
+            url: '/accounts/api/employee/onboard/',
+            type: 'GET',
+            success: function(resp) {
+                if (resp.status === 'success' && resp.data && resp.data.length > 0) {
+                    var $select = $('#reportingManager');
+                    $select.html('<option value="">Direct Super Admin / Top Management</option>');
+                    resp.data.forEach(function(emp) {
+                        if (editEmpId && (emp.id == editEmpId || emp.employee_id == editEmpId)) return;
+                        $select.append(`<option value="${emp.id}">${emp.full_name} (${emp.designation || emp.role.toUpperCase()})</option>`);
+                    });
+                    if (pendingReportingManagerId) {
+                        setDropdownValue($select, pendingReportingManagerId);
+                    }
+                }
+            }
+        });
+
+        // Clear draft when reset button is clicked
+        $('button[type="reset"]').on('click', function() {
+            localStorage.removeItem('eduaiq_add_employee_draft');
+            $('#profileUploadInput').val('');
+            $('#profileImagePreview').attr('src', defaultAvatarUrl);
+            $('#removeProfileImgBtn').addClass('d-none');
+            if (window.showToast) window.showToast('Form cleared', 'info');
+        });
+
+        $('#addEmployeeForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            var fullNameVal = ($('#fullName').val() || '').trim();
+            var emailVal = ($('#myEmail').val() || $('#employeeEmails').val() || '').trim();
+            var passwordVal = $('#your-password').val() || '';
+
+            if (!fullNameVal) {
+                Swal.fire({ icon: 'warning', title: 'Full Name Required', text: 'Please enter employee full name.' });
+                return;
+            }
+            if (!emailVal) {
+                Swal.fire({ icon: 'warning', title: 'Email Required', text: 'Please enter a valid email address.' });
+                return;
+            }
+            if (!targetEditId && !passwordVal) {
+                Swal.fire({ icon: 'warning', title: 'Password Required', text: 'Please enter login password for employee.' });
+                return;
+            }
+
+            var formData = new FormData();
+            if (editUserId) {
+                formData.append('user_id', editUserId);
+            }
+            if (editEmpId) {
+                formData.append('emp_id', editEmpId);
+            }
+            formData.append('fullName', fullNameVal);
+            formData.append('employeeID', ($('#employeeID').val() || '').trim());
+            formData.append('employeeDepartment', $('#employeeDepartment').val() || '');
+            formData.append('employeeDesignation', $('#employeeDesignation').val() || '');
+            formData.append('employeeRole', $('#employeeRole').val() || 'sales');
+            formData.append('reportingManager', $('#reportingManager').val() || '');
+            formData.append('gender', $('#gender').val() || '');
+            formData.append('dateOfBirth', $('#dateOfBirth').val() || '');
+            formData.append('fathersName', ($('#fathersName').val() || '').trim());
+            formData.append('mothersName', ($('#mothersName').val() || '').trim());
+            formData.append('meritalStatus', $('#meritalStatus').val() || '');
+            formData.append('contractType', $('#contractType').val() || '');
+            formData.append('employeeShift', $('#employeeShift').val() || '');
+            formData.append('workLocation', ($('#workLocation').val() || '').trim());
+            formData.append('joinDate', $('#joinDate').val() || '');
+            formData.append('phoneNumber', ($('#phoneNumber').val() || '').trim());
+            formData.append('myEmail', emailVal);
+            if (passwordVal) {
+                formData.append('your-password', passwordVal);
+            }
+
+            formData.append('bloodGroup', $('#bloodGroup').val() || '');
+            formData.append('medicalHeight', ($('#medicalHeight').val() || '').trim());
+            formData.append('medicalWeight', ($('#medicalWeight').val() || '').trim());
+            formData.append('medicalDate', $('#medicalDate').val() || '');
+            formData.append('bankAccountNumber', ($('#bankAccountNumber').val() || '').trim());
+            formData.append('bankName', ($('#bankName').val() || '').trim());
+            formData.append('iFSCCode', ($('#iFSCCode').val() || '').trim());
+            formData.append('nationalIdentificationNumber', ($('#nationalIdentificationNumber').val() || '').trim());
+            formData.append('epfNo', ($('#epfNo').val() || $('#companyName').val() || '').trim());
+            formData.append('basicSalary', ($('#basicSalary').val() || $('#Address').val() || '').trim());
+            formData.append('currentAddress', ($('#currentAddress').val() || '').trim());
+            formData.append('permanentAddress', ($('#permanentAddress').val() || '').trim());
+
+            formData.append('facebookLink', ($('#facebookLink').val() || '').trim());
+            formData.append('linkedInLink', ($('#linkedInLink').val() || '').trim());
+            formData.append('instagramLink', ($('#instagramLink').val() || '').trim());
+
+            var fileInput = $('#profileUploadInput')[0];
+            if (fileInput && fileInput.files && fileInput.files[0]) {
+                formData.append('profile_picture', fileInput.files[0]);
+            }
+
+            var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+            $('#saveEmployeeBtn').prop('disabled', true).html('<i class="ri-loader-4-line ri-spin me-1"></i> Saving...');
+
+            $.ajax({
+                url: '/accounts/api/employee/onboard/',
+                type: 'POST',
+                headers: { 'X-CSRFToken': csrfToken },
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(resp) {
+                    $('#saveEmployeeBtn').prop('disabled', false).html('Save Changes');
+                    if (resp.status === 'success') {
+                        localStorage.removeItem('eduaiq_add_employee_draft');
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Employee Added Successfully!',
+                            width: '360px',
+                            padding: '1.25rem 1rem 1rem',
+                            customClass: {
+                                popup: 'radius-16 border-0 shadow-lg',
+                                title: 'fs-6 fw-bold text-dark my-1',
+                                htmlContainer: 'm-0 text-sm',
+                                confirmButton: 'btn btn-primary-600 radius-8 px-20 py-8 text-sm fw-medium shadow-none'
+                            },
+                            html: `
+                                <div class="text-start mt-12 p-12 bg-neutral-50 radius-8 border text-secondary-light">
+                                    <div class="mb-6 text-xs"><strong>Employee ID:</strong> <span class="badge bg-primary-600 text-white ms-1 px-8 py-2 radius-4">${resp.employee_id || 'N/A'}</span></div>
+                                    <div class="mb-6 text-xs"><strong>Username:</strong> <code class="text-primary-600 bg-neutral-200 px-6 py-2 radius-4 fw-semibold">${resp.username || ''}</code></div>
+                                    <div class="text-xs"><strong>Email:</strong> <span class="text-primary-600">${resp.email || ''}</span></div>
+                                </div>
+                                <p class="text-secondary-light text-xs mt-10 mb-0">Employee can log in using these credentials.</p>
+                            `,
+                            confirmButtonColor: '#ea580c',
+                            confirmButtonText: '<i class="ri-user-follow-line me-1"></i> View Employee List',
+                            allowOutsideClick: false
+                        }).then(function() {
+                            window.location.href = '/admin-panel/employee-list/';
+                        });
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Submission Error', text: resp.message || 'Could not add employee.' });
+                    }
+                },
+                error: function(xhr) {
+                    $('#saveEmployeeBtn').prop('disabled', false).html('Save Changes');
+                    var msg = 'An error occurred while adding the employee.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        msg = xhr.responseJSON.message;
+                    }
+                    Swal.fire({ icon: 'error', title: 'Error', text: msg });
+                }
+            });
+        });
+    });
+    // ========================== AJAX Form Submit Handler End =========================
+
+    // ========================== Drag & Drop Upload photo Js start ========================
+    document.querySelectorAll(".drop-zone__input").forEach((inputElement) => {
+        const dropZoneElement = inputElement.closest(".drop-zone");
+
+        dropZoneElement.addEventListener("click", (e) => {
+            inputElement.click();
+        });
+
+        inputElement.addEventListener("change", (e) => {
+            if (inputElement.files.length) {
+                updateThumbnail(dropZoneElement, inputElement.files[0]);
+            }
+        });
+
+        dropZoneElement.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropZoneElement.classList.add("drop-zone--over");
+        });
+
+        ["dragleave", "dragend"].forEach((type) => {
+            dropZoneElement.addEventListener(type, (e) => {
+                dropZoneElement.classList.remove("drop-zone--over");
+            });
+        });
+
+        dropZoneElement.addEventListener("drop", (e) => {
+            e.preventDefault();
+
+            if (e.dataTransfer.files.length) {
+                inputElement.files = e.dataTransfer.files;
+                updateThumbnail(dropZoneElement, e.dataTransfer.files[0]);
+            }
+
+            dropZoneElement.classList.remove("drop-zone--over");
+        });
+    });
+
+    /**
+     * Updates the thumbnail on a drop zone element.
+     *
+     * @param {HTMLElement} dropZoneElement
+     * @param {File} file
+     */
+    function updateThumbnail(dropZoneElement, file) {
+        let thumbnailElement = dropZoneElement.querySelector(".drop-zone__thumb");
+
+        // First time - remove the prompt
+        if (dropZoneElement.querySelector(".drop-zone__prompt")) {
+            dropZoneElement.querySelector(".drop-zone__prompt").remove();
+        }
+
+        // First time - there is no thumbnail element, so lets create it
+        if (!thumbnailElement) {
+            thumbnailElement = document.createElement("div");
+            thumbnailElement.classList.add("drop-zone__thumb");
+            dropZoneElement.appendChild(thumbnailElement);
+        }
+
+        thumbnailElement.dataset.label = file.name;
+
+        // Show thumbnail for image files
+        if (file.type.startsWith("image/")) {
+            const reader = new FileReader();
+
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                thumbnailElement.style.backgroundImage = `url('${reader.result}')`;
+            };
+        } else {
+            thumbnailElement.style.backgroundImage = null;
+        }
+    }
+    // ========================== Drag & Drop Upload photo Js end ========================
+
+
+    </script>
+{% endblock %}

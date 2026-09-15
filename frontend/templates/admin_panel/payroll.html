@@ -1,0 +1,621 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
+
+{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+
+{% block content %}
+<style>
+@media print {
+  body {
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Hide everything on the page by default */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* Exclude background elements, modal backdrop, headers, footers and buttons */
+  .modal-backdrop,
+  .modal-header,
+  .modal-footer,
+  .sidebar,
+  .navbar,
+  .header,
+  .breadcrumb,
+  button {
+    display: none !important;
+  }
+
+  /* Show only the payslip modal container and its contents */
+  #payslipModal,
+  #payslipModal .modal-dialog,
+  #payslipModal .modal-content,
+  #payslipModalBody,
+  #payslipModalBody * {
+    visibility: visible !important;
+  }
+
+  #payslipModal {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  #payslipModal .modal-dialog {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #payslipModal .modal-content {
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+  }
+
+  #payslipModalBody {
+    padding: 20px !important;
+    width: 100% !important;
+  }
+}
+</style>
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+<div class="">
+<h1 class="fw-semibold mb-4 h6 text-primary-light">Payroll</h1>
+<div class="">
+<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
+<span class="text-secondary-light">/ Payroll</span>
+</div>
+</div>
+<button id="proceedToPayBtn" class="btn btn-primary-600 d-flex align-items-center gap-6" type="button" data-bs-toggle="modal" data-bs-target="#proceedToPayModal">
+<span class="d-flex text-md">
+<i class="ri-add-large-line"></i>
+</span>
+  Proceed to pay
+</button>
+</div>
+<div class="mt-24">
+<div class="card h-100">
+<div class="card-body p-0 dataTable-wrapper">
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-16 px-20 py-12 border-bottom border-neutral-200">
+<div class="d-flex flex-wrap align-items-center gap-16">
+<div class="dropdown">
+<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
+<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
+<i class="ri-file-upload-line text-md line-height-1"></i>
+                                        Export
+                                    </span>
+<span class="">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<ul class="dropdown-menu p-12 border bg-base shadow">
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
+<i class="ri-file-3-line"></i>
+                                            PDF
+                                        </button>
+</li>
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
+<i class="ri-file-excel-line"></i>
+                                            Excel
+                                        </button>
+</li>
+</ul>
+</div>
+<form class="navbar-search dt-search m-0">
+    {% csrf_token %}
+<input aria-controls="dataTable" class="dt-input bg-transparent radius-4" name="search" placeholder="Search..." type="text"/>
+<iconify-icon class="icon" icon="ion:search-outline"></iconify-icon>
+</form>
+<div class="dropdown">
+<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
+<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
+                                        Filter
+                                    </span>
+<span class="">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<div class="dropdown-menu border bg-base shadow dropdown-menu-lg p-0">
+<div class="d-flex align-items-center justify-content-between border-bottom py-8 px-16">
+<span class="fw-semibold text-lg text-primary-light">Filter</span>
+<button type="button">
+<i class="ri-close-large-line"></i>
+</button>
+</div>
+<form action="#" class="p-16">
+    {% csrf_token %}
+<div class="row g-3">
+<div class="col-12">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="subject">Gender</label>
+<select class="form-control form-select" id="subject">
+<option value="Select">Select Subject</option>
+<option value="Match">Match</option>
+<option value="English">English</option>
+<option value="Bangla">Bangla</option>
+<option value="Economics">Economics</option>
+<option value="Physics">Physics</option>
+</select>
+</div>
+<div class="col-12">
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="status">Status</label>
+<select class="form-control form-select" id="status">
+<option value="Select">Select Status</option>
+<option value="Active">Active</option>
+<option value="Inactive">Inactive</option>
+</select>
+</div>
+<div class="col-6">
+<button class="btn btn-danger-200 text-danger-600 w-100" type="reset">Reset</button>
+</div>
+<div class="col-6">
+<button class="btn btn-primary-600 w-100" type="submit">Apply</button>
+</div>
+</div>
+</form>
+</div>
+</div>
+</div>
+<div class="d-flex align-items-center gap-8 text-secondary-light">
+<span class="">
+                                Rows per page:
+                            </span>
+<div class="dt-length">
+<select aria-controls="dataTable" class="dt-input form-control form-select" name="dataTable_length">
+<option value="5">5</option>
+<option selected="" value="10">10</option>
+<option value="25">25</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+</div>
+</div>
+</div>
+<div class="table-responsive p-0">
+<table class="table bordered-table mb-0 data-table" data-page-length="10" id="dataTable" style="min-width: 1050px;">
+<thead>
+<tr>
+<th scope="col" class="text-nowrap">
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                S.L
+                                            </label>
+</div>
+</th>
+<th scope="col" class="text-nowrap">ID</th>
+<th scope="col" class="text-nowrap">Name</th>
+<th scope="col" class="text-nowrap">Department</th>
+<th scope="col" class="text-nowrap">Base Salary</th>
+<th scope="col" class="text-nowrap">Payable Days</th>
+<th scope="col" class="text-nowrap">Salary Cut</th>
+<th scope="col" class="text-nowrap">Net Salary</th>
+<th scope="col" class="text-nowrap">Status</th>
+<th scope="col" class="text-nowrap">Action</th>
+</tr>
+</thead>
+<tbody id="payrollTbody">
+<tr>
+  <td colspan="10" class="text-center py-20 text-secondary-light">
+    <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span> Loading payroll roster...
+  </td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Proceed to Pay Modal -->
+<div class="modal fade" id="proceedToPayModal" tabindex="-1" aria-labelledby="proceedToPayModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content radius-16 border-0 shadow">
+      <div class="modal-header border-bottom px-24 py-16 bg-neutral-50">
+        <h5 class="modal-title font-semibold text-lg text-primary-light" id="proceedToPayModalLabel">
+          <i class="ri-money-dollar-circle-line text-success-600 me-2"></i> Attendance Day Count & Salary Payment
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="proceedToPayForm">
+        <div class="modal-body p-24">
+          <div class="alert alert-success border-0 radius-8 p-12 mb-20 d-flex align-items-center gap-2">
+            <i class="ri-checkbox-circle-fill text-xl text-success-600"></i>
+            <div class="text-xs text-secondary-700">
+              Salary is dynamically calculated based on attendance payable days. Absent days automatically deduce per-day rate.
+            </div>
+          </div>
+
+          <div class="row g-3 mb-16">
+            <div class="col-md-6">
+              <label class="form-label text-sm fw-semibold text-primary-light">Payroll Month & Year</label>
+              <input type="month" class="form-control radius-8" id="payMonthYear" value="2026-09" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-sm fw-semibold text-primary-light">Payment Mode</label>
+              <select class="form-select radius-8" id="payMode" required>
+                <option value="Bank Transfer" selected>Direct Bank Transfer (NEFT/RTGS/IMPS)</option>
+                <option value="Cash">Cash Distribution</option>
+                <option value="Cheque">Bank Cheque</option>
+                <option value="UPI">UPI / Digital Wallet</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-16">
+            <div class="col-md-6">
+              <label class="form-label text-sm fw-semibold text-primary-light">Select Employee to Pay</label>
+              <select class="form-select radius-8" id="payTargetStaff">
+                <option value="ALL" selected>All Employees (Full Roster)</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label text-sm fw-semibold text-primary-light">Base Salary (₹)</label>
+              <div class="input-group">
+                <span class="input-group-text bg-neutral-100 text-xs font-semibold">₹</span>
+                <input type="number" class="form-control radius-8 fw-semibold" id="modalBaseSalary" min="0" step="500" value="35000">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label text-sm fw-semibold text-primary-light">Payable Days (Out of 30)</label>
+              <div class="input-group">
+                <input type="number" class="form-control radius-8" id="modalPayableDays" min="0" max="31" value="28" required>
+                <span class="input-group-text bg-neutral-100 text-xs">Days</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-16">
+            <div class="col-md-6">
+              <label class="form-label text-sm fw-semibold text-primary-light">Bank Reference / Txn ID</label>
+              <input type="text" class="form-control radius-8" id="payTxnRef" placeholder="e.g. TXN-9984102938" required value="TXN-2026090901">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-sm fw-semibold text-primary-light">Payment Remarks / Note</label>
+              <input type="text" class="form-control radius-8" id="payRemarks" placeholder="e.g. Calculated based on 28 payable days">
+            </div>
+          </div>
+
+          <!-- Day Count Salary Calculation Card -->
+          <div class="p-16 radius-12 bg-neutral-50 border border-neutral-200">
+            <div class="row text-center g-2">
+              <div class="col-3 border-end">
+                <span class="text-xs text-secondary-light d-block">Base Salary</span>
+                <span class="fw-semibold text-primary-light" id="modalCalcBaseSal">₹35,000</span>
+              </div>
+              <div class="col-3 border-end">
+                <span class="text-xs text-secondary-light d-block">Per Day Rate</span>
+                <span class="fw-semibold text-primary-light" id="modalCalcPerDay">₹1,167/day</span>
+              </div>
+              <div class="col-3 border-end">
+                <span class="text-xs text-danger-600 d-block fw-semibold">Total Cut (Absent)</span>
+                <span class="fw-bold text-danger-600" id="modalCalcCutSal">-₹2,333</span>
+              </div>
+              <div class="col-3">
+                <span class="text-xs text-success-600 d-block fw-semibold">Net Payable</span>
+                <span class="fw-bold text-success-600 text-md" id="modalEstTotalAmount">₹32,667</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer border-top px-24 py-16 bg-neutral-50">
+          <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" id="confirmPaySubmitBtn" class="btn btn-success radius-8 px-20 font-semibold text-white">
+            <i class="ri-check-double-line me-1"></i> Confirm & Disburse Payment
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- View Payslip Modal -->
+<div class="modal fade" id="payslipModal" tabindex="-1" aria-labelledby="payslipModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content radius-16 border-0 shadow">
+      <div class="modal-header border-bottom px-24 py-16 bg-neutral-50">
+        <h5 class="modal-title font-semibold text-lg text-primary-light" id="payslipModalLabel">
+          <i class="ri-file-text-line text-primary-600 me-2"></i> Attendance & Salary Slip Voucher
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-24" id="payslipModalBody">
+        <div class="border radius-12 p-20 bg-base">
+          <div class="d-flex justify-content-between align-items-center border-bottom pb-16 mb-16">
+            <div>
+              <h5 class="fw-bold text-primary-600 mb-1">EduAiQ Academy</h5>
+              <span class="text-xs text-secondary-light">Attendance Day Count Salary Voucher</span>
+            </div>
+            <div class="text-end">
+              <span class="badge bg-success-100 text-success-600 px-12 py-6 radius-6 font-mono font-bold">PAID</span>
+              <div class="text-xs text-secondary-light mt-1">Period: September 2026</div>
+            </div>
+          </div>
+          <div class="row g-3 mb-16 text-sm">
+            <div class="col-6"><strong>Employee Name:</strong> <span id="psEmpName">Staff</span></div>
+            <div class="col-6"><strong>Employee ID:</strong> <span id="psEmpId">EMP-001</span></div>
+            <div class="col-6"><strong>Department:</strong> <span id="psEmpDept">Administration</span></div>
+            <div class="col-6"><strong>Designation:</strong> <span id="psEmpRole">Staff</span></div>
+          </div>
+          <table class="table table-sm table-bordered text-sm mb-0">
+            <thead class="bg-neutral-50">
+              <tr><th>Attendance & Salary Parameter</th><th class="text-end">Calculation Details / Amount</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Base Monthly Salary</td><td class="text-end" id="psBaseSal">₹35,000</td></tr>
+              <tr><td>Payable Attendance Days</td><td class="text-end fw-semibold text-primary-600" id="psPayableDays">28 / 30 Days</td></tr>
+              <tr><td>Calculated Per Day Rate</td><td class="text-end" id="psDailyRate">₹1,166.67 / day</td></tr>
+              <tr class="table-danger"><td><strong class="text-danger-600">Total Salary Cut (Absence Deduction)</strong></td><td class="text-end font-bold text-danger-600" id="psDeductionCut">-₹2,333</td></tr>
+              <tr class="fw-bold bg-success-50"><td><strong class="text-success-700">Net Calculated Payable Salary</strong></td><td class="text-end text-success-600 font-bold text-md" id="psNetSal">₹32,667</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer border-top px-24 py-16 bg-neutral-50">
+        <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary-600 text-white radius-8 px-20 font-semibold" onclick="window.print()">
+          <i class="ri-printer-line me-1"></i> Print Voucher
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    $(document).ready(function() {
+      var employeeRosterData = [];
+
+      function calcSalaryDetails(baseSalary, daysWorked) {
+        var base = Number(baseSalary) || 0;
+        var days = Math.min(Math.max(Number(daysWorked) || 0, 0), 31);
+        var dailyRate = base / 30.0;
+        var netSal = Math.round(dailyRate * days);
+        var cutSal = Math.round(base - netSal);
+        return {
+          base: base,
+          days: days,
+          dailyRate: dailyRate,
+          netSal: netSal,
+          cutSal: cutSal > 0 ? cutSal : 0
+        };
+      }
+
+      function loadPayrollRoster() {
+        $.ajax({
+          url: '/accounts/api/employee/onboard/',
+          type: 'GET',
+          success: function(resp) {
+            if (resp.status === 'success' && resp.data && resp.data.length > 0) {
+              employeeRosterData = resp.data;
+              var html = '';
+              var dropdownOptions = '<option value="ALL" data-sal="0">All Active Employees (Full Roster)</option>';
+
+              resp.data.forEach(function(emp, idx) {
+                var sl = String(idx + 1).padStart(2, '0');
+                var empCode = emp.employee_id || ('EMP-' + emp.id);
+                var baseSal = emp.basic_salary ? Number(emp.basic_salary) : 35000;
+                var daysWorked = 28; // Default 28 payable days out of 30
+                var calc = calcSalaryDetails(baseSal, daysWorked);
+
+                dropdownOptions += `<option value="${emp.id}" data-sal="${baseSal}" data-name="${emp.full_name}">${emp.full_name} (${empCode}) - ₹${calc.netSal.toLocaleString('en-IN')}</option>`;
+
+                html += `
+                  <tr id="empRow-${emp.id}" data-base="${baseSal}">
+                    <td>
+                      <div class="form-check style-check d-flex align-items-center">
+                        <input class="form-check-input" type="checkbox" checked/>
+                        <label class="form-check-label">${sl}</label>
+                      </div>
+                    </td>
+                    <td><span class="text-primary-600 fw-semibold text-nowrap">${empCode}</span></td>
+                    <td>
+                      <div class="d-flex align-items-center text-nowrap">
+                        <div class="w-36-px h-36-px radius-circle bg-primary-100 text-primary-600 d-flex justify-content-center align-items-center fw-bold me-12 flex-shrink-0">
+                          ${emp.full_name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <h6 class="text-md mb-0 fw-medium flex-grow-1">${emp.full_name}</h6>
+                          <span class="text-xs text-secondary-light">${emp.email}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-nowrap">${emp.department || 'CRM & Sales'}</td>
+                    <td class="text-nowrap">
+                      <div class="input-group input-group-sm text-nowrap" style="width: 110px;">
+                        <span class="input-group-text bg-neutral-100 text-xs px-6 font-semibold text-secondary-600">₹</span>
+                        <input type="number" class="form-control form-control-sm base-sal-input radius-4 fw-semibold text-primary-600 px-6 py-2" data-id="${emp.id}" value="${baseSal}" min="0" step="500" style="height: 32px; font-size: 13px;">
+                      </div>
+                    </td>
+                    <td class="text-nowrap">
+                      <div class="d-flex align-items-center gap-1">
+                        <input type="number" class="form-control form-control-sm text-center pay-days-input radius-4 fw-semibold text-primary-600 px-4 py-2" data-id="${emp.id}" value="${daysWorked}" min="0" max="31" style="width: 54px; height: 32px; font-size: 13px;">
+                        <span class="text-xs text-secondary-light fw-medium">/ 30 Days</span>
+                      </div>
+                    </td>
+                    <td class="text-nowrap"><span class="text-danger-600 fw-bold row-cut-sal">-₹${calc.cutSal.toLocaleString('en-IN')}</span></td>
+                    <td class="text-nowrap"><span class="text-success-600 fw-bold row-net-sal">₹${calc.netSal.toLocaleString('en-IN')}</span></td>
+                    <td class="text-nowrap"><span class="bg-success-100 text-success-600 px-12 py-4 radius-4 fw-medium text-xs">Paid</span></td>
+                    <td class="text-nowrap">
+                      <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-success-600 text-white px-12 py-4 radius-4 text-xs font-semibold pay-single-btn" data-id="${emp.id}" data-name="${emp.full_name}" data-empid="${empCode}" data-base="${baseSal}" data-days="${daysWorked}" data-bs-toggle="modal" data-bs-target="#proceedToPayModal">
+                          <i class="ri-money-dollar-circle-line me-1"></i> Pay Now
+                        </button>
+                        <button class="bg-neutral-200 bg-hover-neutral-300 text-neutral-600 px-12 py-4 radius-4 fw-medium text-xs view-payslip-btn" data-name="${emp.full_name}" data-empid="${empCode}" data-dept="${emp.department || 'CRM & Sales'}" data-role="${emp.designation || 'Staff'}" data-base="${baseSal}" data-days="${daysWorked}" data-bs-target="#payslipModal" data-bs-toggle="modal" type="button">
+                          Payslip
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              });
+              $('#payrollTbody').html(html);
+              $('#payTargetStaff').html(dropdownOptions);
+            } else {
+              $('#payrollTbody').html('<tr><td colspan="10" class="text-center py-20 text-secondary-light">No employee payroll records found.</td></tr>');
+            }
+          },
+          error: function() {
+            $('#payrollTbody').html('<tr><td colspan="10" class="text-center py-20 text-secondary-light">Error loading employee roster.</td></tr>');
+          }
+        });
+      }
+
+      loadPayrollRoster();
+
+      // Recalculate row when Base Salary or Payable Days are edited in the table
+      $(document).on('input change', '.base-sal-input, .pay-days-input', function() {
+        var empId = $(this).data('id');
+        var $row = $('#empRow-' + empId);
+        var baseSal = Number($row.find('.base-sal-input').val()) || 0;
+        var days = Number($row.find('.pay-days-input').val()) || 0;
+
+        $row.data('base', baseSal);
+        var calc = calcSalaryDetails(baseSal, days);
+        $row.find('.row-cut-sal').text('-₹' + calc.cutSal.toLocaleString('en-IN'));
+        $row.find('.row-net-sal').text('₹' + calc.netSal.toLocaleString('en-IN'));
+
+        $row.find('.pay-single-btn').data('base', baseSal).data('days', days);
+        $row.find('.view-payslip-btn').data('base', baseSal).data('days', days);
+
+        // Update modal option
+        $('#payTargetStaff option[value="' + empId + '"]').data('sal', baseSal);
+      });
+
+      function updateModalCalculation() {
+        var selectedVal = $('#payTargetStaff').val();
+        var days = Number($('#modalPayableDays').val()) || 28;
+        var modalBase = Number($('#modalBaseSalary').val()) || 0;
+
+        if (selectedVal === 'ALL') {
+          $('#modalBaseSalary').prop('disabled', true);
+          var totalBase = 0;
+          var totalNet = 0;
+          var totalCut = 0;
+          employeeRosterData.forEach(function(e) {
+            var $r = $('#empRow-' + e.id);
+            var b = $r.length ? (Number($r.find('.base-sal-input').val()) || 35000) : (e.basic_salary ? Number(e.basic_salary) : 35000);
+            var c = calcSalaryDetails(b, days);
+            totalBase += c.base;
+            totalNet += c.netSal;
+            totalCut += c.cutSal;
+          });
+          $('#modalCalcBaseSal').text('₹' + totalBase.toLocaleString('en-IN'));
+          $('#modalCalcPerDay').text('₹' + Math.round(totalBase / 30).toLocaleString('en-IN') + '/day');
+          $('#modalCalcCutSal').text('-₹' + totalCut.toLocaleString('en-IN'));
+          $('#modalEstTotalAmount').text('₹' + totalNet.toLocaleString('en-IN'));
+        } else {
+          $('#modalBaseSalary').prop('disabled', false);
+          var calc = calcSalaryDetails(modalBase, days);
+
+          $('#modalCalcBaseSal').text('₹' + calc.base.toLocaleString('en-IN'));
+          $('#modalCalcPerDay').text('₹' + Math.round(calc.dailyRate).toLocaleString('en-IN') + '/day');
+          $('#modalCalcCutSal').text('-₹' + calc.cutSal.toLocaleString('en-IN'));
+          $('#modalEstTotalAmount').text('₹' + calc.netSal.toLocaleString('en-IN'));
+        }
+      }
+
+      // Click "Pay Now" for a particular employee
+      $(document).on('click', '.pay-single-btn', function() {
+        var empId = $(this).data('id');
+        var baseSal = $(this).data('base');
+        var days = $(this).data('days') || 28;
+
+        $('#payTargetStaff').val(String(empId));
+        $('#modalBaseSalary').val(baseSal);
+        $('#modalPayableDays').val(days);
+        updateModalCalculation();
+      });
+
+      // Change selection, base salary, or days in modal
+      $('#payTargetStaff, #modalBaseSalary, #modalPayableDays').on('input change', function() {
+        var selectedVal = $('#payTargetStaff').val();
+        if ($(this).attr('id') === 'payTargetStaff' && selectedVal !== 'ALL') {
+          var selectedOpt = $('#payTargetStaff option:selected');
+          var empId = selectedVal;
+          var $r = $('#empRow-' + empId);
+          var b = $r.length ? (Number($r.find('.base-sal-input').val()) || 35000) : (Number(selectedOpt.data('sal')) || 35000);
+          $('#modalBaseSalary').val(b);
+        }
+        updateModalCalculation();
+      });
+
+      // Submit Pay Form
+      $('#proceedToPayForm').on('submit', function(e) {
+        e.preventDefault();
+        var selectedVal = $('#payTargetStaff').val();
+        var selectedText = $('#payTargetStaff option:selected').text();
+        var days = $('#modalPayableDays').val();
+        var modalBase = $('#modalBaseSalary').val();
+
+        // If single employee, sync back updated base salary to table row
+        if (selectedVal !== 'ALL') {
+          var $row = $('#empRow-' + selectedVal);
+          if ($row.length) {
+            $row.find('.base-sal-input').val(modalBase).trigger('change');
+          }
+        }
+
+        var $btn = $('#confirmPaySubmitBtn');
+        $btn.prop('disabled', true).html('<i class="ri-loader-4-line ri-spin me-1"></i> Processing...');
+
+        setTimeout(function() {
+          $btn.prop('disabled', false).html('<i class="ri-check-double-line me-1"></i> Confirm & Disburse Payment');
+          $('#proceedToPayModal').modal('hide');
+          
+          var isSingle = selectedVal !== 'ALL';
+          var msg = isSingle 
+            ? `Salary payment for ${selectedText} processed for ${days} payable days!`
+            : `Salary payments processed for all roster employees based on ${days} payable days.`;
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Payment Disbursed! 💸',
+            text: msg,
+            timer: 2500,
+            showConfirmButton: false
+          });
+        }, 1000);
+      });
+
+      // View Payslip Modal Population
+      $(document).on('click', '.view-payslip-btn', function() {
+        var name = $(this).data('name') || 'Staff';
+        var empid = $(this).data('empid') || 'EMP-001';
+        var dept = $(this).data('dept') || 'CRM & Sales';
+        var role = $(this).data('role') || 'Staff';
+        var baseSal = Number($(this).data('base')) || 35000;
+        var days = Number($(this).data('days')) || 28;
+
+        var calc = calcSalaryDetails(baseSal, days);
+
+        $('#psEmpName').text(name);
+        $('#psEmpId').text(empid);
+        $('#psEmpDept').text(dept);
+        $('#psEmpRole').text(role);
+        $('#psBaseSal').text('₹' + calc.base.toLocaleString('en-IN'));
+        $('#psPayableDays').text(calc.days + ' / 30 Days');
+        $('#psDailyRate').text('₹' + calc.dailyRate.toFixed(2) + ' / day');
+        $('#psDeductionCut').text('-₹' + calc.cutSal.toLocaleString('en-IN'));
+        $('#psNetSal').text('₹' + calc.netSal.toLocaleString('en-IN'));
+      });
+    });
+    </script>
+{% endblock %}

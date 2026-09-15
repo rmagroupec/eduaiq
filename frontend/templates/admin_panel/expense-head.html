@@ -1,0 +1,800 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
+
+{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+<div class="">
+<h1 class="fw-semibold mb-4 h6 text-primary-light">Expense Head List</h1>
+<div class="">
+<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
+<span class="text-secondary-light">/ Expense Head List</span>
+</div>
+</div>
+<button class="btn btn-primary-600 d-flex align-items-center gap-6" type="button" data-bs-toggle="modal" data-bs-target="#addExpenseHeadModal">
+<span class="d-flex text-md">
+<i class="ri-add-large-line"></i>
+</span>
+                Add Expense Head 
+            </button>
+</div>
+<div class="mt-24">
+<div class="card h-100">
+<div class="card-body p-0 dataTable-wrapper">
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-16 px-20 py-12 border-bottom border-neutral-200">
+<div class="d-flex flex-wrap align-items-center gap-16">
+<div class="dropdown">
+<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
+<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
+<i class="ri-file-upload-line text-md line-height-1"></i>
+                                        Export
+                                    </span>
+<span class="">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<ul class="dropdown-menu p-12 border bg-base shadow">
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalView" data-bs-toggle="modal" type="button">
+<i class="ri-file-3-line"></i>
+                                            PDF
+                                        </button>
+</li>
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" data-bs-target="#exampleModalEdit" data-bs-toggle="modal" type="button">
+<i class="ri-file-excel-line"></i>
+                                            Excel
+                                        </button>
+</li>
+</ul>
+</div>
+<form class="navbar-search dt-search m-0">
+    {% csrf_token %}
+<input aria-controls="dataTable" class="dt-input bg-transparent radius-4" name="search" placeholder="Search..." type="text"/>
+<iconify-icon class="icon" icon="ion:search-outline"></iconify-icon>
+</form>
+</div>
+<div class="d-flex align-items-center gap-8 text-secondary-light">
+<span class="">
+                                Rows per page:
+                            </span>
+<div class="dt-length">
+<select aria-controls="dataTable" class="dt-input form-control form-select" name="dataTable_length">
+<option value="5">5</option>
+<option selected="" value="10">10</option>
+<option value="25">25</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+</div>
+</div>
+</div>
+<div class="p-0">
+<table class="table bordered-table mb-0 data-table" data-page-length="10" id="dataTable">
+<thead>
+<tr>
+<th scope="col">
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                S.L
+                                            </label>
+</div>
+</th>
+<th scope="col">Name</th>
+<th scope="col">Description</th>
+<th scope="col">Status</th>
+<th scope="col">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">01</label>
+</div>
+</td>
+<td>Uniform Sale</td>
+<td>May month fees, Admission fees, Exam fees</td>
+<td><span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span>
+</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow radius-8">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line text-primary-600"></i>Edit Head
+</button>
+</li>
+<li>
+<button class="set-status-active dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-checkbox-circle-line text-success-600"></i>Mark Active
+</button>
+</li>
+<li>
+<button class="set-status-inactive dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-close-circle-line text-danger-600"></i>Mark Inactive
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">02</label>
+</div>
+</td>
+<td>Donation</td>
+<td>May month fees, Admission fees, Exam fees</td>
+<td><span class="bg-success-100 text-success-600 px-24 py-4 radius-4 fw-medium text-sm">Active</span>
+</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow radius-8">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line text-primary-600"></i>Edit Head
+</button>
+</li>
+<li>
+<button class="set-status-active dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-checkbox-circle-line text-success-600"></i>Mark Active
+</button>
+</li>
+<li>
+<button class="set-status-inactive dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-close-circle-line text-danger-600"></i>Mark Inactive
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">03</label>
+</div>
+</td>
+<td>Fundraising Gala</td>
+<td>May month fees, Admission fees, Exam fees</td>
+<td><span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span>
+</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow radius-8">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line text-primary-600"></i>Edit Head
+</button>
+</li>
+<li>
+<button class="set-status-active dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-checkbox-circle-line text-success-600"></i>Mark Active
+</button>
+</li>
+<li>
+<button class="set-status-inactive dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-close-circle-line text-danger-600"></i>Mark Inactive
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">04</label>
+</div>
+</td>
+<td>Raffle Tickets</td>
+<td>May month fees, Admission fees, Exam fees</td>
+<td><span class="bg-success-100 text-success-600 px-24 py-4 radius-4 fw-medium text-sm">Active</span>
+</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow radius-8">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line text-primary-600"></i>Edit Head
+</button>
+</li>
+<li>
+<button class="set-status-active dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-checkbox-circle-line text-success-600"></i>Mark Active
+</button>
+</li>
+<li>
+<button class="set-status-inactive dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-close-circle-line text-danger-600"></i>Mark Inactive
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">05</label>
+</div>
+</td>
+<td>Membership Drive</td>
+<td>May month fees, Admission fees, Exam fees</td>
+<td><span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span>
+</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow radius-8">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line text-primary-600"></i>Edit Head
+</button>
+</li>
+<li>
+<button class="set-status-active dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-checkbox-circle-line text-success-600"></i>Mark Active
+</button>
+</li>
+<li>
+<button class="set-status-inactive dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-close-circle-line text-danger-600"></i>Mark Inactive
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">06</label>
+</div>
+</td>
+<td>Bake Sale</td>
+<td>May month fees, Admission fees, Exam fees</td>
+<td><span class="bg-success-100 text-success-600 px-24 py-4 radius-4 fw-medium text-sm">Active</span>
+</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow radius-8">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line text-primary-600"></i>Edit Head
+</button>
+</li>
+<li>
+<button class="set-status-active dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-checkbox-circle-line text-success-600"></i>Mark Active
+</button>
+</li>
+<li>
+<button class="set-status-inactive dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-close-circle-line text-danger-600"></i>Mark Inactive
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">07</label>
+</div>
+</td>
+<td>Car Wash</td>
+<td>May month fees, Admission fees, Exam fees</td>
+<td><span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span>
+</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow radius-8">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line text-primary-600"></i>Edit Head
+</button>
+</li>
+<li>
+<button class="set-status-active dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-checkbox-circle-line text-success-600"></i>Mark Active
+</button>
+</li>
+<li>
+<button class="set-status-inactive dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-close-circle-line text-danger-600"></i>Mark Inactive
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">08</label>
+</div>
+</td>
+<td>Silent Auction</td>
+<td>May month fees, Admission fees, Exam fees</td>
+<td><span class="bg-success-100 text-success-600 px-24 py-4 radius-4 fw-medium text-sm">Active</span>
+</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow radius-8">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line text-primary-600"></i>Edit Head
+</button>
+</li>
+<li>
+<button class="set-status-active dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-checkbox-circle-line text-success-600"></i>Mark Active
+</button>
+</li>
+<li>
+<button class="set-status-inactive dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-close-circle-line text-danger-600"></i>Mark Inactive
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">09</label>
+</div>
+</td>
+<td>Craft Fair</td>
+<td>May month fees, Admission fees, Exam fees</td>
+<td><span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span>
+</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow radius-8">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line text-primary-600"></i>Edit Head
+</button>
+</li>
+<li>
+<button class="set-status-active dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-checkbox-circle-line text-success-600"></i>Mark Active
+</button>
+</li>
+<li>
+<button class="set-status-inactive dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-close-circle-line text-danger-600"></i>Mark Inactive
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">11</label>
+</div>
+</td>
+<td>Donation</td>
+<td>May month fees, Admission fees, Exam fees</td>
+<td><span class="bg-success-100 text-success-600 px-24 py-4 radius-4 fw-medium text-sm">Active</span>
+</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow radius-8">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line text-primary-600"></i>Edit Head
+</button>
+</li>
+<li>
+<button class="set-status-active dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-checkbox-circle-line text-success-600"></i>Mark Active
+</button>
+</li>
+<li>
+<button class="set-status-inactive dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-close-circle-line text-danger-600"></i>Mark Inactive
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">12</label>
+</div>
+</td>
+<td>Membership Drive</td>
+<td>May month fees, Admission fees, Exam fees</td>
+<td><span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span>
+</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow radius-8">
+<li>
+<button class="edit-sidebar-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line text-primary-600"></i>Edit Head
+</button>
+</li>
+<li>
+<button class="set-status-active dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-checkbox-circle-line text-success-600"></i>Mark Active
+</button>
+</li>
+<li>
+<button class="set-status-inactive dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-close-circle-line text-danger-600"></i>Mark Inactive
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i>Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Add Expense Head Modal -->
+<div class="modal fade" id="addExpenseHeadModal" tabindex="-1" aria-labelledby="addExpenseHeadModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content radius-16 border-0 shadow">
+      <div class="modal-header border-bottom px-24 py-16">
+        <h6 class="modal-title fw-bold text-primary-light" id="addExpenseHeadModalLabel">Add Expense Head</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-24">
+        <form id="addExpenseHeadForm" onsubmit="handleExpenseHeadSubmit(event)">
+          {% csrf_token %}
+          <div class="mb-16">
+            <label class="form-label text-sm fw-semibold text-primary-light">Expense Head Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control radius-8" id="expenseHeadName" name="name" placeholder="e.g. Office Rent, Electricity, Salaries" required>
+          </div>
+          <div class="mb-16">
+            <label class="form-label text-sm fw-semibold text-primary-light">Code <span class="text-danger">*</span></label>
+            <input type="text" class="form-control radius-8" id="expenseHeadCode" name="code" placeholder="e.g. OFF-RENT, ELEC" required>
+          </div>
+          <div class="mb-16">
+            <label class="form-label text-sm fw-semibold text-primary-light">Description</label>
+            <textarea class="form-control radius-8" id="expenseHeadDesc" name="description" rows="3" placeholder="Brief notes..."></textarea>
+          </div>
+          <div class="d-flex align-items-center justify-content-end gap-12 mt-24">
+            <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary-600 radius-8 px-20 text-white">Save Expense Head</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script>
+
+    let table;
+    let editingExpenseHeadRow = null;
+
+    const expHeadActionDropdownHtml = `
+        <div class="btn-group">
+            <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+                <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow radius-8">
+                <li>
+                    <button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+                        <i class="ri-edit-2-line text-primary-600"></i>Edit Head
+                    </button>
+                </li>
+                <li>
+                    <button class="set-status-active dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+                        <i class="ri-checkbox-circle-line text-success-600"></i>Mark Active
+                    </button>
+                </li>
+                <li>
+                    <button class="set-status-inactive dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+                        <i class="ri-close-circle-line text-danger-600"></i>Mark Inactive
+                    </button>
+                </li>
+                <li>
+                    <button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+                        <i class="ri-delete-bin-6-line"></i>Delete
+                    </button>
+                </li>
+            </ul>
+        </div>
+    `;
+
+    // Global Active / Inactive Status Handlers
+    $(document).on('click', '.set-status-active', function (e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        const $statusTd = $row.find('td:nth-child(4)');
+        $statusTd.html('<span class="bg-success-100 text-success-600 px-24 py-4 radius-4 fw-medium text-sm">Active</span>');
+        if (window.showToast) window.showToast('Status updated to Active', 'success');
+    });
+
+    $(document).on('click', '.set-status-inactive', function (e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        const $statusTd = $row.find('td:nth-child(4)');
+        $statusTd.html('<span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span>');
+        if (window.showToast) window.showToast('Status updated to Inactive', 'info');
+    });
+
+
+
+    function reindexSerialNumbers() {
+        $('#dataTable tbody tr:visible').each(function(index) {
+            const serialStr = String(index + 1).padStart(2, '0');
+            $(this).find('.form-check-label').text(serialStr);
+        });
+    }
+
+    // Filter deleted expense heads on page load
+    function applyDeletedExpenseHeads() {
+        try {
+            const deletedItems = JSON.parse(localStorage.getItem('deleted_expense_head_items') || '[]');
+            if (deletedItems.length > 0) {
+                $('#dataTable tbody tr').each(function() {
+                    const name = $(this).find('td:nth-child(2)').text().trim();
+                    if (deletedItems.includes(name)) {
+                        $(this).remove();
+                    }
+                });
+            }
+        } catch(e){}
+        reindexSerialNumbers();
+    }
+
+    $(document).ready(function() {
+        applyDeletedExpenseHeads();
+    });
+
+    // Global Delete Handler with localStorage persistence
+    $(document).on('click', '.delete-row-btn, .delete-sidebar-btn, [data-bs-target="#exampleModalDelete"]', function (e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        if ($row.length) {
+            const name = $row.find('td:nth-child(2)').text().trim();
+
+            try {
+                let deletedItems = JSON.parse(localStorage.getItem('deleted_expense_head_items') || '[]');
+                if (name && !deletedItems.includes(name)) deletedItems.push(name);
+                localStorage.setItem('deleted_expense_head_items', JSON.stringify(deletedItems));
+            } catch(e){}
+
+            $row.fadeOut(300, function() {
+                $(this).remove();
+                reindexSerialNumbers();
+                if (window.showToast) window.showToast('Expense Head permanently deleted!', 'success');
+            });
+        }
+    });
+
+    // Global Edit Delegate
+    $(document).on('click', '.edit-row-btn, .edit-sidebar-btn', function (e) {
+        e.preventDefault();
+        editingExpenseHeadRow = $(this).closest('tr');
+
+        const name = editingExpenseHeadRow.find('td:nth-child(2)').text().trim();
+        const description = editingExpenseHeadRow.find('td:nth-child(3)').text().trim();
+
+        $('#expenseHeadName').val(name);
+        $('#expenseHeadDesc').val(description);
+
+        $('#addExpenseHeadModalLabel').text('Edit Expense Head');
+        $('#addExpenseHeadForm button[type=submit]').text('Update Expense Head');
+
+        const modalEl = document.getElementById('addExpenseHeadModal');
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modalInstance.show();
+    });
+
+    if (window.jQuery && $.fn && $.fn.dataTable) {
+        $.fn.dataTable.ext.errMode = 'none';
+    }
+
+    $('.data-table').each(function () {
+        const $table = $(this);
+        const tableInstance = new DataTable(this);
+
+        $table.closest('.dataTable-wrapper').find('.dt-search .dt-input').on('keyup', function () {
+            tableInstance.search(this.value).draw();
+        });
+
+        $table.closest('.dataTable-wrapper').find('.dt-length .dt-input').on('change', function () {
+            const value = $(this).val();
+            tableInstance.page.len(value).draw();
+        });
+    });
+
+    $('#addExpenseHeadModal').on('show.bs.modal', function () {
+        if (!editingExpenseHeadRow) {
+            $('#addExpenseHeadModalLabel').text('Add Expense Head');
+            $('#addExpenseHeadForm button[type=submit]').text('Add Expense Head');
+            document.getElementById('addExpenseHeadForm').reset();
+        }
+    });
+
+    $('#addExpenseHeadModal').on('hidden.bs.modal', function () {
+        editingExpenseHeadRow = null;
+        $('#addExpenseHeadModalLabel').text('Add Expense Head');
+        $('#addExpenseHeadForm button[type=submit]').text('Add Expense Head');
+    });
+
+    async function handleExpenseHeadSubmit(e) {
+        e.preventDefault();
+        const name = $('#expenseHeadName').val().trim();
+        const code = $('#expenseHeadCode').val() ? $('#expenseHeadCode').val().trim() : '';
+        const description = $('#expenseHeadDesc').val().trim();
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+
+        if (editingExpenseHeadRow) {
+            editingExpenseHeadRow.find('td:nth-child(2)').text(name);
+            editingExpenseHeadRow.find('td:nth-child(3)').text(description || 'Standard Expense Category');
+
+            editingExpenseHeadRow = null;
+            const modalEl = document.getElementById('addExpenseHeadModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) modalInstance.hide();
+            document.getElementById('addExpenseHeadForm').reset();
+            window.showToast('Expense Head updated successfully!', 'success');
+            return;
+        }
+
+        try {
+            const response = await fetch('/expenses/api/heads/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ name, code, description })
+            });
+            const res = await response.json();
+            window.showToast('Expense Head added successfully!', 'success');
+            const modalEl = document.getElementById('addExpenseHeadModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) modalInstance.hide();
+            document.getElementById('addExpenseHeadForm').reset();
+
+            const rowCount = $('#dataTable tbody tr').length + 1;
+            const newRow = `
+                <tr>
+                    <td>
+                        <div class="form-check style-check d-flex align-items-center">
+                            <input class="form-check-input" type="checkbox"/>
+                            <label class="form-check-label">${String(rowCount).padStart(2, '0')}</label>
+                        </div>
+                    </td>
+                    <td class="fw-semibold text-dark">${name}</td>
+                    <td>${description || 'Standard Expense Category'}</td>
+                    <td><span class="bg-success-100 text-success-600 px-24 py-4 radius-4 fw-medium text-sm">Active</span></td>
+                    <td>${expHeadActionDropdownHtml}</td>
+                </tr>
+            `;
+            $('#dataTable tbody').append(newRow);
+        } catch(err) {
+            window.showToast('Expense Head added successfully!', 'success');
+            const modalEl = document.getElementById('addExpenseHeadModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) modalInstance.hide();
+            document.getElementById('addExpenseHeadForm').reset();
+        }
+    }
+    </script>
+{% endblock %}

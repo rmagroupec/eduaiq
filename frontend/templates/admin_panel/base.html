@@ -1,0 +1,1637 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+        content="{% block description %}EduAIQ Admin Dashboard{% endblock %}">
+
+    <title>{% block title %}EduAIQ Admin{% endblock %}</title>
+
+    <!-- Favicon -->
+    <link rel="icon"
+          type="image/png"
+          href="{% static 'admin_assets/images/favicon.png' %}"
+          sizes="16x16">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'admin_assets/css/remixicon.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/lib/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/lib/apexcharts.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/lib/dataTables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/lib/flatpickr.min.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/lib/full-calendar.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/lib/calendar.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_assets/css/style.css' %}">
+
+    {% block css %}{% endblock %}
+    <style>
+      /* EduAiQ Management Dashboard - Single-Tone Logo Color System & Micro Hover Effects */
+      :root {
+          --eduaiq-orange: #ea580c;
+          --eduaiq-orange-light: #f97316;
+          --eduaiq-orange-tint: #fff7ed;
+          --eduaiq-orange-border: #ffedd5;
+          --eduaiq-navy: #0f172a;
+          --eduaiq-navy-slate: #1e293b;
+      }
+
+      /* Sidebar & Navigation Single-Tone Theme */
+      .sidebar {
+          background: #ffffff !important;
+          border-right: 1px solid #e2e8f0 !important;
+      }
+
+      /* Top-Level Main Sidebar Items */
+      .sidebar-menu > li > a {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          border-radius: 0.75rem !important;
+          font-weight: 600 !important;
+          color: #475569 !important;
+      }
+
+      .sidebar-menu > li > a:hover {
+          background: #fff7ed !important;
+          color: #ea580c !important;
+          transform: translateX(4px) !important;
+      }
+
+      .sidebar-menu > li.active > a,
+      .sidebar-menu > li.dropdown.open > a,
+      .sidebar-menu > li > a.active-page,
+      .sidebar-menu > li.dropdown.active > a {
+          background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+          color: #ffffff !important;
+          box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35) !important;
+      }
+
+      .sidebar-menu > li.active > a i,
+      .sidebar-menu > li.dropdown.open > a i,
+      .sidebar-menu > li > a.active-page i,
+      .sidebar-menu > li.dropdown.active > a i {
+          color: #ffffff !important;
+      }
+
+      /* Submenu Fixes - Eliminate White Box Bug & Clean Alignment */
+      .sidebar-submenu {
+          position: relative !important;
+          margin-inline-start: 1.25rem !important;
+          padding-block-start: 0.4rem !important;
+      }
+
+      .sidebar-submenu::before {
+          border-color: rgba(249, 115, 22, 0.2) !important;
+          inset-inline-start: 4px !important;
+      }
+
+      .sidebar-submenu .circle-icon {
+          box-shadow: none !important;
+          background: transparent !important;
+          color: #cbd5e1 !important;
+          font-size: 0.45rem !important;
+          margin-right: 8px !important;
+          position: relative !important;
+          z-index: 2 !important;
+          transition: all 0.2s ease !important;
+      }
+
+      .sidebar-menu .sidebar-submenu li a {
+          background: transparent !important;
+          box-shadow: none !important;
+          color: #64748b !important;
+          font-size: 13.5px !important;
+          font-weight: 500 !important;
+          padding: 8px 12px !important;
+          border-radius: 8px !important;
+          display: flex !important;
+          align-items: center !important;
+          margin-bottom: 2px !important;
+          transform: none !important;
+          transition: all 0.2s ease !important;
+      }
+
+      .sidebar-menu .sidebar-submenu li a:hover {
+          background: #fff7ed !important;
+          color: #ea580c !important;
+          transform: translateX(3px) !important;
+      }
+
+      .sidebar-menu .sidebar-submenu li a:hover .circle-icon {
+          color: #ea580c !important;
+      }
+
+      /* Active Submenu Item -> Soft Orange Highlight with clean accent border */
+      .sidebar-menu .sidebar-submenu li.active-page a,
+      .sidebar-menu .sidebar-submenu li a.active-page {
+          background: #fff7ed !important;
+          color: #ea580c !important;
+          font-weight: 700 !important;
+          border-left: 3.5px solid #ea580c !important;
+          border-radius: 0 8px 8px 0 !important;
+          box-shadow: 0 2px 8px rgba(234, 88, 12, 0.08) !important;
+          transform: translateX(2px) !important;
+      }
+
+      .sidebar-menu .sidebar-submenu li.active-page a .circle-icon,
+      .sidebar-menu .sidebar-submenu li a.active-page .circle-icon {
+          color: #ea580c !important;
+          background: transparent !important;
+          box-shadow: none !important;
+          transform: scale(1.3) !important;
+      }
+
+      /* Stat Cards Overrides - Single-Tone EduAiQ Orange Style & Elevate Hover */
+      .stat-card-eduaiq {
+          background: #ffffff !important;
+          border: 1.5px solid #ffedd5 !important;
+          border-radius: 1rem !important;
+          transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          position: relative;
+          overflow: hidden;
+      }
+
+      .stat-card-eduaiq:hover {
+          transform: translateY(-4px) scale(1.02) !important;
+          box-shadow: 0 14px 30px rgba(234, 88, 12, 0.18) !important;
+          border-color: #f97316 !important;
+      }
+
+      .stat-card-eduaiq .icon-box-eduaiq {
+          width: 44px;
+          height: 44px;
+          border-radius: 0.75rem;
+          background: #fff7ed;
+          color: #ea580c;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.3rem;
+          transition: transform 0.35s ease;
+      }
+
+      .stat-card-eduaiq:hover .icon-box-eduaiq {
+          transform: scale(1.18) rotate(6deg);
+          background: #ffedd5;
+      }
+
+      .stat-card-eduaiq .stat-num {
+          color: #0f172a !important;
+          font-weight: 800 !important;
+      }
+
+      .badge-orange-single {
+          background: #fff7ed !important;
+          color: #ea580c !important;
+          border: 1px solid #ffedd5 !important;
+          font-weight: 700 !important;
+          border-radius: 50rem !important;
+          padding: 0.25rem 0.75rem !important;
+          font-size: 0.75rem !important;
+      }
+
+      /* Buttons Single-Tone EduAiQ Styling & Micro-Hover Effects */
+      .btn-eduaiq-primary {
+          background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+          color: #ffffff !important;
+          border: none !important;
+          border-radius: 50rem !important;
+          padding: 0.5rem 1.25rem !important;
+          font-size: 0.85rem !important;
+          font-weight: 700 !important;
+          box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35) !important;
+          transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          text-decoration: none !important;
+          display: inline-flex !important;
+          align-items: center !important;
+      }
+
+      .btn-eduaiq-primary:hover {
+          transform: translateY(-2px) scale(1.03) !important;
+          box-shadow: 0 8px 20px rgba(234, 88, 12, 0.5) !important;
+          color: #ffffff !important;
+      }
+
+      .btn-eduaiq-outline {
+          background: #ffffff !important;
+          color: #ea580c !important;
+          border: 1.5px solid #ea580c !important;
+          border-radius: 50rem !important;
+          padding: 0.5rem 1.25rem !important;
+          font-size: 0.85rem !important;
+          font-weight: 700 !important;
+          transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          text-decoration: none !important;
+          display: inline-flex !important;
+          align-items: center !important;
+      }
+
+      .btn-eduaiq-outline:hover {
+          background: #fff7ed !important;
+          color: #ea580c !important;
+          transform: translateY(-2px) scale(1.03) !important;
+          box-shadow: 0 6px 16px rgba(249, 115, 22, 0.2) !important;
+      }
+
+      .btn-eduaiq-primary i,
+      .btn-eduaiq-outline i {
+          transition: transform 0.3s ease;
+      }
+
+      .btn-eduaiq-primary:hover i,
+      .btn-eduaiq-outline:hover i {
+          transform: translateX(3px);
+      }
+
+      /* Table Rows Single-Tone Hover Effect */
+      .table hover tbody tr:hover,
+      table tbody tr:hover {
+          background-color: #fff7ed !important;
+          transition: background-color 0.25s ease;
+      }
+
+      /* Global Toast Style */
+      .toast-container {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 999999;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        pointer-events: none;
+        max-width: calc(100vw - 48px);
+      }
+      .custom-toast {
+        min-width: 320px;
+        max-width: 420px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        color: #1e293b;
+        border-radius: 12px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        border-left: 6px solid #cbd5e1;
+        pointer-events: auto;
+        position: relative;
+        overflow: hidden;
+        transform: translateX(120%);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+        opacity: 0;
+      }
+      [data-theme="dark"] .custom-toast {
+        background: rgba(30, 41, 59, 0.85);
+        color: #f8fafc;
+        border-color: rgba(71, 85, 105, 0.8);
+      }
+      .custom-toast.show {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      .custom-toast-body {
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .custom-toast-icon {
+        font-size: 22px;
+        flex-shrink: 0;
+      }
+      .custom-toast-content {
+        flex-grow: 1;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.4;
+      }
+      .custom-toast-close {
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+        transition: color 0.15s ease, transform 0.15s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .custom-toast-close:hover {
+        color: #64748b;
+        transform: scale(1.1);
+      }
+      /* Progress Bar at the bottom */
+      .custom-toast-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.05);
+      }
+      .custom-toast-progress::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: inherit;
+        transform-origin: left;
+        animation: toast-progress var(--duration, 4000ms) linear forwards;
+      }
+      @keyframes toast-progress {
+        to {
+          transform: scaleX(0);
+        }
+      }
+      /* Types & Accent Colors */
+      .custom-toast.toast-success {
+        border-left-color: #10b981;
+      }
+      .custom-toast.toast-success .custom-toast-icon {
+        color: #10b981;
+      }
+      .custom-toast.toast-success .custom-toast-progress::after {
+        background: #10b981;
+      }
+      .custom-toast.toast-error {
+        border-left-color: #ef4444;
+      }
+      .custom-toast.toast-error .custom-toast-icon {
+        color: #ef4444;
+      }
+      .custom-toast.toast-error .custom-toast-progress::after {
+        background: #ef4444;
+      }
+      .custom-toast.toast-warning {
+        border-left-color: #f59e0b;
+      }
+      .custom-toast.toast-warning .custom-toast-icon {
+        color: #f59e0b;
+      }
+      .custom-toast.toast-warning .custom-toast-progress::after {
+        background: #f59e0b;
+      }
+      .custom-toast.toast-info {
+        border-left-color: #3b82f6;
+      }
+      .custom-toast.toast-info .custom-toast-icon {
+        color: #3b82f6;
+      }
+      .custom-toast.toast-info .custom-toast-progress::after {
+        background: #3b82f6;
+      }
+      /* =========================================================
+         Right-Side Slide-In Confirmation Toast Dialog
+         ========================================================= */
+      .toast-confirm-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(15, 23, 42, 0.35);
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        z-index: 999998;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .toast-confirm-overlay.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .toast-confirm-card {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        width: 410px;
+        max-width: calc(100vw - 32px);
+        background: #ffffff;
+        border-radius: 18px;
+        border: 1px solid rgba(226, 232, 240, 0.95);
+        border-left: 6px solid #ef4444;
+        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.28), 0 0 0 1px rgba(239, 68, 68, 0.18);
+        z-index: 999999;
+        overflow: hidden;
+        transform: translateX(125%);
+        opacity: 0;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+        pointer-events: none;
+      }
+      [data-theme="dark"] .toast-confirm-card {
+        background: #1e293b;
+        border-color: rgba(71, 85, 105, 0.85);
+        border-left-color: #ef4444;
+        box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(239, 68, 68, 0.3);
+      }
+      .toast-confirm-card.show {
+        transform: translateX(0);
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .toast-confirm-header {
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(241, 245, 249, 1);
+        background: linear-gradient(180deg, rgba(254, 242, 242, 0.7) 0%, transparent 100%);
+      }
+      [data-theme="dark"] .toast-confirm-header {
+        border-bottom-color: rgba(51, 65, 85, 0.8);
+        background: linear-gradient(180deg, rgba(239, 68, 68, 0.12) 0%, transparent 100%);
+      }
+      .toast-confirm-icon-box {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: #fee2e2;
+        color: #dc2626;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(239, 68, 68, 0.15);
+      }
+      [data-theme="dark"] .toast-confirm-icon-box {
+        background: rgba(239, 68, 68, 0.22);
+        color: #f87171;
+      }
+      .toast-confirm-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.2;
+      }
+      [data-theme="dark"] .toast-confirm-title {
+        color: #f8fafc;
+      }
+      .toast-confirm-badge {
+        font-size: 11px;
+        font-weight: 600;
+        color: #ef4444;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .toast-confirm-close-btn {
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 8px;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+      .toast-confirm-close-btn:hover {
+        background: rgba(0, 0, 0, 0.06);
+        color: #334155;
+      }
+      [data-theme="dark"] .toast-confirm-close-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #f1f5f9;
+      }
+      .toast-confirm-body {
+        padding: 18px 20px;
+      }
+      .toast-confirm-text {
+        font-size: 14px;
+        color: #334155;
+        line-height: 1.5;
+      }
+      [data-theme="dark"] .toast-confirm-text {
+        color: #cbd5e1;
+      }
+      .toast-confirm-item-name {
+        color: #dc2626;
+        font-weight: 700;
+        background: rgba(254, 226, 226, 0.7);
+        padding: 2px 7px;
+        border-radius: 6px;
+        display: inline-block;
+        word-break: break-word;
+      }
+      [data-theme="dark"] .toast-confirm-item-name {
+        color: #fca5a5;
+        background: rgba(239, 68, 68, 0.25);
+      }
+      .toast-confirm-warning-note {
+        margin-top: 12px;
+        padding: 9px 12px;
+        border-radius: 10px;
+        background: #fef2f2;
+        border: 1px dashed rgba(239, 68, 68, 0.35);
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        font-size: 12px;
+        color: #b91c1c;
+        line-height: 1.4;
+      }
+      [data-theme="dark"] .toast-confirm-warning-note {
+        background: rgba(239, 68, 68, 0.12);
+        color: #fca5a5;
+        border-color: rgba(239, 68, 68, 0.3);
+      }
+      .toast-confirm-warning-note i {
+        font-size: 15px;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .toast-confirm-footer {
+        padding: 14px 20px;
+        background: #f8fafc;
+        border-top: 1px solid rgba(241, 245, 249, 1);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+      [data-theme="dark"] .toast-confirm-footer {
+        background: rgba(15, 23, 42, 0.6);
+        border-top-color: rgba(51, 65, 85, 0.8);
+      }
+      .toast-confirm-cancel-btn {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #475569;
+        padding: 7px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .toast-confirm-cancel-btn:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+        border-color: #94a3b8;
+      }
+      [data-theme="dark"] .toast-confirm-cancel-btn {
+        background: #334155;
+        border-color: #475569;
+        color: #cbd5e1;
+      }
+      [data-theme="dark"] .toast-confirm-cancel-btn:hover {
+        background: #475569;
+        color: #ffffff;
+      }
+      .toast-confirm-action-btn {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+        border: none !important;
+        color: #ffffff !important;
+        padding: 7px 18px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .toast-confirm-action-btn:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(239, 68, 68, 0.45);
+      }
+
+      /* Global SweetAlert Compact Popup Styling */
+      .swal2-container {
+        z-index: 999999 !important;
+      }
+      .swal2-popup {
+        width: 360px !important;
+        max-width: 90vw !important;
+        padding: 1.25rem 1rem 1rem !important;
+        border-radius: 16px !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+        font-family: inherit !important;
+      }
+      .swal2-icon {
+        width: 52px !important;
+        height: 52px !important;
+        margin: 0.25rem auto 0.75rem !important;
+        border-width: 3px !important;
+      }
+      .swal2-icon .swal2-icon-content {
+        font-size: 1.75rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      .swal2-title {
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        padding: 0 !important;
+        margin: 0.25rem 0 0.5rem 0 !important;
+        line-height: 1.35 !important;
+        text-align: center !important;
+      }
+      .swal2-html-container {
+        margin: 0.5rem 0 0 !important;
+        padding: 0 !important;
+        font-size: 0.85rem !important;
+        color: #475569 !important;
+        line-height: 1.45 !important;
+      }
+      .swal2-actions {
+        margin-top: 1rem !important;
+        gap: 8px !important;
+      }
+      .swal2-confirm, .swal2-cancel {
+        padding: 8px 20px !important;
+        font-size: 0.85rem !important;
+        box-shadow: none !important;
+      }
+
+      /* Admin Panel Global Mobile Responsiveness */
+      @media screen and (max-width: 991px) {
+        .dashboard-main {
+          margin-left: 0 !important;
+          width: 100% !important;
+        }
+        .dashboard-main-body {
+          padding: 16px 12px 30px 12px !important;
+        }
+        .breadcrumb {
+          flex-direction: column !important;
+          align-items: flex-start !important;
+          gap: 10px !important;
+        }
+        .breadcrumb .btn, .breadcrumb a.btn {
+          width: 100% !important;
+          justify-content: center !important;
+        }
+      }
+
+      @media screen and (max-width: 768px) {
+        .table-responsive {
+          border-radius: 8px !important;
+          -webkit-overflow-scrolling: touch !important;
+        }
+        .dataTable-wrapper .d-flex.align-items-center.justify-content-between {
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 12px !important;
+        }
+        .navbar-search {
+          width: 100% !important;
+        }
+        .navbar-search input {
+          width: 100% !important;
+        }
+      }
+
+      /* Admin Sizing Utilities */
+      .w-24-px { width: 24px !important; min-width: 24px !important; }
+      .h-24-px { height: 24px !important; min-height: 24px !important; }
+      .w-32-px { width: 32px !important; min-width: 32px !important; }
+      .h-32-px { height: 32px !important; min-height: 32px !important; }
+      .w-36-px { width: 36px !important; min-width: 36px !important; }
+      .h-36-px { height: 36px !important; min-height: 36px !important; }
+      .w-40-px { width: 40px !important; min-width: 40px !important; }
+      .h-40-px { height: 40px !important; min-height: 40px !important; }
+      .w-44-px { width: 44px !important; min-width: 44px !important; }
+      .h-44-px { height: 44px !important; min-height: 44px !important; }
+      .w-48-px { width: 48px !important; min-width: 48px !important; }
+      .h-48-px { height: 48px !important; min-height: 48px !important; }
+      .w-50-px { width: 50px !important; min-width: 50px !important; }
+      .h-50-px { height: 50px !important; min-height: 50px !important; }
+      .w-60-px { width: 60px !important; min-width: 60px !important; }
+      .h-60-px { height: 60px !important; min-height: 60px !important; }
+      .w-64-px { width: 64px !important; min-width: 64px !important; }
+      .h-64-px { height: 64px !important; min-height: 64px !important; }
+      .w-80-px { width: 80px !important; min-width: 80px !important; max-width: 80px !important; }
+      .h-80-px { height: 80px !important; min-height: 80px !important; max-height: 80px !important; }
+      .w-100-px { width: 100px !important; }
+      .h-100-px { height: 100px !important; }
+      .w-120-px { width: 120px !important; min-width: 120px !important; }
+      .h-120-px { height: 120px !important; min-height: 120px !important; }
+      .w-140-px { width: 140px !important; }
+      .w-160-px { width: 160px !important; }
+      .w-200-px { width: 200px !important; }
+      .radius-4 { border-radius: 4px !important; }
+      .radius-8 { border-radius: 8px !important; }
+      .radius-12 { border-radius: 12px !important; }
+      .radius-16 { border-radius: 16px !important; }
+      .radius-50 { border-radius: 50% !important; }
+
+      @media screen and (max-width: 480px) {
+        .stat-card-eduaiq {
+          padding: 14px 12px !important;
+        }
+        .custom-toast {
+          min-width: 260px !important;
+          max-width: calc(100vw - 24px) !important;
+        }
+      }
+    </style>
+</head>
+
+<body>
+
+    <!-- Theme Customizer -->
+    {% include 'admin_panel/includes/theme-customizer.html' %}
+
+    <!-- Sidebar -->
+    {% include 'admin_panel/includes/sidebar.html' %}
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+
+        <!-- Header -->
+        {% include 'admin_panel/includes/header.html' %}
+
+        <div class="dashboard-main-body">
+
+            {% block content %}
+            {% endblock %}
+
+        </div>
+
+    </main>
+
+    <!-- JS -->
+    <script src="{% static 'admin_assets/js/lib/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'admin_assets/js/lib/bootstrap.bundle.min.js' %}"></script>
+
+    <script src="{% static 'admin_assets/js/lib/apexcharts.min.js' %}"></script>
+    <script src="{% static 'admin_assets/js/lib/dataTables.min.js' %}"></script>
+    <script src="{% static 'admin_assets/js/lib/iconify-icon.min.js' %}"></script>
+    <script src="{% static 'admin_assets/js/lib/jquery-ui.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+    <!-- Main Script -->
+    <script src="{% static 'admin_assets/js/app.js' %}"></script>
+
+    <script>
+      // Global toast notification helper
+      window.showToast = function(message, type = 'success', duration = 4000) {
+        let container = $('.toast-container');
+        if (container.length === 0) {
+          container = $('<div class="toast-container"></div>').appendTo('body');
+        }
+
+        let iconClass = 'ri-checkbox-circle-fill';
+        if (type === 'error' || type === 'danger') {
+          iconClass = 'ri-error-warning-fill';
+          type = 'error';
+        } else if (type === 'warning') {
+          iconClass = 'ri-alert-fill';
+        } else if (type === 'info') {
+          iconClass = 'ri-information-fill';
+        }
+
+        const toast = $(`
+          <div class="custom-toast toast-${type}">
+            <div class="custom-toast-body">
+              <i class="custom-toast-icon ${iconClass}"></i>
+              <div class="custom-toast-content"></div>
+              <button class="custom-toast-close"><i class="ri-close-line"></i></button>
+            </div>
+            <div class="custom-toast-progress"></div>
+          </div>
+        `);
+
+        // Safely set text content
+        toast.find('.custom-toast-content').text(message);
+        
+        // Pass duration to CSS variable for progress bar
+        toast.find('.custom-toast-progress').css('--duration', `${duration}ms`);
+
+        container.append(toast);
+        toast[0].offsetHeight; // Force reflow
+        toast.addClass('show');
+
+        toast.find('.custom-toast-close').on('click', function() {
+          closeToast(toast);
+        });
+
+        let timer = setTimeout(function() {
+          closeToast(toast);
+        }, duration);
+
+        function closeToast(el) {
+          clearTimeout(timer);
+          el.removeClass('show');
+          setTimeout(function() {
+            el.remove();
+          }, 400);
+        }
+      };
+
+      // Global right-side slide-in Delete / Action Toast Confirmation helper
+      window.showDeleteToast = function(itemName, onConfirm, customOptions = {}) {
+        let title = 'Delete Confirmation';
+        let msg = '';
+        if (typeof itemName === 'object' && itemName !== null) {
+          customOptions = itemName;
+          itemName = customOptions.itemName || customOptions.title || 'this item';
+        }
+
+        const opts = Object.assign({
+          title: customOptions.title || 'Delete Confirmation',
+          itemName: itemName || 'this item',
+          message: customOptions.message || `Are you sure you want to delete <strong class="toast-confirm-item-name">"${itemName || 'this item'}"</strong>?`,
+          warningText: customOptions.warningText || 'This action cannot be undone and will permanently remove this record.',
+          confirmText: customOptions.confirmText || 'Yes, Delete',
+          confirmIcon: customOptions.confirmIcon || 'ri-delete-bin-2-line',
+          cancelText: customOptions.cancelText || 'Cancel',
+          onConfirm: onConfirm || customOptions.onConfirm || function() {},
+          onCancel: customOptions.onCancel || function() {}
+        }, customOptions);
+
+        let overlay = $('.toast-confirm-overlay');
+        if (overlay.length === 0) {
+          overlay = $('<div class="toast-confirm-overlay"></div>').appendTo('body');
+        }
+
+        let card = $('.toast-confirm-card');
+        if (card.length === 0) {
+          card = $(`
+            <div class="toast-confirm-card">
+              <div class="toast-confirm-header">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="toast-confirm-icon-box">
+                    <i class="ri-delete-bin-fill"></i>
+                  </div>
+                  <div>
+                    <h6 class="toast-confirm-title mb-0">Delete Confirmation</h6>
+                    <span class="toast-confirm-badge">Action Required</span>
+                  </div>
+                </div>
+                <button type="button" class="toast-confirm-close-btn" aria-label="Close">
+                  <i class="ri-close-line"></i>
+                </button>
+              </div>
+              <div class="toast-confirm-body">
+                <p class="toast-confirm-text mb-0"></p>
+                <div class="toast-confirm-warning-note">
+                  <i class="ri-alert-line"></i>
+                  <span class="toast-confirm-warning-msg"></span>
+                </div>
+              </div>
+              <div class="toast-confirm-footer">
+                <button type="button" class="toast-confirm-cancel-btn"></button>
+                <button type="button" class="toast-confirm-action-btn"></button>
+              </div>
+            </div>
+          `).appendTo('body');
+        }
+
+        card.find('.toast-confirm-title').text(opts.title);
+        card.find('.toast-confirm-text').html(opts.message);
+        card.find('.toast-confirm-warning-msg').text(opts.warningText);
+        card.find('.toast-confirm-cancel-btn').text(opts.cancelText);
+        card.find('.toast-confirm-action-btn').html(`<i class="${opts.confirmIcon}"></i> ${opts.confirmText}`);
+
+        function closeDialog() {
+          card.removeClass('show');
+          overlay.removeClass('show');
+          $(document).off('keydown.toastConfirm');
+        }
+
+        overlay.off('click').on('click', function() {
+          closeDialog();
+          if (typeof opts.onCancel === 'function') opts.onCancel();
+        });
+
+        card.find('.toast-confirm-close-btn, .toast-confirm-cancel-btn').off('click').on('click', function() {
+          closeDialog();
+          if (typeof opts.onCancel === 'function') opts.onCancel();
+        });
+
+        card.find('.toast-confirm-action-btn').off('click').on('click', function() {
+          closeDialog();
+          if (typeof opts.onConfirm === 'function') {
+            opts.onConfirm();
+          }
+        });
+
+        $(document).off('keydown.toastConfirm').on('keydown.toastConfirm', function(e) {
+          if (e.key === 'Escape') {
+            closeDialog();
+            if (typeof opts.onCancel === 'function') opts.onCancel();
+          }
+        });
+
+        // Trigger right-slide animation
+        overlay.addClass('show');
+        card[0].offsetHeight;
+        card.addClass('show');
+      };
+
+      // Aliases
+      window.showConfirmToast = window.showDeleteToast;
+      window.confirmToast = window.showDeleteToast;
+
+      // Global confirmation modal helper
+      window.showConfirmModal = function(options) {
+        let defaultIcon = 'ri-question-line';
+        let defaultBg = 'bg-info-50';
+        let defaultColor = 'text-info-600';
+
+        if (options && options.confirmBtnClass) {
+          if (options.confirmBtnClass.includes('success')) {
+            defaultIcon = 'ri-checkbox-circle-line';
+            defaultBg = 'bg-success-50';
+            defaultColor = 'text-success-600';
+          } else if (options.confirmBtnClass.includes('danger')) {
+            defaultIcon = 'ri-error-warning-line';
+            defaultBg = 'bg-danger-50';
+            defaultColor = 'text-danger-600';
+          } else if (options.confirmBtnClass.includes('warning')) {
+            defaultIcon = 'ri-alert-line';
+            defaultBg = 'bg-warning-50';
+            defaultColor = 'text-warning-600';
+          }
+        }
+
+        const opts = Object.assign({
+          title: 'Are you sure?',
+          message: 'This action cannot be undone.',
+          icon: defaultIcon,
+          iconBgClass: defaultBg,
+          iconColorClass: defaultColor,
+          confirmText: 'Confirm',
+          confirmBtnClass: 'btn-primary-600',
+          cancelText: 'Cancel',
+          onConfirm: function() {}
+        }, options);
+
+        $('#confirmModalTitle').text(opts.title);
+        $('#confirmModalMessage').text(opts.message);
+        $('#confirmModalSubmitBtn').text(opts.confirmText)
+          .attr('class', `btn ${opts.confirmBtnClass} font-semibold radius-8 px-20 text-sm w-50 text-white`);
+        $('#confirmModalCancelBtn').text(opts.cancelText || 'Cancel');
+
+        const iconBox = $('#confirmModalIconBox');
+        iconBox.attr('class', `w-64-px h-64-px radius-50 mx-auto d-flex align-items-center justify-content-center ${opts.iconBgClass} mb-16`);
+        $('#confirmModalIcon').attr('class', `${opts.icon} ${opts.iconColorClass} text-3xl`);
+
+        $('#confirmModalSubmitBtn').off('click').on('click', function() {
+          const modalEl = document.getElementById('globalConfirmModal');
+          const modalInstance = bootstrap.Modal.getInstance(modalEl);
+          if (modalInstance) modalInstance.hide();
+          if (typeof opts.onConfirm === 'function') {
+            opts.onConfirm();
+          }
+        });
+
+        const modalEl = document.getElementById('globalConfirmModal');
+        let modalInstance = bootstrap.Modal.getInstance(modalEl);
+        if (!modalInstance) {
+          modalInstance = new bootstrap.Modal(modalEl);
+        }
+        modalInstance.show();
+      };
+
+      window.confirmDialog = window.showConfirmModal;
+
+      // Global CSRF cookie helper
+      window.getCookie = function(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      };
+
+      // Global document download helper
+      window.downloadDocument = function(filename, fileUrl) {
+        filename = filename || 'BirthCertificate.pdf';
+        if (fileUrl && fileUrl !== '#' && fileUrl !== 'javascript:void(0)') {
+          const a = document.createElement('a');
+          a.href = fileUrl;
+          a.download = filename;
+          a.target = '_blank';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          if (window.showToast) window.showToast(`Downloading ${filename}...`, 'info');
+        } else {
+          // Generate PDF Blob for demo documents
+          const pdfHeader = `%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>\nendobj\n4 0 obj\n<< /Length 85 >>\nstream\nBT\n/F1 18 Tf\n72 712 TD\n(EduAIQ Official Document: ${filename}) Tj\nET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000214 00000 n \ntrailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n350\n%%EOF`;
+          const blob = new Blob([pdfHeader], { type: 'application/pdf' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(function() { URL.revokeObjectURL(url); }, 500);
+          if (window.showToast) window.showToast(`Downloading ${filename}...`, 'success');
+        }
+      };
+
+      // Delegate click event for any element with class download-doc-btn or data-filename
+      $(document).on('click', '.download-doc-btn, [data-filename]', function(e) {
+        e.preventDefault();
+        const filename = $(this).attr('data-filename') || $(this).data('filename') || 'BirthCertificate.pdf';
+        const fileUrl = $(this).attr('href') || $(this).data('fileurl');
+        window.downloadDocument(filename, fileUrl);
+      });
+
+      // Global delegate handler for table row deletions across all admin panel views
+      $(document).on('click', '[data-bs-target="#exampleModalDelete"], .delete-row-btn', function(e) {
+        e.preventDefault();
+        const $btn = $(this);
+        if ($btn.hasClass('delete-lead-btn') || $btn.hasClass('delete-inquiry-btn') || $btn.hasClass('delete-opp-btn')) {
+          return; // Allow page-specific API handlers to process their custom AJAX calls
+        }
+        const $row = $btn.closest('tr');
+        if (!$row.length) return;
+
+        const itemName = $row.find('td:nth-child(2), td:nth-child(3)').first().text().trim() || 'record';
+        
+        window.showDeleteToast(itemName, function() {
+          $row.css({ transition: 'all 0.35s ease', opacity: '0', transform: 'translateX(40px)' });
+          setTimeout(() => {
+            const $table = $row.closest('table');
+            if ($table.length && $.fn.DataTable && $.fn.DataTable.isDataTable($table)) {
+              $table.DataTable().row($row).remove().draw(false);
+            } else {
+              $row.remove();
+            }
+          }, 350);
+          if (window.showToast) window.showToast(`"${itemName}" deleted successfully!`, 'success');
+        });
+      });
+
+      // Password Visibility Toggle Handler
+      $(document).on('click', '.toggle-modal-password-btn', function() {
+        const $input = $('#loginModalPassword');
+        const $icon = $('#pwdToggleIcon');
+        if ($input.attr('type') === 'password') {
+          $input.attr('type', 'text');
+          $icon.removeClass('ri-eye-line').addClass('ri-eye-off-line');
+        } else {
+          $input.attr('type', 'password');
+          $icon.removeClass('ri-eye-off-line').addClass('ri-eye-line');
+        }
+      });
+
+      // Copy Credential Button Handler
+      $(document).on('click', '.copy-credential-btn', function() {
+        const targetId = $(this).attr('data-copy-target');
+        const textToCopy = $(targetId).val();
+        if (textToCopy) {
+          navigator.clipboard.writeText(textToCopy);
+          if (window.showToast) window.showToast('Copied to clipboard!', 'success');
+        }
+      });
+
+      // Copy All Login Details Handler
+      $(document).on('click', '.copy-all-login-details-btn', function() {
+        const user = $('#loginModalUsername').val();
+        const pwd = $('#loginModalPassword').val();
+        const details = `User ID: ${user}\nPassword: ${pwd}`;
+        navigator.clipboard.writeText(details);
+        if (window.showToast) window.showToast('Login details copied to clipboard!', 'success');
+      });
+
+      // Reset Password Handler
+      $(document).on('click', '.reset-modal-pwd-btn', function() {
+        if (window.showToast) window.showToast('Password reset link sent to registered email!', 'info');
+      });
+
+      // Dynamic population when loginDetailsModal opens
+      $(document).on('show.bs.modal', '#loginDetailsModal', function(e) {
+        $('#loginModalPassword').attr('type', 'password');
+        $('#pwdToggleIcon').removeClass('ri-eye-off-line').addClass('ri-eye-line');
+
+        const trigger = e.relatedTarget;
+        let profileName = trigger ? ($(trigger).attr('data-username') || $(trigger).data('username')) : null;
+        let profileRole = trigger ? ($(trigger).attr('data-role') || $(trigger).data('role')) : null;
+        let profilePwd = trigger ? ($(trigger).attr('data-password') || $(trigger).data('password')) : null;
+
+        if (!profileName && trigger) {
+          const $row = $(trigger).closest('tr');
+          if ($row.length) {
+            profileName = $row.find('td:eq(5)').text().trim() || $row.find('td:eq(2) h6').text().trim();
+          }
+        }
+
+        if (profileName) {
+          $('#loginModalUsername').val(profileName);
+        }
+        if (profilePwd) {
+          $('#loginModalPassword').val(profilePwd);
+        } else {
+          $('#loginModalPassword').val('Employee@123');
+        }
+        if (profileRole) {
+          $('#loginProfileRole').text(profileRole + ' Login Credentials');
+        } else {
+          $('#loginProfileRole').text('System Account Credentials');
+        }
+      });
+
+      // Global click delegate for any button containing "Login Details"
+      $(document).on('click', '.my-sidebar-btn:contains("Login Details"), .login-details-btn', function(e) {
+        e.preventDefault();
+        const $btn = $(this);
+        let username = $btn.attr('data-username') || $btn.data('username');
+        let role = $btn.attr('data-role') || $btn.data('role');
+        let password = $btn.attr('data-password') || $btn.data('password') || 'Employee@123';
+
+        if (!username) {
+          const $row = $btn.closest('tr');
+          if ($row.length) {
+            username = $row.find('td:eq(5)').text().trim() || $row.find('td:eq(2) h6').text().trim();
+          }
+        }
+
+        if (username) {
+          $('#loginModalUsername').val(username);
+        }
+        if (password) {
+          $('#loginModalPassword').val(password);
+        }
+        if (role) {
+          $('#loginProfileRole').text(role + ' Login Credentials');
+        } else {
+          $('#loginProfileRole').text('System Account Credentials');
+        }
+
+        const modalEl = document.getElementById('loginDetailsModal');
+        if (modalEl) {
+          const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+          modalInstance.show(this);
+        }
+      });
+    </script>
+
+    <!-- GLOBAL BEAUTIFUL CONFIRMATION MODAL -->
+    <div class="modal fade" id="globalConfirmModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-sm" style="max-width: 420px;">
+        <div class="modal-content radius-16 border-0 shadow-lg p-12 overflow-hidden">
+          <div class="modal-body text-center p-24">
+            <div id="confirmModalIconBox" class="w-64-px h-64-px radius-50 mx-auto d-flex align-items-center justify-content-center bg-warning-50 mb-16">
+              <i id="confirmModalIcon" class="ri-question-line text-warning-600 text-3xl"></i>
+            </div>
+            <h5 id="confirmModalTitle" class="fw-bold text-dark mb-8">Are you sure?</h5>
+            <p id="confirmModalMessage" class="text-neutral-500 text-sm mb-24">This action cannot be undone.</p>
+            
+            <div class="d-flex align-items-center justify-content-center gap-12">
+              <button type="button" class="btn btn-outline-neutral-400 font-semibold radius-8 px-20 text-sm w-50" data-bs-dismiss="modal" id="confirmModalCancelBtn">Cancel</button>
+              <button type="button" class="btn btn-primary-600 font-semibold radius-8 px-20 text-sm w-50 text-white" id="confirmModalSubmitBtn">Confirm</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GLOBAL LOGIN DETAILS MODAL -->
+    <div class="modal fade" id="loginDetailsModal" tabindex="-1" aria-labelledby="loginDetailsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content radius-16 border-0 shadow">
+          <div class="modal-header border-bottom px-24 py-16 bg-base">
+            <h6 class="modal-title fw-bold text-primary-light d-flex align-items-center gap-2" id="loginDetailsModalLabel">
+              <i class="ri-shield-keyhole-line text-primary-600 text-xl"></i> Account Login Credentials
+            </h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-24">
+            <div class="alert alert-primary-50 border border-primary-200 radius-8 p-16 mb-20 d-flex align-items-center gap-12">
+              <div class="w-40-px h-40-px bg-primary-100 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 text-primary-600">
+                <i class="ri-user-shared-line text-lg"></i>
+              </div>
+              <div>
+                <h6 class="text-sm fw-semibold text-primary-900 mb-2" id="loginProfileRole">System Account Details</h6>
+                <p class="text-xs text-primary-700 mb-0">Authorized credentials for accessing the EduAiQ Admin & Portal.</p>
+              </div>
+            </div>
+
+            <div class="mb-16">
+              <label class="form-label text-xs fw-semibold text-secondary-light uppercase mb-6">User ID / Username</label>
+              <div class="input-group">
+                <span class="input-group-text bg-base border-end-0 text-secondary-light"><i class="ri-user-3-line"></i></span>
+                <input type="text" class="form-control radius-8 border-start-0" id="loginModalUsername" value="marvin.mckinney@eduaiq.com" readonly>
+                <button class="btn btn-outline-neutral-300 copy-credential-btn" type="button" data-copy-target="#loginModalUsername" title="Copy Username">
+                  <i class="ri-file-copy-line text-secondary-light"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="mb-20">
+              <label class="form-label text-xs fw-semibold text-secondary-light uppercase mb-6">Default Password</label>
+              <div class="input-group">
+                <span class="input-group-text bg-base border-end-0 text-secondary-light"><i class="ri-lock-line"></i></span>
+                <input type="password" class="form-control radius-8 border-start-0 border-end-0" id="loginModalPassword" value="Employee@123" readonly>
+                <button class="btn btn-outline-neutral-300 toggle-modal-password-btn" type="button" title="Show/Hide Password">
+                  <i class="ri-eye-line text-secondary-light" id="pwdToggleIcon"></i>
+                </button>
+                <button class="btn btn-outline-neutral-300 copy-credential-btn" type="button" data-copy-target="#loginModalPassword" title="Copy Password">
+                  <i class="ri-file-copy-line text-secondary-light"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="p-12 radius-8 bg-warning-50 border border-warning-200 d-flex align-items-center justify-content-between gap-12">
+              <span class="text-xs text-warning-800 fw-medium">
+                <i class="ri-information-line me-1"></i> Passwords should be changed upon initial login.
+              </span>
+              <button type="button" class="btn btn-xs btn-outline-warning radius-4 text-nowrap reset-modal-pwd-btn">Reset Password</button>
+            </div>
+          </div>
+          <div class="modal-footer border-top px-24 py-16 bg-base">
+            <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary-600 radius-8 px-20 text-white copy-all-login-details-btn">
+              <i class="ri-file-copy-2-line me-1"></i> Copy Login Details
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- WFH Apply Modal -->
+    <div class="modal fade" id="wfhApplyModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content radius-16 border-0 shadow-lg">
+          <div class="modal-header border-bottom px-24 py-16 bg-info-50">
+            <h6 class="modal-title font-semibold text-info-900 d-flex align-items-center gap-2">
+              <i class="ri-home-wifi-line text-info-600 text-xl"></i> Apply for Work From Home (WFH)
+            </h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="wfhApplyForm">
+            <div class="modal-body p-24">
+              <div class="row gy-3">
+                <div class="col-6">
+                  <label class="form-label text-sm font-semibold mb-6">Start Date <span class="text-danger-600">*</span></label>
+                  <input type="date" class="form-control radius-8" id="wfhStartDate" required>
+                </div>
+                <div class="col-6">
+                  <label class="form-label text-sm font-semibold mb-6">End Date <span class="text-danger-600">*</span></label>
+                  <input type="date" class="form-control radius-8" id="wfhEndDate" required>
+                </div>
+                <div class="col-12">
+                  <label class="form-label text-sm font-semibold mb-6">Reason for WFH <span class="text-danger-600">*</span></label>
+                  <textarea class="form-control radius-8" id="wfhReason" rows="3" placeholder="State reason for working from home..." required></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer border-top px-24 py-16 bg-base">
+              <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn bg-info-600 text-white radius-8 px-20 font-semibold" id="submitWfhBtn">
+                <i class="ri-send-plane-line me-1"></i> Submit Request
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leave Apply Modal -->
+    <div class="modal fade" id="leaveApplyModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content radius-16 border-0 shadow-lg">
+          <div class="modal-header border-bottom px-24 py-16 bg-primary-50">
+            <h6 class="modal-title font-semibold text-primary-900 d-flex align-items-center gap-2">
+              <i class="ri-calendar-close-line text-primary-600 text-xl"></i> Apply for Leave
+            </h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="leaveApplyForm">
+            <div class="modal-body p-24">
+              <div class="row gy-3">
+                <div class="col-12">
+                  <label class="form-label text-sm font-semibold mb-6">Leave Type <span class="text-danger-600">*</span></label>
+                  <select class="form-select radius-8" id="leaveTypeSelect" required>
+                    <option value="Casual Leave">Casual Leave</option>
+                    <option value="Medical Leave">Medical Leave</option>
+                    <option value="Sick Leave">Sick Leave</option>
+                    <option value="Special Leave">Special Leave</option>
+                    <option value="Emergency Leave">Emergency Leave</option>
+                    <option value="Maternity/Paternity Leave">Maternity / Paternity Leave</option>
+                    <option value="Unpaid Leave">Unpaid Leave</option>
+                  </select>
+                </div>
+                <div class="col-6">
+                  <label class="form-label text-sm font-semibold mb-6">Start Date <span class="text-danger-600">*</span></label>
+                  <input type="date" class="form-control radius-8" id="leaveStartDate" required>
+                </div>
+                <div class="col-6">
+                  <label class="form-label text-sm font-semibold mb-6">End Date <span class="text-danger-600">*</span></label>
+                  <input type="date" class="form-control radius-8" id="leaveEndDate" required>
+                </div>
+                <div class="col-12">
+                  <label class="form-label text-sm font-semibold mb-6">Reason for Leave <span class="text-danger-600">*</span></label>
+                  <textarea class="form-control radius-8" id="leaveReason" rows="3" placeholder="State reason for leave application..." required></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer border-top px-24 py-16 bg-base">
+              <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn bg-primary-600 text-white radius-8 px-20 font-semibold" id="submitLeaveBtn">
+                <i class="ri-send-plane-line me-1"></i> Submit Leave Request
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Employee Self Attendance Punch In / Punch Out Widget Controller
+      (function() {
+        function updateAttendanceWidgetState() {
+          $.ajax({
+            url: '/accounts/api/attendance/today-status/',
+            type: 'GET',
+            success: function(res) {
+              if (res.status === 'success') {
+                const $inBtn = $('#punchInBtn');
+                const $outBtn = $('#punchOutBtn');
+
+                if (res.has_checked_out) {
+                  $inBtn.addClass('d-none');
+                  $outBtn.addClass('d-none');
+                  $('#attendanceStatusDot').removeClass('bg-neutral-400 bg-success-500').addClass('bg-primary-500');
+                  $('#attendancePillText').text(`Done (${res.check_in_time} - ${res.check_out_time})`);
+                  $('#attendancePillBadge').removeClass('bg-neutral-200 bg-success-100 text-success-800').addClass('bg-primary-50 text-primary-700').text('Completed');
+                } else if (res.has_checked_in) {
+                  $inBtn.addClass('d-none');
+                  $outBtn.removeClass('d-none');
+                  $('#attendanceStatusDot').removeClass('bg-neutral-400 bg-primary-500').addClass('bg-success-500');
+                  $('#attendancePillText').text(`In: ${res.check_in_time}`);
+                  $('#attendancePillBadge').removeClass('bg-neutral-200').addClass('bg-success-100 text-success-800').text(`In at ${res.check_in_time}`);
+                } else {
+                  $inBtn.removeClass('d-none');
+                  $outBtn.addClass('d-none');
+                  $('#attendanceStatusDot').removeClass('bg-success-500 bg-primary-500').addClass('bg-neutral-400');
+                  $('#attendancePillText').text('Attendance');
+                  $('#attendancePillBadge').removeClass('bg-success-100 text-success-800').addClass('bg-neutral-200 text-neutral-800').text('Not Marked');
+                }
+              }
+            }
+          });
+        }
+
+        $(document).ready(function() {
+          updateAttendanceWidgetState();
+
+          // Explicit WFH modal trigger handler
+          $(document).on('click', '#applyWfhBtn, [data-bs-target="#wfhApplyModal"], .apply-wfh-btn', function(e) {
+            e.preventDefault();
+
+            // Close parent dropdown menu if open
+            const $dropdown = $(this).closest('.dropdown-menu');
+            if ($dropdown.length) {
+              $dropdown.removeClass('show');
+            }
+
+            const modalEl = document.getElementById('wfhApplyModal');
+            if (modalEl) {
+              const bs = window.bootstrap || (typeof bootstrap !== 'undefined' ? bootstrap : null);
+              if (bs && bs.Modal) {
+                const modalInstance = bs.Modal.getOrCreateInstance(modalEl);
+                modalInstance.show();
+              } else if (typeof $ !== 'undefined' && $.fn.modal) {
+                $('#wfhApplyModal').modal('show');
+              }
+            }
+          });
+
+          // Explicit Leave modal trigger handler
+          $(document).on('click', '[data-bs-target="#leaveApplyModal"], .trigger-leave-modal', function(e) {
+            e.preventDefault();
+            const modalEl = document.getElementById('leaveApplyModal');
+            if (modalEl) {
+              const bs = window.bootstrap || (typeof bootstrap !== 'undefined' ? bootstrap : null);
+              if (bs && bs.Modal) {
+                const modalInstance = bs.Modal.getOrCreateInstance(modalEl);
+                modalInstance.show();
+              } else if (typeof $ !== 'undefined' && $.fn.modal) {
+                $('#leaveApplyModal').modal('show');
+              }
+            }
+          });
+
+          // Set default dates in WFH & Leave modals
+          const todayStr = new Date().toISOString().split('T')[0];
+          $('#wfhStartDate, #leaveStartDate').val(todayStr);
+          $('#wfhEndDate, #leaveEndDate').val(todayStr);
+
+          // Submit WFH Request Handler
+          $('#wfhApplyForm').on('submit', function(e) {
+            e.preventDefault();
+            const startDate = $('#wfhStartDate').val();
+            const endDate = $('#wfhEndDate').val();
+            const reason = $('#wfhReason').val();
+            const currentEmail = $('#empDetailEmail').length ? $('#empDetailEmail').text().replace(':', '').trim() : '';
+            const currentName = $('#empDetailName').length ? $('#empDetailName').text().trim() : '';
+
+            const $btn = $('#submitWfhBtn');
+            $btn.prop('disabled', true).html('<i class="ri-loader-4-line ri-spin me-1"></i> Submitting...');
+
+            $.ajax({
+              url: '/accounts/api/wfh/request/',
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({
+                leave_type: 'Work From Home (WFH)',
+                start_date: startDate,
+                end_date: endDate,
+                reason: reason,
+                email: currentEmail,
+                user_name: currentName
+              }),
+              success: function(res) {
+                $btn.prop('disabled', false).html('<i class="ri-send-plane-line me-1"></i> Submit Request');
+                if (res.status === 'success') {
+                  const modalEl = document.getElementById('wfhApplyModal');
+                  const bs = window.bootstrap || (typeof bootstrap !== 'undefined' ? bootstrap : null);
+                  const modalInstance = bs && bs.Modal ? bs.Modal.getInstance(modalEl) : null;
+                  if (modalInstance) modalInstance.hide();
+                  $('#wfhReason').val('');
+                  if (window.showToast) window.showToast(res.message, 'success');
+                  if (typeof window.loadEmployeeLeaves === 'function') {
+                    window.loadEmployeeLeaves();
+                  }
+                  if (typeof window.loadWfhRequests === 'function') {
+                    window.loadWfhRequests();
+                  }
+                } else {
+                  if (window.showToast) window.showToast(res.message || 'Submission failed', 'danger');
+                }
+              },
+              error: function(err) {
+                $btn.prop('disabled', false).html('<i class="ri-send-plane-line me-1"></i> Submit Request');
+                const msg = err.responseJSON && err.responseJSON.message ? err.responseJSON.message : 'Error submitting WFH request';
+                if (window.showToast) window.showToast(msg, 'danger');
+              }
+            });
+          });
+
+          // Submit Leave Request Handler
+          $('#leaveApplyForm').on('submit', function(e) {
+            e.preventDefault();
+            const $btn = $('#submitLeaveBtn');
+            $btn.prop('disabled', true).html('<i class="ri-loader-4-line ri-spin me-1"></i> Submitting...');
+
+            const currentEmail = $('#empDetailEmail').length ? $('#empDetailEmail').text().replace(':', '').trim() : '';
+            const currentName = $('#empDetailName').length ? $('#empDetailName').text().trim() : '';
+
+            const postData = {
+              leave_type: $('#leaveTypeSelect').val(),
+              start_date: $('#leaveStartDate').val(),
+              end_date: $('#leaveEndDate').val(),
+              reason: $('#leaveReason').val(),
+              email: currentEmail,
+              user_name: currentName
+            };
+
+            $.ajax({
+              url: '/accounts/api/wfh/request/',
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify(postData),
+              headers: {
+                'X-CSRFToken': (function() {
+                  let cookieValue = null;
+                  if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                      const cookie = cookies[i].trim();
+                      if (cookie.substring(0, 10) === ('csrftoken=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(10));
+                        break;
+                      }
+                    }
+                  }
+                  return cookieValue;
+                })()
+              },
+              success: function(res) {
+                $btn.prop('disabled', false).html('<i class="ri-send-plane-line me-1"></i> Submit Leave Request');
+                if (res.status === 'success') {
+                  if (window.showToast) window.showToast('Leave request submitted successfully!', 'success');
+                  const modalEl = document.getElementById('leaveApplyModal');
+                  const bs = window.bootstrap || (typeof bootstrap !== 'undefined' ? bootstrap : null);
+                  const modalInstance = bs && bs.Modal ? bs.Modal.getInstance(modalEl) : null;
+                  if (modalInstance) modalInstance.hide();
+                  $('#leaveReason').val('');
+                  if (typeof window.loadEmployeeLeaves === 'function') {
+                    window.loadEmployeeLeaves();
+                  }
+                  if (typeof window.loadWfhRequests === 'function') {
+                    window.loadWfhRequests();
+                  }
+                } else {
+                  if (window.showToast) window.showToast(res.message || 'Submission failed', 'danger');
+                }
+              },
+              error: function(err) {
+                $btn.prop('disabled', false).html('<i class="ri-send-plane-line me-1"></i> Submit Leave Request');
+                const msg = err.responseJSON && err.responseJSON.message ? err.responseJSON.message : 'Error submitting leave request';
+                if (window.showToast) window.showToast(msg, 'danger');
+              }
+            });
+          });
+
+          $('#punchInBtn').on('click', function() {
+            const $btn = $(this);
+            $btn.prop('disabled', true);
+            $.ajax({
+              url: '/accounts/api/attendance/check-in/',
+              type: 'POST',
+              success: function(res) {
+                $btn.prop('disabled', false);
+                if (res.status === 'success' || res.status === 'info') {
+                  if (window.showToast) window.showToast(res.message, res.status === 'success' ? 'success' : 'info');
+                  updateAttendanceWidgetState();
+                  if (typeof window.loadBackendAttendance === 'function') {
+                    window.loadBackendAttendance();
+                  }
+                } else {
+                  if (window.showToast) window.showToast(res.message || 'Check-in failed', 'danger');
+                }
+              },
+              error: function() {
+                $btn.prop('disabled', false);
+                if (window.showToast) window.showToast('Check-in failed. Please try again.', 'danger');
+              }
+            });
+          });
+
+          $('#punchOutBtn').on('click', function() {
+            const $btn = $(this);
+            $btn.prop('disabled', true);
+            $.ajax({
+              url: '/accounts/api/attendance/check-out/',
+              type: 'POST',
+              success: function(res) {
+                $btn.prop('disabled', false);
+                if (res.status === 'success') {
+                  if (window.showToast) window.showToast(res.message, 'success');
+                  updateAttendanceWidgetState();
+                  if (typeof window.loadBackendAttendance === 'function') {
+                    window.loadBackendAttendance();
+                  }
+                } else {
+                  if (window.showToast) window.showToast(res.message || 'Check-out failed', 'danger');
+                }
+              },
+              error: function() {
+                $btn.prop('disabled', false);
+                if (window.showToast) window.showToast('Check-out failed. Please try again.', 'danger');
+              }
+            });
+          });
+          // Suppress DataTables alert popups globally
+          if (typeof $ !== 'undefined' && $.fn && $.fn.dataTable) {
+            $.fn.dataTable.ext.errMode = 'none';
+          }
+        });
+      })();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {% block js %}{% endblock %}
+
+    {% if messages %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        {% for message in messages %}
+          if (window.showToast) {
+            let msgType = '{{ message.tags|default:"success" }}';
+            if (msgType.includes('error')) msgType = 'error';
+            else if (msgType.includes('warning')) msgType = 'warning';
+            else if (msgType.includes('info')) msgType = 'info';
+            else msgType = 'success';
+            showToast("{{ message|escapejs }}", msgType);
+          }
+        {% endfor %}
+      });
+    </script>
+    {% endif %}
+
+</body>
+
+</html>

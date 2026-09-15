@@ -1,0 +1,354 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAIQ - Suspended Student List{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Suspended Students</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Suspended Students</span>
+    </div>
+  </div>
+</div>
+
+<div class="card h-100 mt-24">
+  <div class="card-body p-24">
+    <!-- Institution Selector & Search/Filter Controls -->
+    <div class="row gy-3 mb-24 align-items-end">
+      <div class="col-md-4">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="institutionSelect">Select Institution <span class="text-danger-600">*</span></label>
+        <select class="form-control form-select radius-8" id="institutionSelect">
+          <option value="" disabled selected>-- Choose Institution --</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="classGradeFilter">Class / Grade</label>
+        <input type="text" class="form-control radius-8" id="classGradeFilter" placeholder="e.g. Class 10">
+      </div>
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="sectionFilter">Section</label>
+        <input type="text" class="form-control radius-8" id="sectionFilter" placeholder="e.g. A">
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-outline-primary-600 w-100 radius-8" id="clearFiltersBtn">
+          Clear Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Search input and paging size -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 pb-20 border-bottom border-neutral-200">
+      <div class="d-flex align-items-center gap-8">
+        <span class="text-sm text-secondary-light">Show</span>
+        <select class="form-select form-select-sm w-auto radius-8" id="pageSizeSelect">
+          <option value="10">10</option>
+          <option value="20" selected>20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        <span class="text-sm text-secondary-light">entries</span>
+      </div>
+      <div class="d-flex align-items-center gap-16">
+        <div class="position-relative">
+          <input type="text" class="form-control form-control-sm ps-32 radius-8" id="searchQuery" placeholder="Search Admission No...">
+          <i class="ri-search-line position-absolute start-12 top-50 translate-middle-y text-secondary-light"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Table -->
+    <div class="table-responsive mt-24">
+      <table class="table border-neutral-200 table-hover align-middle">
+        <thead>
+          <tr class="bg-neutral-50">
+            <th scope="col">Admission No</th>
+            <th scope="col">Student Name</th>
+            <th scope="col">Roll No</th>
+            <th scope="col">Class & Section</th>
+            <th scope="col">Academic Year</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody id="studentTableBody">
+          <tr>
+            <td colspan="7" class="text-center py-40 text-secondary-light">
+              <i class="ri-information-line text-xxl d-block mb-8"></i>
+              Please select an Institution to view suspended students.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination & Meta -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 mt-24">
+      <span class="text-sm text-secondary-light" id="tableInfoSpan">Showing 0 to 0 of 0 entries</span>
+      <nav aria-label="Page navigation" id="paginationNav" class="d-none">
+        <ul class="pagination pagination-primary mb-0 gap-8" id="paginationUl">
+          <!-- Dynamically populated -->
+        </ul>
+      </nav>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+  let selectedInstitutionId = "";
+  let currentPage = 1;
+
+  // Read cookies for CSRF
+  function getCsrfToken() {
+    const match = document.cookie.match(/csrftoken=([^;]+)/);
+    return match ? match[1] : null;
+  }
+
+  // Load Institutions dropdown
+  function loadInstitutions() {
+    $.ajax({
+      url: '/api/institutions/?page_size=100',
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(response) {
+        const select = $('#institutionSelect');
+        select.find('option:not(:first)').remove();
+        if (response.results && response.results.length > 0) {
+          response.results.forEach(inst => {
+            select.append(`<option value="${inst.id}">${inst.name} (${inst.type})</option>`);
+          });
+          if (response.results.length > 0) {
+            select.val(response.results[0].id);
+          }
+          selectedInstitutionId = select.val();
+          if (selectedInstitutionId) {
+            loadStudents();
+          }
+        }
+      },
+      error: function(err) {
+        console.error('Failed to load institutions:', err);
+      }
+    });
+  }
+
+  // Load students for chosen institution (force status=suspended)
+  function loadStudents(page = 1) {
+    if (!selectedInstitutionId) return;
+
+    currentPage = page;
+    const classGrade = $('#classGradeFilter').val();
+    const section = $('#sectionFilter').val();
+    const q = $('#searchQuery').val();
+    const pageSize = $('#pageSizeSelect').val();
+
+    // Forced filter on suspended
+    let url = `/api/institutions/${selectedInstitutionId}/students/?page=${page}&page_size=${pageSize}&status=suspended`;
+    if (classGrade) url += `&class_grade=${encodeURIComponent(classGrade)}`;
+    if (section) url += `&section=${encodeURIComponent(section)}`;
+    if (q) url += `&q=${encodeURIComponent(q)}`;
+
+    // Show loading
+    $('#studentTableBody').html(`
+      <tr>
+        <td colspan="7" class="text-center py-40">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </td>
+      </tr>
+    `);
+
+    $.ajax({
+      url: url,
+      type: 'GET',
+      xhrFields: { withCredentials: true },
+      success: function(response) {
+        renderTable(response);
+        renderPagination(response);
+      },
+      error: function(err) {
+        console.error('Error fetching students:', err);
+        $('#studentTableBody').html(`
+          <tr>
+            <td colspan="7" class="text-center py-40 text-danger-600">
+              <i class="ri-error-warning-line text-xxl d-block mb-8"></i>
+              Error loading suspended student roster.
+            </td>
+          </tr>
+        `);
+      }
+    });
+  }
+
+  function renderTable(data) {
+    const tbody = $('#studentTableBody');
+    tbody.empty();
+
+    if (!data.results || data.results.length === 0) {
+      tbody.html(`
+        <tr>
+          <td colspan="7" class="text-center py-40 text-secondary-light">
+            <i class="ri-folder-open-line text-xxl d-block mb-8"></i>
+            No suspended students found.
+          </td>
+        </tr>
+      `);
+      $('#tableInfoSpan').text('Showing 0 to 0 of 0 entries');
+      return;
+    }
+
+    data.results.forEach(student => {
+      const rollNo = student.roll_number || '-';
+      const admissionNo = student.admission_no || '-';
+      const secText = student.section ? `(${student.section})` : '';
+      const classSecText = `${student.class_grade || '-'} ${secText}`;
+      const name = student.student_name || 'Unnamed Student';
+      const photo = student.profile_photo || '/static/admin_assets/images/avatar-default.png';
+
+      const statusBadge = `<span class="px-16 py-4 radius-4 fw-medium text-sm bg-danger-100 text-danger-600">SUSPENDED</span>`;
+
+      tbody.append(`
+        <tr>
+          <td><span class="text-primary-600 fw-medium">${admissionNo}</span></td>
+          <td>
+            <div class="d-flex align-items-center">
+              <img src="${photo}" alt="" class="flex-shrink-0 me-12 radius-8 object-fit-cover" style="width:40px; height:40px;">
+              <div>
+                <h6 class="text-md mb-0 fw-medium text-neutral-800">${name}</h6>
+              </div>
+            </div>
+          </td>
+          <td>${rollNo}</td>
+          <td>${classSecText}</td>
+          <td>${student.academic_year || '-'}</td>
+          <td>${statusBadge}</td>
+          <td class="text-center">
+            <div class="d-flex align-items-center justify-content-center gap-8">
+              <a href="/admin-panel/student-details/?id=${student.id}" class="btn btn-sm btn-outline-neutral-300 text-secondary-light px-8 py-4 radius-8" title="View Profile">
+                <i class="ri-eye-line text-md"></i>
+              </a>
+              <button class="btn btn-sm btn-outline-success text-success-600 px-8 py-4 radius-8 activate-student-btn" data-id="${student.id}" title="Re-activate Student">
+                <i class="ri-check-circle-line text-md"></i> Activate
+              </button>
+            </div>
+          </td>
+        </tr>
+      `);
+    });
+
+    // Update entries text
+    const page = data.page;
+    const pageSize = data.page_size;
+    const count = data.count;
+    const startEntry = (page - 1) * pageSize + 1;
+    const endEntry = Math.min(page * pageSize, count);
+    $('#tableInfoSpan').text(`Showing ${startEntry} to ${endEntry} of ${count} entries`);
+  }
+
+  function renderPagination(data) {
+    const nav = $('#paginationNav');
+    const ul = $('#paginationUl');
+    ul.empty();
+
+    if (data.total_pages <= 1) {
+      nav.addClass('d-none');
+      return;
+    }
+
+    nav.removeClass('d-none');
+
+    // Prev Button
+    const prevDisabled = data.page === 1 ? 'disabled' : '';
+    ul.append(`
+      <li class="page-item ${prevDisabled}">
+        <button class="page-link py-6 px-12" data-page="${data.page - 1}" ${prevDisabled}>Previous</button>
+      </li>
+    `);
+
+    // Page numbers
+    for (let i = 1; i <= data.total_pages; i++) {
+      const activeClass = i === data.page ? 'active' : '';
+      ul.append(`
+        <li class="page-item ${activeClass}">
+          <button class="page-link py-6 px-12" data-page="${i}">${i}</button>
+        </li>
+      `);
+    }
+
+    // Next Button
+    const nextDisabled = data.page === data.total_pages ? 'disabled' : '';
+    ul.append(`
+      <li class="page-item ${nextDisabled}">
+        <button class="page-link py-6 px-12" data-page="${data.page + 1}" ${nextDisabled}>Next</button>
+      </li>
+    `);
+  }
+
+  // Handle Institution Choice
+  $('#institutionSelect').on('change', function() {
+    selectedInstitutionId = $(this).val();
+    loadStudents(1);
+  });
+
+  // Filter triggers
+  $('#classGradeFilter, #sectionFilter').on('keyup', function() {
+    loadStudents(1);
+  });
+
+  $('#pageSizeSelect').on('change', function() {
+    loadStudents(1);
+  });
+
+  $('#searchQuery').on('keyup', function() {
+    loadStudents(1);
+  });
+
+  $('#clearFiltersBtn').on('click', function() {
+    $('#classGradeFilter').val('');
+    $('#sectionFilter').val('');
+    $('#searchQuery').val('');
+    loadStudents(1);
+  });
+
+  // Pagination click handlers
+  $(document).on('click', '#paginationUl .page-link', function(e) {
+    e.preventDefault();
+    const page = $(this).data('page');
+    if (page) loadStudents(page);
+  });
+
+  // Activate trigger
+  $(document).on('click', '.activate-student-btn', function() {
+    const studentId = $(this).data('id');
+    const token = getCsrfToken();
+
+    $.ajax({
+      url: `/api/students/${studentId}/status/`,
+      type: 'PATCH',
+      headers: { 'X-CSRFToken': token },
+      contentType: 'application/json',
+      data: JSON.stringify({ status: 'active' }),
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        showToast('Student activated successfully!', 'success');
+        loadStudents(currentPage);
+      },
+      error: function(err) {
+        showToast('Failed to activate student.', 'error');
+      }
+    });
+  });
+
+  // Initialize page
+  loadInstitutions();
+});
+</script>
+{% endblock %}

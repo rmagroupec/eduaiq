@@ -1,0 +1,664 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAIQ - Institution List{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Institution List</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Institution List</span>
+    </div>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    {% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'superadmin' or request.user.role == 'super_admin' or is_main_admin %}
+    <button class="btn btn-outline-success-600 d-flex align-items-center gap-6 radius-8" id="exportInstitutionsCsvBtn">
+      <i class="ri-download-2-line text-md"></i> Export CSV
+    </button>
+    <button class="btn btn-outline-info-600 d-flex align-items-center gap-6 radius-8" id="importInstitutionsCsvBtn"
+            style="border-color:#0ea5e9;color:#0ea5e9;">
+      <i class="ri-upload-2-line text-md"></i> Import CSV
+    </button>
+    {% endif %}
+    <a class="btn btn-primary-600 d-flex align-items-center gap-6 radius-8" href="/admin-panel/add-new-institution/">
+      <span class="d-flex text-md">
+        <i class="ri-add-large-line"></i>
+      </span>
+      Add Institution
+    </a>
+  </div>
+</div>
+
+<!-- ===== Import CSV Modal ===== -->
+<div class="modal fade" id="importCsvModal" tabindex="-1" aria-labelledby="importCsvModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content radius-16 border-0 shadow-lg">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold text-primary-light" id="importCsvModalLabel">
+          <i class="ri-upload-2-line me-2" style="color:#0ea5e9;"></i>Import Institutions via CSV
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-16">
+
+        <!-- Info alert -->
+        <div class="alert d-flex align-items-start gap-2 radius-8 mb-16"
+             style="background:#f0f9ff;border:1px solid #bae6fd;color:#0369a1;">
+          <i class="ri-information-line mt-1"></i>
+          <div class="text-sm">
+            <strong>Required columns:</strong> <code>name</code>, <code>type</code><br>
+            <strong>Optional columns:</strong> <code>board_affiliation</code>, <code>phone</code>, <code>city</code>, <code>state</code>, <code>address</code>, <code>status</code><br>
+            <strong>Valid types:</strong> coaching, school, college, university, other<br>
+            <strong>Valid statuses:</strong> active, pending, suspended
+          </div>
+        </div>
+
+        <!-- Download sample -->
+        <div class="mb-16 text-end">
+          <a id="downloadSampleCsv" href="#" class="text-sm fw-semibold" style="color:#0ea5e9;text-decoration:none;">
+            <i class="ri-download-line me-1"></i>Download Sample CSV
+          </a>
+        </div>
+
+        <!-- Drop zone -->
+        <div id="csvDropZone"
+             style="border:2px dashed #94a3b8;border-radius:12px;padding:36px 24px;text-align:center;
+                    background:#f8fafc;cursor:pointer;transition:border-color .2s,background .2s;">
+          <i class="ri-file-text-line" style="font-size:40px;color:#94a3b8;"></i>
+          <p class="mb-4 mt-8 fw-semibold text-secondary-light">Drag &amp; drop your CSV file here</p>
+          <p class="text-sm text-secondary-light mb-12">or</p>
+          <label class="btn btn-outline-primary-600 radius-8 px-20 py-8 text-sm fw-medium" for="csvFileInput"
+                 style="cursor:pointer;">Browse File</label>
+          <input type="file" id="csvFileInput" accept=".csv" class="d-none">
+          <p id="csvFileName" class="mt-12 text-sm text-secondary-light"></p>
+        </div>
+
+        <!-- Progress bar (hidden) -->
+        <div id="importProgressWrap" class="mt-16" style="display:none !important;">
+          <div class="progress radius-8" style="height:8px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated"
+                 id="importProgressBar" role="progressbar" style="width:100%;"></div>
+          </div>
+          <p class="text-sm text-center mt-8 text-secondary-light">Uploading &amp; processing…</p>
+        </div>
+
+        <!-- Result area (hidden) -->
+        <div id="importResultArea" class="mt-16" style="display:none;"></div>
+
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <button type="button" class="btn btn-secondary radius-8 px-20 py-8 text-sm fw-medium"
+                data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary-600 radius-8 px-20 py-8 text-sm fw-medium"
+                id="submitImportCsvBtn" disabled>
+          <i class="ri-upload-2-line me-1"></i>Import Now
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ===== /Import CSV Modal ===== -->
+
+<div class="d-none">
+</div>
+
+<div class="card h-100 mt-24">
+  <div class="card-body p-24">
+    <!-- Filters Control -->
+    <div class="row gy-3 mb-24 align-items-end">
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="typeFilter">Type</label>
+        <select class="form-control form-select radius-8" id="typeFilter">
+          <option value="">All Types</option>
+          <option value="coaching">🎯 Coaching Institute</option>
+          <option value="school">🏫 School</option>
+          <option value="college">🎓 College</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="statusFilter">Status</label>
+        <select class="form-control form-select radius-8" id="statusFilter">
+          <option value="">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="suspended">Suspended</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="cityFilter">City</label>
+        <input type="text" class="form-control radius-8" id="cityFilter" placeholder="e.g. Delhi">
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-outline-primary-600 w-100 radius-8" id="clearFiltersBtn">
+          Clear Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Search input and paging size -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 pb-20 border-bottom border-neutral-200">
+      <div class="d-flex align-items-center gap-8">
+        <span class="text-sm text-secondary-light">Show</span>
+        <select class="form-select form-select-sm w-auto radius-8" id="pageSizeSelect">
+          <option value="10">10</option>
+          <option value="20" selected>20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        <span class="text-sm text-secondary-light">entries</span>
+      </div>
+      <div class="d-flex align-items-center gap-16">
+        <div class="position-relative">
+          <input type="text" class="form-control form-control-sm ps-32 radius-8" id="searchQuery" placeholder="Search by name...">
+          <i class="ri-search-line position-absolute start-12 top-50 translate-middle-y text-secondary-light"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Table -->
+    <div class="table-responsive mt-24">
+      <table class="table border-neutral-200 table-hover align-middle">
+        <thead>
+          <tr class="bg-neutral-50">
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Type</th>
+            <th scope="col">Board / Target Exams</th>
+            <th scope="col">City</th>
+            <th scope="col">State</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody id="institutionTableBody">
+          <tr>
+            <td colspan="8" class="text-center py-40">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination & Meta -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 mt-24">
+      <span class="text-sm text-secondary-light" id="tableInfoSpan">Showing 0 to 0 of 0 entries</span>
+      <nav aria-label="Page navigation" id="paginationNav" class="d-none">
+        <ul class="pagination pagination-primary mb-0 gap-8" id="paginationUl">
+          <!-- Dynamically populated -->
+        </ul>
+      </nav>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+  let currentPage = 1;
+  let currentFilters = {
+    type: '',
+    status: '',
+    city: '',
+    q: '',
+    page_size: 20
+  };
+
+  fetchInstitutions();
+
+  // Search input handler with debounce
+  let searchTimeout;
+  $('#searchQuery').on('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+      currentFilters.q = $('#searchQuery').val().trim();
+      currentPage = 1;
+      fetchInstitutions();
+    }, 400);
+  });
+
+  // Filter change handlers
+  $('#typeFilter').on('change', function() {
+    currentFilters.type = $(this).val();
+    currentPage = 1;
+    fetchInstitutions();
+  });
+
+  $('#statusFilter').on('change', function() {
+    currentFilters.status = $(this).val();
+    currentPage = 1;
+    fetchInstitutions();
+  });
+
+  let cityTimeout;
+  $('#cityFilter').on('input', function() {
+    clearTimeout(cityTimeout);
+    cityTimeout = setTimeout(function() {
+      currentFilters.city = $('#cityFilter').val().trim();
+      currentPage = 1;
+      fetchInstitutions();
+    }, 400);
+  });
+
+  $('#pageSizeSelect').on('change', function() {
+    currentFilters.page_size = $(this).val();
+    currentPage = 1;
+    fetchInstitutions();
+  });
+
+  $('#clearFiltersBtn').on('click', function() {
+    $('#typeFilter').val('');
+    $('#statusFilter').val('');
+    $('#cityFilter').val('');
+    $('#searchQuery').val('');
+    currentFilters = {
+      type: '',
+      status: '',
+      city: '',
+      q: '',
+      page_size: $('#pageSizeSelect').val()
+    };
+    currentPage = 1;
+    fetchInstitutions();
+  });
+
+  function fetchInstitutions() {
+    let params = {
+      page: currentPage,
+      page_size: currentFilters.page_size
+    };
+    if (currentFilters.type) params.type = currentFilters.type;
+    if (currentFilters.status) params.status = currentFilters.status;
+    if (currentFilters.city) params.city = currentFilters.city;
+    if (currentFilters.q) params.q = currentFilters.q;
+
+    $.ajax({
+      url: '/api/institutions/',
+      type: 'GET',
+      data: params,
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        renderTable(res);
+        renderPagination(res);
+      },
+      error: function(err) {
+        console.error('Error fetching institutions:', err);
+        $('#institutionTableBody').html(`
+          <tr>
+            <td colspan="8" class="text-center py-40 text-danger-600">
+              <i class="ri-error-warning-line text-xxl d-block mb-8"></i>
+              Failed to load institutions list.
+            </td>
+          </tr>
+        `);
+      }
+    });
+  }
+
+  function renderTable(data) {
+    const tbody = $('#institutionTableBody');
+    tbody.empty();
+
+    if (!data.results || data.results.length === 0) {
+      tbody.html(`
+        <tr>
+          <td colspan="8" class="text-center py-40 text-secondary-light">
+            <i class="ri-folder-open-line text-xxl d-block mb-8"></i>
+            No institutions registered.
+          </td>
+        </tr>
+      `);
+      $('#tableInfoSpan').text('Showing 0 to 0 of 0 entries');
+      return;
+    }
+
+    data.results.forEach(inst => {
+      let badgeClass = 'bg-success-100 text-success-600';
+      if (inst.status === 'pending') badgeClass = 'bg-warning-100 text-warning-600';
+      else if (inst.status === 'suspended') badgeClass = 'bg-danger-100 text-danger-600';
+
+      let typeBadge = `<span class="badge bg-primary-100 text-primary-600 text-xs px-8 py-4 radius-4 fw-bold text-uppercase">${inst.type}</span>`;
+      if (inst.type === 'coaching') {
+        typeBadge = `<span class="badge bg-warning-100 text-warning-700 text-xs px-8 py-4 radius-4 fw-bold"><i class="ri-focus-2-line me-1"></i>COACHING</span>`;
+      } else if (inst.type === 'school') {
+        typeBadge = `<span class="badge bg-info-100 text-info-700 text-xs px-8 py-4 radius-4 fw-bold"><i class="ri-building-line me-1"></i>SCHOOL</span>`;
+      } else if (inst.type === 'college') {
+        typeBadge = `<span class="badge bg-purple-100 text-purple-700 text-xs px-8 py-4 radius-4 fw-bold"><i class="ri-graduation-cap-line me-1"></i>COLLEGE</span>`;
+      }
+
+      tbody.append(`
+        <tr>
+          <td><span class="text-secondary-light fw-medium">${inst.id}</span></td>
+          <td>
+            <h6 class="text-md mb-0 fw-semibold text-neutral-800">${inst.name}</h6>
+            <span class="text-xs text-secondary-light">Added by: ${inst.created_by ? inst.created_by.name : 'Admin'}</span>
+          </td>
+          <td>${typeBadge}</td>
+          <td><span class="text-sm text-neutral-700">${inst.board_affiliation || '-'}</span></td>
+          <td>${inst.city}</td>
+          <td>${inst.state}</td>
+          <td><span class="px-16 py-4 radius-4 fw-medium text-sm ${badgeClass}">${inst.status.toUpperCase()}</span></td>
+          <td class="text-center">
+            <div class="d-flex align-items-center justify-content-center gap-8">
+              <a href="/admin-panel/institution-details/?id=${inst.id}" class="btn btn-sm btn-outline-neutral-300 text-secondary-light px-8 py-4 radius-8" title="View Details">
+                <i class="ri-eye-line text-md"></i>
+              </a>
+              <a href="/admin-panel/edit-institution/?id=${inst.id}" class="btn btn-sm btn-outline-primary-600 text-primary-600 px-8 py-4 radius-8" title="Edit">
+                <i class="ri-edit-2-line text-md"></i>
+              </a>
+              <button class="btn btn-sm btn-outline-danger px-8 py-4 radius-8 delete-inst-btn" data-id="${inst.id}" title="Delete">
+                <i class="ri-delete-bin-line text-md"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `);
+    });
+
+    const page = data.page;
+    const pageSize = data.page_size;
+    const count = data.count;
+    const startEntry = (page - 1) * pageSize + 1;
+    const endEntry = Math.min(page * pageSize, count);
+    $('#tableInfoSpan').text(`Showing ${startEntry} to ${endEntry} of ${count} entries`);
+  }
+
+  function renderPagination(data) {
+    const nav = $('#paginationNav');
+    const ul = $('#paginationUl');
+    ul.empty();
+
+    if (data.total_pages <= 1) {
+      nav.addClass('d-none');
+      return;
+    }
+
+    nav.removeClass('d-none');
+
+    // Prev Button
+    const prevDisabled = data.page === 1 ? 'disabled' : '';
+    ul.append(`
+      <li class="page-item ${prevDisabled}">
+        <button class="page-link py-6 px-12" data-page="${data.page - 1}" ${prevDisabled}>Previous</button>
+      </li>
+    `);
+
+    // Page numbers
+    for (let i = 1; i <= data.total_pages; i++) {
+      const activeClass = i === data.page ? 'active' : '';
+      ul.append(`
+        <li class="page-item ${activeClass}">
+          <button class="page-link py-6 px-12" data-page="${i}">${i}</button>
+        </li>
+      `);
+    }
+
+    // Next Button
+    const nextDisabled = data.page === data.total_pages ? 'disabled' : '';
+    ul.append(`
+      <li class="page-item ${nextDisabled}">
+        <button class="page-link py-6 px-12" data-page="${data.page + 1}" ${nextDisabled}>Next</button>
+      </li>
+    `);
+  }
+
+  // Filter triggers
+  $('#typeFilter, #statusFilter, #pageSizeSelect').on('change', function() {
+    currentPage = 1;
+    fetchInstitutions();
+  });
+
+  $('#cityFilter, #searchQuery').on('keyup', function() {
+    currentPage = 1;
+    fetchInstitutions();
+  });
+
+  $('#clearFiltersBtn').on('click', function() {
+    $('#typeFilter').val('');
+    $('#statusFilter').val('');
+    $('#cityFilter').val('');
+    $('#searchQuery').val('');
+    currentFilters = {
+      type: '',
+      status: '',
+      city: '',
+      q: '',
+      page_size: $('#pageSizeSelect').val()
+    };
+    currentPage = 1;
+    fetchInstitutions();
+  });
+
+  $(document).on('click', '#paginationUl .page-link', function(e) {
+    e.preventDefault();
+    const page = $(this).data('page');
+    if (page) {
+      currentPage = page;
+      fetchInstitutions();
+    }
+  });
+
+  // Delete Action with Modern SweetAlert2 UI
+  $(document).on('click', '.delete-inst-btn', function() {
+    const instId = $(this).data('id');
+    const token = typeof getCsrfToken === 'function' ? getCsrfToken() : $('[name=csrfmiddlewaretoken]').val();
+
+    Swal.fire({
+      title: 'Delete Institution?',
+      text: 'Are you sure you want to delete this institution? This will fail if there are active dependent records.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: '<i class="ri-delete-bin-line me-1"></i> Yes, Delete',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        popup: 'radius-16 border-0 shadow-lg',
+        confirmButton: 'btn btn-danger radius-8 px-20 py-8 text-sm fw-medium me-2',
+        cancelButton: 'btn btn-secondary radius-8 px-20 py-8 text-sm fw-medium'
+      },
+      buttonsStyling: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `/api/institutions/${instId}/`,
+          type: 'DELETE',
+          headers: { 'X-CSRFToken': token },
+          xhrFields: { withCredentials: true },
+          success: function(res) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Deleted Successfully!',
+              text: 'The institution record has been permanently removed.',
+              timer: 1800,
+              showConfirmButton: false
+            });
+            fetchInstitutions();
+          },
+          error: function(err) {
+            let msg = 'Failed to delete institution. Only admin staff can delete institutions without active linked dependencies.';
+            if (err.responseJSON && err.responseJSON.detail) {
+              msg = err.responseJSON.detail;
+            } else if (err.responseJSON && err.responseJSON.error) {
+              msg = err.responseJSON.error;
+            }
+            Swal.fire({
+              icon: 'error',
+              title: 'Deletion Blocked',
+              text: msg,
+              customClass: {
+                popup: 'radius-16 border-0 shadow-lg',
+                confirmButton: 'btn btn-primary-600 radius-8 px-20 py-8 text-sm fw-medium'
+              },
+              buttonsStyling: false
+            });
+          }
+        });
+      }
+    });
+  });
+
+  // ---- Import CSV ----
+  const importModal = new bootstrap.Modal(document.getElementById('importCsvModal'));
+  let selectedCsvFile = null;
+
+  $('#importInstitutionsCsvBtn').on('click', function () {
+    // Reset state
+    selectedCsvFile = null;
+    $('#csvFileName').text('');
+    $('#csvFileInput').val('');
+    $('#submitImportCsvBtn').prop('disabled', true);
+    $('#importResultArea').hide().html('');
+    $('#importProgressWrap').hide();
+    resetDropZone();
+    importModal.show();
+  });
+
+  function resetDropZone() {
+    const dz = document.getElementById('csvDropZone');
+    dz.style.borderColor = '#94a3b8';
+    dz.style.background  = '#f8fafc';
+  }
+
+  // Download sample CSV
+  $('#downloadSampleCsv').on('click', function (e) {
+    e.preventDefault();
+    const sampleData = [
+      'name,type,board_affiliation,phone,city,state,address,status',
+      'Sunrise Coaching Institute,coaching,IIT JEE,9876543210,Delhi,Uttar Pradesh,123 Main Road,active',
+      'Green Valley School,school,CBSE,8765432109,Mumbai,Maharashtra,456 Park Avenue,pending',
+      'City College,college,University of Delhi,7654321098,Delhi,Delhi,789 College Lane,active'
+    ].join('\n');
+    const blob = new Blob([sampleData], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'institutions_sample.csv';
+    a.click();
+  });
+
+  // Drag & drop
+  const dropZone = document.getElementById('csvDropZone');
+  dropZone.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    this.style.borderColor = '#0ea5e9';
+    this.style.background  = '#e0f2fe';
+  });
+  dropZone.addEventListener('dragleave', function () { resetDropZone(); });
+  dropZone.addEventListener('drop', function (e) {
+    e.preventDefault();
+    resetDropZone();
+    const files = e.dataTransfer.files;
+    if (files.length) handleFileSelect(files[0]);
+  });
+  dropZone.addEventListener('click', function (e) {
+    if (e.target.tagName !== 'LABEL' && e.target.tagName !== 'INPUT') {
+      document.getElementById('csvFileInput').click();
+    }
+  });
+  document.getElementById('csvFileInput').addEventListener('change', function () {
+    if (this.files.length) handleFileSelect(this.files[0]);
+  });
+
+  function handleFileSelect(file) {
+    if (!file.name.toLowerCase().endsWith('.csv')) {
+      Swal.fire({ icon: 'warning', title: 'Invalid File', text: 'Only .csv files are accepted.', timer: 2000, showConfirmButton: false });
+      return;
+    }
+    selectedCsvFile = file;
+    $('#csvFileName').html(`<i class="ri-file-text-line me-1"></i><strong>${file.name}</strong> (${(file.size/1024).toFixed(1)} KB)`);
+    $('#submitImportCsvBtn').prop('disabled', false);
+    dropZone.style.borderColor = '#22c55e';
+    dropZone.style.background  = '#f0fdf4';
+  }
+
+  // Submit
+  $('#submitImportCsvBtn').on('click', function () {
+    if (!selectedCsvFile) return;
+
+    const formData = new FormData();
+    formData.append('csv_file', selectedCsvFile);
+
+    $('#importProgressWrap').show();
+    $('#submitImportCsvBtn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Importing…');
+    $('#importResultArea').hide().html('');
+
+    $.ajax({
+      url: '/api/institutions/import-csv/',
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      headers: { 'X-CSRFToken': token },
+      xhrFields: { withCredentials: true },
+      success: function (res) {
+        $('#importProgressWrap').hide();
+        $('#submitImportCsvBtn').html('<i class="ri-upload-2-line me-1"></i>Import Now');
+
+        let html = `<div class="alert radius-8 mb-12" style="background:#f0fdf4;border:1px solid #86efac;color:#166534;">
+          <strong><i class="ri-checkbox-circle-line me-1"></i>${res.message}</strong>
+          <div class="mt-4 text-sm">✅ Created: <strong>${res.created}</strong> &nbsp;|&nbsp; ⚠️ Skipped: <strong>${res.skipped}</strong></div>
+        </div>`;
+
+        if (res.row_errors && res.row_errors.length) {
+          html += `<div class="mt-8"><p class="fw-semibold text-sm mb-8 text-danger-main"><i class="ri-error-warning-line me-1"></i>Skipped Rows:</p>
+            <div style="max-height:180px;overflow-y:auto;">
+              <table class="table table-sm text-sm mb-0">
+                <thead><tr><th>Row</th><th>Name</th><th>Reason</th></tr></thead>
+                <tbody>`;
+          res.row_errors.forEach(function (e) {
+            html += `<tr><td>${e.row}</td><td>${e.name}</td><td class="text-danger-main">${e.errors.join('; ')}</td></tr>`;
+          });
+          html += '</tbody></table></div></div>';
+        }
+
+        $('#importResultArea').html(html).show();
+        if (res.created > 0) {
+          fetchInstitutions();
+          setTimeout(function () { importModal.hide(); }, 3500);
+        } else {
+          $('#submitImportCsvBtn').prop('disabled', false);
+        }
+      },
+      error: function (err) {
+        $('#importProgressWrap').hide();
+        $('#submitImportCsvBtn').prop('disabled', false).html('<i class="ri-upload-2-line me-1"></i>Import Now');
+        const msg = (err.responseJSON && (err.responseJSON.error || err.responseJSON.detail)) || 'Import failed. Please check your CSV and try again.';
+        $('#importResultArea').html(`<div class="alert radius-8" style="background:#fef2f2;border:1px solid #fca5a5;color:#991b1b;">
+          <i class="ri-close-circle-line me-1"></i><strong>Error:</strong> ${msg}</div>`).show();
+      }
+    });
+  });
+  // ---- /Import CSV ----
+
+  $('#exportInstitutionsCsvBtn').on('click', function () {
+    let csv = [];
+    let rows = document.querySelectorAll("table tr");
+    for (let i = 0; i < rows.length; i++) {
+      let row = [], cols = rows[i].querySelectorAll("td, th");
+      for (let j = 0; j < cols.length - 1; j++) {
+        let text = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""');
+        row.push('"' + text.trim() + '"');
+      }
+      csv.push(row.join(","));
+    }
+    let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+    let downloadLink = document.createElement("a");
+    downloadLink.download = `Institution_List_${new Date().toISOString().slice(0, 10)}.csv`;
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  });
+
+  fetchInstitutions();
+});
+</script>
+{% endblock %}

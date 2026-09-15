@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ member.name }} - {{ member.designation }} | EduAiQ Mentors{% endblock %}
+
+{% block description %}{{ member.bio|default:member.quote|truncatechars:160 }}{% endblock %}
+
+{% block content %}
+<section class="inner-banner-wrap">
+<div class="inner-baner-container" style="background-image: url({% static 'assets/img/blog-default-indian.jpg' %});">
+<div class="container">
+<div class="inner-banner-content">
+<h1 class="inner-title">{{ member.name }}</h1>
+<div class="breadcrumb-content">
+<ul class="breadcrumb">
+  <li><a href="/">Home</a></li>
+  <li><a href="/team/">Team</a></li>
+  <li>{{ member.name }}</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="team-detail-section">
+<div class="pattern-overlay zigzag-patten"></div>
+<div class="container">
+<div class="row">
+<div class="col-lg-5">
+<div class="author-img-wrapper">
+<figure class="team-fig">
+<img alt="{{ member.name }}" src="{{ member.photo_url }}"/>
+</figure>
+{% if member.quote %}
+<div class="auther-quote">
+<blockquote>
+<p>"{{ member.quote }}"</p>
+</blockquote>
+</div>
+{% endif %}
+</div>
+</div>
+<div class="col-lg-7">
+<div class="author-bio-date">
+<div class="pattern-overlay c-patten"></div>
+<div class="title-divider"></div>
+<h2 class="author-name">{{ member.name }}</h2>
+<h5 class="text-orange fw-bold mb-3" style="color: #ea580c;">{{ member.designation }}</h5>
+<div class="social-site-link">
+<ul>
+{% if member.facebook_url %}
+<li>
+<a href="{{ member.facebook_url }}" target="_blank">
+<i class="fab fa-facebook-f"></i>
+</a>
+</li>
+{% endif %}
+{% if member.twitter_url %}
+<li>
+<a href="{{ member.twitter_url }}" target="_blank">
+<i class="fab fa-twitter"></i>
+</a>
+</li>
+{% endif %}
+{% if member.whatsapp_url %}
+<li>
+<a href="{{ member.whatsapp_url }}" target="_blank">
+<i class="fab fa-whatsapp"></i>
+</a>
+</li>
+{% endif %}
+{% if member.linkedin_url %}
+<li>
+<a href="{{ member.linkedin_url }}" target="_blank">
+<i class="fab fa-linkedin-in"></i>
+</a>
+</li>
+{% endif %}
+{% if member.instagram_url %}
+<li>
+<a href="{{ member.instagram_url }}" target="_blank">
+<i class="fab fa-instagram"></i>
+</a>
+</li>
+{% endif %}
+</ul>
+</div>
+<div class="author-disc">
+{% if member.bio %}
+<p>{{ member.bio|linebreaks }}</p>
+{% else %}
+<p>{{ member.name }} is a dedicated educator and curriculum specialist at EduAiQ, guiding students through practical skill development and institutional excellence.</p>
+{% endif %}
+</div>
+
+{% if member.qualifications %}
+<div class="qualification">
+<h4 class="qualification-title">Qualification & Background:</h4>
+<div class="qualification-content" style="white-space: pre-line; line-height: 1.8;">
+{{ member.qualifications }}
+</div>
+</div>
+{% endif %}
+</div>
+</div>
+</div>
+
+{% if member.experiences %}
+<div class="experience-info mt-5">
+<h4 class="experience-heading">Experience & Achievements:</h4>
+<div style="white-space: pre-line; line-height: 1.8;">
+{{ member.experiences }}
+</div>
+</div>
+{% endif %}
+
+<!-- Other Team Mentors -->
+{% if other_members %}
+<style>
+  .mentor-card-link {
+    text-decoration: none !important;
+    display: block;
+  }
+  .mentor-card {
+    transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: 1px solid #e5e7eb;
+    background-color: #ffffff;
+  }
+  .mentor-card-link:hover .mentor-card {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08) !important;
+    border-color: #cbd5e1;
+  }
+</style>
+<div class="other-mentors-wrap mt-5 pt-4 border-top">
+<h4 class="mb-4">Meet Other EduAiQ Mentors</h4>
+<div class="row">
+{% for om in other_members %}
+<div class="col-sm-6 col-md-3 p-2">
+  <a href="/team/{{ om.slug }}/" class="mentor-card-link h-100">
+    <div class="card p-3 text-center radius-12 shadow-sm h-100 mentor-card">
+      <img src="{{ om.photo_url }}" alt="{{ om.name }}" class="rounded-circle mx-auto mb-3" style="width: 72px; height: 72px; object-fit: cover;">
+      <h6 class="mb-1 text-dark">{{ om.name }}</h6>
+      <span class="text-xs text-muted">{{ om.designation }}</span>
+    </div>
+  </a>
+</div>
+{% endfor %}
+</div>
+</div>
+{% endif %}
+
+</div>
+</section>
+{% endblock %}

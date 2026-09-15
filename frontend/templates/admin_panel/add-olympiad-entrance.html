@@ -1,0 +1,97 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}{% if exam %}Edit{% else %}Create{% endif %} Olympiad Entrance Exam - EduDash Admin{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h6 class="fw-semibold mb-0">{% if exam %}Edit Entrance Exam{% else %}Create New Entrance Exam{% endif %}</h6>
+    <div class="text-sm mt-1">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="{% url 'admin_olympiad_entrance_list' %}">/ Olympiad Entrance</a>
+      <span class="text-secondary-light">/ {% if exam %}Edit{% else %}Create{% endif %}</span>
+    </div>
+  </div>
+  <a href="{% url 'admin_olympiad_entrance_list' %}" class="btn btn-outline-secondary radius-8 d-flex align-items-center gap-2">
+    <i class="ri-arrow-left-line"></i> Back to List
+  </a>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card radius-12 border border-neutral-200 shadow-1">
+      <div class="card-header p-24 bg-white border-bottom border-neutral-200">
+        <h6 class="mb-0 fw-bold text-lg">
+          <i class="ri-edit-box-line text-primary me-2"></i> Entrance Examination Details
+        </h6>
+      </div>
+
+      <div class="card-body p-24">
+        <form method="post">
+          {% csrf_token %}
+
+          <div class="mb-20">
+            <label class="form-label fw-bold text-neutral-900">Exam Title / Name <span class="text-danger">*</span></label>
+            <input type="text" name="name" class="form-control radius-8" placeholder="e.g. EduAiQ National Olympiad Entrance Exam 2026" value="{{ exam.name|default:'' }}" required>
+          </div>
+
+          <div class="row gy-3 mb-20">
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-neutral-900">Exam Level</label>
+              <select name="level" class="form-select radius-8">
+                <option value="school" {% if exam.level == 'school' %}selected{% endif %}>School Level</option>
+                <option value="zonal" {% if exam.level == 'zonal' %}selected{% endif %}>Zonal Level</option>
+                <option value="national" {% if exam.level == 'national' %}selected{% endif %}>National Level</option>
+                <option value="international" {% if exam.level == 'international' %}selected{% endif %}>International Level</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-neutral-900">Target Class Group</label>
+              <input type="text" name="class_group" class="form-control radius-8" placeholder="e.g. Class 6-10 or Class 11-12" value="{{ exam.class_group|default:'Class 6-10' }}" required>
+            </div>
+          </div>
+
+          <div class="row gy-3 mb-20">
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-neutral-900">Exam Duration (Minutes)</label>
+              <input type="number" name="exam_duration_minutes" class="form-control radius-8" value="{{ exam.exam_duration_minutes|default:45 }}" min="5" max="300" required>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-neutral-900">Entrance Fee (₹)</label>
+              <input type="number" step="0.01" name="fee" class="form-control radius-8" value="{{ exam.fee|default:0 }}" required>
+              <small class="text-neutral-500">Set 0 for Free Enrollment</small>
+            </div>
+          </div>
+
+          <div class="mb-20">
+            <label class="form-label fw-bold text-neutral-900">Result Publication Policy</label>
+            <select name="result_display_mode" class="form-select radius-8">
+              {% for mode_val, mode_label in result_modes %}
+                <option value="{{ mode_val }}" {% if exam.result_display_mode == mode_val %}selected{% endif %}>{{ mode_label }}</option>
+              {% endfor %}
+            </select>
+            <small class="text-neutral-500 d-block mt-1">Controls when candidates can view their scorecards after submission.</small>
+          </div>
+
+          <div class="form-check form-switch mb-24">
+            <input class="form-check-input" type="checkbox" name="is_active" id="is_active" {% if exam %}{% if exam.is_active %}checked{% endif %}{% else %}checked{% endif %}>
+            <label class="form-check-input-label fw-bold text-neutral-900" for="is_active">
+              Active for Candidate Enrollment
+            </label>
+          </div>
+
+          <div class="d-flex justify-content-end gap-3 pt-24 border-top">
+            <a href="{% url 'admin_olympiad_entrance_list' %}" class="btn btn-outline-secondary radius-8 px-24">Cancel</a>
+            <button type="submit" class="btn btn-primary-600 radius-8 px-24 font-weight-bold">
+              <i class="ri-save-line me-1"></i> {% if exam %}Update Exam{% else %}Create Exam{% endif %}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

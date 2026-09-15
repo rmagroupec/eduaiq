@@ -1,0 +1,2691 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}EduAiQ - AI-Powered Education & Skill Development Courses in India{% endblock %}
+
+{% block description %}EduAiQ helps students, working professionals & institutions master in-demand skill development
+courses in India with AI-driven online courses, e-books & practical training. Start learning today.{% endblock %}
+
+{% block css %}
+<style>
+  /* ═══════════════════════════════════════════════
+     VISION / MISSION / COMMITMENT STRIP
+  ═══════════════════════════════════════════════ */
+  .eduaiq-vmc-strip {
+    background: linear-gradient(135deg, #0a1128 0%, #0F172A 60%, #1a1f3a 100%);
+    padding: 40px 0;
+  }
+
+  .vmc-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 24px 30px;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .vmc-item:last-child {
+    border-right: none;
+  }
+
+  .vmc-center {
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .vmc-icon {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    background: linear-gradient(135deg, #fd7e14, #ea580c);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 20px;
+    box-shadow: 0 6px 18px rgba(253, 126, 20, 0.35);
+    flex-shrink: 0;
+  }
+
+  .vmc-text h6 {
+    color: #fd7e14;
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .vmc-text p {
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* ═══════════════════════════════════════════════
+     CORE FOCUS AREAS SECTION
+  ═══════════════════════════════════════════════ */
+  .eduaiq-focus-section {
+    background: #f8fafc;
+    padding: 70px 0;
+  }
+
+  .focus-main-heading {
+    font-size: 32px;
+    font-weight: 900;
+    color: #0F172A;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .focus-subheading {
+    color: #64748b;
+    font-size: 15px;
+  }
+
+  .focus-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .focus-card {
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: default;
+  }
+
+  .focus-card:hover {
+    border-color: #fd7e14;
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(253, 126, 20, 0.15);
+  }
+
+  .focus-icon-wrap {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, #0F172A, #1E293B);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fd7e14;
+    font-size: 22px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .focus-card:hover .focus-icon-wrap {
+    background: linear-gradient(135deg, #fd7e14, #ea580c);
+    color: #fff;
+  }
+
+  .focus-card span {
+    font-size: 10.5px;
+    font-weight: 800;
+    color: #0F172A;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  /* Right box */
+  .focus-right-box {
+    background: linear-gradient(135deg, #0a1128, #0F172A);
+    border-radius: 20px;
+    padding: 36px 32px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.2);
+  }
+
+  .focus-tagline {
+    font-size: 28px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.25;
+    margin-bottom: 0;
+  }
+
+  .focus-tagline span {
+    color: #fd7e14;
+  }
+
+  .focus-tagline em {
+    font-style: normal;
+    color: #fbbf24;
+  }
+
+  .focus-pillars {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pillar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+
+  .pillar-icon {
+    width: 34px;
+    height: 34px;
+    background: rgba(253, 126, 20, 0.2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fd7e14;
+    font-size: 15px;
+  }
+
+  .pillar-item span {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 13.5px;
+    font-weight: 600;
+  }
+
+  .focus-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, #fd7e14, #ea580c);
+    color: #fff;
+    font-weight: 800;
+    font-size: 14px;
+    padding: 12px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(253, 126, 20, 0.35);
+    transition: all 0.3s ease;
+    width: fit-content;
+  }
+
+  .focus-cta-btn:hover {
+    background: #fff;
+    color: #0F172A;
+    box-shadow: 0 8px 24px rgba(253, 126, 20, 0.2);
+  }
+
+  /* ═══════════════════════════════════════════════
+     STATS SECTION
+  ═══════════════════════════════════════════════ */
+  .eduaiq-stats-section {
+    background: linear-gradient(135deg, #0F172A 0%, #1a1f3a 100%);
+    padding: 60px 0;
+  }
+
+  .stats-inner {
+    border: 1px solid rgba(253, 126, 20, 0.25);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .stat-item {
+    padding: 36px 20px;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    transition: background 0.3s ease;
+  }
+
+  .stat-item:last-child {
+    border-right: none;
+  }
+
+  .stat-item:hover {
+    background: rgba(253, 126, 20, 0.07);
+  }
+
+  .stat-icon {
+    font-size: 28px;
+    color: #fd7e14;
+    margin-bottom: 10px;
+  }
+
+  .stat-number {
+    font-size: 42px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+    display: inline-block;
+  }
+
+  .stat-plus {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fd7e14;
+    display: inline-block;
+    vertical-align: super;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+    font-weight: 600;
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ═══════════════════════════════════════════════
+     VALUES / LEARN-COMPETE STRIP
+  ═══════════════════════════════════════════════ */
+  .eduaiq-values-strip {
+    background: #fff;
+    padding: 50px 0;
+    border-top: 3px solid #fd7e14;
+  }
+
+  .values-headline {
+    font-size: 26px;
+    font-weight: 900;
+    color: #0F172A;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .values-headline span {
+    color: #fd7e14;
+  }
+
+  .values-sub {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 600;
+    letter-spacing: 2px;
+  }
+
+  .value-pill {
+    background: #f1f5f9;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 50px;
+    padding: 12px 16px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #0F172A;
+    text-align: center;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .value-pill i {
+    color: #fd7e14;
+  }
+
+  .value-pill:hover {
+    background: #0F172A;
+    color: #fd7e14;
+    border-color: #fd7e14;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
+  }
+
+  .value-pill:hover i {
+    color: #fd7e14;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .focus-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .vmc-item {
+      border-right: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .stat-number {
+      font-size: 30px;
+    }
+
+    .focus-tagline {
+      font-size: 22px;
+    }
+  }
+
+  .post {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .post:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(102, 126, 234, 0.15);
+    border-color: #667eea;
+  }
+
+  .feature-image {
+    position: relative;
+    overflow: hidden;
+    height: 220px;
+    margin: 0;
+  }
+
+  .feature-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .post:hover .feature-image img {
+    transform: scale(1.05);
+  }
+
+  .cat-meta {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    display: inline-block !important;
+    z-index: 1 !important;
+  }
+
+  .cat-meta a {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    font-weight: 800 !important;
+    padding: 7px 18px !important;
+    border-radius: 50px !important;
+    font-size: 11.5px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35) !important;
+    display: inline-block !important;
+    text-decoration: none !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .cat-meta a:hover {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.3) !important;
+    transform: translateY(-2px) !important;
+  }
+
+  .entry-content {
+    padding: 24px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .entry-content h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    color: #1a202c;
+  }
+
+  .entry-content h4 a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .entry-content h4 a:hover {
+    color: #667eea;
+  }
+
+  .entry-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+  }
+
+  .entry-meta a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #667eea;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.2s;
+    background: rgba(102, 126, 234, 0.08);
+    padding: 8px 18px;
+    border-radius: 30px;
+    letter-spacing: 0.5px;
+  }
+
+  .entry-meta a:hover {
+    background: rgba(102, 126, 234, 0.15);
+    color: #5568d3;
+    transform: translateX(2px);
+  }
+
+  /* ==========================================================================
+     Professional Category Section & Hover Effects
+     ========================================================================== */
+  .home-service.category-section-pro {
+    position: relative;
+    margin: 30px 0 10px 0 !important;
+    padding: 35px 0 20px 0 !important;
+    background: linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%);
+  }
+
+  .category-main-heading {
+    font-size: 30px;
+    font-weight: 800;
+    color: #1a202c;
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+  }
+
+  .category-subheading {
+    font-size: 14px;
+    color: #718096;
+    margin-bottom: 0;
+  }
+
+  .category-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+  }
+
+  .category-card-pro {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1.5px solid #ffedd5;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .category-card-pro::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #fd7e14 0%, #ea580c 100%) !important;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .category-card-link {
+    text-decoration: none !important;
+    color: inherit;
+    display: block;
+    height: 100%;
+  }
+
+  .category-card-body {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .category-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff !important;
+    font-size: 20px;
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35) !important;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .category-card-info {
+    flex-grow: 1;
+  }
+
+  .category-card-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 4px;
+    line-height: 1.3;
+    transition: color 0.3s ease;
+  }
+
+  .category-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #ea580c !important;
+    background: #fff7ed !important;
+    border: 1px solid #ffedd5 !important;
+    padding: 3px 10px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+  }
+
+  .category-arrow-btn {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    border-radius: 50%;
+    background: #0F172A !important;
+    border: 1.5px solid #fd7e14 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fd7e14 !important;
+    font-size: 12px;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Hover Effects */
+  .category-card-pro:hover {
+    transform: translateY(-6px);
+    border-color: #fd7e14 !important;
+    box-shadow: 0 16px 36px rgba(249, 115, 22, 0.2) !important;
+  }
+
+  .category-card-pro:hover::before {
+    opacity: 1;
+  }
+
+  .category-card-pro:hover .category-icon-wrapper {
+    transform: scale(1.12) rotate(4deg);
+    box-shadow: 0 10px 24px rgba(249, 115, 22, 0.5) !important;
+  }
+
+  .category-card-pro:hover .category-card-title {
+    color: #ea580c !important;
+  }
+
+  .category-card-pro:hover .category-badge-pill {
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border-color: #ea580c !important;
+  }
+
+  .category-card-pro:hover .category-arrow-btn {
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border-color: #ea580c !important;
+    transform: scale(1.12) translateX(2px) !important;
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.4) !important;
+  }
+
+  .course-form-pro {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 32px 28px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+  }
+
+  .course-form-pro h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1a202c;
+    margin-bottom: 20px;
+  }
+
+  .form-control-pro {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    font-size: 14px;
+    transition: all 0.3s ease;
+  }
+
+  .form-control-pro:focus {
+    outline: none;
+    background: #ffffff;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  }
+
+  /* ==========================================================================
+     Ultra-Attractive Course Card UI & Dynamic Hover Transitions
+     ========================================================================== */
+  .home-course-section {
+    padding: 25px 0 50px 0 !important;
+    margin: 0 !important;
+    background: linear-gradient(180deg, #edf2f7 0%, #ffffff 100%);
+  }
+
+  .home-course-section .row.mb-5 {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .course-card-pro {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid rgba(226, 232, 240, 0.85);
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Top Accent Gradient Bar on Hover -> Logo Yellow to Navy */
+  .course-card-pro::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0%;
+    height: 4px;
+    background: linear-gradient(90deg, #fd7e14 0%, #fd7e14 50%, #0F172A 100%);
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 5;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .course-thumb-wrap {
+    position: relative;
+    height: 215px;
+    width: 100%;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  }
+
+  .course-thumb-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+  }
+
+  /* Gradient Overlay at Bottom of Image */
+  .course-thumb-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 40%, rgba(15, 23, 42, 0.5) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Category Badge -> Midnight Navy Pill */
+  .course-cat-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: 30px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    z-index: 3;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Price Badge -> Golden Yellow Gradient matching logo "AiQ" */
+  .course-price-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%);
+    color: #0F172A;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 6px 15px;
+    border-radius: 30px;
+    z-index: 3;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .course-card-body-pro {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  .course-meta-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 12px;
+  }
+
+  /* Level Badge -> Warm Amber Tint */
+  .course-level-badge {
+    background: #FFFBEB;
+    color: #fd7e14;
+    border: 1px solid #FDE68A;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .course-duration-text {
+    color: #64748b;
+    font-weight: 600;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* Systematic Course Title Typography */
+  .course-card-title-pro {
+    font-size: 17.5px;
+    font-weight: 800;
+    line-height: 1.35;
+    margin-bottom: 12px;
+    color: #0F172A;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 48px;
+    letter-spacing: -0.3px;
+  }
+
+  .course-card-title-pro a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .course-rating-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #e2e8f0;
+  }
+
+  .rating-stars {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #FFFBEB;
+    padding: 3px 10px;
+    border-radius: 10px;
+    border: 1px solid #FDE68A;
+  }
+
+  .rating-score {
+    font-weight: 800;
+    font-size: 13px;
+    color: #fd7e14;
+  }
+
+  .student-count {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .course-instructor-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  /* Instructor Avatar -> Midnight Navy */
+  .instructor-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
+    transition: transform 0.3s ease;
+  }
+
+  .instructor-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+  }
+
+  .course-card-footer-pro {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  /* Explore Course Button -> Logo Midnight Navy Base & Golden Yellow Hover */
+  .btn-enroll-pro {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 800;
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    padding: 10px 22px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.25) !important;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-enroll-pro i {
+    transition: transform 0.3s ease;
+  }
+
+  /* Highly Attractive Hover States */
+  .course-card-pro:hover {
+    transform: translateY(-8px) scale(1.012);
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12), 0 8px 15px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .course-card-pro:hover::before {
+    width: 100%;
+  }
+
+  .course-card-pro:hover .course-thumb-wrap img {
+    transform: scale(1.08) rotate(0.5deg);
+    filter: brightness(1.05);
+  }
+
+  .course-card-pro:hover .course-price-badge {
+    transform: scale(1.08);
+    box-shadow: 0 6px 18px rgba(245, 158, 11, 0.5);
+  }
+
+  .course-card-pro:hover .course-card-title-pro a {
+    color: #fd7e14;
+  }
+
+  .course-card-pro:hover .instructor-avatar {
+    transform: scale(1.08) rotate(5deg);
+  }
+
+  /* Explore Course Button Hover State -> Vibrant Golden Yellow */
+  .course-card-pro:hover .btn-enroll-pro {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    box-shadow: 0 8px 22px rgba(245, 158, 11, 0.45) !important;
+    transform: translateY(-2px);
+  }
+
+  /* ==========================================================================
+     EduAiQ Hero Section Brand Palette (Midnight Dark Navy & Golden Yellow)
+     ========================================================================== */
+  .home-banner {
+    background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #0F172A 100%) !important;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .home-banner::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .home-banner::after {
+    content: '';
+    position: absolute;
+    bottom: -20%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .home-banner .banner-pretitle {
+    color: #fd7e14 !important;
+    font-weight: 800 !important;
+    letter-spacing: 1px !important;
+    font-size: 13.5px !important;
+  }
+
+  .home-banner .banner-content .banner-title h1 {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+  }
+
+  .home-banner .highlight-yellow {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .home-banner .banner-content .banner-text p {
+    color: #E2E8F0 !important;
+    font-size: 15.5px !important;
+  }
+
+  /* Hero Section Button -> Golden Yellow Gradient matching EduAiQ logo */
+  .home-banner .banner-button .button-round-secondary {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    border: none !important;
+    font-weight: 800 !important;
+    border-radius: 50px !important;
+    padding: 14px 36px !important;
+    font-size: 14px !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    display: inline-block !important;
+    text-decoration: none !important;
+  }
+
+  .home-banner .banner-button .button-round-secondary:hover {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(245, 158, 11, 0.6) !important;
+  }
+
+  /* ==========================================================================
+     EduAiQ About Us & Category Sections Brand Palette (Navy & Golden Yellow)
+     ========================================================================== */
+
+  /* Progress Bars Styling */
+  .home-about-us .skill-container .ab-progress,
+  .home-about-us .progress-wrapper .ab-progress {
+    background: #F1F5F9 !important;
+    border-radius: 50px !important;
+    height: 8px !important;
+    overflow: hidden !important;
+  }
+
+  .home-about-us .ab-progress .ab-progress-bar,
+  .home-about-us .skill-container .ab-progress-bar,
+  .home-about-us .progress-bar {
+    background: linear-gradient(90deg, #0F172A 0%, #fd7e14 100%) !important;
+    border-radius: 50px !important;
+    height: 8px !important;
+  }
+
+  .home-about-us .skill-titile {
+    color: #0F172A !important;
+    font-weight: 700 !important;
+  }
+
+  /* Qualification Feature Icons */
+  .home-about-us .qualifaction-icon i {
+    color: #fd7e14 !important;
+  }
+
+  .home-about-us .qualifaction-title h5 {
+    color: #0F172A !important;
+    font-weight: 800 !important;
+  }
+
+  .home-about-us .about-title {
+    color: #fd7e14 !important;
+  }
+
+  /* MORE ABOUT US Button -> Yellow Base & Navy Hover */
+  .home-about-us .about-btn .button-round-secondary {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    border: none !important;
+    font-weight: 800 !important;
+    border-radius: 50px !important;
+    padding: 12px 32px !important;
+    font-size: 13.5px !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    display: inline-block !important;
+    text-decoration: none !important;
+  }
+
+  .home-about-us .about-btn .button-round-secondary:hover {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.3) !important;
+  }
+
+  /* MORE CATEGORIES Button -> Navy Base & Yellow Hover */
+  .category-section-pro .button-round-primary {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 800 !important;
+    border-radius: 50px !important;
+    padding: 12px 28px !important;
+    font-size: 13.5px !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.25) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    display: inline-block !important;
+    text-decoration: none !important;
+  }
+
+  .category-section-pro .button-round-primary:hover {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(245, 158, 11, 0.45) !important;
+  }
+
+  /* BOOK SEAT Button -> Yellow Base & Navy Hover */
+  .course-form-pro .button-round-secondary {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    border: none !important;
+    font-weight: 800 !important;
+    border-radius: 50px !important;
+    padding: 12px 28px !important;
+    font-size: 14px !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    cursor: pointer;
+  }
+
+  .course-form-pro .button-round-secondary:hover {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.3) !important;
+  }
+
+  /* Form Container */
+  .course-form-pro {
+    border-radius: 24px !important;
+    border: 1px solid #E2E8F0 !important;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06) !important;
+  }
+
+  .course-form-pro h3 {
+    color: #0F172A !important;
+    font-weight: 800 !important;
+  }
+
+  /* ==========================================================================
+     EduAiQ Global Homepage Brand Palette Overrides (Navy & Golden Yellow)
+     ========================================================================== */
+
+  /* 1. Global Buttons (Primary Navy / Secondary Golden Yellow) */
+  .button-round-primary,
+  .button-primary {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 800 !important;
+    border-radius: 50px !important;
+    padding: 12px 30px !important;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.25) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+  }
+
+  .button-round-primary:hover,
+  .button-primary:hover {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.45) !important;
+  }
+
+  .button-round-secondary,
+  .button-secondary {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    border: none !important;
+    font-weight: 800 !important;
+    border-radius: 50px !important;
+    padding: 12px 30px !important;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35) !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+  }
+
+  .button-round-secondary:hover,
+  .button-secondary:hover {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.35) !important;
+  }
+
+  /* 2. Limitless Learning Banner Section (.home-banner-2 / .home-progress-section) */
+  .home-banner-2,
+  .home-progress-section,
+  .home-banner.home-banner-2 {
+    background-color: #0a1128 !important;
+    background-image: none !important;
+  }
+
+  .home-banner-2 .banner-content ul li i,
+  .home-progress-section ul li i,
+  .home-banner-2 i.fa-check {
+    color: #f97316 !important;
+  }
+
+  /* 3. Our Best Features Section (.home-feature / .feature-item) */
+  .home-feature .feature-icon,
+  .home-service .service-icon,
+  .feature-icon-wrap i {
+    color: #fd7e14 !important;
+  }
+
+  .feature-item:hover .feature-icon,
+  .service-item:hover .service-icon {
+    transform: scale(1.1) rotate(5deg);
+    color: #fd7e14 !important;
+  }
+
+  /* 4. Meet Our Best Teachers Section (.home-team / .team-item) */
+  .home-team .team-item .team-designation,
+  .team-content .team-designation {
+    color: #fd7e14 !important;
+    font-weight: 700 !important;
+  }
+
+  .team-social-links a,
+  .team-item .social-links a {
+    background: #0F172A !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .team-social-links a:hover,
+  .team-item .social-links a:hover {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    transform: translateY(-2px);
+  }
+
+  /* 5. Video Play Button & Result Banner (.video-play-btn / .home-testimonial) */
+  .video-play-btn,
+  .video-button a {
+    background: linear-gradient(135deg, #fd7e14 0%, #fd7e14 100%) !important;
+    color: #0F172A !important;
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.45) !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .video-play-btn:hover,
+  .video-button a:hover {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    transform: scale(1.1);
+  }
+
+  /* 6. Counter / Stats Section (.home-counter / .counter-section) */
+  .home-counter,
+  .counter-section {
+    background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #0F172A 100%) !important;
+  }
+
+  .home-counter .counter-title,
+  .counter-item .counter-title,
+  .counter-item p {
+    color: #fd7e14 !important;
+    font-weight: 700 !important;
+  }
+
+  .home-counter .counter-number,
+  .counter-item .counter-number,
+  .counter-item h2,
+  .counter-item h3 {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+  }
+
+  /* ==========================================================================
+     EduAiQ Our Best Features Section (Midnight Navy & Golden Yellow Palette)
+     ========================================================================== */
+  /* ==========================================================================
+     EduAiQ Feature Section Overrides (Images & Clickable Cards)
+     ========================================================================== */
+  .home-feature-section .feature-wrapper .feature-type {
+    padding: 20px 20px 65px 20px !important;
+    border: 2px dashed rgba(249, 115, 22, 0.35) !important;
+    border-radius: 22px !important;
+    background: #ffffff !important;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .home-feature-section .feature-wrapper .feature-type:hover {
+    border-color: #fd7e14 !important;
+    transform: translateY(-8px) !important;
+    box-shadow: 0 18px 38px rgba(249, 115, 22, 0.16) !important;
+  }
+
+  .feature-img-wrapper {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .feature-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .home-feature-section .feature-wrapper .feature-type:hover .feature-card-img {
+    transform: scale(1.06);
+  }
+
+  .feature-img-wrapper .meta-no {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 15px;
+    border-radius: 50% !important;
+    border: 3px solid #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+    z-index: 5;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Headings & Descriptions */
+  .home-feature-section .feature-wrapper .feature-type .feature-heading {
+    color: #0F172A !important;
+    font-weight: 800 !important;
+    font-size: 19px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .home-feature-section .feature-wrapper .feature-type .feature-info {
+    color: #475569 !important;
+    font-size: 13.5px !important;
+    line-height: 1.6 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Bottom Circular Arrow Button */
+  .home-feature-section .feature-wrapper .feature-type .right-arrow-link i {
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #0F172A !important;
+    color: #fd7e14 !important;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25) !important;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .home-feature-section .feature-wrapper .feature-type:hover .right-arrow-link i {
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 10px 25px rgba(249, 115, 22, 0.5) !important;
+    transform: scale(1.12) !important;
+  }
+
+  /* ==========================================================================
+     EduAiQ Blog & News Section Brand Overrides (Navy & Golden Yellow Palette)
+     ========================================================================== */
+  .home-blog-section .blog-section-title {
+    color: #0F172A !important;
+    font-weight: 800 !important;
+  }
+
+  .home-blog-section .blog-section-info {
+    color: #475569 !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post {
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    border: 1px solid #E2E8F0 !important;
+    background: #ffffff !important;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06) !important;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post:hover {
+    border-color: #fd7e14 !important;
+    transform: translateY(-6px) !important;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12) !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post .feature-image {
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post .feature-image img {
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post:hover .feature-image img {
+    transform: scale(1.06) !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post .feature-image:before {
+    display: none !important;
+    content: none !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post .entry-content h4 a {
+    color: #0F172A !important;
+    font-weight: 800 !important;
+    transition: color 0.3s ease !important;
+    text-decoration: none !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post .entry-content h4 a:hover {
+    color: #fd7e14 !important;
+  }
+
+  .home-blog-section .inner-blog-wrap .post .entry-content .blog-info {
+    color: #64748B !important;
+    font-size: 14.5px !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Homepage Responsive Adjustments for Mobile & Tablets */
+  @media screen and (max-width: 991px) {
+    .home-banner {
+      padding: 40px 0 20px 0 !important;
+    }
+
+    .home-banner .banner-title h1 {
+      font-size: 2rem !important;
+    }
+
+    .home-banner .banner-text p {
+      font-size: 14px !important;
+    }
+
+    .home-course-section {
+      padding: 20px 0 40px 0 !important;
+    }
+
+    .course-card-pro {
+      margin-bottom: 20px;
+    }
+
+    .feature-wrapper {
+      flex-direction: column !important;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .home-banner .banner-title h1 {
+      font-size: 1.65rem !important;
+    }
+
+    .home-banner .banner-button .button-round-secondary {
+      padding: 11px 24px !important;
+      font-size: 13px !important;
+      width: 100% !important;
+      text-align: center !important;
+    }
+
+    .course-thumb-wrap {
+      height: 180px !important;
+    }
+
+    .entry-content {
+      padding: 16px !important;
+    }
+
+    .entry-content h4 {
+      font-size: 16px !important;
+    }
+
+    .cat-item-wrap {
+      margin-bottom: 16px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .home-banner .banner-pretitle {
+      font-size: 11px !important;
+    }
+
+    .home-banner .banner-title h1 {
+      font-size: 1.4rem !important;
+    }
+
+    .course-price h5 {
+      font-size: 1.2rem !important;
+    }
+
+    .entry-meta a {
+      padding: 7px 16px !important;
+      font-size: 12px !important;
+
+      /* Center Robot Image & Background Oval */
+      .home-banner .banner-right {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: flex-end !important;
+        text-align: center !important;
+      }
+
+      .home-banner .banner-right .banner-img {
+        position: relative !important;
+        width: 100% !important;
+        max-width: 480px !important;
+        margin: 0 auto !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
+      }
+
+      .home-banner .banner-right .banner-img img {
+        display: block !important;
+        margin: 25px auto 0 auto !important;
+        max-width: 100% !important;
+        height: auto !important;
+        max-height: 420px !important;
+        position: relative !important;
+        z-index: 2 !important;
+        object-fit: contain !important;
+      }
+
+      .home-banner .image-overlay-oval {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 1 !important;
+        background-position: center center !important;
+        background-size: contain !important;
+        background-repeat: no-repeat !important;
+      }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="home-banner d-flex align-items-end">
+  <div class="container">
+    <div class="row align-items-end">
+      <div class="banner-left col-md-6">
+        <div class="image-overlay pattern-overlay"></div>
+        <div class="banner-content">
+          <div class="title-divider"></div>
+          <p class="banner-pretitle">SMART LEARNING. BETTER OUTCOMES.</p>
+          <div class="banner-title">
+            <h1>Empowering Minds. <span class="highlight-yellow">Transforming Futures.</span></h1>
+          </div>
+          <div class="banner-text">
+            <p>An Innovative <strong style="color:#fd7e14;">AI-Powered</strong> Education Ecosystem — Building
+              future-ready students through
+              AI, Robotics, Digital Learning, Olympiads, and Skill Development Programs.</p>
+          </div>
+          <div class="banner-button">
+            <a class="button-round-secondary" href="{% url 'register' %}">REGISTER TO JOIN US</a>
+          </div>
+        </div>
+      </div>
+      <div class="banner-right col-md-6">
+        <figure class="banner-img">
+          <div class="image-overlay-oval pattern-overlay"></div>
+          <img alt="" src="{% static 'assets/img/educator-img33.png' %}" />
+        </figure>
+      </div>
+    </div>
+  </div>
+  <div class="overlay-image pattern-overlay"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     VISION / MISSION / COMMITMENT STRIP  (from company portfolio)
+════════════════════════════════════════════════════════════════ -->
+<section class="eduaiq-vmc-strip">
+  <div class="container">
+    <div class="row g-0">
+      <div class="col-md-4 vmc-item">
+        <div class="vmc-icon"><i class="fas fa-crosshairs"></i></div>
+        <div class="vmc-text">
+          <h6>OUR VISION</h6>
+          <p>To be the Global Leader in AI Powered Education.</p>
+        </div>
+      </div>
+      <div class="col-md-4 vmc-item vmc-center">
+        <div class="vmc-icon"><i class="fas fa-rocket"></i></div>
+        <div class="vmc-text">
+          <h6>OUR MISSION</h6>
+          <p>To empower learners with future-ready skills through innovation and technology.</p>
+        </div>
+      </div>
+      <div class="col-md-4 vmc-item">
+        <div class="vmc-icon"><i class="fas fa-shield-alt"></i></div>
+        <div class="vmc-text">
+          <h6>OUR COMMITMENT</h6>
+          <p>Quality Education &nbsp;|&nbsp; Ethical Innovation &nbsp;|&nbsp; Inclusive Growth</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     CORE FOCUS AREAS  (from company portfolio PDF)
+════════════════════════════════════════════════════════════════ -->
+<section class="eduaiq-focus-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="title-divider-center"></div>
+      <h2 class="focus-main-heading">OUR CORE FOCUS AREAS</h2>
+      <p class="focus-subheading">Building future-ready students through AI, Robotics & Digital Innovation</p>
+    </div>
+    <div class="row g-4">
+      <!-- Left: 9 focus cards -->
+      <div class="col-lg-7">
+        <div class="focus-grid">
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-brain"></i></div>
+            <span>AI EDUCATION</span>
+          </div>
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-robot"></i></div>
+            <span>ROBOTICS</span>
+          </div>
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-play-circle"></i></div>
+            <span>DIGITAL LEARNING</span>
+          </div>
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-lightbulb"></i></div>
+            <span>INNOVATION &amp; RESEARCH</span>
+          </div>
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-chart-line"></i></div>
+            <span>SKILL DEVELOPMENT</span>
+          </div>
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-user-graduate"></i></div>
+            <span>CAREER GUIDANCE</span>
+          </div>
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-trophy"></i></div>
+            <span>OLYMPIADS &amp; TALENT HUNT</span>
+          </div>
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-chalkboard-teacher"></i></div>
+            <span>TEACHER TRAINING</span>
+          </div>
+          <div class="focus-card">
+            <div class="focus-icon-wrap"><i class="fas fa-cogs"></i></div>
+            <span>DIGITAL SERVICES &amp; SOLUTIONS</span>
+          </div>
+        </div>
+      </div>
+      <!-- Right: tagline + pillars -->
+      <div class="col-lg-5 d-flex flex-column justify-content-center">
+        <div class="focus-right-box">
+          <h3 class="focus-tagline">LEARN TODAY.<br><span>INNOVATE TOMORROW.</span><br><em>LEAD FOREVER.</em></h3>
+          <div class="focus-pillars mt-4">
+            <div class="pillar-item">
+              <div class="pillar-icon"><i class="fas fa-graduation-cap"></i></div>
+              <span>For Classes 4<sup>th</sup> to 12<sup>th</sup></span>
+            </div>
+            <div class="pillar-item">
+              <div class="pillar-icon"><i class="fas fa-shield-alt"></i></div>
+              <span>Trusted by Schools &amp; Parents</span>
+            </div>
+            <div class="pillar-item">
+              <div class="pillar-icon"><i class="fas fa-globe"></i></div>
+              <span>Pan India Presence</span>
+            </div>
+          </div>
+          <a href="/about/" class="focus-cta-btn mt-4">Explore EduAiQ <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATS ROW  (from company portfolio PDF)
+════════════════════════════════════════════════════════════════ -->
+<section class="eduaiq-stats-section">
+  <div class="container">
+    <div class="stats-inner">
+      <div class="row g-0 text-center">
+        <div class="col-6 col-md-3 stat-item">
+          <div class="stat-icon"><i class="fas fa-flask"></i></div>
+          <div class="stat-number" data-target="5000">0</div>
+          <div class="stat-plus">+</div>
+          <div class="stat-label">AI &amp; Robotics Labs</div>
+        </div>
+        <div class="col-6 col-md-3 stat-item">
+          <div class="stat-icon"><i class="fas fa-users"></i></div>
+          <div class="stat-number" data-target="50">0</div>
+          <div class="stat-plus">Lakh+</div>
+          <div class="stat-label">Students Impacted</div>
+        </div>
+        <div class="col-6 col-md-3 stat-item">
+          <div class="stat-icon"><i class="fas fa-university"></i></div>
+          <div class="stat-number" data-target="10000">0</div>
+          <div class="stat-plus">+</div>
+          <div class="stat-label">Institutions Associated</div>
+        </div>
+        <div class="col-6 col-md-3 stat-item">
+          <div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div class="stat-number" data-target="25">0</div>
+          <div class="stat-plus">+</div>
+          <div class="stat-label">States Presence Across India</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LEARN. COMPETE. GROW. SUCCEED. STRIP
+════════════════════════════════════════════════════════════════ -->
+<section class="eduaiq-values-strip">
+  <div class="container">
+    <div class="text-center mb-4">
+      <p class="values-headline">LEARN. <span>COMPETE.</span> GROW. <span>SUCCEED.</span></p>
+      <p class="values-sub">— A JOURNEY TOWARDS EXCELLENCE —</p>
+    </div>
+    <div class="row g-3 justify-content-center">
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="value-pill"><i class="fas fa-book-open me-2"></i>Quality Education</div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="value-pill"><i class="fas fa-user-tie me-2"></i>Expert Guidance</div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="value-pill"><i class="fas fa-medal me-2"></i>Proven Results</div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="value-pill"><i class="fas fa-chart-bar me-2"></i>Better Outcomes</div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="value-pill"><i class="fas fa-globe me-2"></i>Stronger Tomorrow</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="home-about-us">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="about-left-content">
+          <figure class="figure-round-border">
+            <img alt="EduAiQ Skill Development Department"
+              src="{% static 'assets/img/eduaiq-skill-development-hall.jpg' %}" />
+          </figure>
+          <div class="skill-container">
+            <div class="skill-wrapper">
+              <h6 class="skill-titile">AI & Robotics Education</h6>
+              <div class="progress-wrapper">
+                <div class="ab-progress example" data-progress="" data-value="95"></div>
+              </div>
+            </div>
+            <div class="skill-wrapper">
+              <h6 class="skill-titile">Learner Satisfaction</h6>
+              <div class="progress-wrapper">
+                <div class="ab-progress example" data-progress="" data-value="98"></div>
+              </div>
+            </div>
+            <div class="skill-wrapper">
+              <h6 class="skill-titile">Institution Partnership Success</h6>
+              <div class="progress-wrapper">
+                <div class="ab-progress example" data-progress="" data-value="92"></div>
+              </div>
+            </div>
+          </div>
+          <div class="regarding-us">
+            <div class="qulifaction-content left-content">
+              <div class="qualification-tag">
+                <div class="qualifaction-icon">
+                  <i aria-hidden="true" class="fas fa-rocket"></i>
+                </div>
+                <div class="qualifaction-title">
+                  <h5>
+                    Innovation & Excellence
+                  </h5>
+                </div>
+              </div>
+              <div class="qulifaction-detail">
+                <p>
+                  Delivering world-class AI & Robotics Education, promoting innovation,
+                  research & entrepreneurship for future-ready institutions.
+                </p>
+              </div>
+            </div>
+            <div class="qulifaction-content right-content">
+              <div class="qualification-tag">
+                <div class="qualifaction-icon">
+                  <i aria-hidden="true" class="fas fa-users"></i>
+                </div>
+                <div class="qualifaction-title">
+                  <h5>
+                    Student First Approach
+                  </h5>
+                </div>
+              </div>
+              <div class="qulifaction-detail">
+                <p>
+                  Empowering learners with future skills and bridging education with
+                  industry to create a global learning ecosystem.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="about-btn">
+            <a class="button-round-secondary" href="/about/">MORE ABOUT US</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="about-right-content">
+          <div class="title-divider"></div>
+          <h2 class="about-title">About EduAiQ — Empowering Minds. Building Futures.</h2>
+          <p class="about-desc">
+            EduAiQ is a future-focused EdTech and AI innovation company dedicated to transforming education through
+            <strong style="color:#fd7e14;">Artificial Intelligence, Robotics, Digital Learning</strong> and Future
+            Skills.
+            We empower schools, colleges, institutions, educators and learners with next-generation technology
+            solutions,
+            AI-powered learning, innovation labs and industry-ready training programs.
+          </p>
+          <figure class="figure-round-border">
+            <img alt="EduAiQ Smart Learning Classroom" src="{% static 'assets/img/eduaiq-smart-classroom.jpg' %}" />
+          </figure>
+        </div>
+      </div>
+    </div>
+    <div class="pattern-overlay"></div>
+  </div>
+</section>
+
+<section class="home-service category-section-pro">
+  <div class="pattern-overlay"></div>
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
+      <div>
+        <div class="title-divider"></div>
+        <h2 class="category-main-heading">Explore Top Categories</h2>
+        <p class="category-subheading">Master industry-relevant skills with AI-driven learning paths</p>
+      </div>
+      <div>
+        <a class="button-round-primary" href="{% url 'categories' %}">MORE CATEGORIES <i
+            class="fas fa-arrow-right ms-1"></i></a>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-7 col-md-12">
+        <div class="category-grid-container">
+          {% for category in categories|slice:":6" %}
+          <div class="category-card-pro">
+            <a href="{% url 'courses' %}?category={{ category.slug }}" class="category-card-link">
+              <div class="category-card-body">
+                <div class="category-icon-wrapper" style="--cat-color: {{ category.color_code|default:'#667eea' }};">
+                  <i aria-hidden="true" class="{{ category.icon_class }}"></i>
+                </div>
+                <div class="category-card-info">
+                  <h4 class="category-card-title">{{ category.name }}</h4>
+                  <span class="category-badge-pill">
+                    <i class="fas fa-graduation-cap me-1"></i> {{ category.course_badge }}
+                  </span>
+                </div>
+                <div class="category-arrow-btn">
+                  <i class="fas fa-chevron-right"></i>
+                </div>
+              </div>
+            </a>
+          </div>
+          {% empty %}
+          <div class="col-12">
+            <div class="text-center p-4">
+              <p class="text-muted">No categories available at the moment.</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="col-lg-5 col-md-12">
+        <div class="course-form course-form-pro">
+          <h3>Get Free Courses ! Book Your Seat Now.</h3>
+          <div id="bookSeatSuccessMsg" class="alert alert-success d-none mb-3 radius-12 p-3 text-sm fw-semibold"
+            style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
+            <i class="fas fa-check-circle me-2"></i><span id="bookSeatSuccessText">Thank you! Your seat booking inquiry
+              has been received. Our team will contact you shortly.</span>
+          </div>
+          <form id="bookSeatForm" class="course-field">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-sm-6 mb-3">
+                <input name="name" id="bookSeatName" placeholder="Your Name *" type="text" class="form-control-pro"
+                  required />
+              </div>
+              <div class="col-sm-6 mb-3">
+                <input name="email" id="bookSeatEmail" placeholder="Your Email *" type="email" class="form-control-pro"
+                  required />
+              </div>
+              <div class="col-sm-6 mb-3">
+                <input name="phone" id="bookSeatPhone" placeholder="Your Phone Number" type="tel"
+                  class="form-control-pro" />
+              </div>
+              <div class="col-sm-6 mb-3">
+                <input name="subject" id="bookSeatSubject" placeholder="Your Subject / Course *" type="text"
+                  class="form-control-pro" required />
+              </div>
+              <div class="col-sm-12">
+                <button class="button-round-secondary w-100" id="bookSeatSubmitBtn" type="submit">BOOK SEAT</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="home-course-section">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-lg-6 offset-lg-3 text-center">
+        <div class="title-divider-center"></div>
+        <h2 class="category-main-heading">Most Featured Courses</h2>
+        <p class="category-subheading">Hands-on tracks in AI, data, and software development — built with real mentors
+        </p>
+      </div>
+    </div>
+    <div class="row g-4" id="homeCoursesGrid">
+      {% for course in courses %}
+      <div class="col-sm-6 col-lg-4">
+        <div class="course-card-pro" onclick="window.location.href='/course/?slug={{ course.slug }}'">
+          <div class="course-thumb-wrap">
+            {% if course.thumbnail %}
+            <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" />
+            {% else %}
+            <img src="{% static 'assets/img/educator-img30.jpg' %}" alt="{{ course.title }}" />
+            {% endif %}
+            {% if course.category %}
+            <span class="course-cat-badge">{{ course.category.name }}</span>
+            {% else %}
+            <span class="course-cat-badge">Course</span>
+            {% endif %}
+            <span class="course-price-badge">₹{{ course.price|floatformat:0 }}</span>
+          </div>
+          <div class="course-card-body-pro">
+            <div class="course-meta-top">
+              <span class="course-level-badge"><i class="fas fa-signal me-1"></i>{{ course.get_delivery_mode_display|default:"Self-Paced" }}</span>
+              <span class="course-duration-text"><i class="far fa-clock me-1"></i>Active</span>
+            </div>
+            <h4 class="course-card-title-pro">
+              <a href="/course/?slug={{ course.slug }}">{{ course.title }}</a>
+            </h4>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center p-4">
+        <p class="text-muted fs-5">No featured courses available at the moment.</p>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-5">
+      <a class="button-round-primary hover-glow" href="{% url 'courses' %}">VIEW ALL COURSES <i
+          class="fas fa-arrow-right ms-1"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     EduAiQ Olympiad Entrance Exams & Quizzes Homepage Showcase Section
+     ========================================================================== -->
+<section class="home-olympiad-quiz-section py-5"
+  style="background: radial-gradient(circle at 15% 20%, rgba(253, 126, 20, 0.08) 0%, transparent 45%), radial-gradient(circle at 85% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 45%), linear-gradient(135deg, #0b1120 0%, #0f172a 50%, #1e293b 100%); position: relative; overflow: hidden;">
+  <div class="container py-3" style="position: relative; z-index: 2;">
+    <div class="row mb-4">
+      <div class="col-lg-8 offset-lg-2 text-center">
+        <div class="title-divider-center"
+          style="background-color: #fd7e14 !important; width: 60px; height: 3px; margin: 0 auto 15px auto;"></div>
+        <span class="badge px-3 py-2 rounded-pill mb-2"
+          style="background: rgba(253, 126, 20, 0.15); color: #fd7e14; border: 1px solid rgba(253, 126, 20, 0.3); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px;">
+          <i class="fas fa-award me-1"></i> NATIONAL COMPETITIONS & ASSESSMENTS
+        </span>
+        <h2 class="text-white fw-bold display-6 mb-2">Olympiad Entrance Exams & Quizzes</h2>
+        <p style="color: #94a3b8; font-size: 1.05rem;" class="mb-0">
+          Measure your academic standing with official EduAiQ timed entrance exams and interactive course quizzes.
+        </p>
+      </div>
+    </div>
+
+    <div class="row g-4 justify-content-center align-items-stretch">
+      <!-- Card 1: Olympiad Entrance Exam -->
+      <div class="col-lg-6 col-md-12 d-flex">
+        <div class="w-100 p-4 p-md-5 rounded-4 shadow-lg border text-white d-flex flex-column justify-content-between"
+          style="background: rgba(255, 255, 255, 0.035); backdrop-filter: blur(16px); border: 1px solid rgba(253, 126, 20, 0.25) !important; border-radius: 24px !important; transition: all 0.35s ease;"
+          onmouseover="this.style.borderColor='#fd7e14'; this.style.transform='translateY(-6px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.45), 0 0 24px rgba(253,126,20,0.2)';"
+          onmouseout="this.style.borderColor='rgba(253, 126, 20, 0.25)'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+          <div>
+            <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+              <span class="badge px-3 py-2 rounded-pill fw-bold"
+                style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); color: #ffffff; font-size: 0.78rem; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(253, 126, 20, 0.3);">
+                <i class="fas fa-star me-1"></i> OFFICIAL ENTRANCE EXAMS
+              </span>
+              <span class="badge px-3 py-2 rounded-pill"
+                style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: #e2e8f0; font-size: 0.82rem; font-weight: 600;">
+                <i class="fas fa-clock text-warning me-1"></i> Timed & Monitored
+              </span>
+            </div>
+            <h3 class="text-white fw-bold mb-3" style="font-size: 1.65rem;">Olympiad Entrance Examination</h3>
+            <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.65;" class="mb-4">
+              Take national level entrance tests in Math, Science, and AI. Qualify for prestigious EduAiQ scholarship
+              bands, medals, and official printable merit certificates.
+            </p>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+              <span class="badge px-3 py-2 rounded-pill d-inline-flex align-items-center gap-1.5"
+                style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14); color: #f8fafc; font-size: 0.84rem; font-weight: 500;">
+                <i class="fas fa-medal text-warning"></i> Gold, Silver & Bronze Medals
+              </span>
+              <span class="badge px-3 py-2 rounded-pill d-inline-flex align-items-center gap-1.5"
+                style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14); color: #f8fafc; font-size: 0.84rem; font-weight: 500;">
+                <i class="fas fa-certificate text-info"></i> Merit & Participation Certs
+              </span>
+              <span class="badge px-3 py-2 rounded-pill d-inline-flex align-items-center gap-1.5"
+                style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14); color: #f8fafc; font-size: 0.84rem; font-weight: 500;">
+                <i class="fas fa-bolt text-warning"></i> Auto Grading & Results
+              </span>
+            </div>
+          </div>
+          <div class="pt-2">
+            <a href="/olympiad-entrance/"
+              class="btn w-100 py-3 rounded-pill fw-bold text-white d-flex align-items-center justify-content-center gap-2 shadow"
+              style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); border: none; font-size: 0.95rem; letter-spacing: 0.5px; box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4) !important; transition: all 0.3s ease;">
+              <i class="fas fa-edit"></i> ACCESS OLYMPIAD ENTRANCE EXAMS <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Interactive Practice Quizzes -->
+      <div class="col-lg-6 col-md-12 d-flex">
+        <div class="w-100 p-4 p-md-5 rounded-4 shadow-lg border text-white d-flex flex-column justify-content-between"
+          style="background: rgba(255, 255, 255, 0.035); backdrop-filter: blur(16px); border: 1px solid rgba(253, 126, 20, 0.25) !important; border-radius: 24px !important; transition: all 0.35s ease;"
+          onmouseover="this.style.borderColor='#fd7e14'; this.style.transform='translateY(-6px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.45), 0 0 24px rgba(253,126,20,0.2)';"
+          onmouseout="this.style.borderColor='rgba(253, 126, 20, 0.25)'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+          <div>
+            <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+              <span class="badge px-3 py-2 rounded-pill fw-bold"
+                style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); color: #ffffff; font-size: 0.78rem; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(253, 126, 20, 0.3);">
+                <i class="fas fa-question-circle me-1"></i> INTERACTIVE QUIZZES
+              </span>
+              <span class="badge px-3 py-2 rounded-pill"
+                style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: #e2e8f0; font-size: 0.82rem; font-weight: 600;">
+                <i class="fas fa-check-circle text-success me-1"></i> Instant Feedback
+              </span>
+            </div>
+            <h3 class="text-white fw-bold mb-3" style="font-size: 1.65rem;">Course Quizzes & Assessments</h3>
+            <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.65;" class="mb-4">
+              Test your mastery on lesson-by-lesson practice quizzes. Receive real-time score analytics, detailed answer
+              breakdowns, and progress tracking on your student dashboard.
+            </p>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+              <span class="badge px-3 py-2 rounded-pill d-inline-flex align-items-center gap-1.5"
+                style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14); color: #f8fafc; font-size: 0.84rem; font-weight: 500;">
+                <i class="fas fa-bullseye text-danger"></i> Lesson-Wise Quizzes
+              </span>
+              <span class="badge px-3 py-2 rounded-pill d-inline-flex align-items-center gap-1.5"
+                style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14); color: #f8fafc; font-size: 0.84rem; font-weight: 500;">
+                <i class="fas fa-chart-line text-primary"></i> Score & Attempt History
+              </span>
+              <span class="badge px-3 py-2 rounded-pill d-inline-flex align-items-center gap-1.5"
+                style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14); color: #f8fafc; font-size: 0.84rem; font-weight: 500;">
+                <i class="fas fa-trophy text-warning"></i> Student ID & Dashboard
+              </span>
+            </div>
+          </div>
+          <div class="pt-2">
+            <a href="/my-learning/"
+              class="btn w-100 py-3 rounded-pill fw-bold text-white d-flex align-items-center justify-content-center gap-2 shadow"
+              style="background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); border: none; font-size: 0.95rem; letter-spacing: 0.5px; box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4) !important; transition: all 0.3s ease;">
+              <i class="fas fa-list-check"></i> VIEW QUIZZES & ASSESSMENTS <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="home-fact-section">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <div class="fact-section-head">
+          <div class="title-divider"></div>
+          <h2 class="fact-section-title">Limitless Learning, Limitless Possibilities !</h2>
+          <p class="fact-section-info">
+            Whether you're a student, a working professional, or an institution, the same
+            ecosystem scales to fit — from a single AI Lab course to a full campus
+            rollout.
+          </p>
+          <div class="fact-list">
+            <ul>
+              <li>Hands-on projects instead of passive video lectures.</li>
+              <li>Mentor feedback on every submission, not just auto-grading.</li>
+              <li>One login connecting courses, Olympiads, and certification.</li>
+            </ul>
+          </div>
+          <div class="service-btn">
+            <a class="button-round-secondary" href="/register/">JOIN US NOW</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="fact-right-inner-wrap">
+          <div class="fact-inner-box">
+            <div class="fact-content top-left-content">
+              <div class="pattern-overlay circle-patten"></div>
+              <h4>Our Expertise Is Best Earned Through
+                Our Experience</h4>
+            </div>
+            <figure class="fact-image top-right-image"></figure>
+            <figure class="fact-image bottom-left-image"></figure>
+            <div class="fact-content bottom-right-content">
+              <div class="pattern-overlay circle-c-patten"></div>
+              <h4>Our Best Team For Your Any Advice For Your Education</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="home-feature-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 offset-lg-3">
+        <div class="title-divider"></div>
+        <h2 class="feature-section-title text-center">Our Best Features</h2>
+        <p class="feature-section-info text-center">The details that make the difference
+          between finishing a course and actually using what you learned.</p>
+      </div>
+    </div>
+    <div class="feature-wrapper">
+      <div class="feature-type" onclick="window.location.href='/team/'">
+        <div class="feature-img-wrapper">
+          <img alt="Expert Mentors" class="feature-card-img"
+            src="{% static 'assets/img/eduaiq-smart-classroom.jpg' %}" />
+          <h5 class="meta-no">1</h5>
+        </div>
+        <h4 class="feature-heading">Expert Mentors</h4>
+        <p class="feature-info">90+ mentors with real classroom and industry experience
+          guiding every course, Olympiad, and AI Lab module.</p>
+        <a class="right-arrow-link" href="/team/">
+          <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
+        </a>
+      </div>
+      <div class="feature-type" onclick="window.location.href='/courses/'">
+        <div class="feature-img-wrapper">
+          <img alt="Affordable Courses" class="feature-card-img"
+            src="{% static 'assets/img/eduaiq-affordable-courses.jpg' %}" />
+          <h5 class="meta-no">2</h5>
+        </div>
+        <h4 class="feature-heading">Affordable Courses</h4>
+        <p class="feature-info">Transparent pricing across courses, Olympiad registration,
+          and franchise programs — no hidden fees at checkout.</p>
+        <a class="right-arrow-link" href="/courses/">
+          <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
+        </a>
+      </div>
+      <div class="feature-type" onclick="window.location.href='/page/ai-lab/'">
+        <div class="feature-img-wrapper">
+          <img alt="Efficient & Flexible" class="feature-card-img"
+            src="{% static 'assets/img/eduaiq-efficient-flexible.png' %}" />
+          <h5 class="meta-no">3</h5>
+        </div>
+        <h4 class="feature-heading">Efficient &amp; Flexible</h4>
+        <p class="feature-info">Self-paced AI Lab modules that fit around school, work, or a
+          full academic calendar — learn on your own schedule.</p>
+        <a class="right-arrow-link" href="/page/ai-lab/">
+          <i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="home-team-section">
+  <div class="container">
+    <div class="overlay"></div>
+    <div class="row align-items-end">
+      <div class="col-md-6 text-md-start text-center">
+        <div class="title-divider"></div>
+        <h2 class="team-section-title">Meet Our Best Team</h2>
+      </div>
+      <div class="col-md-6 text-md-end text-center">
+        <a class="button-round-secondary" href="/team/">ALL TEAM MEMBERS</a>
+      </div>
+    </div>
+    <div class="group-member">
+      <div class="row justify-content-center">
+        {% for member in team_members %}
+        <div class="col-sm-6 col-md-4 col-lg-3 p-3">
+          <figure class="team-img">
+            <a href="/team/{{ member.slug }}/">
+              <img alt="{{ member.name }}" src="{{ member.photo_url }}" />
+            </a>
+          </figure>
+          <div class="team-content text-center">
+            <h4>
+              <a href="/team/{{ member.slug }}/">{{ member.name }}</a>
+            </h4>
+            <p>{{ member.designation }}</p>
+          </div>
+          <div class="d-flex justify-content-center align-items-center">
+            <div class="social-links team-social-link">
+              <ul>
+                {% if member.facebook_url %}
+                <li>
+                  <a href="{{ member.facebook_url }}" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-facebook-f"></i>
+                  </a>
+                </li>
+                {% endif %}
+                {% if member.twitter_url %}
+                <li>
+                  <a href="{{ member.twitter_url }}" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-twitter"></i>
+                  </a>
+                </li>
+                {% endif %}
+                {% if member.whatsapp_url %}
+                <li>
+                  <a href="{{ member.whatsapp_url }}" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-whatsapp"></i>
+                  </a>
+                </li>
+                {% endif %}
+                {% if member.linkedin_url %}
+                <li>
+                  <a href="{{ member.linkedin_url }}" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-linkedin-in"></i>
+                  </a>
+                </li>
+                {% endif %}
+                {% if member.instagram_url %}
+                <li>
+                  <a href="{{ member.instagram_url }}" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-instagram"></i>
+                  </a>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-4">
+          <p class="text-muted">No team members available at the moment.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="home-goal-section">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-7">
+        <div class="inner-goal-image">
+          <figure class="video-play-image">
+            <img alt="EduAiQ Smart Learning Classroom" src="{% static 'assets/img/eduaiq-smart-classroom.jpg' %}" />
+            <div class="overlay02 overlay"></div>
+            <div class="video-button">
+              <a data-video-id="IUN664s7N-c" id="video-container">
+                <i class="fas fa-play"></i>
+              </a>
+            </div>
+          </figure>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="goal-content">
+          <div class="pattern-overlay"></div>
+          <div class="title-divider"></div>
+          <h2 class="goal-title">Committed To The Best Results !</h2>
+          <p class="goal-info">Every course, Olympiad, and AI Lab module is reviewed each
+            cycle against real outcomes — completion rates, mentor feedback, and student
+            results — not left unchanged once it's published.</p>
+          <a class="button-round-secondary" href="/register/">JOIN US NOW</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="home-progress-section">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="counter-inner">
+      <div class="counter-item-wrap row">
+        <div class="col-lg-3 col-sm-6 counter-item">
+          <div class="counter-no">
+            <span class="counter">45</span>k+
+          </div>
+          <div class="Completed">
+            Active Students
+          </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 counter-item">
+          <div class="counter-no">
+            <span class="counter">72</span>+
+          </div>
+          <div class="Completed">
+            AI-Powered Courses
+          </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 counter-item">
+          <div class="counter-no">
+            <span class="counter">90</span>+
+          </div>
+          <div class="Completed">
+            Expert Mentors
+          </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 counter-item">
+          <div class="counter-no">
+            <span class="counter">35</span>
+          </div>
+          <span class="Completed">
+            Partner Institutions
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="home-testimonial-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 offset-lg-3">
+        <div class="title-divider-center"></div>
+        <h2 class="testimonial-section-title text-center">Reviews From Colleges</h2>
+        <p class="testimonial-section-info text-center">Hear directly from the institutions
+          running the EduAiQ ecosystem — AI Lab, LMS, admission CRM, and Olympiad programs —
+          on their own campuses.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="client-content left-content">
+          <div class="pattern-overlay circle-patten"></div>
+          <p class="client-review">
+            "Rolling out the AI Lab across our computer science department took a fraction
+            of the time we expected. Our admission CRM and LMS now run on one connected
+            system instead of three separate logins."
+          </p>
+          <div class="author-content">
+            <div class="author-info">
+              <h5 class="author-name">Dr. Ramesh Iyer</h5>
+              <span class="author-title">PRINCIPAL, GREENFIELD DEGREE COLLEGE</span>
+            </div>
+            <figure class="author-img">
+              <img alt="Dr. Ramesh Iyer" src="{% static 'assets/img/indian-testimonial-1.jpg' %}" />
+            </figure>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="client-content right-content">
+          <div class="pattern-overlay circle-patten"></div>
+          <p class="client-review">
+            "We registered over 300 students for the Math and Science Olympiads through
+            EduAiQ's platform in our first cycle. The published curriculum meant our
+            teachers knew exactly how to prepare students in advance."
+          </p>
+          <div class="author-content">
+            <div class="author-info">
+              <h5 class="author-name">Sunita Rao</h5>
+              <span class="author-title">ACADEMIC DIRECTOR, ST. XAVIER'S HIGH SCHOOL</span>
+            </div>
+            <figure class="author-img">
+              <img alt="Sunita Rao" src="{% static 'assets/img/indian-testimonial-2.jpg' %}" />
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-btn text-center">
+      <a class="button-round-primary" href="/testimonial/">MORE REVIEWS NOW</a>
+    </div>
+  </div>
+</section>
+
+<section class="home-blog-section">
+  <div class="container">
+    <div class="overlay-wrapper">
+      <div class="pattern-overlay c-patten"></div>
+      <div class="row">
+        <div class="col-lg-6 offset-lg-3">
+          <div class="title-divider-center"></div>
+          <h2 class="blog-section-title text-center">Checkout Our Blog</h2>
+          <p class="blog-section-info text-center">Practical guides on AI skills, Olympiad
+            prep, and career development — from the mentors building the courses.</p>
+        </div>
+      </div>
+      <div class="inner-blog-wrap">
+        {% for blog in latest_blogs %}
+        <article class="post">
+          <figure class="feature-image">
+            <a href="/blog/{{ blog.slug }}/">
+              <img alt="{{ blog.title }}" src="{{ blog.image_url }}" />
+            </a>
+          </figure>
+          <div class="entry-content">
+            <h4>
+              <a href="/blog/{{ blog.slug }}/">{{ blog.title }}</a>
+            </h4>
+            <p class="blog-info">
+              {{ blog.summary|default:blog.content|striptags|truncatechars:120 }}
+            </p>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <span class="text-xs text-secondary-light font-weight-medium">
+                <i class="far fa-calendar-alt me-1"></i>{{ blog.published_at|date:"M d, Y" }}
+              </span>
+              {% if blog.category %}
+              <span class="cat-meta">
+                <a href="/blog/?category={{ blog.category.slug }}">{{ blog.category.name }}</a>
+              </span>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+        {% empty %}
+        <div class="col-12 text-center py-4">
+          <p class="text-muted">No blog articles published yet.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="slider-section">
+  <div class="container">
+    <div class="client-slider text-center">
+      <div class="client-item">
+        <figure>
+          <img alt="" src="{% static 'assets/img/educator-img16.png' %}" />
+        </figure>
+      </div>
+      <div class="client-item">
+        <figure>
+          <img alt="" src="{% static 'assets/img/educator-img17.png' %}" />
+        </figure>
+      </div>
+      <div class="client-item">
+        <figure>
+          <img alt="" src="{% static 'assets/img/educator-img18.png' %}" />
+        </figure>
+      </div>
+      <div class="client-item">
+        <figure>
+          <img alt="" src="{% static 'assets/img/educator-img19.png' %}" />
+        </figure>
+      </div>
+      <div class="client-item">
+        <figure>
+          <img alt="" src="{% static 'assets/img/educator-img20.png' %}" />
+        </figure>
+      </div>
+      <div class="client-item">
+        <figure>
+          <img alt="" src="{% static 'assets/img/educator-img18.png' %}" />
+        </figure>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+  const API_BASE_URL = window.location.origin;
+
+  function formatCoursePrice(price) {
+    if (!price || parseFloat(price) === 0) return 'Free';
+    return '₹' + parseFloat(price).toLocaleString('en-IN');
+  }
+
+  function getInstructorName(instructor) {
+    if (!instructor) return 'EduAiQ Mentor';
+    if (typeof instructor === 'object') {
+      return instructor.username || instructor.first_name || 'EduAiQ Mentor';
+    }
+    return instructor;
+  }
+
+  function getCategoryName(course) {
+    if (course.category && course.category.name) return course.category.name;
+    if (course.category_name) return course.category_name;
+    return 'General';
+  }
+
+  async function loadHomeCourses() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/?page=1&page_size=3`, { credentials: 'same-origin' });
+      const data = await response.json();
+      const results = data.results || [];
+
+      if (results.length > 0) {
+        const grid = document.getElementById('homeCoursesGrid');
+        grid.innerHTML = results.map(course => {
+          const thumbnail = course.thumbnail || '/static/assets/img/educator-img30.jpg';
+          const title = course.title || 'Untitled Course';
+          const slug = course.slug || '';
+          const catName = getCategoryName(course);
+          const instructorName = getInstructorName(course.instructor);
+
+          const level = (course.level || 'Beginner');
+          const priceDisplay = formatCoursePrice(course.price);
+          const duration = course.duration_weeks ? `${course.duration_weeks} Weeks` : 'Self-Paced';
+
+          return `
+            <div class="col-sm-6 col-lg-4">
+              <div class="course-card-pro" onclick="window.location.href='/course/?slug=${slug}'">
+                <div class="course-thumb-wrap">
+                  <img src="${thumbnail}" alt="${title}" onerror="this.src='/static/assets/img/educator-img30.jpg'"/>
+                  <span class="course-cat-badge">${catName}</span>
+                  <span class="course-price-badge">${priceDisplay}</span>
+                </div>
+                <div class="course-card-body-pro">
+                  <div class="course-meta-top">
+                    <span class="course-level-badge"><i class="fas fa-signal me-1"></i>${level}</span>
+                    <span class="course-duration-text"><i class="far fa-clock me-1"></i>${duration}</span>
+                  </div>
+                  <h4 class="course-card-title-pro">
+                    <a href="/course/?slug=${slug}" onclick="event.stopPropagation();">${title}</a>
+                  </h4>
+                  </div>
+          </div>
+            </div>
+          `;
+        }).join('');
+      }
+    } catch (e) {
+      console.error('Error loading home courses:', e);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    loadHomeCourses();
+
+    const form = document.getElementById('bookSeatForm');
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const btn = document.getElementById('bookSeatSubmitBtn');
+        const successMsg = document.getElementById('bookSeatSuccessMsg');
+
+        const name = document.getElementById('bookSeatName').value.trim();
+        const email = document.getElementById('bookSeatEmail').value.trim();
+        const phone = document.getElementById('bookSeatPhone') ? document.getElementById('bookSeatPhone').value.trim() : '';
+        const subject = document.getElementById('bookSeatSubject').value.trim();
+
+        if (!name) {
+          alert('Please enter your name');
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>SUBMITTING...';
+
+        const payload = {
+          name: name,
+          email: email,
+          phone: phone,
+          subject: subject,
+          source: 'website'
+        };
+
+        fetch('/api/crm/leads/submit/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': (document.cookie.match(/csrftoken=([^;]+)/) || [])[1] || ''
+          },
+          body: JSON.stringify(payload)
+        })
+          .then(res => res.json())
+          .then(data => {
+            btn.disabled = false;
+            btn.innerHTML = 'BOOK SEAT';
+            if (data.success) {
+              showSuccessModal(
+                'Seat Booked Successfully!',
+                data.message || 'Thank you! Your seat booking inquiry has been received. Our team will contact you shortly.'
+              );
+              if (successMsg) {
+                document.getElementById('bookSeatSuccessText').innerText = data.message || 'Thank you! Your seat booking inquiry has been received. Our team will contact you shortly.';
+                successMsg.classList.remove('d-none');
+              }
+              form.reset();
+            } else {
+              alert(data.message || 'Error submitting form. Please try again.');
+            }
+          })
+          .catch(err => {
+            btn.disabled = false;
+            btn.innerHTML = 'BOOK SEAT';
+            alert('Network error. Please try again.');
+          });
+      });
+    }
+  });
+
+  // ── Stats Counter Animation ─────────────────────────────────────
+  const statNumbers = document.querySelectorAll('.stat-number');
+  const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.getAttribute('data-target'));
+        const duration = 1800;
+        const step = target / (duration / 16);
+        let current = 0;
+        const timer = setInterval(() => {
+          current += step;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          el.textContent = Math.floor(current).toLocaleString('en-IN');
+        }, 16);
+        statsObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  statNumbers.forEach(el => statsObserver.observe(el));
+</script>
+{% endblock %}

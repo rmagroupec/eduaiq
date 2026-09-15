@@ -1,0 +1,676 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}EduAIQ - Student List{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Student List</h1>
+    <div class="d-flex align-items-center gap-2">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <span class="text-secondary-light">Student List</span>
+    </div>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    {% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'superadmin' or request.user.role == 'super_admin' or is_main_admin %}
+    <button class="btn btn-outline-success-600 d-flex align-items-center gap-6 radius-8" id="exportStudentsCsvBtn">
+      <i class="ri-download-2-line text-md"></i> Export CSV
+    </button>
+    {% endif %}
+    {% if user.is_superuser or user.role == 'admin' or user.role == 'superadmin' or user.role == 'institution' %}
+    <a class="btn btn-primary-600 d-flex align-items-center gap-6 radius-8" id="addStudentBtn" href="/admin-panel/add-new-student/">
+      <span class="d-flex text-md">
+        <i class="ri-add-large-line"></i>
+      </span>
+      Add Student
+    </a>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card h-100 mt-24">
+  <div class="card-body p-24">
+    <!-- Institution Selector & Search/Filter Controls -->
+    <div class="row gy-3 mb-24 align-items-end">
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="institutionSelect">Select Institution <span class="text-danger-600">*</span></label>
+        <select class="form-control form-select radius-8" id="institutionSelect">
+          <option value="all" selected>All Institutions / All Students</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="classGradeFilter">Class / Grade</label>
+        <input type="text" class="form-control radius-8" id="classGradeFilter" placeholder="e.g. Class 10">
+      </div>
+      <div class="col-md-2">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="sectionFilter">Section</label>
+        <input type="text" class="form-control radius-8" id="sectionFilter" placeholder="e.g. A">
+      </div>
+      <div class="col-md-2">
+        <label class="text-sm fw-semibold text-primary-light mb-8" for="statusFilter">Status</label>
+        <select class="form-control form-select radius-8" id="statusFilter">
+          <option value="">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="graduated">Graduated</option>
+          <option value="transferred">Transferred</option>
+          <option value="dropped">Dropped Out</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-outline-primary-600 w-100 radius-8" id="clearFiltersBtn">
+          Clear Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Search input and paging size -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 pb-20 border-bottom border-neutral-200">
+      <div class="d-flex align-items-center gap-8">
+        <span class="text-sm text-secondary-light">Show</span>
+        <select class="form-select form-select-sm w-auto radius-8" id="pageSizeSelect">
+          <option value="10">10</option>
+          <option value="20" selected>20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        <span class="text-sm text-secondary-light">entries</span>
+      </div>
+      <div class="d-flex align-items-center gap-16">
+        <div id="attendanceStats" class="d-none align-items-center gap-2 px-12 py-4 bg-primary-50 text-primary-600 radius-8 text-sm fw-medium">
+          <!-- Stats will be injected here -->
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" id="markPagePresentBtn" class="btn btn-sm btn-success d-flex align-items-center gap-2 rounded-pill px-16 shadow-sm">
+            <i class="ri-check-double-line"></i> Mark Page Present
+          </button>
+          <button type="button" id="markPageAbsentBtn" class="btn btn-sm btn-danger d-flex align-items-center gap-2 rounded-pill px-16 shadow-sm">
+            <i class="ri-close-circle-line"></i> Mark Page Absent
+          </button>
+        </div>
+        <div class="d-flex align-items-center gap-8 border-start ps-16">
+          <label for="attendanceDate" class="text-sm text-secondary-light text-nowrap fw-medium">Attendance Date:</label>
+          <input type="date" id="attendanceDate" class="form-control form-control-sm radius-8" value="{% now 'Y-m-d' %}">
+        </div>
+        <div class="position-relative border-start ps-16">
+          <input type="text" class="form-control form-control-sm ps-32 radius-8" id="searchQuery" placeholder="Search Admission No, Name, Username...">
+          <i class="ri-search-line position-absolute start-28 top-50 translate-middle-y text-secondary-light"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Table -->
+    <div class="table-responsive mt-24">
+      <table class="table border-neutral-200 table-hover align-middle">
+        <thead>
+          <tr class="bg-neutral-50">
+            <th scope="col">Student Name</th>
+            <th scope="col">Roll No</th>
+            <th scope="col">Class & Section</th>
+            <th scope="col" class="text-center">Attendance</th>
+          </tr>
+        </thead>
+        <tbody id="studentTableBody">
+          <tr>
+            <td colspan="8" class="text-center py-40 text-secondary-light">
+              <i class="ri-loader-4-line ri-spin text-xxl d-block mb-8"></i>
+              Loading students...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination & Meta -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-16 mt-24">
+      <span class="text-sm text-secondary-light" id="tableInfoSpan">Showing 0 to 0 of 0 entries</span>
+      <nav aria-label="Page navigation" id="paginationNav" class="d-none">
+        <ul class="pagination pagination-primary mb-0 gap-8" id="paginationUl">
+          <!-- Dynamically populated -->
+        </ul>
+      </nav>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+  let selectedInstitutionId = "all";
+  let currentPage = 1;
+
+  // Read cookies for CSRF
+  function getCsrfToken() {
+    const match = document.cookie.match(/csrftoken=([^;]+)/);
+    return match ? match[1] : null;
+  }
+
+  // Check if institution_id is in query params
+  const urlParams = new URLSearchParams(window.location.search);
+  const paramInstId = urlParams.get('institution_id');
+
+  // Load Institutions dropdown
+  function loadInstitutions() {
+    $.ajax({
+      url: '/api/institutions/?page_size=100',
+      type: 'GET',
+      cache: false,
+      xhrFields: { withCredentials: true },
+      success: function(response) {
+        const select = $('#institutionSelect');
+        select.find('option:not(:first)').remove();
+        if (response.results && response.results.length > 0) {
+          response.results.forEach(inst => {
+            select.append(`<option value="${inst.id}">${inst.name} (${inst.type || 'Institution'})</option>`);
+          });
+        }
+
+        if (paramInstId) {
+          select.val(paramInstId);
+        } else {
+          select.val('all');
+        }
+
+        selectedInstitutionId = select.val();
+        updateAddBtnLink();
+        loadStudents();
+      },
+      error: function(err) {
+        console.error('Failed to load institutions:', err);
+        selectedInstitutionId = 'all';
+        loadStudents();
+      }
+    });
+  }
+
+  // Update Add Student button link to pass institution context
+  function updateAddBtnLink() {
+    if (selectedInstitutionId && selectedInstitutionId !== 'all') {
+      $('#addStudentBtn').attr('href', `/admin-panel/add-new-student/?institution_id=${selectedInstitutionId}`);
+    } else {
+      $('#addStudentBtn').attr('href', `/admin-panel/add-new-student/`);
+    }
+  }
+
+  // Load students for chosen institution or all
+  function loadStudents(page = 1) {
+    currentPage = page;
+    const classGrade = $('#classGradeFilter').val();
+    const section = $('#sectionFilter').val();
+    const status = $('#statusFilter').val();
+    const q = $('#searchQuery').val();
+    const pageSize = $('#pageSizeSelect').val();
+
+    let url = '/api/students/';
+    if (selectedInstitutionId && selectedInstitutionId !== 'all') {
+      url = `/api/institutions/${selectedInstitutionId}/students/`;
+    }
+
+    const attendanceDate = $('#attendanceDate').val();
+    let isSunday = false;
+    if (attendanceDate) {
+      const d = new Date(attendanceDate);
+      if (d.getDay() === 0) { // 0 is Sunday
+        isSunday = true;
+      }
+    }
+
+    url += `?page=${page}&page_size=${pageSize}`;
+    if (attendanceDate) url += `&attendance_date=${encodeURIComponent(attendanceDate)}`;
+    if (classGrade) url += `&class_grade=${encodeURIComponent(classGrade)}`;
+    if (section) url += `&section=${encodeURIComponent(section)}`;
+    if (status) url += `&status=${encodeURIComponent(status)}`;
+    if (q) url += `&q=${encodeURIComponent(q)}`;
+
+    // Show loading
+    $('#studentTableBody').html(`
+      <tr>
+        <td colspan="7" class="text-center py-40">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </td>
+      </tr>
+    `);
+
+    $.ajax({
+      url: url,
+      type: 'GET',
+      cache: false,
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        if (res.error) {
+          showToast(res.error, 'error');
+          return;
+        }
+        
+        // Render Stats
+        const stats = res.attendance_summary;
+        if (stats) {
+          $('#attendanceStats').removeClass('d-none').html(`
+            <i class="ri-line-chart-line text-lg"></i>
+            Total: ${stats.total_students} | 
+            Present: <span class="fw-bold text-success">${stats.total_present}</span> | 
+            Absent: <span class="fw-bold text-danger">${stats.total_absent}</span>
+          `);
+        } else {
+          $('#attendanceStats').addClass('d-none');
+        }
+
+        renderTable(res);
+        renderPagination(res);
+        
+        // Store current page student ids for bulk action
+        window.currentPageStudentIds = res.results.map(s => s.id);
+      },
+      error: function(err) {
+        console.error('Error fetching students:', err);
+        $('#studentTableBody').html(`
+          <tr>
+            <td colspan="7" class="text-center py-40 text-danger-600">
+              <i class="ri-error-warning-line text-xxl d-block mb-8"></i>
+              Error loading student roster. Please check permissions or select a valid institution.
+            </td>
+          </tr>
+        `);
+      }
+    });
+  }
+
+
+  function renderTable(data) {
+    const tbody = $('#studentTableBody');
+    tbody.empty();
+
+    if (!data.results || data.results.length === 0) {
+      tbody.html(`
+        <tr>
+          <td colspan="7" class="text-center py-40 text-secondary-light">
+            <i class="ri-folder-open-line text-xxl d-block mb-8"></i>
+            No students found matching the filter criteria.
+          </td>
+        </tr>
+      `);
+      $('#tableInfoSpan').text('Showing 0 to 0 of 0 entries');
+      return;
+    }
+
+    data.results.forEach(student => {
+      const rollNo = student.roll_number || '-';
+      const admissionNo = student.admission_no || '-';
+      const secText = student.section ? `(${student.section})` : '';
+      const classSecText = `${student.class_grade || '-'} ${secText}`;
+      const name = student.student_name || 'Unnamed Student';
+      const photo = student.profile_photo || student.profile_image || '{% static "admin_assets/images/thumbs/leave-request-img2.png" %}';
+      const defaultImg = '{% static "admin_assets/images/thumbs/leave-request-img2.png" %}';
+
+      let pBtnClass = 'btn-outline-success radius-8';
+      let aBtnClass = 'btn-outline-danger radius-8';
+      let dBtnClass = 'btn-outline-secondary radius-8';
+      
+      if (student.attendance_status === 'Present' || student.attendance_status === 'P') {
+        pBtnClass = 'btn-success text-white shadow-sm radius-8';
+      } else if (student.attendance_status === 'Absent' || student.attendance_status === 'A') {
+        aBtnClass = 'btn-danger text-white shadow-sm radius-8';
+      }
+      
+      const attDateVal = $('#attendanceDate').val();
+      let isSunday = false;
+      if (attDateVal) {
+        const d = new Date(attDateVal);
+        if (d.getDay() === 0) isSunday = true;
+      }
+      
+      let actionButtonsHtml = '';
+      if (isSunday) {
+        actionButtonsHtml = '<span class="badge bg-warning-100 text-warning-700">Sunday (Holiday)</span>';
+      } else {
+        actionButtonsHtml = `
+          <div class="d-flex align-items-center justify-content-center gap-2">
+            <button class="btn btn-sm ${pBtnClass} mark-attendance-btn" data-id="${student.id}" data-status="Present" title="Mark Present">P</button>
+            <button class="btn btn-sm ${aBtnClass} mark-attendance-btn" data-id="${student.id}" data-status="Absent" title="Mark Absent">A</button>
+            <button class="btn btn-sm ${dBtnClass} mark-attendance-btn" data-id="${student.id}" data-status="delete" title="Clear Attendance"><i class="ri-eraser-line"></i></button>
+          </div>
+        `;
+      }
+
+      tbody.append(`
+        <tr>
+          <td>
+            <div class="d-flex align-items-center">
+              <img src="${photo}" onerror="this.onerror=null; this.src='${defaultImg}';" alt="${name}" class="flex-shrink-0 me-12 radius-8 object-fit-cover" style="width:40px; height:40px;">
+              <div>
+                <h6 class="text-md mb-0 fw-medium text-neutral-800">${name}</h6>
+              </div>
+            </div>
+          </td>
+          <td>${rollNo}</td>
+          <td>${classSecText}</td>
+          <td class="text-center">
+            ${actionButtonsHtml}
+          </td>
+        </tr>
+      `);
+    });
+
+
+    // Update entries text
+    const page = data.page;
+    const pageSize = data.page_size;
+    const count = data.count;
+    const startEntry = (page - 1) * pageSize + 1;
+    const endEntry = Math.min(page * pageSize, count);
+    $('#tableInfoSpan').text(`Showing ${startEntry} to ${endEntry} of ${count} entries`);
+  }
+
+  function renderPagination(data) {
+    const nav = $('#paginationNav');
+    const ul = $('#paginationUl');
+    ul.empty();
+
+    if (data.total_pages <= 1) {
+      nav.addClass('d-none');
+      return;
+    }
+
+    nav.removeClass('d-none');
+
+    // Prev Button
+    const prevDisabled = data.page === 1 ? 'disabled' : '';
+    ul.append(`
+      <li class="page-item ${prevDisabled}">
+        <button class="page-link py-6 px-12" data-page="${data.page - 1}" ${prevDisabled}>Previous</button>
+      </li>
+    `);
+
+    // Page numbers
+    for (let i = 1; i <= data.total_pages; i++) {
+      const activeClass = i === data.page ? 'active' : '';
+      ul.append(`
+        <li class="page-item ${activeClass}">
+          <button class="page-link py-6 px-12" data-page="${i}">${i}</button>
+        </li>
+      `);
+    }
+
+    // Next Button
+    const nextDisabled = data.page === data.total_pages ? 'disabled' : '';
+    ul.append(`
+      <li class="page-item ${nextDisabled}">
+        <button class="page-link py-6 px-12" data-page="${data.page + 1}" ${nextDisabled}>Next</button>
+      </li>
+    `);
+  }
+
+  // Handle Institution Choice
+  $('#institutionSelect').on('change', function() {
+    selectedInstitutionId = $(this).val();
+    updateAddBtnLink();
+    loadStudents(1);
+  });
+
+  // Filter triggers
+  $('#classGradeFilter, #sectionFilter').on('keyup', function() {
+    loadStudents(1);
+  });
+
+  $('#statusFilter, #pageSizeSelect').on('change', function() {
+    loadStudents(1);
+  });
+
+  $('#attendanceDate').on('change', function() {
+    const selectedDate = new Date($(this).val());
+    if (selectedDate.getDay() === 0) {
+      $('#markPagePresentBtn, #markPageAbsentBtn').prop('disabled', true).addClass('opacity-50');
+      showToast('Sundays are holidays. Attendance cannot be marked.', 'warning');
+    } else {
+      $('#markPagePresentBtn, #markPageAbsentBtn').prop('disabled', false).removeClass('opacity-50');
+    }
+    loadStudents(1);
+  });
+
+  $('#searchQuery').on('keyup', function() {
+    loadStudents(1);
+  });
+
+  $('#clearFiltersBtn').on('click', function() {
+    $('#classGradeFilter').val('');
+    $('#sectionFilter').val('');
+    $('#statusFilter').val('');
+    $('#searchQuery').val('');
+    loadStudents(1);
+  });
+
+  // Pagination click handlers
+  $(document).on('click', '#paginationUl .page-link', function(e) {
+    e.preventDefault();
+    const page = $(this).data('page');
+    if (page) loadStudents(page);
+  });
+
+  // Quick Status change trigger
+  $(document).on('click', '.status-toggle-btn', function() {
+    const studentId = $(this).data('id');
+    const newStatus = $(this).data('status');
+    const token = getCsrfToken();
+
+    $.ajax({
+      url: `/api/students/${studentId}/status/`,
+      type: 'PATCH',
+      headers: { 'X-CSRFToken': token },
+      contentType: 'application/json',
+      data: JSON.stringify({ status: newStatus }),
+      xhrFields: { withCredentials: true },
+      success: function(res) {
+        showToast('Student status updated successfully!', 'success');
+        loadStudents(currentPage);
+      },
+      error: function(err) {
+        showToast('Failed to update student status.', 'error');
+      }
+    });
+  });
+
+    // Mark Attendance Action
+    $(document).on('click', '.mark-attendance-btn', function() {
+      const studentId = $(this).data('id');
+      const status = $(this).data('status');
+      const attendanceDate = $('#attendanceDate').val();
+
+      if (!attendanceDate) {
+        showToast('Please select an attendance date first.', 'warning');
+        return;
+      }
+      
+      $.ajax({
+        url: '{% url "mark_student_attendance" %}',
+        method: 'POST',
+        headers: { 'X-CSRFToken': getCsrfToken() },
+        contentType: 'application/json',
+        data: JSON.stringify({
+          student_id: studentId,
+          status: status,
+          date: attendanceDate
+        }),
+        success: function(response) {
+          if (response.success) {
+            showToast('Attendance marked successfully!', 'success');
+            loadStudents(currentPage); // reload to update button highlights
+          } else {
+            showToast('Error: ' + response.error, 'error');
+          }
+        },
+        error: function() {
+          showToast('Failed to mark attendance', 'error');
+        }
+      });
+    });
+
+    // Mark Page Present Bulk Action
+    $('#markPagePresentBtn').on('click', function() {
+      const attendanceDate = $('#attendanceDate').val();
+      if (!attendanceDate) {
+        showToast('Please select an attendance date first.', 'warning');
+        return;
+      }
+      
+      if (!window.currentPageStudentIds || window.currentPageStudentIds.length === 0) {
+        showToast('No students to mark on this page.', 'warning');
+        return;
+      }
+      
+      if(!confirm(`Are you sure you want to mark ${window.currentPageStudentIds.length} students as PRESENT for ${attendanceDate}?`)) {
+        return;
+      }
+      
+      const btn = $(this);
+      const originalHtml = btn.html();
+      btn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Marking...').prop('disabled', true);
+      
+      $.ajax({
+        url: '{% url "mark_student_attendance" %}',
+        method: 'POST',
+        headers: { 'X-CSRFToken': getCsrfToken() },
+        contentType: 'application/json',
+        data: JSON.stringify({
+          student_ids: window.currentPageStudentIds,
+          status: 'Present',
+          date: attendanceDate
+        }),
+        success: function(response) {
+          btn.html(originalHtml).prop('disabled', false);
+          if (response.success) {
+            showToast(`Marked ${window.currentPageStudentIds.length} students as Present!`, 'success');
+            loadStudents(currentPage);
+          } else {
+            showToast('Error: ' + response.error, 'error');
+          }
+        },
+        error: function() {
+          btn.html(originalHtml).prop('disabled', false);
+          showToast('Failed to mark bulk attendance', 'error');
+        }
+      });
+    });
+
+    // Mark Page Absent Bulk Action
+    $('#markPageAbsentBtn').on('click', function() {
+      const attendanceDate = $('#attendanceDate').val();
+      if (!attendanceDate) {
+        showToast('Please select an attendance date first.', 'warning');
+        return;
+      }
+      
+      if (!window.currentPageStudentIds || window.currentPageStudentIds.length === 0) {
+        showToast('No students to mark on this page.', 'warning');
+        return;
+      }
+      
+      if(!confirm(`Are you sure you want to mark ${window.currentPageStudentIds.length} students as ABSENT for ${attendanceDate}?`)) {
+        return;
+      }
+      
+      const btn = $(this);
+      const originalHtml = btn.html();
+      btn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Marking...').prop('disabled', true);
+      
+      $.ajax({
+        url: '{% url "mark_student_attendance" %}',
+        method: 'POST',
+        headers: { 'X-CSRFToken': getCsrfToken() },
+        contentType: 'application/json',
+        data: JSON.stringify({
+          student_ids: window.currentPageStudentIds,
+          status: 'Absent',
+          date: attendanceDate
+        }),
+        success: function(response) {
+          btn.html(originalHtml).prop('disabled', false);
+          if (response.success) {
+            showToast(`Marked ${window.currentPageStudentIds.length} students as Absent!`, 'success');
+            loadStudents(currentPage);
+          } else {
+            showToast('Error: ' + response.error, 'error');
+          }
+        },
+        error: function() {
+          btn.html(originalHtml).prop('disabled', false);
+          showToast('Failed to mark bulk attendance', 'error');
+        }
+      });
+    });
+
+  // Delete Action
+  $(document).on('click', '.delete-student-btn', function() {
+    const studentId = $(this).data('id');
+    const $row = $(this).closest('tr');
+    const token = getCsrfToken();
+
+    Swal.fire({
+      title: 'Delete Student Profile?',
+      text: 'Are you sure you want to delete this student profile? This action is permanent and cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: '<i class="ri-delete-bin-line me-1"></i> Yes, Delete',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        popup: 'radius-16 border-0 shadow-lg',
+        confirmButton: 'btn btn-danger radius-8 px-20 py-8 text-sm me-2',
+        cancelButton: 'btn btn-secondary radius-8 px-20 py-8 text-sm'
+      },
+      buttonsStyling: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $row.remove();
+        if ($('#studentTableBody tr').length === 0) {
+          loadStudents(Math.max(1, currentPage - 1));
+        }
+        $.ajax({
+          url: `/api/students/${studentId}/`,
+          type: 'DELETE',
+          headers: { 'X-CSRFToken': token },
+          xhrFields: { withCredentials: true },
+          success: function(res) {
+            Swal.fire({ icon: 'success', title: 'Deleted!', text: 'Student profile deleted successfully.', timer: 1500, showConfirmButton: false });
+          },
+          error: function(err) {
+            loadStudents(currentPage);
+            Swal.fire({ icon: 'error', title: 'Deletion Failed', text: 'Failed to delete student.' });
+          }
+        });
+      }
+    });
+  });
+
+  $('#exportStudentsCsvBtn').on('click', function () {
+    let csv = [];
+    let rows = document.querySelectorAll("table tr");
+    for (let i = 0; i < rows.length; i++) {
+      let row = [], cols = rows[i].querySelectorAll("td, th");
+      for (let j = 0; j < cols.length - 1; j++) {
+        let text = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""');
+        row.push('"' + text.trim() + '"');
+      }
+      csv.push(row.join(","));
+    }
+    let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+    let downloadLink = document.createElement("a");
+    downloadLink.download = `Student_Roster_${new Date().toISOString().slice(0, 10)}.csv`;
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  });
+
+  // Initialize page
+  loadInstitutions();
+});
+</script>
+{% endblock %}

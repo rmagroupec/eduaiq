@@ -1,0 +1,314 @@
+{% load static %}
+<!DOCTYPE html>
+<html data-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Login - EduAiQ</title>
+    <link href="{% static 'admin_assets/images/favicon.png' %}" rel="icon" sizes="16x16" type="image/png" />
+    <link href="{% static 'admin_assets/css/remixicon.css' %}" rel="stylesheet" />
+    <link href="{% static 'admin_assets/css/lib/bootstrap.min.css' %}" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0F172A;
+            --accent: #FFB800;
+            --bg-color: #f6f5fb;
+            --card-bg: #ffffff;
+            --border-color: #e2e0ed;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --input-bg: #F8FAFC;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Ambient Glow Background matching website's theme */
+        body::before {
+            content: "";
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+            top: -10%;
+            left: -10%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(15, 23, 42, 0.06) 0%, rgba(255, 255, 255, 0) 70%);
+            bottom: -10%;
+            right: -10%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px 40px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: 0 16px 48px rgba(15, 23, 42, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 24px 64px rgba(15, 23, 42, 0.12);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .logo img {
+            max-height: 95px !important;
+            width: auto !important;
+            object-fit: contain !important;
+            filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.08));
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .login-header h2 {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .login-header p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 13.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--input-bg);
+            border: 1.5px solid #E2E8F0;
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--text-main);
+            box-sizing: border-box;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .form-group input::placeholder {
+            color: #94A3B8;
+        }
+
+        .form-group input:hover {
+            border-color: #CBD5E1;
+            background: #FFFFFF;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #F59E0B;
+            background: #FFFFFF;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.18);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 18px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+
+        .toggle-password:hover {
+            color: var(--text-main);
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 13.5px;
+            border: 1px solid #fecaca;
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        /* Log In Button -> Logo Dark Navy Base & Yellow Hover */
+        .btn-login {
+            width: 100%;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+            color: #ffffff !important;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #FFB800 0%, #F59E0B 100%) !important;
+            color: #0F172A !important;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.45);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 13.5px;
+            color: var(--text-muted);
+        }
+
+        .login-footer a {
+            color: #D97706 !important;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.2s;
+        }
+
+        .login-footer a:hover {
+            color: #B45309 !important;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Logo -->
+            <div class="logo">
+                <a href="/">
+                    <img src="{% static 'assets/img/eduaiq-logo.png' %}"
+                        alt="EduAiQ Logo" />
+                </a>
+            </div>
+            <div class="login-header">
+                <h2>Welcome Back 👋</h2>
+                <p>Log in to your EduAiQ account to continue</p>
+            </div>
+
+            {% if form_errors %}
+            <div class="alert alert-danger">
+                {% for err in form_errors %}❌ {{ err }}<br>{% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Username or Email Address</label>
+                    <input type="text" id="username" name="username" value="{{ old_username|default:'' }}"
+                        placeholder="Enter your username or email" required autocomplete="username" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required
+                            autocomplete="current-password" />
+                        <button type="button" class="toggle-password" onclick="togglePassword()"
+                            aria-label="Toggle password visibility">
+                            <i class="ri-eye-line"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="form-check d-flex align-items-center gap-2 m-0 p-0">
+                        <input class="form-check-input ms-0" id="remember" type="checkbox" style="cursor: pointer;" />
+                        <label class="form-check-label text-sm mb-0 ms-1" for="remember" style="color: var(--text-muted); cursor: pointer; font-size: 13.5px;">Remember me</label>
+                    </div>
+                    <a href="{% url 'forgot_password' %}" class="text-sm fw-semibold" style="color: #D97706; text-decoration: none; font-size: 13.5px; transition: color 0.2s;">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn-login" style="text-align:center;">Log in</button>
+            </form>
+
+            <div class="login-footer">
+                <p>Don't have an account? <a href="{% url 'register' %}">Create account</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'admin_assets/js/lib/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'admin_assets/js/lib/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const toggleBtn = document.querySelector('.toggle-password i');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleBtn.classList.replace('ri-eye-line', 'ri-eye-off-line');
+            } else {
+                passwordField.type = 'password';
+                toggleBtn.classList.replace('ri-eye-off-line', 'ri-eye-line');
+            }
+        }
+    </script>
+</body>
+
+</html>

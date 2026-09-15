@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Our Team - EduAiQ | Mentors & Coaches{% endblock %}
+
+{% block description %}Meet the EduAiQ team — AI mentors, skill development coaches, and Olympiad curriculum leads guiding students and institutions through the full EduAiQ ecosystem.{% endblock %}
+
+{% block content %}
+<section class="inner-banner-wrap">
+<div class="inner-baner-container" style="background-image: url({% static 'assets/img/blog-default-indian.jpg' %});">
+<div class="container">
+<div class="inner-banner-content">
+<h1 class="inner-title">Our Team</h1>
+<div class="breadcrumb-content">
+<ul class="breadcrumb">
+
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+<section class="home-team-section team-page-section py-5">
+<div class="container">
+  <div class="text-center mb-4">
+    <div class="title-divider-center mx-auto mb-2"></div>
+    <h2 class="about-title mb-3">The People Behind EduAiQ</h2>
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-10">
+        <p class="about-describe text-muted mb-0">
+          From AI Lab mentors to Olympiad curriculum leads, every person on this team works
+          directly with students and institutions — not behind the scenes. Here's a look at
+          the mentors guiding EduAiQ's programs.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-member mt-4">
+    <div class="row align-items-center justify-content-center">
+      {% for member in team_members %}
+      <div class="col-sm-6 col-md-4 col-lg-3 p-3">
+        <figure class="team-img">
+          <a href="/team/{{ member.slug }}/">
+            <img alt="{{ member.name }}" src="{{ member.photo_url }}"/>
+          </a>
+        </figure>
+        <div class="team-content text-center">
+          <h4>
+            <a href="/team/{{ member.slug }}/">{{ member.name }}</a>
+          </h4>
+          <p>{{ member.designation }}</p>
+        </div>
+        <div class="d-flex justify-content-center align-items-center">
+          <div class="social-links team-social-link">
+            <ul>
+              {% if member.facebook_url %}
+              <li>
+                <a href="{{ member.facebook_url }}" target="_blank">
+                  <i class="fab fa-facebook"></i>
+                </a>
+              </li>
+              {% endif %}
+              {% if member.twitter_url %}
+              <li>
+                <a href="{{ member.twitter_url }}" target="_blank">
+                  <i class="fab fa-twitter"></i>
+                </a>
+              </li>
+              {% endif %}
+              {% if member.whatsapp_url %}
+              <li>
+                <a href="{{ member.whatsapp_url }}" target="_blank">
+                  <i class="fab fa-whatsapp"></i>
+                </a>
+              </li>
+              {% endif %}
+              {% if member.linkedin_url %}
+              <li>
+                <a href="{{ member.linkedin_url }}" target="_blank">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center py-5">
+        <p class="text-muted">No team members listed yet.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+</section>
+
+
+<section class="home-fact-section">
+<div class="overlay"></div>
+<div class="container">
+<div class="row align-items-center">
+<div class="col-lg-7">
+<div class="fact-section-head">
+<div class="title-divider"></div>
+<h2 class="fact-section-title">Want To Mentor With EduAiQ?</h2>
+<p class="fact-section-info">
+                                    We're always looking for mentors and coaches across AI, skill development, and
+                                    Olympiad subjects. If you'd rather build with students than sit behind a desk,
+                                    get in touch.
+                                </p>
+<div class="fact-list">
+<ul>
+<li>Flexible, project-based mentoring roles.</li>
+<li>Work across the AI Lab, Skill Development, or Olympiad programs.</li>
+<li>Open to both full-time and part-time mentors.</li>
+</ul>
+</div>
+<div class="service-btn">
+<a class="button-round-secondary" href="/contact/">GET IN TOUCH</a>
+</div>
+</div>
+</div>
+<div class="col-lg-5">
+<figure class="figure-round-border">
+<img alt="EduAiQ Smart Learning Classroom" src="{% static 'assets/img/eduaiq-smart-classroom.jpg' %}"/>
+</figure>
+</div>
+</div>
+</div>
+</section>
+{% endblock %}

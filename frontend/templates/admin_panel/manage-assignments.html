@@ -1,0 +1,254 @@
+{% extends "admin_panel/base.html" %}
+
+{% block title %}Manage Assignments - EduAiQ{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+    <div class="d-flex align-items-center gap-3">
+        <h5 class="fw-bold text-dark mb-1">
+            <i class="ri-file-edit-line text-primary me-2"></i>Assignments & Grading
+        </h5>
+    </div>
+</div>
+
+<div class="card mb-24 radius-8 border shadow-sm">
+    <div class="card-header bg-white border-bottom d-flex align-items-center justify-content-between py-3 px-4">
+        <h6 class="mb-0 fw-bold text-dark"><i class="ri-list-check-2 me-2 text-primary fs-5 align-middle"></i>Student Submissions</h6>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 border-0">
+                <thead class="bg-light text-muted text-xs text-uppercase fw-bold border-bottom border-light" style="letter-spacing: 0.5px;">
+                    <tr>
+                        <th class="ps-5 py-3 border-0" style="width: 20%;">Student</th>
+                        <th class="py-3 border-0" style="width: 20%;">Course & Assignment</th>
+                        <th class="py-3 border-0" style="width: 15%;">Status</th>
+                        <th class="py-3 border-0" style="width: 15%;">Grade</th>
+                        <th class="py-3 border-0" style="width: 15%;">Submitted At</th>
+                        <th class="text-end pe-5 py-3 border-0" style="width: 15%;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sub in submissions %}
+                    <tr>
+                        <td class="ps-5 py-4 border-bottom border-light">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar bg-primary-subtle text-primary fw-bold rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm" style="width: 44px; height: 44px; font-size: 1.1rem;">
+                                    {{ sub.student.get_full_name|default:sub.student.username|make_list|first|upper }}
+                                </div>
+                                <div>
+                                    <h6 class="mb-2 text-dark fw-bold" style="font-size: 1.05rem;">{{ sub.student.get_full_name|default:sub.student.username }}</h6>
+                                    <small class="text-muted"><i class="ri-mail-line me-1"></i>{{ sub.student.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 border-bottom border-light">
+                            <div class="fw-bold text-dark mb-2">{{ sub.lesson.title }}</div>
+                            <small class="text-muted"><i class="ri-book-read-line me-1"></i>{{ sub.lesson.module.course.title|truncatechars:35 }}</small>
+                        </td>
+                        <td class="py-4 border-bottom border-light">
+                            {% if sub.status == 'graded' %}
+                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 fw-semibold shadow-sm"><i class="ri-checkbox-circle-fill me-1"></i>Graded</span>
+                            {% elif sub.status == 'submitted' %}
+                                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-3 py-2 fw-semibold shadow-sm"><i class="ri-time-line me-1"></i>Pending</span>
+                            {% elif sub.status == 'skipped' %}
+                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-3 py-2 fw-semibold shadow-sm">Skipped</span>
+                            {% else %}
+                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-3 py-2 fw-semibold shadow-sm">{{ sub.status|title }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-4 border-bottom border-light">
+                            {% if sub.status == 'graded' %}
+                                <span class="fw-bold text-primary px-3 py-2 bg-primary-subtle rounded-pill shadow-sm">{{ sub.grade }}</span>
+                            {% else %}
+                                <span class="text-muted text-sm fw-medium px-3 py-2 bg-light rounded-pill shadow-sm border">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-muted text-sm fw-medium py-4 border-bottom border-light">{{ sub.submitted_at|date:"M d, Y" }} <br><small>{{ sub.submitted_at|date:"h:i A" }}</small></td>
+                        <td class="text-end pe-5 py-4 border-bottom border-light">
+                            {% if sub.status == 'submitted' %}
+                                <button type="button" class="btn btn-sm btn-primary rounded-pill px-4 py-2 fw-semibold shadow-sm" onclick="openGradeModal({{ sub.id }}, '{{ sub.student.get_full_name|default:sub.student.username|escapejs }}', '{{ sub.lesson.title|escapejs }}', '{{ sub.submission_text|escapejs|default:'' }}', '{{ sub.submission_file|default:'' }}', '{{ sub.grade|escapejs|default:'' }}', '{{ sub.feedback|escapejs|default:'' }}')">
+                                    Grade <i class="ri-arrow-right-s-line ms-1"></i>
+                                </button>
+                            {% elif sub.status == 'graded' %}
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-4 py-2 fw-semibold" onclick="openGradeModal({{ sub.id }}, '{{ sub.student.get_full_name|default:sub.student.username|escapejs }}', '{{ sub.lesson.title|escapejs }}', '{{ sub.submission_text|escapejs|default:'' }}', '{{ sub.submission_file|default:'' }}', '{{ sub.grade|escapejs|default:'' }}', '{{ sub.feedback|escapejs|default:'' }}')">
+                                    View / Edit
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="ri-inbox-archive-line fa-3x text-secondary-light mb-3 d-block"></i>
+                            <h6 class="fw-bold">No assignments submitted yet.</h6>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Grading Modal -->
+<div class="modal fade" id="gradeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 radius-8">
+            <div class="modal-header bg-light border-bottom px-24 py-16">
+                <h5 class="modal-title fw-bold text-dark"><i class="ri-check-double-line me-2 text-primary"></i>Grade Assignment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-24">
+                <div class="row">
+                    <div class="col-md-7 border-end pe-md-4">
+                        <h6 class="fw-bold mb-1" id="modalStudentName">Student Name</h6>
+                        <p class="text-muted text-sm mb-4" id="modalAssignmentTitle">Assignment Title</p>
+
+                        <div class="mb-4">
+                            <h6 class="text-xs text-uppercase fw-bold text-muted mb-2">Student's Answer / Notes</h6>
+                            <div class="bg-light p-3 rounded radius-8 border" style="min-height: 120px; max-height: 300px; overflow-y: auto;" id="modalSubmissionText">
+                                No text provided.
+                            </div>
+                        </div>
+
+                        <div class="mb-3" id="modalFileContainer" style="display: none;">
+                            <h6 class="text-xs text-uppercase fw-bold text-muted mb-2">Attached File</h6>
+                            <a href="#" id="modalFileLink" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">
+                                <i class="ri-download-cloud-2-line me-1"></i> View / Download File
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-5 ps-md-4">
+                        <form id="gradeForm" onsubmit="submitGrade(event)">
+                            <input type="hidden" id="modalSubId" name="sub_id">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-dark">Grade / Score</label>
+                                <input type="text" id="modalGradeInput" name="grade" class="form-control" placeholder="e.g. 8/10, A+, 95%" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-dark">Teacher Feedback</label>
+                                <textarea id="modalFeedbackInput" name="feedback" class="form-control" rows="5" placeholder="Great job! Need improvement in..."></textarea>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary fw-bold" id="saveGradeBtn">
+                                    Save Grade & Feedback
+                                </button>
+                            </div>
+                        </form>
+                        <div id="gradeAlert" class="alert mt-3 d-none" role="alert"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let gradeModal;
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        gradeModal = new bootstrap.Modal(document.getElementById('gradeModal'));
+    });
+
+    function openGradeModal(subId, studentName, title, text, fileUrl, currentGrade, currentFeedback) {
+        document.getElementById('modalSubId').value = subId;
+        document.getElementById('modalStudentName').textContent = studentName;
+        document.getElementById('modalAssignmentTitle').textContent = title;
+        
+        const textBox = document.getElementById('modalSubmissionText');
+        if (text && text.trim() !== '') {
+            textBox.textContent = text;
+            textBox.classList.remove('text-muted');
+        } else {
+            textBox.textContent = 'No text provided.';
+            textBox.classList.add('text-muted');
+        }
+
+        const fileContainer = document.getElementById('modalFileContainer');
+        const fileLink = document.getElementById('modalFileLink');
+        if (fileUrl && fileUrl.trim() !== '') {
+            fileContainer.style.display = 'block';
+            fileLink.href = fileUrl.startsWith('http') ? fileUrl : '/' + fileUrl.replace(/^\/+/, '');
+        } else {
+            fileContainer.style.display = 'none';
+        }
+
+        document.getElementById('modalGradeInput').value = currentGrade || '';
+        document.getElementById('modalFeedbackInput').value = currentFeedback || '';
+        
+        const alert = document.getElementById('gradeAlert');
+        alert.className = 'alert mt-3 d-none';
+        
+        gradeModal.show();
+    }
+
+    async function submitGrade(event) {
+        event.preventDefault();
+        
+        const btn = document.getElementById('saveGradeBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Saving...';
+        btn.disabled = true;
+        
+        const subId = document.getElementById('modalSubId').value;
+        const grade = document.getElementById('modalGradeInput').value;
+        const feedback = document.getElementById('modalFeedbackInput').value;
+        const alert = document.getElementById('gradeAlert');
+        
+        const formData = new FormData();
+        formData.append('grade', grade);
+        formData.append('feedback', feedback);
+
+        try {
+            const response = await fetch(`/admin-panel/assignments/${subId}/grade/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                alert.className = 'alert alert-success mt-3';
+                alert.textContent = 'Grade saved successfully! Reflecting on Parent Dashboard...';
+                
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                alert.className = 'alert alert-danger mt-3';
+                alert.textContent = data.message || 'Error saving grade.';
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        } catch (error) {
+            alert.className = 'alert alert-danger mt-3';
+            alert.textContent = 'Network error occurred.';
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    // Helper to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock %}

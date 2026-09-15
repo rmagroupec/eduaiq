@@ -1,0 +1,557 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pay Fee - EduAiQ | Secure Online Fee Payment{% endblock %}
+
+{% block description %}Pay your EduAiQ course fee, Olympiad fee, or franchise application fee securely online via Razorpay — UPI, cards, and net banking supported.{% endblock %}
+
+{% block css %}
+<style>
+    /* EduAiQ Pay Fee Page - Logo Theme Alignment */
+    .inner-baner-container:before {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.88) 60%, rgba(234, 88, 12, 0.82) 100%) !important;
+    }
+    .inner-baner-container .inner-title {
+        font-weight: 800 !important;
+        letter-spacing: 0.5px;
+        text-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .checkout-section {
+        padding-top: 60px;
+        padding-bottom: 90px;
+    }
+
+    .cheakout-title, .Information-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+        font-size: 1.25rem !important;
+        position: relative;
+        padding-bottom: 12px;
+        margin-bottom: 24px !important;
+        border-bottom: 2px solid #ffedd5 !important;
+    }
+
+    .cheakout-title::after, .Information-title::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 50px;
+        height: 2px;
+        background-color: #ea580c !important;
+    }
+
+    .checkout-field-wrap, .special-notes-wrap {
+        background: #ffffff !important;
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 30px !important;
+        box-shadow: 0 8px 30px rgba(15, 23, 42, 0.05) !important;
+        margin-bottom: 24px !important;
+    }
+
+    .form-group label {
+        color: #1e293b !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+        margin-bottom: 8px !important;
+    }
+
+    .form-group .label-star {
+        color: #ea580c !important;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        background-color: #f8fafc !important;
+        padding: 12px 18px !important;
+        font-size: 0.95rem !important;
+        color: #0f172a !important;
+        transition: all 0.25s ease !important;
+        width: 100% !important;
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        border-color: #f97316 !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15) !important;
+        outline: none !important;
+    }
+
+    .widget-bg {
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 24px !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05) !important;
+        margin-bottom: 24px !important;
+    }
+
+    .widget-table-summary th {
+        color: #ea580c !important;
+        font-weight: 700 !important;
+        padding-bottom: 12px;
+        border-bottom: 1.5px solid #ffedd5;
+    }
+
+    .widget-table-summary td {
+        padding: 12px 0;
+        color: #334155;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .custom-radio-field label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        color: #0f172a;
+        cursor: pointer;
+    }
+
+    .custom-radio-field input[type="radio"] {
+        accent-color: #ea580c !important;
+        width: 18px !important;
+        height: 18px !important;
+    }
+
+    .button-round-secondary, .btn-pay-fee-submit {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        font-size: 1rem !important;
+        letter-spacing: 0.5px;
+        border-radius: 50rem !important;
+        padding: 16px 28px !important;
+        box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-transform: uppercase !important;
+        border: none !important;
+        text-decoration: none !important;
+    }
+
+    .button-round-secondary:hover, .btn-pay-fee-submit:hover {
+        transform: translateY(-2px) scale(1.02) !important;
+        box-shadow: 0 10px 28px rgba(234, 88, 12, 0.55) !important;
+        color: #ffffff !important;
+    }
+
+    .need-help-widget {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+        border: 1.5px solid #334155 !important;
+        border-radius: 20px !important;
+        padding: 24px !important;
+        color: #ffffff !important;
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.15) !important;
+        margin-top: 24px;
+    }
+
+    .need-help-widget .bg-title {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        padding: 6px 16px !important;
+        border-radius: 50rem !important;
+        display: inline-block !important;
+        font-weight: 700 !important;
+        font-size: 0.85rem !important;
+        margin-bottom: 16px !important;
+    }
+
+    .need-help-widget ul {
+        list-style: none !important;
+        padding-left: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    .need-help-widget ul li {
+        margin-bottom: 10px;
+    }
+
+    .need-help-widget ul li a {
+        color: #fed7aa !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease !important;
+        text-decoration: none !important;
+    }
+
+    .need-help-widget ul li a:hover {
+        color: #ffffff !important;
+        padding-left: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="inner-banner-wrap">
+<div class="inner-baner-container" style="background-image: url({% static 'assets/img/blog-default-indian.jpg' %});">
+<div class="container">
+<div class="inner-banner-content">
+<h1 class="inner-title">Pay Fee</h1>
+<div class="breadcrumb-content">
+<ul class="breadcrumb">
+
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+<div class="checkout-section">
+<div class="container">
+<div class="row">
+<div class="col-md-7 right-sidebar">
+<div class="checkout-field-wrap">
+<h3 class="cheakout-title">Payer Details</h3>
+<div class="row">
+<div class="col-sm-6">
+<div class="form-group">
+<label>Full Name <abbr class="label-star">*</abbr></label>
+<input name="full_name" placeholder="Student / Applicant Name" type="text"/>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="form-group">
+<label>Phone Number <abbr class="label-star">*</abbr></label>
+<input name="phone" placeholder="10-digit mobile number" type="text"/>
+</div>
+</div>
+<div class="col-sm-12">
+<div class="form-group">
+<label>Email Address <abbr class="label-star">*</abbr></label>
+<input name="email" placeholder="Email Address" type="email"/>
+</div>
+</div>
+<div class="col-sm-12">
+
+<div class="form-group">
+<label>What Are You Paying For? <abbr class="label-star">*</abbr></label>
+<select id="feeCategory" name="fee_category" onchange="updateFeeSummary()">
+<option value="franchise" selected>Franchise Application Fee</option>
+<option value="institution">Institution Membership Fee</option>
+<option value="skill">Skill Development Custom Dues</option>
+<option value="other">Other / Custom Dues</option>
+</select>
+</div>
+</div>
+<div class="col-sm-12" id="customAmountWrapper" style="display: none;">
+<div class="form-group">
+<label>Custom Amount (₹) <abbr class="label-star">*</abbr></label>
+<input id="customAmount" name="custom_amount" placeholder="Enter amount to pay" type="number" min="1" oninput="updateFeeSummary()"/>
+</div>
+
+<div class="col-sm-6">
+<div class="form-group">
+<label>Roll Number / Student ID (if any)</label>
+<input name="roll_number" placeholder="Optional" type="text"/>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="form-group last-form-group">
+<label>Institution / School Name (if applicable)</label>
+<input name="institution" placeholder="Optional" type="text"/>
+</div>
+</div>
+</div>
+</div>
+<div class="special-notes-wrap">
+<div class="col-sm-12">
+<h3 class="Information-title">Additional Information</h3>
+<div class="form-group">
+<label>Notes (optional)</label>
+<textarea id="checkoutNotes" placeholder="Anything we should know — e.g. a specific batch, course name, or reference number" rows="3"></textarea>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-5">
+<aside class="sidebar">
+<div class="widget-bg widget-table-summary">
+<h3 class="cheakout-title">Fee Summary</h3>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th class="text-right">Amount</th>
+</tr>
+</thead>
+<tbody>
+
+<tr>
+<td>Selected category</td>
+<td class="text-right" id="summaryCategory">Franchise Application Fee</td>
+</tr>
+<tr>
+<td><strong>Total Payable</strong></td>
+<td class="text-right"><strong style="color: #ea580c;" id="summaryAmount">₹15000</strong></td>
+</tr>
+
+</tbody>
+</table>
+<p style="font-size: 13px; color: #64748b; margin-top: 15px; margin-bottom: 0;">
+    Exact fee amounts vary by course, olympiad level, or program. The final amount is confirmed on the secure payment screen before you pay.
+</p>
+</div>
+<div class="widget-bg widget-paymet-bank">
+<div class="payment-wrap">
+<h3 class="cheakout-title">Payment Method</h3>
+<div class="form-group">
+<div class="custom-radio-field">
+<label>
+<input checked="" name="pay_method" type="radio" value="razorpay"/>
+<span class="radio-field"></span>
+UPI / Cards / Net Banking (via Razorpay)
+</label>
+</div>
+<div class="desc" style="font-size: 13px; color: #64748b; margin-top: 8px; margin-bottom: 20px;">
+    Secure payment processed by Razorpay. You'll receive a payment confirmation by email and SMS once your transaction is complete.
+</div>
+</div>
+</div>
+<button type="button" class="button-round-secondary w-100" id="pay-btn" style="display:block; text-align:center; border:none; width: 100%;">PROCEED TO PAY VIA RAZORPAY</button>
+</div>
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+        function updateFeeSummary() {
+            const cat = document.getElementById('feeCategory');
+            const customWrap = document.getElementById('customAmountWrapper');
+            const summaryCat = document.getElementById('summaryCategory');
+            const summaryAmount = document.getElementById('summaryAmount');
+            
+            let catName = cat.options[cat.selectedIndex].text;
+            summaryCat.innerText = catName;
+
+            let val = cat.value;
+            let amount = 0;
+
+            if (val === 'franchise') {
+                customWrap.style.display = 'none';
+                amount = 15000;
+            } else if (val === 'institution') {
+                customWrap.style.display = 'none';
+                amount = 5000;
+            } else {
+                customWrap.style.display = 'block';
+                let customVal = parseInt(document.getElementById('customAmount').value) || 0;
+                amount = customVal;
+            }
+            summaryAmount.innerText = '₹' + amount;
+        }
+
+        document.getElementById("pay-btn").addEventListener("click", async function () {
+            
+            // Validate Form
+            const fullName = document.querySelector('input[name="full_name"]').value.trim();
+            const phone = document.querySelector('input[name="phone"]').value.trim();
+            const email = document.querySelector('input[name="email"]').value.trim();
+            const rollNo = document.querySelector('input[name="roll_number"]').value.trim();
+            const institutionName = document.querySelector('input[name="institution"]').value.trim();
+            const notes = document.getElementById('checkoutNotes').value.trim();
+            
+            const cat = document.getElementById('feeCategory');
+            const catVal = cat.value;
+            const catName = cat.options[cat.selectedIndex].text;
+
+            if (!fullName || !phone || !email) {
+                alert("Please fill in all mandatory fields (Name, Phone, Email).");
+                return;
+            }
+
+            let amount = 0;
+            if (catVal === 'franchise') amount = 15000;
+            else if (catVal === 'institution') amount = 5000;
+            else amount = parseInt(document.getElementById('customAmount').value) || 0;
+
+            if (amount <= 0) {
+                alert("Please enter a valid amount greater than 0.");
+                return;
+            }
+
+            try {
+                // Step 1: Create Order
+                const response = await fetch("{% url 'create_razorpay_order' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie("csrftoken") || ''
+                    },
+                    body: JSON.stringify({ amount: amount })
+                });
+
+                const data = await response.json();
+                if (data.status !== "success") {
+                    alert(data.message || "Failed to create order.");
+                    return;
+                }
+
+                // Step 2: Open Razorpay
+                const options = {
+                    key: data.key_id,
+                    amount: data.amount,
+                    currency: data.currency,
+                    name: "EduAiQ",
+                    description: catName,
+                    order_id: data.order_id,
+                    prefill: {
+                        name: fullName,
+                        email: email,
+                        contact: phone
+                    },
+                    theme: { color: "#ea580c" },
+                    handler: function (paymentResponse) {
+                        console.log("Payment Success:", paymentResponse);
+                        
+                        // Step 3: Verify & Save Transaction
+                        fetch("/payments/api/payment/verify-signature/", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRFToken": getCookie("csrftoken") || ''
+                            },
+                            body: JSON.stringify({
+                                razorpay_order_id: paymentResponse.razorpay_order_id,
+                                razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                                razorpay_signature: paymentResponse.razorpay_signature,
+                                amount: amount,
+                                description: catName + (notes ? " - " + notes : ""),
+                                source_type: "miscellaneous_fee"
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(verifyData => {
+                            if (verifyData.status === "success") {
+                                showPaymentSuccessModal(paymentResponse.razorpay_payment_id, amount, catName);
+                            } else {
+                                alert("Payment verified but saving failed: " + verifyData.message);
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            alert("Payment verification error!");
+                        });
+                    }
+                };
+
+                const razorpay = new Razorpay(options);
+                razorpay.on('payment.failed', function (resp) {
+                    alert('Payment Failed: ' + resp.error.description);
+                });
+                razorpay.open();
+
+            } catch (error) {
+                console.error("Payment Error:", error);
+                alert("Something went wrong. Check browser console.");
+            }
+        });
+
+        // Helper to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+function showPaymentSuccessModal(txnId, price, courseTitle) {
+
+    const successHTML = `
+      <div class="modal fade show" id="paymentSuccessModal" tabindex="-1" style="display: block; background: rgba(15,23,42,0.85); backdrop-filter: blur(10px); z-index: 1070;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+          <div class="modal-content text-center p-4" style="border-radius: 24px; border: 1px solid rgba(16,185,129,0.4); box-shadow: 0 25px 60px rgba(0,0,0,0.5); background: #ffffff;">
+            
+            <div class="d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 76px; height: 76px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; border-radius: 50%; box-shadow: 0 10px 25px rgba(16,185,129,0.4);">
+              <i class="fas fa-check" style="font-size: 38px;"></i>
+            </div>
+
+            <h3 class="fw-extrabold text-dark mb-1">🎉 Payment Successful!</h3>
+            <p class="text-muted text-sm mb-3">Your transaction has been processed and verified via <strong>Razorpay Gateway</strong>.</p>
+
+            <div class="card p-3 border-0 radius-16 text-start mb-3" style="background: #f8fafc; border: 1px solid #e2e8f0 !important;">
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted text-xs">Transaction ID:</span>
+                <strong class="text-dark text-xs font-monospace">${txnId}</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted text-xs">Payment Gateway:</span>
+                <span class="badge bg-success text-white text-xs fw-bold" style="background: #10b981 !important;">Razorpay Mode</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted text-xs">Item / Course:</span>
+                <strong class="text-dark text-xs">${courseTitle}</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted text-xs">Amount Paid:</span>
+                <strong class="text-primary text-sm">₹${price}</strong>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted text-xs">Status:</span>
+                <span class="text-success text-xs fw-bold"><i class="fas fa-check-circle me-1"></i> VERIFIED & SUCCESSFUL</span>
+              </div>
+            </div>
+
+            <div class="alert alert-warning py-2 px-3 radius-12 text-xs mb-3 d-flex align-items-center justify-content-center gap-2" style="background: #fffbeb; color: #b45309; border: 1px solid #fde68a;">
+              <i class="fas fa-clock text-warning fs-6"></i>
+              <span>Redirecting to <strong>My Learning</strong> in <strong id="redirectCountdown">3</strong> seconds...</span>
+            </div>
+
+            <div class="d-flex gap-2">
+              <a href="/my-learning/" class="btn btn-primary w-100 py-2.5 radius-12 fw-bold text-sm" style="background: #ea580c; border: none;">
+                <i class="fas fa-book-reader me-1"></i> Go to My Learning
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+
+    let existing = document.getElementById('paymentSuccessModal');
+    if (existing) existing.remove();
+
+    document.body.insertAdjacentHTML('beforeend', successHTML);
+
+    let timeLeft = 3;
+    const interval = setInterval(() => {
+      timeLeft--;
+      const el = document.getElementById('redirectCountdown');
+      if (el) el.innerText = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        window.location.href = '/my-learning/';
+      }
+    }, 1000);
+  }
+    </script>
+<div class="need-help-widget">
+<h5 class="bg-title">Need Help?</h5>
+<ul>
+<li>
+<a href="/page/support/"><i class="fas fa-chevron-right me-2 text-warning"></i> Visit the Support page</a>
+</li>
+<li>
+<a href="/contact/"><i class="fas fa-chevron-right me-2 text-warning"></i> Contact Us directly</a>
+</li>
+<li>
+<a href="tel:+918052350041"><i class="fas fa-phone-alt me-2 text-warning"></i> Call +91 8052350041</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

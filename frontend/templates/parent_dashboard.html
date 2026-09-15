@@ -1,0 +1,170 @@
+{% extends "admin_panel/base.html" %}
+
+{% block title %}Parent Dashboard - Child Profile{% endblock %}
+
+{% block content %}
+  <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+    <div>
+      <h5 class="fw-bold text-dark mb-1">
+        <i class="ri-parent-line text-success me-2"></i>Parent Dashboard
+      </h5>
+      <p class="text-neutral-600 text-sm mb-0">Welcome back, <strong class="text-dark">{{ request.user.first_name|default:request.user.username }}</strong>! Here is the academic overview of your child.</p>
+    </div>
+  </div>
+
+  {% if child %}
+    <div class="card mb-24 border-0 shadow-sm" style="border-radius: 16px; overflow: hidden;">
+      <div class="card-header border-0 bg-primary-600" style="padding: 24px;">
+        <h4 class="mb-1 fw-bold text-white">Child Profile: {{ child.user.get_full_name }}</h4>
+        <p class="text-white text-opacity-75 text-sm mb-0"><i class="ri-id-card-line me-1"></i>Admission No: {{ child.admission_no|default:"N/A" }}</p>
+      </div>
+      <div class="card-body">
+        <div class="row gy-4">
+          
+          <!-- Attendance -->
+          <div class="col-md-6" id="attendance-section">
+            <div class="card h-100 border-0 shadow-sm" style="border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important; transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-4px)';" onmouseout="this.style.transform='translateY(0)';">
+              <div class="card-header bg-white border-bottom pb-2 pt-4">
+                <h6 class="mb-0 fw-bold"><i class="ri-calendar-check-line me-2 text-primary"></i>1. Attendance Summary</h6>
+              </div>
+              <div class="card-body">
+                {% if attendance_summary and attendance_summary.total > 0 %}
+                <div class="mb-4 p-3 bg-light rounded-3 border-0">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-secondary fw-semibold">Overall Attendance</span>
+                    <span class="badge bg-primary-100 text-primary-700 px-3 py-1 rounded-pill fw-bold fs-6">{{ attendance_summary.percentage }}%</span>
+                  </div>
+                  <div class="progress rounded-pill overflow-visible mb-3" style="height: 10px; background-color: #e2e8f0;">
+                    <div class="progress-bar rounded-pill" role="progressbar" style="width: {{ attendance_summary.percentage }}%; background: linear-gradient(90deg, #10b981, #34d399); box-shadow: 0 4px 10px rgba(16,185,129,0.4);" aria-valuenow="{{ attendance_summary.percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-2">
+                    <span class="badge bg-success-focus text-success-main px-3 py-2 rounded-pill fw-semibold shadow-sm"><i class="ri-check-line me-1"></i> Present: {{ attendance_summary.present }}</span>
+                    <span class="badge bg-danger-focus text-danger-main px-3 py-2 rounded-pill fw-semibold shadow-sm"><i class="ri-close-line me-1"></i> Absent: {{ attendance_summary.absent }}</span>
+                  </div>
+                </div>
+                
+                <h6 class="fs-14 fw-bold text-dark border-bottom pb-2 mb-3">Recent Logs (Last 5 Days)</h6>
+                {% endif %}
+
+                {% if recent_logs %}
+                  <div class="d-flex align-items-center gap-4 overflow-auto py-2">
+                    {% for log in recent_logs %}
+                    <div class="d-flex flex-column align-items-center" style="transition: transform 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-3px)';" onmouseout="this.style.transform='translateY(0)';">
+                      <div class="rounded-circle d-flex align-items-center justify-content-center mb-2 shadow" 
+                           style="width: 48px; height: 48px; transition: box-shadow 0.2s; {% if log.status == 'Present' or log.status == 'P' %}background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 4px 12px rgba(16,185,129,0.3) !important;{% elif log.status == 'H' or log.status == 'WFH' %}background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; box-shadow: 0 4px 12px rgba(59,130,246,0.3) !important;{% elif log.status == 'Absent' or log.status == 'A' %}background: linear-gradient(135deg, #ef4444, #dc2626); color: white; box-shadow: 0 4px 12px rgba(239,68,68,0.3) !important;{% else %}background-color: #f1f5f9; color: #94a3b8; border: 2px dashed #cbd5e1;{% endif %}">
+                        {% if log.status == 'Present' or log.status == 'P' %}
+                          <i class="ri-check-line fs-5"></i>
+                        {% elif log.status == 'H' or log.status == 'WFH' %}
+                          <i class="ri-home-4-line fs-5"></i>
+                        {% elif log.status == 'Absent' or log.status == 'A' %}
+                          <i class="ri-close-line fs-5"></i>
+                        {% else %}
+                          <i class="ri-subtract-line fs-5"></i>
+                        {% endif %}
+                      </div>
+                      <small class="text-neutral-600 fw-medium text-nowrap" style="font-size: 12px;">{{ log.date|date:"d M" }}</small>
+                    </div>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                <p class="text-neutral-500 mb-0">No attendance records found.</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          
+          <!-- Exam Results & Performance -->
+          <div class="col-md-6" id="exam-section">
+            <div class="card h-100 border-0 shadow-sm" style="border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important; transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-4px)';" onmouseout="this.style.transform='translateY(0)';">
+              <div class="card-header bg-white border-bottom pb-2 pt-4">
+                <h6 class="mb-0 fw-bold"><i class="ri-bar-chart-box-line me-2 text-info"></i>2. Exam Results & Performance</h6>
+              </div>
+              <div class="card-body">
+                {% if exam_results %}
+                <ul class="list-group list-group-flush">
+                  {% for exam in exam_results %}
+                  <li class="list-group-item border-0 mb-3 p-3 shadow-sm" style="border-radius: 12px; background: #f8fafc; transition: all 0.2s;" onmouseover="this.style.background='#f1f5f9';" onmouseout="this.style.background='#f8fafc';">
+                    <strong class="text-dark d-block mb-1">{{ exam.quiz.lesson.title }}</strong>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                      <small class="text-neutral-500"><i class="ri-calendar-line me-1"></i>{{ exam.started_at|date:"M d, Y" }}</small>
+                      <div class="d-flex gap-2">
+                        <span class="badge bg-primary-focus text-primary-main rounded-pill px-2 py-1">{{ exam.get_status_display }}</span>
+                        <span class="badge bg-success-focus text-success-main rounded-pill px-2 py-1">{{ exam.score_pct }}%</span>
+                      </div>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-neutral-500 mb-0">No exam records found.</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          
+          <!-- Fees -->
+          <div class="col-md-6" id="fee-section">
+            <div class="card h-100 border-0 shadow-sm" style="border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important; transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-4px)';" onmouseout="this.style.transform='translateY(0)';">
+              <div class="card-header bg-white border-bottom pb-2 pt-4">
+                <h6 class="mb-0 fw-bold"><i class="ri-wallet-3-line me-2 text-warning"></i>3. Fee Details</h6>
+              </div>
+              <div class="card-body">
+                {% if invoices %}
+                <ul class="list-group list-group-flush">
+                  {% for inv in invoices %}
+                  <li class="list-group-item border-0 mb-3 p-3 shadow-sm" style="border-radius: 12px; background: #f8fafc; transition: all 0.2s;" onmouseover="this.style.background='#f1f5f9';" onmouseout="this.style.background='#f8fafc';">
+                    <div class="d-flex justify-content-between mb-1">
+                      <strong class="text-dark">{{ inv.invoice_number }}</strong>
+                      <strong class="text-dark">₹{{ inv.total_amount }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                      <small class="text-neutral-500"><i class="ri-calendar-line me-1"></i>Due: {{ inv.due_date|date:"M d, Y" }}</small>
+                      <span class="badge rounded-pill px-2 py-1 {% if inv.status == 'paid' %}bg-success-focus text-success-main{% else %}bg-danger-focus text-danger-main{% endif %}">{{ inv.get_status_display }}</span>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-neutral-500 mb-0">No fee records found.</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          
+          <!-- Assignments -->
+          <div class="col-md-6" id="assignments-section">
+            <div class="card h-100 border-0 shadow-sm" style="border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important; transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-4px)';" onmouseout="this.style.transform='translateY(0)';">
+              <div class="card-header bg-white border-bottom pb-2 pt-4">
+                <h6 class="mb-0 fw-bold"><i class="ri-file-edit-line me-2 text-purple"></i>4. Assignments</h6>
+              </div>
+              <div class="card-body">
+                {% if assignments %}
+                <ul class="list-group list-group-flush">
+                  {% for asg in assignments %}
+                  <li class="list-group-item border-0 mb-3 p-3 shadow-sm" style="border-radius: 12px; background: #f8fafc; transition: all 0.2s;" onmouseover="this.style.background='#f1f5f9';" onmouseout="this.style.background='#f8fafc';">
+                    <strong class="text-dark d-block mb-1">{{ asg.lesson.title }}</strong>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                      <small class="text-neutral-500"><i class="ri-calendar-line me-1"></i>{{ asg.submitted_at|date:"M d, Y" }}</small>
+                      <span class="badge bg-purple-focus text-purple-main rounded-pill px-2 py-1">{{ asg.get_status_display }}</span>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-neutral-500 mb-0">No assignments found.</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="alert alert-warning d-flex align-items-center gap-2 mt-24">
+      <i class="ri-alert-line text-xl"></i>
+      Aapke profile se koi bachha (child) linked nahi hai. Kripya admin se sampark karein.
+    </div>
+  {% endif %}
+
+{% endblock %}

@@ -1,0 +1,500 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}EduAiQ Ecosystem - How Our AI-Powered Education Platform Connects{% endblock %}
+
+{% block description %}The EduAiQ Ecosystem connects AI Lab, AI Books, Skill Development, Olympiads, and campus automation tools into one platform for students, professionals, and institutions.{% endblock %}
+
+{% block content %}
+<section class="inner-banner-wrap">
+<div class="inner-baner-container" style="background-image: url({% static 'assets/img/blog-default-indian.jpg' %});">
+<div class="container">
+<div class="inner-banner-content">
+<h1 class="inner-title">The EduAiQ Ecosystem</h1>
+<div class="breadcrumb-content">
+<ul class="breadcrumb">
+
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+<style>
+  /* EduAiQ Logo Brand Theme Override for Ecosystem Page */
+
+  /* Dividers */
+  .title-divider,
+  .title-divider-center {
+      background-color: #fd7e14 !important;
+  }
+
+  /* Step Badges & Feature Icons */
+  .feature-icon .meta-no,
+  .feature-type:nth-child(even) .feature-icon .meta-no {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+  }
+  .feature-icon i,
+  .feature-type:nth-child(even) .feature-icon i {
+      color: #ea580c !important;
+  }
+  .right-arrow-link i {
+      width: 52px !important;
+      height: 52px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 50% !important;
+      background-color: #0F172A !important;
+      border: 2px solid #fd7e14 !important;
+      color: #fd7e14 !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  .feature-type:hover .right-arrow-link i,
+  .right-arrow-link:hover i {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+      border-color: #ea580c !important;
+      transform: scale(1.12) !important;
+      box-shadow: 0 8px 24px rgba(249, 115, 22, 0.45) !important;
+  }
+
+  /* Course / Ecosystem Feature Cards */
+  .course-type .course-icon {
+      background: #fff7ed !important;
+      border: 2px solid #ffedd5 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+  }
+  .course-type .course-icon i {
+      color: #ea580c !important;
+      font-size: 24px !important;
+  }
+  .course-type .course-durations {
+      color: #ea580c !important;
+      font-weight: 700 !important;
+  }
+
+  /* Buttons: TALK TO US, REQUEST DEMO, REGISTER TO JOIN US */
+  .button-round-primary,
+  .button-round-secondary,
+  .service-btn a,
+  .course-field button[type="submit"] {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+      border: none !important;
+      border-radius: 50rem !important;
+      font-weight: 800 !important;
+      box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4) !important;
+      transition: all 0.35s ease !important;
+  }
+
+  .button-round-primary:hover,
+  .button-round-secondary:hover,
+  .service-btn a:hover,
+  .course-field button[type="submit"]:hover {
+      background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+      box-shadow: 0 12px 30px rgba(234, 88, 12, 0.6) !important;
+      transform: translateY(-2px) !important;
+      color: #ffffff !important;
+  }
+
+  /* Form Fields Focus */
+  .course-field input:focus {
+      border-color: #fd7e14 !important;
+      box-shadow: 0 0 0 3px rgba(253, 126, 20, 0.2) !important;
+      outline: none !important;
+  }
+
+  /* Counter Section Overrides */
+  .counter-inner {
+      background: #fff7ed !important;
+      border-top: 1px solid #ffedd5 !important;
+      border-bottom: 1px solid #ffedd5 !important;
+      padding: 35px 0 !important;
+      border-radius: 20px !important;
+      margin-top: 40px !important;
+  }
+  .counter-item .counter-no {
+      color: #0F172A !important;
+      font-weight: 800 !important;
+  }
+  .counter-item .Completed,
+  .counter-item span.Completed {
+      color: #ea580c !important;
+      font-weight: 800 !important;
+  }
+  .counter-item {
+      border-right: 1px solid #ffedd5 !important;
+  }
+  .counter-item:last-child {
+      border-right: none !important;
+  }
+
+  .course-type:hover {
+      border-color: #ea580c !important;
+      box-shadow: 0 12px 30px rgba(234, 88, 12, 0.25) !important;
+      transform: translateY(-6px) !important;
+  }
+  .course-icon i {
+      background: #ffffff !important;
+      color: #ea580c !important;
+      transition: all 0.3s ease !important;
+  }
+  .course-type:hover .course-icon i {
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+      transform: scale(1.08) !important;
+  }
+  .course-type:hover .course-title a {
+      color: #ea580c !important;
+  }
+  .course-durations {
+      color: #94a3b8 !important;
+  }
+</style>
+
+<section class="about-section">
+<div class="container">
+<div class="title-divider-center"></div>
+<h2 class="about-title text-center">One Platform, Every Stage Of Learning</h2>
+<div class="row">
+<div class="col-md-6">
+<p class="about-describe info-left">
+                                EduAiQ isn't a single course or a single tool — it's a connected ecosystem. A
+                                student can start in the AI Lab, deepen understanding with an AI Book, build
+                                job-ready skills through Skill Development, and compete in Olympiads, all under one
+                                account with one progress record.
+                            </p>
+</div>
+<div class="col-md-6">
+<p class="about-describe info-right">
+                                For institutions, the same ecosystem plugs in as campus infrastructure: admission
+                                CRM, LMS, digital classrooms, examination management, and automation tools that
+                                share data instead of living in separate silos.
+                            </p>
+</div>
+</div>
+<div class="counter-inner">
+<div class="counter-item-wrap row">
+<div class="col-lg-3 col-sm-6 counter-item">
+<div class="counter-no">
+<span class="counter">6</span>
+</div>
+<div class="Completed">
+                                    Connected Products
+                                </div>
+</div>
+<div class="col-lg-3 col-sm-6 counter-item">
+<div class="counter-no">
+<span class="counter">45</span>k+
+                                </div>
+<div class="Completed">
+                                    Active Students
+                                </div>
+</div>
+<div class="col-lg-3 col-sm-6 counter-item">
+<div class="counter-no">
+<span class="counter">35</span>+
+                                </div>
+<div class="Completed">
+                                    Partner Institutions
+                                </div>
+</div>
+<div class="col-lg-3 col-sm-6 counter-item">
+<div class="counter-no">
+<span class="counter">1</span>
+</div>
+<span class="Completed">
+                                    Single Login For All Of It
+                                </span>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="home-feature-section">
+<div class="container">
+<div class="row">
+<div class="col-lg-6 offset-lg-3">
+<div class="title-divider"></div>
+<h2 class="feature-section-title text-center">What's In The Ecosystem</h2>
+<p class="feature-section-info text-center">
+                                Each piece works on its own, but they're built to hand off to one another —
+                                progress in one carries over to the next.
+                            </p>
+</div>
+</div>
+<div class="feature-wrapper">
+<div class="feature-type">
+<div class="feature-icon">
+<h5 class="meta-no">1</h5>
+<i class="fas fa-brain"></i>
+</div>
+<h4 class="feature-heading"><a href="/ai-lab/" class="text-dark text-decoration-none">AI Lab</a></h4>
+<p class="feature-info">Hands-on AI learning environment with real projects and
+                                adaptive assessments.</p>
+<a class="right-arrow-link" href="/ai-lab/">
+<i class="fas fa-long-arrow-alt-right"></i>
+</a>
+</div>
+<div class="feature-type">
+<div class="feature-icon">
+<h5 class="meta-no">2</h5>
+<i aria-hidden="true" class="fas fa-book"></i>
+</div>
+<h4 class="feature-heading"><a href="/ai-books/" class="text-dark text-decoration-none">AI Books</a></h4>
+<p class="feature-info">Practical, project-based e-books that pair directly with AI
+                                Lab exercises.</p>
+<a class="right-arrow-link" href="/ai-books/">
+<i class="fas fa-long-arrow-alt-right"></i>
+</a>
+</div>
+<div class="feature-type">
+<div class="feature-icon">
+<h5 class="meta-no">3</h5>
+<i class="fas fa-laptop-code"></i>
+</div>
+<h4 class="feature-heading"><a href="/skill-development/" class="text-dark text-decoration-none">Skill Development</a></h4>
+<p class="feature-info">Mentor-led tracks across AI, software, and business skills with
+                                certification and hiring partners.</p>
+<a class="right-arrow-link" href="/skill-development/">
+<i class="fas fa-long-arrow-alt-right"></i>
+</a>
+</div>
+</div>
+<div class="feature-wrapper" style="margin-top: 60px;">
+<div class="feature-type">
+<div class="feature-icon">
+<h5 class="meta-no">4</h5>
+<i aria-hidden="true" class="fas fa-trophy"></i>
+</div>
+<h4 class="feature-heading"><a href="/olympiads/" class="text-dark text-decoration-none">Olympiads</a></h4>
+<p class="feature-info">Structured competitions and curriculum that measure and reward
+                                real progress.</p>
+<a class="right-arrow-link" href="/olympiads/">
+<i class="fas fa-long-arrow-alt-right"></i>
+</a>
+</div>
+<div class="feature-type">
+<div class="feature-icon">
+<h5 class="meta-no">5</h5>
+<i aria-hidden="true" class="fas fa-comments"></i>
+</div>
+<h4 class="feature-heading"><a href="/apply-for-franchise/" class="text-dark text-decoration-none">Campus Automation</a></h4>
+<p class="feature-info">Admission CRM, LMS, digital classrooms, and examination
+                                management for partner institutions.</p>
+<a class="right-arrow-link" href="/apply-for-franchise/">
+<i class="fas fa-long-arrow-alt-right"></i>
+</a>
+</div>
+<div class="feature-type">
+<div class="feature-icon">
+<h5 class="meta-no">6</h5>
+<i class="fas fa-chart-line"></i>
+</div>
+<h4 class="feature-heading"><a href="/growth-partner-kit/" class="text-dark text-decoration-none">Growth Partnerships</a></h4>
+<p class="feature-info">Franchise and growth-partner programs that bring the full
+                                ecosystem to new regions.</p>
+<a class="right-arrow-link" href="/growth-partner-kit/">
+<i class="fas fa-long-arrow-alt-right"></i>
+</a>
+</div>
+</div>
+</div>
+</section>
+
+<section class="home-service">
+<div class="pattern-overlay"></div>
+<div class="container">
+<div class="service-wrapper">
+<div class="pattern-circle overlay"></div>
+<div class="service-content">
+<div class="section-head">
+<div class="title-divider"></div>
+<h2>Why One Connected Ecosystem</h2>
+<div class="service-btn">
+<a class="button-round-primary" href="/contact/">TALK TO US</a>
+</div>
+</div>
+<div class="course-type">
+<div class="course-icon">
+<i aria-hidden="true" class="fas fa-hard-hat"></i>
+</div>
+<h4 class="course-title">
+<a href="/page/eduaiq-ecosystem/">One Login, One Record</a>
+</h4>
+<p class="course-durations">No repeated onboarding</p>
+</div>
+<div class="course-type">
+<div class="course-icon">
+<i aria-hidden="true" class="fas fa-palette"></i>
+</div>
+<h4 class="course-title">
+<a href="/page/eduaiq-ecosystem/">Progress Carries Over</a>
+</h4>
+<p class="course-durations">Between products</p>
+</div>
+<div class="course-type">
+<div class="course-icon">
+<i aria-hidden="true" class="fas fa-microscope"></i>
+</div>
+<h4 class="course-title">
+<a href="/page/eduaiq-ecosystem/">Data Institutions Can Use</a>
+</h4>
+<p class="course-durations">Not siloed reports</p>
+</div>
+</div>
+<div class="service-content">
+<div class="course-type">
+<div class="course-icon">
+<i aria-hidden="true" class="fas fa-certificate"></i>
+</div>
+<h4 class="course-title">
+<a href="/page/eduaiq-ecosystem/">Consistent AI-Driven Insight</a>
+</h4>
+<p class="course-durations">Across every module</p>
+</div>
+<div class="course-type">
+<div class="course-icon">
+<i class="fas fa-brain"></i>
+</div>
+<h4 class="course-title">
+<a href="/page/eduaiq-ecosystem/">Built To Scale With You</a>
+</h4>
+<p class="course-durations">Individual to institution</p>
+</div>
+<div class="course-form">
+<h3>Want The Ecosystem At Your Institution?</h3>
+<div id="ecoSuccessMsg" class="alert alert-success d-none mb-3 radius-12 p-3 text-sm fw-semibold" style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
+    <i class="fas fa-check-circle me-2"></i><span id="ecoSuccessText">Thank you! Your demo request has been received. Our team will contact you shortly.</span>
+</div>
+<form id="ecosystemDemoForm" class="course-field">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-sm-6 mb-3">
+            <input name="name" id="ecoName" placeholder="Your Name *" type="text" required />
+        </div>
+        <div class="col-sm-6 mb-3">
+            <input name="email" id="ecoEmail" placeholder="Your Email *" type="email" required />
+        </div>
+        <div class="col-sm-7 mb-3">
+            <input name="institution" id="ecoInstitution" placeholder="Institution Name *" type="text" required />
+        </div>
+        <div class="col-sm-5">
+            <button class="button-round-secondary" id="ecoSubmitBtn" type="submit">REQUEST DEMO</button>
+        </div>
+    </div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="home-fact-section">
+<div class="overlay"></div>
+<div class="container">
+<div class="row align-items-center">
+<div class="col-lg-7">
+<div class="fact-section-head">
+<div class="title-divider"></div>
+<h2 class="fact-section-title">See The Whole Ecosystem In Action</h2>
+<p class="fact-section-info">
+                                    Whether you're a learner exploring one product or an institution evaluating the
+                                    full platform, we'll walk you through exactly what connects to what.
+                                </p>
+<div class="fact-list">
+<ul>
+<li><i class="fas fa-check-circle me-2" style="color: #fd7e14;"></i> Free walkthrough for students and professionals.</li>
+<li><i class="fas fa-check-circle me-2" style="color: #fd7e14;"></i> Live demo available for institutions and partners.</li>
+<li><i class="fas fa-check-circle me-2" style="color: #fd7e14;"></i> Franchise and growth-partner kits available on request.</li>
+</ul>
+</div>
+<div class="service-btn">
+<a class="button-round-secondary" href="/register/">REGISTER TO
+                                        JOIN US</a>
+</div>
+</div>
+</div>
+<div class="col-lg-5">
+<figure class="figure-round-border">
+<img alt="Indian institution reviewing EduAiQ ecosystem" src="{% static 'assets/img/ecosystem-indian.jpg' %}"/>
+</figure>
+</div>
+</div>
+</div>
+</section>
+{% endblock %}
+
+{% block js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('ecosystemDemoForm');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('ecoSubmitBtn');
+      const successMsg = document.getElementById('ecoSuccessMsg');
+      
+      const name = document.getElementById('ecoName').value.trim();
+      const email = document.getElementById('ecoEmail').value.trim();
+      const institution = document.getElementById('ecoInstitution').value.trim();
+
+      if (!name || !email) {
+        alert('Please fill in required fields');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = 'Submitting...';
+
+      const payload = {
+        name: name,
+        email: email,
+        subject: 'Ecosystem Demo - ' + (institution || 'Institution'),
+        notes: 'Institution: ' + institution,
+        source: 'ecosystem_demo'
+      };
+
+      fetch('/api/crm/leads/submit/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': (document.cookie.match(/csrftoken=([^;]+)/) || [])[1] || ''
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        btn.disabled = false;
+        btn.innerText = 'REQUEST DEMO';
+        if (data.success) {
+          showSuccessModal(
+            'Demo Requested Successfully!',
+            data.message || 'Thank you! Your demo request has been received. Our team will contact you shortly.'
+          );
+          if (successMsg) {
+            document.getElementById('ecoSuccessText').innerText = data.message || 'Thank you! Your demo request has been received. Our team will contact you shortly.';
+            successMsg.classList.remove('d-none');
+          }
+          form.reset();
+        } else {
+          alert(data.message || 'Error submitting request. Please try again.');
+        }
+      })
+      .catch(err => {
+        btn.disabled = false;
+        btn.innerText = 'REQUEST DEMO';
+        alert('Network error. Please try again.');
+      });
+    });
+  }
+});
+</script>
+{% endblock %}

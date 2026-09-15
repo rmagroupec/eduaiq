@@ -1,0 +1,756 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quiz Assessment - EduAiQ{% endblock %}
+
+{% block content %}
+
+<div class="quiz-player-page py-5" style="background: radial-gradient(circle at 50% 0%, #f1f5f9 0%, #f8fafc 100%); min-height: 90vh;">
+  <div class="container" style="max-width: 840px;">
+    
+    <!-- Quiz Header Banner Card -->
+    <div class="quiz-header-card mb-4 overflow-hidden rounded-4 shadow-sm" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-bottom: 3.5px solid #fd7e14;">
+      <div class="p-4 text-white">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+          <div class="d-flex align-items-center gap-3">
+            <div class="quiz-icon-header d-flex align-items-center justify-content-center text-white rounded-circle fs-4 shadow-sm" style="width: 52px; height: 52px; background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%); border: 2px solid #ffedd5;">
+              <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div>
+              <span class="badge px-3 py-1 text-dark rounded-pill fw-bold mb-1 shadow-xs" style="background: #ffedd5; border: 1px solid #fd7e14; font-size: 11px;">
+                <i class="fas fa-shield-alt text-warning me-1"></i> AI Proctored & Encrypted Assessment
+              </span>
+              <h4 id="quizTitle" class="fw-extrabold text-white mb-0 fs-4" style="letter-spacing: 0.3px;">Interactive Knowledge Evaluation</h4>
+            </div>
+          </div>
+          <div class="timer-badge-wrap fw-extrabold fs-4 px-4 py-2 rounded-pill shadow-xs d-flex align-items-center" style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 1.5px solid #fd7e14; color: #ea580c; font-family: monospace;">
+            <i class="far fa-clock me-2 text-warning"></i>
+            <span id="timer">00:00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question Container Box -->
+    <div id="questionContainer" class="card border-0 rounded-4 shadow-sm p-4 mb-4 bg-white" style="border: 1.5px solid #ffedd5 !important;">
+      <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <span class="badge fw-bold px-3 py-2 rounded-pill text-white shadow-xs" id="questionCounterBadge" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border: 1px solid #fd7e14; font-size: 12px;">Question 1</span>
+        <span class="text-muted small fw-semibold"><i class="fas fa-check-circle me-1" style="color: #ea580c;"></i> EduAiQ Certified Assessment</span>
+      </div>
+      
+      <h5 id="questionText" class="fw-extrabold text-dark mb-4 fs-5" style="line-height: 1.6; color: #0F172A !important;">Loading assessment question from backend database...</h5>
+      
+      <div id="optionsContainer" class="d-flex flex-column gap-3">
+        <!-- Options rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Controls Navigation Card -->
+    <div class="card border-0 rounded-4 shadow-sm p-3.5 mb-4 bg-white d-flex flex-row align-items-center justify-content-between" style="border: 1.5px solid #ffedd5 !important;">
+      <button id="prevBtn" class="btn btn-brand-navy px-4 py-2 fw-bold rounded-pill" onclick="previousQuestion()" disabled>
+        <i class="fas fa-chevron-left me-1.5"></i> Previous
+      </button>
+
+      <span id="questionCounter" class="fw-extrabold text-dark font-monospace fs-6">1 / 1</span>
+
+      <button id="nextBtn" class="btn btn-brand-orange px-4 py-2 fw-bold rounded-pill" onclick="nextQuestion()">
+        Next <i class="fas fa-chevron-right ms-1.5"></i>
+      </button>
+    </div>
+
+    <!-- Submit Action Area -->
+    <div class="text-center">
+      <button id="submitBtn" class="btn btn-brand-orange btn-lg px-5 py-3 fw-extrabold rounded-pill shadow-sm fs-5" onclick="submitQuiz()">
+        <i class="fas fa-paper-plane me-2"></i> Submit Final Quiz
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Results Modal (Compact & Ultra-Professional Scorecard) -->
+<div id="resultsModal" class="modal fade" tabindex="-1" style="display:none; background: rgba(15,23,42,0.85); backdrop-filter: blur(8px);">
+  <div class="modal-dialog modal-dialog-centered scorecard-modal-dialog">
+    <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden" style="border: 1.5px solid rgba(253, 126, 20, 0.4) !important; max-height: 88vh; display: flex; flex-direction: column;">
+      
+      <!-- Compact Modal Header -->
+      <div class="modal-header text-white py-2.5 px-4" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-bottom: 2.5px solid #fd7e14;">
+        <div class="d-flex align-items-center gap-2">
+          <div class="scorecard-icon-wrap">
+            <i class="fas fa-award text-warning"></i>
+          </div>
+          <div>
+            <h6 id="resultTitle" class="modal-title fw-extrabold text-white mb-0 fs-6" style="letter-spacing: 0.3px;">
+              Quiz Assessment Scorecard
+            </h6>
+            <small class="text-white-50" style="font-size: 11px;">EduAiQ Verified Assessment Evaluation</small>
+          </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white" style="font-size: 12px;" data-bs-dismiss="modal" onclick="document.getElementById('resultsModal').style.display='none'"></button>
+      </div>
+      
+      <!-- Compact Modal Body -->
+      <div class="modal-body p-3.5 px-4" style="overflow-y: auto; max-height: calc(88vh - 120px);">
+        
+        <!-- Compact Summary Score Card (Horizontal Split) -->
+        <div class="scorecard-hero-panel p-3 mb-3 rounded-3 d-flex align-items-center justify-content-between gap-3">
+          <!-- Left: Circular / Gradient Score Pill -->
+          <div class="d-flex align-items-center gap-3">
+            <div id="scoreCircleBadge" class="score-circle-pill shadow-xs">
+              <span id="scorePercentage" class="score-num">0%</span>
+              <span class="score-sub">Score</span>
+            </div>
+            <div>
+              <span id="statusPillBadge" class="badge bg-warning-subtle text-warning-emphasis px-2.5 py-1 rounded-pill fw-bold mb-1" style="font-size: 11px;">
+                Needs Review
+              </span>
+              <h6 id="scoreMarks" class="fw-extrabold text-dark mb-0 fs-6">0 / 0 marks</h6>
+              <span id="timeTaken" class="text-muted small" style="font-size: 11.5px;">Time: 0m</span>
+            </div>
+          </div>
+
+          <!-- Right: Mini Quick Metrics -->
+          <div class="d-flex flex-column gap-1 text-end">
+            <div class="mini-stat-chip">
+              <span class="text-muted text-xxs text-uppercase fw-bold">Evaluation</span>
+              <span id="evaluationTag" class="fw-bold text-dark text-xs d-block">Instant AI Graded</span>
+            </div>
+            <div class="mini-stat-chip">
+              <span class="text-muted text-xxs text-uppercase fw-bold">Accuracy</span>
+              <span id="accuracyRatio" class="fw-bold text-primary text-xs d-block">0% Accuracy</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Motivational Alert Ribbon -->
+        <div id="feedbackAlertBanner" class="feedback-ribbon mb-3">
+          <!-- Injected dynamically -->
+        </div>
+
+        <!-- Solution Explanations Section (Scrollable & Compact) -->
+        <div id="feedbackDisplay" class="feedback-section">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+      
+      <!-- Compact Modal Footer -->
+      <div class="modal-footer bg-light py-2.5 px-4 border-0 d-flex justify-content-between align-items-center">
+        <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 rounded-pill fw-bold text-xs" onclick="document.getElementById('resultsModal').style.display='none'">
+          <i class="fas fa-times me-1"></i> Close
+        </button>
+        <button class="btn btn-sm btn-brand-orange px-4 py-1.5 rounded-pill fw-extrabold text-xs" onclick="location.href='/my-learning/'">
+          <i class="fas fa-graduation-cap me-1.5"></i> Dashboard
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  .btn-brand-orange {
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 800 !important;
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35) !important;
+    transition: all 0.35s ease !important;
+    text-decoration: none !important;
+  }
+
+  .btn-brand-orange:hover {
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+    box-shadow: 0 10px 24px rgba(234, 88, 12, 0.55) !important;
+    transform: translateY(-2px) !important;
+    color: #ffffff !important;
+  }
+
+  .btn-brand-navy {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(253, 126, 20, 0.4) !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2) !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+  }
+
+  .btn-brand-navy:hover:not(:disabled) {
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border-color: #fd7e14 !important;
+    transform: translateY(-2px) !important;
+  }
+
+  .btn-brand-navy:disabled {
+    opacity: 0.45 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+  }
+
+  .option-card-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 16px 22px !important;
+    background: #ffffff !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 14px !important;
+    cursor: pointer !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    user-select: none !important;
+  }
+
+  .option-card-row:hover {
+    border-color: #fd7e14 !important;
+    background-color: #fff7ed !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.12) !important;
+  }
+
+  .option-card-row.selected {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+    color: #ffffff !important;
+    border-color: #fd7e14 !important;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.25) !important;
+  }
+
+  .option-left-content {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+  }
+
+  .option-letter-badge {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    border-radius: 50% !important;
+    background: #f1f5f9 !important;
+    color: #0F172A !important;
+    font-weight: 800 !important;
+    font-size: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .option-card-row.selected .option-letter-badge {
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4) !important;
+  }
+
+  .option-text-label {
+    font-size: 15.5px !important;
+    font-weight: 700 !important;
+    color: #0F172A !important;
+    margin: 0 !important;
+  }
+
+  .option-card-row.selected .option-text-label {
+    color: #ffffff !important;
+  }
+
+  .timer-badge-wrap.warning {
+    animation: pulseTimer 1s infinite;
+  }
+
+  @keyframes pulseTimer {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  /* Compact Professional Scorecard Modal Styles */
+  .scorecard-modal-dialog {
+    max-width: 560px !important;
+    margin: 1.5rem auto !important;
+  }
+
+  .scorecard-icon-wrap {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(253, 126, 20, 0.2);
+    border: 1px solid rgba(253, 126, 20, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .scorecard-hero-panel {
+    background: linear-gradient(135deg, #f8fafc 0%, #fff7ed 100%);
+    border: 1px solid #fed7aa;
+  }
+
+  .score-circle-pill {
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+    border: 2px solid #fd7e14;
+    color: #ea580c;
+  }
+
+  .score-circle-pill.pass {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border-color: #10b981;
+    color: #047857;
+  }
+
+  .score-circle-pill .score-num {
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .score-circle-pill .score-sub {
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.75;
+  }
+
+  .mini-stat-chip {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    padding: 3px 9px;
+  }
+
+  .feedback-ribbon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 9px;
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+
+  .feedback-ribbon.pass {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+  }
+
+  .feedback-ribbon.retry {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+  }
+
+  .explanations-scroll-container {
+    max-height: 195px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .explanations-scroll-container::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .explanations-scroll-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+  }
+
+  .explanations-scroll-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+
+  .explanations-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+
+  .explanation-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 3.5px solid #fd7e14;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 7px;
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
+
+  .explanation-card.is-correct {
+    border-left-color: #10b981;
+    background: #fafdfb;
+  }
+
+  .explanation-card.is-incorrect {
+    border-left-color: #ea580c;
+    background: #fffdfb;
+  }
+
+  /* Mobile Responsiveness for Quiz Player & Scorecard */
+  @media screen and (max-width: 768px) {
+    .quiz-player-container {
+      padding: 1.25rem 1rem !important;
+    }
+    .question-card-inner {
+      padding: 1.25rem 1rem !important;
+    }
+    .question-text-title {
+      font-size: 1.15rem !important;
+    }
+    .option-card-row {
+      padding: 10px 12px !important;
+      gap: 10px !important;
+    }
+    .option-letter-badge {
+      width: 32px !important;
+      height: 32px !important;
+      min-width: 32px !important;
+      font-size: 13px !important;
+    }
+    .option-text-label {
+      font-size: 14px !important;
+    }
+    .scorecard-modal-dialog {
+      max-width: 95% !important;
+      margin: 0.75rem auto !important;
+    }
+    .scorecard-hero-panel {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 12px !important;
+    }
+    .scorecard-hero-panel .text-end {
+      text-align: left !important;
+      flex-direction: row !important;
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .quiz-player-topbar {
+      flex-wrap: wrap !important;
+      gap: 10px !important;
+    }
+    #submitBtn {
+      width: 100% !important;
+      font-size: 1rem !important;
+      padding: 12px 18px !important;
+    }
+  }
+</style>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+  let urlParams = new URLSearchParams(window.location.search);
+  let quizId = urlParams.get('id');
+  let attemptId = null;
+  let answers = {};
+  let questions = [];
+  let timerInterval = null;
+  let timeRemaining = 0;
+  let currentQuestionIndex = 0;
+
+  async function startQuiz() {
+    try {
+      // If quizId is missing, fetch first active quiz from API
+      if (!quizId) {
+        const cRes = await fetch(`${API_BASE_URL}/courses/courses/?page=1&page_size=10`);
+        const cData = await cRes.json();
+        const activeCourse = (cData.courses || []).find(c => c.quizzes && c.quizzes.length > 0);
+        if (activeCourse && activeCourse.quizzes[0]) {
+          quizId = activeCourse.quizzes[0].id;
+        } else {
+          quizId = 2; // Default quiz ID fallback
+        }
+      }
+
+      const response = await fetch(`${API_BASE_URL}/courses/quizzes/${quizId}/start/`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'same-origin'
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        alert('Notice: ' + data.error);
+        window.location.href = '/my-learning/';
+        return;
+      }
+
+      attemptId = data.attempt.id;
+      questions = data.questions || [];
+      timeRemaining = (data.time_limit_minutes || 15) * 60;
+
+      if (questions.length === 0) {
+        const qBox = document.getElementById('questionContainer');
+        qBox.innerHTML = `
+          <div class="text-center p-5">
+            <div class="mb-3" style="font-size: 54px; color: #fd7e14;"><i class="fas fa-clipboard-list"></i></div>
+            <h4 class="fw-extrabold text-dark mb-2">No Active Questions Found</h4>
+            <p class="text-muted small mb-4">Questions for this assessment are being reviewed by the Academic Team.</p>
+            <div>
+              <a href="/my-learning/" class="btn btn-brand-orange px-5 py-2.5 rounded-pill fw-extrabold">Return to Dashboard</a>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      displayQuestion(0);
+      startTimer();
+
+    } catch (error) {
+      console.error('Error starting quiz:', error);
+      alert('Failed to start quiz assessment.');
+    }
+  }
+
+  function displayQuestion(index) {
+    if (!questions || !questions[index]) return;
+    const question = questions[index];
+
+    document.getElementById('questionText').textContent = question.question_text || 'Question';
+    if (document.getElementById('questionCounterBadge')) {
+      document.getElementById('questionCounterBadge').textContent = `Question ${index + 1} of ${questions.length}`;
+    }
+
+    const optionsContainer = document.getElementById('optionsContainer');
+    const selectedKey = answers[question.id];
+
+    optionsContainer.innerHTML = Object.entries(question.options || {}).map(([key, rawValue]) => {
+      const optionValStr = `option_${key}`;
+      const isSelected = (selectedKey === optionValStr);
+      const letter = key.toUpperCase();
+
+      let displayValue = (rawValue || '').trim();
+      const regexPrefix = new RegExp(`^${key}\\s*[\\).\\s]*`, 'i');
+      if (regexPrefix.test(displayValue)) {
+        const stripped = displayValue.replace(regexPrefix, '').trim();
+        if (stripped) {
+          displayValue = stripped;
+        }
+      }
+
+      return `
+        <div class="option-card-row ${isSelected ? 'selected' : ''}" onclick="selectOptionCard(${question.id}, '${optionValStr}', this)">
+          <div class="option-left-content">
+            <div class="option-letter-badge">${letter}</div>
+            <p class="option-text-label">${displayValue}</p>
+          </div>
+          ${isSelected ? '<i class="fas fa-check-circle fs-4" style="color: #fd7e14;"></i>' : '<div class="text-muted small" style="opacity: 0.35;"><i class="far fa-circle fs-5"></i></div>'}
+        </div>
+      `;
+    }).join('');
+
+    document.getElementById('questionCounter').textContent = `${index + 1} / ${questions.length}`;
+    document.getElementById('prevBtn').disabled = index === 0;
+    document.getElementById('nextBtn').disabled = index === questions.length - 1;
+
+    currentQuestionIndex = index;
+  }
+
+  function selectOptionCard(questionId, selectedOption, cardElem) {
+    answers[questionId] = selectedOption;
+    const allCards = cardElem.parentElement.querySelectorAll('.option-card-row');
+    allCards.forEach(c => {
+      c.classList.remove('selected');
+      const icon = c.querySelector('.fa-check-circle');
+      if (icon) {
+        icon.outerHTML = '<div class="text-muted small" style="opacity: 0.35;"><i class="far fa-circle fs-5"></i></div>';
+      }
+    });
+    cardElem.classList.add('selected');
+    const rightCircle = cardElem.querySelector('.fa-circle');
+    if (rightCircle) {
+      rightCircle.parentElement.outerHTML = '<i class="fas fa-check-circle fs-4" style="color: #fd7e14;"></i>';
+    }
+    submitAnswerToAPI(questionId, selectedOption);
+  }
+
+  async function submitAnswerToAPI(questionId, selectedOption) {
+    try {
+      await fetch(`${API_BASE_URL}/courses/attempts/${attemptId}/answer/`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          question_id: questionId,
+          selected_option: selectedOption
+        })
+      });
+    } catch (e) {
+      console.error('Error submitting answer:', e);
+    }
+  }
+
+  function previousQuestion() {
+    if (currentQuestionIndex > 0) {
+      displayQuestion(currentQuestionIndex - 1);
+    }
+  }
+
+  function nextQuestion() {
+    if (currentQuestionIndex < questions.length - 1) {
+      displayQuestion(currentQuestionIndex + 1);
+    }
+  }
+
+  function startTimer() {
+    timerInterval = setInterval(() => {
+      timeRemaining--;
+
+      const minutes = Math.floor(timeRemaining / 60);
+      const seconds = timeRemaining % 60;
+
+      const timerElement = document.getElementById('timer');
+      if (timerElement) {
+        timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        if (timeRemaining <= 60) {
+          timerElement.parentElement.classList.add('warning');
+        }
+      }
+
+      if (timeRemaining <= 0) {
+        clearInterval(timerInterval);
+        submitQuiz();
+      }
+    }, 1000);
+  }
+
+  async function submitQuiz() {
+    clearInterval(timerInterval);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/attempts/${attemptId}/submit/`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'same-origin'
+      });
+
+      const data = await response.json();
+      const attemptObj = data.result || data.attempt;
+
+      if (attemptObj) {
+        showResults(attemptObj);
+      } else {
+        alert('Notice: Quiz submitted successfully.');
+        window.location.href = '/my-learning/';
+      }
+
+    } catch (error) {
+      console.error('Error submitting quiz:', error);
+      alert('Failed to submit quiz.');
+    }
+  }
+
+  function showResults(attempt) {
+    const pct = Math.round(parseFloat(attempt.score_pct || 0));
+    const isPass = Boolean(attempt.passed || pct >= 50);
+
+    // Score Circle & Tag
+    const scoreCircle = document.getElementById('scoreCircleBadge');
+    if (scoreCircle) {
+      if (isPass) {
+        scoreCircle.classList.add('pass');
+      } else {
+        scoreCircle.classList.remove('pass');
+      }
+    }
+
+    document.getElementById('scorePercentage').textContent = `${pct}%`;
+    document.getElementById('accuracyRatio').textContent = `${pct}% Accuracy`;
+
+    // Status Pill Badge
+    const statusPill = document.getElementById('statusPillBadge');
+    if (statusPill) {
+      if (isPass) {
+        statusPill.className = 'badge bg-success-subtle text-success-emphasis border border-success-subtle px-2.5 py-1 rounded-pill fw-bold mb-1';
+        statusPill.innerHTML = '<i class="fas fa-check-circle me-1"></i> Passed Assessment';
+      } else {
+        statusPill.className = 'badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2.5 py-1 rounded-pill fw-bold mb-1';
+        statusPill.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i> Needs Revision';
+      }
+    }
+
+    // Marks and Time
+    const marksObtained = attempt.score_marks || attempt.raw_score || 0;
+    const totalPossible = attempt.max_marks || questions.length || 0;
+    document.getElementById('scoreMarks').textContent = `${marksObtained} / ${totalPossible} marks obtained`;
+    document.getElementById('timeTaken').textContent = `Time taken: ${attempt.time_taken_minutes || 1} min`;
+
+    // Motivational Alert Banner
+    const bannerEl = document.getElementById('feedbackAlertBanner');
+    if (bannerEl) {
+      if (isPass) {
+        bannerEl.className = 'feedback-ribbon pass mb-3';
+        bannerEl.innerHTML = `
+          <i class="fas fa-trophy fs-6 text-success"></i>
+          <span><strong>Great Job!</strong> You successfully passed the assessment criteria.</span>
+        `;
+      } else {
+        bannerEl.className = 'feedback-ribbon retry mb-3';
+        bannerEl.innerHTML = `
+          <i class="fas fa-book-reader fs-6 text-warning"></i>
+          <span><strong>Keep Learning!</strong> Review the solution breakdown below and retry.</span>
+        `;
+      }
+    }
+
+    // Explanations Section
+    const feedbackDisplay = document.getElementById('feedbackDisplay');
+    const feedbackEntries = attempt.feedback ? Object.entries(attempt.feedback) : [];
+
+    if (feedbackEntries.length > 0) {
+      let html = `
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="text-xs fw-bold text-dark text-uppercase">
+            <i class="fas fa-lightbulb text-warning me-1.5"></i> Solution Insights (${feedbackEntries.length})
+          </span>
+          <span class="text-muted text-xxs"><i class="fas fa-info-circle me-1"></i>Scroll to view all</span>
+        </div>
+        <div class="explanations-scroll-container">
+      `;
+
+      feedbackEntries.forEach(([qId, explanation], idx) => {
+        const isCorrectExplanation = /correct!/i.test(explanation) && !/incorrect!/i.test(explanation);
+        const cardClass = isCorrectExplanation ? 'is-correct' : 'is-incorrect';
+        const badgeClass = isCorrectExplanation ? 'bg-success' : 'bg-danger';
+
+        html += `
+          <div class="explanation-card ${cardClass}">
+            <div class="d-flex align-items-start gap-2">
+              <span class="badge ${badgeClass} text-xxs px-1.5 py-0.5 rounded-pill fw-bold" style="font-size: 10px; min-width: 26px;">Q${idx + 1}</span>
+              <span class="text-dark" style="font-size: 12px; line-height: 1.45;">${explanation}</span>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      feedbackDisplay.innerHTML = html;
+      feedbackDisplay.style.display = 'block';
+    } else {
+      feedbackDisplay.innerHTML = '';
+      feedbackDisplay.style.display = 'none';
+    }
+
+    const modalEl = document.getElementById('resultsModal');
+    modalEl.style.display = 'block';
+    modalEl.classList.add('show');
+  }
+
+  document.addEventListener('DOMContentLoaded', startQuiz);
+</script>
+
+{% endblock %}

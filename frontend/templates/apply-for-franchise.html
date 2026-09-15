@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Apply For Franchise - EduAiQ{% endblock %}
+
+{% block description %}Apply to become an EduAiQ franchise partner. Fill out the franchise application form with your territory, investment capacity, and background to get started.{% endblock %}
+
+{% block content %}
+<section class="inner-banner-wrap">
+<div class="inner-baner-container" style="background-image: url({% static 'assets/img/blog-default-indian.jpg' %});">
+<div class="container">
+<div class="inner-banner-content">
+<h1 class="inner-title">Apply For Franchise</h1>
+<div class="breadcrumb-content">
+<ul class="breadcrumb">
+
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+<style>
+  /* EduAiQ Logo Brand Theme Overrides for Apply For Franchise Page */
+
+  .title-divider {
+      background-color: #fd7e14 !important;
+  }
+
+  /* Left Column Icon Blocks */
+  .contact-details-list .icon {
+      background: #fff7ed !important;
+      border: 2px solid #ffedd5 !important;
+      width: 54px !important;
+      height: 54px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 50% !important;
+      box-shadow: 0 4px 14px rgba(249, 115, 22, 0.12) !important;
+      transition: all 0.3s ease !important;
+  }
+  .contact-details-list .icon i {
+      color: #ea580c !important;
+      font-size: 22px !important;
+  }
+  .contact-details-list li:hover .icon {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      border-color: #ea580c !important;
+      transform: scale(1.08) !important;
+  }
+  .contact-details-list li:hover .icon i {
+      color: #ffffff !important;
+  }
+
+  /* Content & Links */
+  .contact-details-list h5 {
+      color: #0F172A !important;
+      font-weight: 800 !important;
+  }
+  .contact-details-list span a {
+      color: #ea580c !important;
+      font-weight: 700 !important;
+      text-decoration: none !important;
+  }
+  .contact-details-list span a:hover {
+      color: #fd7e14 !important;
+      text-decoration: underline !important;
+  }
+
+  /* Form Submit Button */
+  .contact-from input[type="submit"] {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+      font-weight: 800 !important;
+      border-radius: 50rem !important;
+      border: none !important;
+      box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4) !important;
+      transition: all 0.35s ease !important;
+      padding: 14px 32px !important;
+      letter-spacing: 0.02em !important;
+  }
+  .contact-from input[type="submit"]:hover {
+      background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 12px 28px rgba(234, 88, 12, 0.6) !important;
+      color: #ffffff !important;
+  }
+
+  /* Form Input Focus */
+  .contact-from input:focus,
+  .contact-from select:focus,
+  .contact-from textarea:focus {
+      border-color: #fd7e14 !important;
+      box-shadow: 0 0 0 3px rgba(253, 126, 20, 0.2) !important;
+      outline: none !important;
+  }
+</style>
+
+<section class="contact-page-section">
+<div class="container">
+<div class="contact-form-inner" style="margin-top: 100px;">
+<div class="pattern-overlay zigzag-patten"></div>
+<div class="row">
+<div class="col-lg-5">
+<div class="contact-detail-container">
+<div class="section-head">
+<div class="title-divider"></div>
+<h2 class="section-title">Before You Apply</h2>
+<p>
+                                            Franchise applications are reviewed on a per-territory basis. Haven't
+                                            reviewed the program details yet? Start with the Growth Partner Kit
+                                            first — it covers commission structure, onboarding, and territory
+                                            guidelines.
+                                        </p>
+</div>
+<div class="contact-details-list">
+<ul>
+<li>
+<div class="icon">
+<i aria-hidden="true" class="fas fa-book"></i>
+</div>
+<div class="details-content">
+<h5>Not Reviewed The Kit Yet?</h5>
+<span><a href="/growth-partner-kit/">See what's in the Growth Partner Kit</a></span>
+</div>
+</li>
+<li>
+<div class="icon">
+<i aria-hidden="true" class="fas fa-clock"></i>
+</div>
+<div class="details-content">
+<h5>Review Timeline</h5>
+<span>Applications are typically reviewed within 5-7 business days</span>
+</div>
+</li>
+<li>
+<div class="icon">
+<i aria-hidden="true" class="fas fa-phone-alt"></i>
+</div>
+<div class="details-content">
+<h5>Questions Before Applying?</h5>
+<span><a href="tel:+918052350041">Call +91 8052350041</a> or <a href="/contact/">contact us</a></span>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="col-lg-7">
+<div class="contact-from-wrap">
+<div class="pattern-overlay circle-patten"></div>
+<div id="franchiseSuccessMsg" class="alert alert-success d-none mb-3 radius-12 p-3 text-sm fw-semibold" style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
+    <i class="fas fa-check-circle me-2"></i><span id="franchiseSuccessText">Thank you! Your franchise application has been received. Our team will contact you shortly.</span>
+</div>
+<form id="franchiseForm" class="contact-from">
+    {% csrf_token %}
+<p>
+<input id="franchiseName" name="applicant_name" placeholder="Full Name*" type="text" required />
+</p>
+<p>
+<input id="franchiseEmail" name="email" placeholder="Email Address*" type="email" required />
+</p>
+<p>
+<input id="franchisePhone" name="phone" placeholder="Phone Number*" type="tel" required />
+</p>
+<p>
+<input id="franchiseCity" name="city" placeholder="Proposed City / Territory*" type="text" required />
+</p>
+<p>
+<select id="franchiseInvestment" name="investment_range" required="">
+<option disabled="" selected="" value="">Investment Capacity*</option>
+<option value="Under ₹5 Lakh">Under ₹5 Lakh</option>
+<option value="₹5-10 Lakh">₹5-10 Lakh</option>
+<option value="₹10-25 Lakh">₹10-25 Lakh</option>
+<option value="Above ₹25 Lakh">Above ₹25 Lakh</option>
+</select>
+</p>
+<p>
+<select id="franchiseBackground" name="business_background" required="">
+<option disabled="" selected="" value="">Current Background*</option>
+<option value="Existing education business">Existing education business</option>
+<option value="Other business owner">Other business owner</option>
+<option value="Working professional">Working professional</option>
+<option value="New to business ownership">New to business ownership</option>
+</select>
+</p>
+<p class="width-full">
+<textarea id="franchiseExperience" name="experience" placeholder="Relevant experience (running a coaching center, school, business, etc. — optional)" rows="3"></textarea>
+</p>
+<p class="width-full">
+<textarea id="franchiseWhy" name="why_interested" placeholder="Why are you interested in an EduAiQ franchise?*" rows="4" required></textarea>
+</p>
+<p class="width-full">
+<label style="font-size: 13px; color: #414141; font-weight: 400;">
+<input id="franchiseAgree" name="agree" style="width: auto; margin-right: 8px;" type="checkbox" required />
+    I understand this application does not guarantee territory approval and agree to be contacted regarding it.
+</label>
+</p>
+<p class="width-full">
+<input id="franchiseSubmitBtn" name="submit" type="submit" value="Submit Franchise Application"/>
+</p>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+{% endblock %}
+
+{% block js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('franchiseForm');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('franchiseSubmitBtn');
+      const successMsg = document.getElementById('franchiseSuccessMsg');
+      
+      const name = document.getElementById('franchiseName').value.trim();
+      const email = document.getElementById('franchiseEmail').value.trim();
+      const phone = document.getElementById('franchisePhone').value.trim();
+      const city = document.getElementById('franchiseCity').value.trim();
+      const investment = document.getElementById('franchiseInvestment').value;
+      const background = document.getElementById('franchiseBackground').value;
+      const experience = document.getElementById('franchiseExperience').value.trim();
+      const why_interested = document.getElementById('franchiseWhy').value.trim();
+      const agree = document.getElementById('franchiseAgree').checked;
+
+      if (!name || !email || !phone || !city) {
+        alert('Please fill in all required fields (*)');
+        return;
+      }
+      if (!agree) {
+        alert('Please check the confirmation box before submitting.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.value = 'Submitting Application...';
+
+      const payload = {
+        applicant_name: name,
+        email: email,
+        phone: phone,
+        city: city,
+        investment_range: investment,
+        business_background: background,
+        experience: experience,
+        why_interested: why_interested,
+        source: 'franchise_application'
+      };
+
+      fetch('/api/crm/leads/submit/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': (document.cookie.match(/csrftoken=([^;]+)/) || [])[1] || ''
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        btn.disabled = false;
+        btn.value = 'Submit Franchise Application';
+        if (data.success) {
+          showSuccessModal(
+            'Application Submitted Successfully!',
+            data.message || 'Thank you! Your franchise application has been received. Our team will contact you shortly.'
+          );
+          if (successMsg) {
+            document.getElementById('franchiseSuccessText').innerText = data.message || 'Thank you! Your franchise application has been received. Our team will contact you shortly.';
+            successMsg.classList.remove('d-none');
+          }
+          form.reset();
+        } else {
+          alert(data.message || 'Error submitting application. Please try again.');
+        }
+      })
+      .catch(err => {
+        btn.disabled = false;
+        btn.value = 'Submit Franchise Application';
+        alert('Network error. Please try again.');
+      });
+    });
+  }
+});
+</script>
+{% endblock %}

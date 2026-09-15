@@ -1,0 +1,709 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Books — EduAiQ | Interactive AI Books & Guides{% endblock %}
+
+{% block description %}Browse EduAiQ's AI Books — practical, project-based e-books on AI, machine learning, and job-ready skills with interactive online flipbook reading.{% endblock %}
+
+{% block content %}
+<style>
+    /* AI Books Modern Page Styles */
+    :root {
+        --book-card-bg: #ffffff;
+        --book-card-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        --book-card-hover-shadow: 0 20px 40px rgba(249, 115, 22, 0.18);
+        --primary-gradient: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%);
+        --accent-gradient: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%);
+    }
+
+    .ai-books-hero {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #ea580c 100%);
+        color: #ffffff;
+        padding: 38px 0 34px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ai-books-hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(249, 115, 22, 0.18) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .hero-title-main {
+        font-size: 2.2rem;
+        font-weight: 800;
+        background: linear-gradient(90deg, #ffffff 0%, #fed7aa 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -0.02em;
+        margin-bottom: 12px;
+    }
+
+    .hero-subtitle {
+        font-size: 1.05rem;
+        color: #cbd5e1;
+        max-width: 680px;
+        line-height: 1.5;
+    }
+
+    /* Stats Grid */
+    .stat-card-box {
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 14px;
+        padding: 14px 12px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card-box:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(249, 115, 22, 0.4);
+    }
+
+    .stat-number {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #f97316;
+        margin-bottom: 2px;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        color: #cbd5e1;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* Section Headers */
+    .section-heading-block {
+        text-align: center;
+        margin-bottom: 45px;
+    }
+
+    .section-title-gradient {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 10px;
+    }
+
+    .section-desc-muted {
+        font-size: 1rem;
+        color: #64748b;
+    }
+
+    /* Book Cards Grid */
+    .book-card-item {
+        background: var(--book-card-bg);
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        box-shadow: var(--book-card-shadow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .book-card-item:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--book-card-hover-shadow);
+        border-color: #fd7e14;
+    }
+
+    .book-cover-wrap {
+        position: relative;
+        height: 240px;
+        background: #f1f5f9;
+        overflow: hidden;
+    }
+
+    .book-cover-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .book-card-item:hover .book-cover-img {
+        transform: scale(1.05);
+    }
+
+    .book-category-badge {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        background: rgba(15, 23, 42, 0.88);
+        backdrop-filter: blur(8px);
+        color: #ffffff;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        border: 1px solid #fd7e14;
+    }
+
+    .book-card-body {
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .book-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 8px;
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .book-title a {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .book-title a:hover {
+        color: #ea580c;
+    }
+
+    .book-author-text {
+        font-size: 0.88rem;
+        color: #64748b;
+        margin-bottom: 14px;
+        font-weight: 500;
+    }
+
+    .book-rating-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+        font-size: 0.82rem;
+        color: #64748b;
+    }
+
+    .rating-stars {
+        color: #f59e0b;
+        font-weight: 700;
+    }
+
+    .downloads-badge {
+        background: #fff7ed;
+        color: #ea580c;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        border: 1px solid #ffedd5;
+    }
+
+    .book-actions-group {
+        margin-top: auto;
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-read-online {
+        flex: 1;
+        background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        border: none;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 800;
+        text-align: center;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35);
+        transition: all 0.25s ease;
+    }
+
+    .btn-read-online:hover {
+        background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+        color: #ffffff !important;
+        box-shadow: 0 10px 24px rgba(234, 88, 12, 0.55);
+        transform: translateY(-2px);
+    }
+
+    .btn-book-details {
+        background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid #fd7e14 !important;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.25s ease;
+    }
+
+    .btn-book-details:hover {
+        background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+        border-color: #ea580c !important;
+        color: #ffffff !important;
+        transform: translateY(-2px);
+    }
+
+    /* Library Access Banner */
+    .library-banner-card {
+        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+        border-radius: 20px;
+        padding: 45px 35px;
+        color: #ffffff;
+        margin-top: 50px;
+        box-shadow: 0 20px 40px rgba(30, 27, 75, 0.2);
+    }
+
+    .btn-library-access {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        color: #ffffff !important;
+        padding: 12px 28px;
+        border-radius: 50rem;
+        font-size: 0.95rem;
+        font-weight: 800;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-library-access:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 10px 26px rgba(234, 88, 12, 0.55);
+        color: #ffffff !important;
+    }
+
+    /* Access Restricted Modal Styling */
+    .access-icon-wrapper {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 16px auto;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(234, 88, 12, 0.08) 100%);
+        border: 1.5px solid rgba(249, 115, 22, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 20px rgba(249, 115, 22, 0.15);
+        transition: transform 0.3s ease;
+    }
+
+    .access-icon-wrapper i {
+        font-size: 26px;
+        color: #ea580c;
+        margin: 0;
+    }
+
+    .access-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 8px;
+        letter-spacing: -0.4px;
+    }
+
+    .access-desc {
+        font-size: 13.5px;
+        color: #64748b;
+        line-height: 1.55;
+        margin-bottom: 22px;
+        max-width: 380px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .btn-access-login-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #ffffff !important;
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        border: none !important;
+        padding: 10px 22px !important;
+        border-radius: 50px !important;
+        box-shadow: 0 4px 14px rgba(234, 88, 12, 0.3) !important;
+        cursor: pointer;
+        transition: all 0.25s ease !important;
+        text-decoration: none !important;
+    }
+
+    .btn-access-login-pill:hover {
+        background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+        color: #ffffff !important;
+        box-shadow: 0 6px 18px rgba(234, 88, 12, 0.4) !important;
+        transform: translateY(-1px) scale(1.01) !important;
+    }
+
+    .btn-access-browse-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #334155 !important;
+        background: #ffffff !important;
+        border: 1.5px solid #cbd5e1 !important;
+        padding: 10px 22px !important;
+        border-radius: 50px !important;
+        cursor: pointer;
+        transition: all 0.25s ease !important;
+        text-decoration: none !important;
+    }
+
+    .btn-access-browse-pill:hover {
+        background: #f8fafc !important;
+        color: #0f172a !important;
+        border-color: #94a3b8 !important;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08) !important;
+        transform: translateY(-1px) scale(1.01) !important;
+    }
+
+    .access-badge-footer {
+        font-size: 12px;
+        font-weight: 500;
+        color: #94a3b8;
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="ai-books-hero">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <h1 class="hero-title-main">Practical AI Books & Interactive Guides</h1>
+                <p class="hero-subtitle mb-4">
+                    Explore project-based e-books written by leading AI educators. Every book pairs with hands-on exercises from the AI Lab and opens in our full-screen Google Books interactive reader.
+                </p>
+            </div>
+            <div class="col-lg-5">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="stat-card-box">
+                            <div class="stat-number">30+</div>
+                            <div class="stat-label">AI Books</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-card-box">
+                            <div class="stat-number">8k+</div>
+                            <div class="stat-label">Downloads</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-card-box">
+                            <div class="stat-number">4.9 ★</div>
+                            <div class="stat-label">User Rating</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-card-box">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Project Based</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Books Grid Section -->
+<section class="py-5" id="featured-books-section" style="background-color: #f8fafc;">
+    <div class="container py-4">
+        <div class="section-heading-block">
+            <h2 class="section-title-gradient">Most Downloaded AI Books</h2>
+            <p class="section-desc-muted">Read practical guides and hands-on e-books directly online in the browser viewer.</p>
+        </div>
+
+        <div class="row g-4">
+            {% for course in featured_books %}
+            <div class="col-md-6 col-lg-4">
+                <div class="book-card-item">
+                    <div class="book-cover-wrap">
+                        {% if course.thumbnail %}
+                        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="book-cover-img">
+                        {% else %}
+                        <img src="{% static 'assets/img/educator-img30.jpg' %}" alt="{{ course.title }}" class="book-cover-img">
+                        {% endif %}
+                        <span class="book-category-badge">{{ course.category.name|default:"AI Book" }}</span>
+                    </div>
+
+                    <div class="book-card-body">
+                        <h3 class="book-title">
+                            <a href="{% url 'course_detail' %}?slug={{ course.slug }}">{{ course.title }}</a>
+                        </h3>
+                        <div class="book-author-text">
+                            By {{ course.author|default:"EduAiQ Editorial Team" }}
+                        </div>
+
+                        <div class="book-rating-row">
+                            <span class="rating-stars">
+                                <i class="fas fa-star"></i> 4.9 ({{ course.student_count|add:18 }} reviews)
+                            </span>
+                            <span class="downloads-badge">
+                                <i class="fas fa-arrow-down me-1"></i> {{ course.student_count }}+ readers
+                            </span>
+                        </div>
+
+                        <div class="book-actions-group">
+                            {% if course.id in accessible_book_ids or user.is_staff or user.is_superuser or course.price <= 0 %}
+                            <a href="{% url 'book_reader' course.slug %}" class="btn-read-online border-0" title="Read Online 3D AI Book">
+                                <i class="fas fa-book-open"></i> Read Online
+                            </a>
+                            {% else %}
+                            <button type="button" class="btn-read-online border-0" onclick="handleBookPurchase(event, '{{ course.slug }}', '{{ course.title|escapejs }}', '{{ course.price }}')" title="Purchase AI Book">
+                                <i class="fas fa-shopping-cart"></i> Purchase Book
+                            </button>
+                            {% endif %}
+                            <a href="{% url 'course_detail' %}?slug={{ course.slug }}" class="btn-book-details" title="View Book Details & Syllabus">
+                                Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="p-5 bg-white rounded-4 shadow-sm border">
+                    <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                    <h4>No Books Available Yet</h4>
+                    <p class="text-secondary">Books added from the admin dashboard will automatically appear here.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+
+    </div>
+</section>
+
+<!-- Coming Soon Section -->
+{% if coming_soon_books %}
+<section class="py-5 bg-white">
+    <div class="container py-3">
+        <div class="section-heading-block">
+            <h2 class="section-title-gradient">Upcoming AI Books</h2>
+            <p class="section-desc-muted">New titles in the pipeline — get ready for upcoming practical releases.</p>
+        </div>
+        <div class="row g-4">
+            {% for course in coming_soon_books %}
+            <div class="col-md-6 col-lg-4">
+                <div class="book-card-item">
+                    <div class="book-cover-wrap">
+                        {% if course.thumbnail %}
+                        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="book-cover-img">
+                        {% else %}
+                        <img src="{% static 'assets/img/educator-img30.jpg' %}" alt="{{ course.title }}" class="book-cover-img">
+                        {% endif %}
+                        <span class="book-category-badge" style="background: #64748b;">Coming Soon</span>
+                    </div>
+                    <div class="book-card-body">
+                        <h3 class="book-title">{{ course.title }}</h3>
+                        <div class="book-author-text">By {{ course.author|default:"EduAiQ Editorial Team" }}</div>
+                        <div class="mt-auto">
+                            <span class="badge bg-light text-dark border p-2 w-100 text-center fw-semibold">
+                                <i class="fas fa-clock me-1"></i> Releasing Soon
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Full Library Feature Section -->
+<section style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #ea580c 100%); color: #ffffff; padding: 36px 0;">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <h2 class="fw-bold text-white mb-2" style="font-size: 1.75rem;">Get The Full AI Books Library</h2>
+                <p style="color: #cbd5e1; font-size: 0.98rem; line-height: 1.5;" class="mb-3">
+                    Every book unlocks complete interactive 3D reading in browser with instant page navigation, paper turn animations, dark/sepia reading themes, chapter outlines, and companion exercises.
+                </p>
+                <div class="mb-3">
+                    <div class="d-flex align-items-center mb-2" style="color: #f1f5f9; font-size: 0.95rem;">
+                        <i class="fas fa-check-circle me-2" style="color: #f97316; font-size: 1.1rem;"></i>
+                        <span>3D Realistic Page-Turn Interactive Online Book Reader</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2" style="color: #f1f5f9; font-size: 0.95rem;">
+                        <i class="fas fa-check-circle me-2" style="color: #f97316; font-size: 1.1rem;"></i>
+                        <span>Reading themes: Light, Sepia & Dark Night reading modes</span>
+                    </div>
+                    <div class="d-flex align-items-center" style="color: #f1f5f9; font-size: 0.95rem;">
+                        <i class="fas fa-check-circle me-2" style="color: #f97316; font-size: 1.1rem;"></i>
+                        <span>Institution licensing for classroom and student sets</span>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <a class="btn-library-access" href="/register/">
+                        REGISTER FOR LIBRARY ACCESS
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center">
+                <img src="{% static 'assets/img/ai-books-indian.jpg' %}" alt="Indian Students reading AI Books — EduAiQ" class="img-fluid rounded-4 shadow-lg border border-slate-700" style="max-height: 250px; object-fit: cover;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Razorpay Checkout SDK -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    async function handleBookPurchase(e, slug, title, priceStr) {
+        if (e) e.preventDefault();
+
+        // 1. Check if user is logged in
+        const isLoggedIn = "{{ user.is_authenticated|yesno:'true,false' }}" === "true";
+        if (!isLoggedIn) {
+            window.location.href = `/login/?next=/ai-books/`;
+            return;
+        }
+
+        const btn = e.currentTarget;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Processing...';
+        btn.disabled = true;
+
+        const feeAmount = parseFloat(priceStr);
+
+        let csrfToken = '';
+        const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfInput) {
+            csrfToken = csrfInput.value;
+        } else {
+            // Get from cookie if form input isn't present
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith('csrftoken=')) {
+                    csrfToken = cookie.substring('csrftoken='.length, cookie.length);
+                    break;
+                }
+            }
+        }
+
+        try {
+            // 2. Create order on backend
+            const orderRes = await fetch('/payments/api/payment/create-order/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                body: JSON.stringify({ amount: feeAmount }),
+            });
+            const orderData = await orderRes.json();
+            
+            if (orderData.status !== 'success') {
+                throw new Error(orderData.message || 'Failed to create order.');
+            }
+
+            // 3. Open Razorpay Checkout natively
+            const options = {
+                key: orderData.key_id || "{{ razorpay_key_id }}",
+                amount: orderData.amount,
+                currency: orderData.currency || 'INR',
+                name: 'EduAiQ',
+                description: 'AI Book: ' + title,
+                customer_id: orderData.customer_id || undefined,
+                prefill: {
+                    name: "{{ user.get_full_name|default:user.username|escapejs }}",
+                    email: "{{ user.email|escapejs }}",
+                    contact: "{{ user.phone|default:''|escapejs }}"
+                },
+                theme: { color: '#ea580c' },
+                handler: function(response) {
+                    // 4. Verify payment signature
+                    fetch('/payments/api/payment/verify-signature/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken
+                        },
+                        body: JSON.stringify({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            description: 'Direct AI Book Purchase: ' + title,
+                            course_slug: slug
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.status === 'success') {
+                            alert('🎉 Payment Successful! Redirecting to your book...');
+                            window.location.href = `/book-reader/${encodeURIComponent(slug)}/`;
+                        } else {
+                            alert('Payment verification failed: ' + (data.message || 'Unknown error'));
+                            btn.innerHTML = originalText;
+                            btn.disabled = false;
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Verify error:', err);
+                        alert('An error occurred during verification.');
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    });
+                },
+                modal: {
+                    ondismiss: function() {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }
+                }
+            };
+            
+            if (orderData.is_real_order && orderData.order_id) {
+                options.order_id = orderData.order_id;
+            }
+
+            const rzp = new Razorpay(options);
+            rzp.on('payment.failed', function (response) {
+                alert("Payment Failed! Reason: " + response.error.description);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+            rzp.open();
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert(error.message || 'Something went wrong.');
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+</script>
+{% endblock %}

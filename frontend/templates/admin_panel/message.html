@@ -1,0 +1,364 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
+
+{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+<div class="">
+<h1 class="fw-semibold mb-4 h6 text-primary-light">Message </h1>
+<div class="">
+<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
+<span class="text-secondary-light">/ Message</span>
+</div>
+</div>
+</div>
+<div class="mt-24">
+<div class="chat-wrapper">
+<div class="chat-sidebar card">
+<div class="px-24 py-16">
+<form class="navbar-search d-block">
+    {% csrf_token %}
+<input class="bg-transparent w-100" name="search" placeholder="Search" type="text"/>
+<iconify-icon class="icon" icon="ion:search-outline"></iconify-icon>
+</form>
+</div>
+<div class="chat-all-list">
+<div class="chat-sidebar-single active">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/2.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">Kathryn Murphy</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single active">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/3.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">James Michael</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/4.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">Russell Lucas</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/5.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">Caleb Bradley</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single active">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/6.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">Bobby Roy</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single active">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/7.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">Vincent Liam</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single active">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/8.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">Randy Mason</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single active">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/9.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">Albert Wayne</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single active">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/10.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">Elijah Willie</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single active">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/2.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">Kathryn Murphy</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single active">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/3.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">James Michael</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/4.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">Russell Lucas</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/5.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">Caleb Bradley</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single active">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/6.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">Bobby Roy</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single active">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/7.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">Vincent Liam</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single active">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/8.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">Randy Mason</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single active">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/9.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">Albert Wayne</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+<div class="chat-sidebar-single active">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/10.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-sm mb-1">Elijah Willie</h6>
+<p class="mb-0 text-xs">hey! there i'm...</p>
+</div>
+<div class="action text-end">
+<p class="mb-0 text-neutral-400 text-xs lh-1">12:30 PM</p>
+<span class="w-16-px h-16-px text-xs rounded-circle bg-warning-main text-white d-inline-flex align-items-center justify-content-center">8</span>
+</div>
+</div>
+</div>
+</div>
+<div class="chat-main card">
+<div class="chat-sidebar-single active">
+<div class="img">
+<img alt="image" src="{% static 'admin_assets/images/chat/11.png' %}"/>
+</div>
+<div class="info">
+<h6 class="text-md mb-0">Kathryn Murphy</h6>
+<p class="mb-0">Available</p>
+</div>
+<div class="action d-inline-flex align-items-center gap-3">
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border">
+<li>
+<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2" type="button">
+<iconify-icon icon="mdi:clear-circle-outline"></iconify-icon>
+                                            Clear All
+                                        </button>
+</li>
+<li>
+<button class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2" type="button">
+<iconify-icon icon="ic:baseline-block"></iconify-icon>
+                                            Block
+                                        </button>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="chat-message-list">
+<div class="chat-single-message left">
+<img alt="image" class="avatar-lg object-fit-cover rounded-circle" src="{% static 'admin_assets/images/chat/11.png' %}"/>
+<div class="chat-message-content">
+<p class="mb-3">It is a long established fact that a reader will be distracted by the
+                                    readable
+                                    content
+                                    of a page when looking at its layout. The point of using Lorem Ipsum is that it has
+                                    a
+                                    more-or-less
+                                    normal distribution of letters.</p>
+<p class="chat-time mb-0">
+<span>6.30 pm</span>
+</p>
+</div>
+</div>
+<div class="chat-single-message right">
+<div class="chat-message-content">
+<p class="mb-3">It is a long established fact that a reader will be distracted by the
+                                    readable
+                                    content
+                                    of a page when looking at its layout. The point of using Lorem Ipsum is that it has
+                                    a
+                                    more-or-less
+                                    normal distribution of letters.</p>
+<p class="chat-time mb-0">
+<span>6.30 pm</span>
+</p>
+</div>
+</div>
+<div class="chat-single-message left">
+<img alt="image" class="avatar-lg object-fit-cover rounded-circle" src="{% static 'admin_assets/images/chat/11.png' %}"/>
+<div class="chat-message-content">
+<p class="mb-3">The point of using Lorem Ipsum is that it has a more-or-less normal
+                                    distribution of
+                                    letters, as opposed to using 'Content here, content here', making it look like
+                                    readable English.
+                                    Many
+                                    desktop publishing packages and web page editors now use Lorem Ipsum as their
+                                    default.Contrary
+                                    to
+                                    popular belief, Lorem Ipsum is not simply random text is the model text for your
+                                    company.</p>
+<p class="chat-time mb-0">
+<span>6.30 pm</span>
+</p>
+</div>
+</div>
+</div>
+<form class="chat-message-box">
+    {% csrf_token %}
+<input name="chatMessage" placeholder="Write message" type="text"/>
+<div class="chat-message-box-action">
+<button class="text-xl" type="button">
+<iconify-icon icon="ph:link"></iconify-icon>
+</button>
+<button class="text-xl" type="button">
+<iconify-icon icon="solar:gallery-linear"></iconify-icon>
+</button>
+<button class="btn btn-sm btn-primary-600 radius-8 d-inline-flex align-items-center gap-1" type="submit">
+                                Send
+                                <iconify-icon icon="f7:paperplane"></iconify-icon>
+</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+{% endblock %}

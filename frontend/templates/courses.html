@@ -1,0 +1,725 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Courses - EduAiQ{% endblock %}
+
+{% block description %}Explore the comprehensive catalog of courses offered by EduAiQ. Search and filter by category or
+level.{% endblock %}
+
+{% block content %}
+
+<!-- Banner Section -->
+<section class="inner-banner-wrap mb-0">
+  <div class="inner-baner-container" style="background-image: url({% static 'assets/img/blog-default-indian.jpg' %});">
+    <div class="container">
+      <div class="inner-banner-content">
+        <h1 class="inner-title">All Available Courses</h1>
+        <div class="breadcrumb-content">
+          <ul class="breadcrumb">
+            <li><a href="/">Home</a></li>
+            <li>Courses</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Filter & Control Section -->
+<section class="filter-section py-4 bg-light border-bottom">
+  <div class="container">
+    <div class="row g-3 align-items-center">
+      <!-- Search Input -->
+      <div class="col-md-4">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+          <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Search courses..." value="{{ search_query|default:'' }}">
+        </div>
+      </div>
+
+      <!-- Category Filter -->
+      <div class="col-md-3">
+        <select id="categoryFilter" class="form-select">
+          <option value="">All Categories</option>
+          <!-- Dynamic options will be loaded here -->
+        </select>
+      </div>
+
+      <!-- Level Filter -->
+      <div class="col-md-3">
+        <select id="levelFilter" class="form-select">
+          <option value="">All Levels</option>
+          <option value="beginner">Beginner</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="advanced">Advanced</option>
+        </select>
+      </div>
+
+      <!-- Reset button -->
+      <div class="col-md-2 text-md-end">
+        <button id="resetBtn" class="btn btn-outline-secondary w-100" onclick="resetFilters()">
+          <i class="fas fa-undo"></i> Reset
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Course List Grid -->
+<div class="home-course-section py-5">
+  <div class="container">
+    
+    <!-- 6-Month Fast-Track 50% Reward Global Marquee Banner -->
+    <div class="offer-marquee-banner mb-4 d-flex align-items-center justify-content-between gap-3">
+      <div class="d-flex align-items-center gap-3" style="flex: 1; min-width: 0; overflow: hidden;">
+        <div class="d-flex align-items-center justify-content-center text-white rounded-circle fs-4 shadow-sm flex-shrink-0" style="width: 44px; height: 44px; min-width: 44px; background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%);">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <div class="offer-marquee-container">
+          <div class="offer-marquee-content">
+            <div class="offer-marquee-item">
+              <span class="fw-bold text-white fs-6">EduAiQ 6-Month Fast-Track Challenge:</span>
+              <span class="text-white-50" style="font-size: 13px;">Finish any course & all module assignments in under 6 months to receive a flat <strong class="text-warning">50% Scholarship Voucher</strong> for advanced tracks!</span>
+            </div>
+            <span class="text-warning opacity-50">✦</span>
+            <div class="offer-marquee-item">
+              <span class="fw-bold text-white fs-6">🎉 Special Student Offer:</span>
+              <span class="text-white-50" style="font-size: 13px;">Complete quizzes on time to get certified with honors & unlock exclusive masterclasses!</span>
+            </div>
+            <span class="text-warning opacity-50">✦</span>
+            <div class="offer-marquee-item">
+              <span class="fw-bold text-white fs-6">EduAiQ 6-Month Fast-Track Challenge:</span>
+              <span class="text-white-50" style="font-size: 13px;">Finish any course & all module assignments in under 6 months to receive a flat <strong class="text-warning">50% Scholarship Voucher</strong> for advanced tracks!</span>
+            </div>
+            <span class="text-warning opacity-50">✦</span>
+            <div class="offer-marquee-item">
+              <span class="fw-bold text-white fs-6">🎉 Special Student Offer:</span>
+              <span class="text-white-50" style="font-size: 13px;">Complete quizzes on time to get certified with honors & unlock exclusive masterclasses!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex-shrink-0">
+        <span class="badge px-3 py-2 text-dark rounded-pill fw-bold offer-marquee-badge">
+          🎁 Earn 50% Off Reward
+        </span>
+      </div>
+    </div>
+
+    <div class="inner-course-wrap">
+      <div id="coursesGrid" class="row d-flex justify-content-center justify-content-xl-start">
+        <p class="text-center w-100 py-5">Loading courses...</p>
+      </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination-wrap d-flex justify-content-center align-items-center mt-5 gap-3">
+      <button id="prevPageBtn" class="btn btn-outline-primary" onclick="changePage(-1)" disabled>
+        <i class="fas fa-arrow-left"></i> Previous
+      </button>
+      <span id="pageInfo" class="text-muted fw-bold">Page 1</span>
+      <button id="nextPageBtn" class="btn btn-outline-primary" onclick="changePage(1)" disabled>
+        Next <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Pagination Buttons - EduAiQ Logo Brand Styling */
+  .pagination-wrap #prevPageBtn,
+  .pagination-wrap #nextPageBtn {
+      background: #ffffff !important;
+      color: #0F172A !important;
+      border: 1.5px solid #fd7e14 !important;
+      border-radius: 50rem !important;
+      padding: 10px 24px !important;
+      font-weight: 800 !important;
+      font-size: 0.9rem !important;
+      box-shadow: 0 4px 14px rgba(249, 115, 22, 0.15) !important;
+      transition: all 0.3s ease !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+  }
+
+  .pagination-wrap #prevPageBtn:hover:not(:disabled),
+  .pagination-wrap #nextPageBtn:hover:not(:disabled) {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+      border-color: #ea580c !important;
+      box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4) !important;
+      transform: translateY(-2px) !important;
+  }
+
+  .pagination-wrap #prevPageBtn:disabled,
+  .pagination-wrap #nextPageBtn:disabled {
+      background: #f8fafc !important;
+      color: #94a3b8 !important;
+      border-color: #e2e8f0 !important;
+      box-shadow: none !important;
+      opacity: 0.65 !important;
+      cursor: not-allowed !important;
+      transform: none !important;
+  }
+
+  #pageInfo {
+      color: #0F172A !important;
+      font-weight: 800 !important;
+      font-size: 0.95rem !important;
+      padding: 8px 20px !important;
+      background: #fff7ed !important;
+      border: 1.5px solid #ffedd5 !important;
+      border-radius: 50rem !important;
+      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.06) !important;
+  }
+
+  .inner-course {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 30px;
+  }
+
+  .post {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 22px rgba(15, 23, 42, 0.06);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .post:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 36px rgba(249, 115, 22, 0.18);
+    border-color: #f97316;
+  }
+
+  .feature-image {
+    position: relative;
+    overflow: hidden;
+    height: 220px;
+    margin: 0;
+  }
+
+  .feature-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .post:hover .feature-image img {
+    transform: scale(1.05);
+  }
+
+  .cat-meta {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    color: white;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    backdrop-filter: blur(4px);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  .cat-meta a {
+    color: white !important;
+    text-decoration: none;
+  }
+
+  .cat-meta:hover {
+    background: #f97316;
+  }
+
+  .entry-content {
+    padding: 24px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .entry-content h4 {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    color: #1e293b;
+  }
+
+  .entry-content h4 a {
+    color: #1e293b;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .entry-content h4 a:hover {
+    color: #f97316;
+  }
+
+  .course-desc {
+    font-size: 13.5px;
+    color: #64748b;
+    margin-bottom: 18px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.6;
+  }
+
+  .rating-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .rating-info {
+    color: #64748b;
+    font-size: 13px;
+  }
+
+  .rating-start-wrap {
+    width: 80px;
+    height: 15px;
+    background: #f1f5f9;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .rating-start {
+    height: 100%;
+    background: linear-gradient(90deg, #f6a055, #f97316);
+    border-radius: 10px;
+  }
+
+  .price-delivery {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .course-price {
+    font-size: 21px;
+    font-weight: 800;
+    color: #f97316;
+  }
+
+  .delivery-mode {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1e293b;
+    background: #fff7ed;
+    border: 1px solid #ffedd5;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .entry-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+  }
+
+  .entry-meta a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.25s ease;
+    background: linear-gradient(135deg, #f6a055 0%, #f97316 100%);
+    padding: 9px 22px;
+    border-radius: 30px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 14px rgba(249, 115, 22, 0.3);
+  }
+
+  .entry-meta a:hover {
+    background: linear-gradient(135deg, #ea580c 0%, #d97706 100%);
+    color: #ffffff;
+    transform: translateX(3px);
+    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.45);
+  }
+
+  .entry-meta .btn-purchase-course {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff;
+    border: none;
+    font-size: 13px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #64748b 0%, #334155 100%);
+    padding: 9px 22px;
+    border-radius: 30px;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(51, 65, 85, 0.3);
+    transition: all 0.25s ease;
+  }
+
+  .entry-meta .btn-purchase-course:hover {
+    background: linear-gradient(135deg, #475569 0%, #1e293b 100%);
+    transform: translateX(3px);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+  }
+
+  .empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+
+  /* Responsive Adjustments for Mobile & Tablet */
+  @media (max-width: 991px) {
+    .home-course-section {
+      padding: 30px 0 !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .pagination-wrap #prevPageBtn,
+    .pagination-wrap #nextPageBtn {
+      padding: 8px 14px !important;
+      font-size: 0.8rem !important;
+    }
+    #pageInfo {
+      font-size: 0.82rem !important;
+      padding: 6px 14px !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .pagination-wrap {
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+    }
+  }
+</style>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+  let currentPage = 1;
+  const pageSize = 6;
+  let totalCount = 0;
+
+  async function initPage() {
+    await loadCategoriesFilter();
+
+    // Auto-select category filter if passed in URL query param
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryParam = urlParams.get('category') || urlParams.get('category_slug') || urlParams.get('cat');
+    if (categoryParam) {
+      const filterSelect = document.getElementById('categoryFilter');
+      for (let opt of filterSelect.options) {
+        if (opt.value == categoryParam || opt.dataset.slug == categoryParam || opt.textContent.trim().toLowerCase() == categoryParam.toLowerCase().replace(/-/g, ' ')) {
+          filterSelect.value = opt.value;
+          break;
+        }
+      }
+    }
+
+    await loadCourses();
+
+    // Attach change event listeners for automatic filtering
+    document.getElementById('searchInput').addEventListener('input', debounce(() => {
+      currentPage = 1;
+      loadCourses();
+    }, 300));
+
+    document.getElementById('categoryFilter').addEventListener('change', () => {
+      currentPage = 1;
+      loadCourses();
+    });
+
+    document.getElementById('levelFilter').addEventListener('change', () => {
+      currentPage = 1;
+      loadCourses();
+    });
+  }
+
+  async function loadCategoriesFilter() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/categories/`, { credentials: 'same-origin' });
+      const data = await response.json();
+
+      const filter = document.getElementById('categoryFilter');
+      if (data.results && data.results.length > 0) {
+        data.results.forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat.slug;
+          opt.dataset.slug = cat.slug;
+          opt.dataset.id = cat.id;
+          opt.textContent = cat.name;
+          filter.appendChild(opt);
+        });
+      }
+    } catch (e) {
+      console.error('Error loading filter categories:', e);
+    }
+  }
+
+  async function loadCourses() {
+    const searchVal = document.getElementById('searchInput').value.trim();
+    const categoryVal = document.getElementById('categoryFilter').value;
+    const levelVal = document.getElementById('levelFilter').value;
+
+    let url = `${API_BASE_URL}/courses/courses/?page=${currentPage}&page_size=${pageSize}`;
+    if (searchVal) url += `&q=${encodeURIComponent(searchVal)}`;
+    if (categoryVal) url += `&category=${categoryVal}`;
+    if (levelVal) url += `&level=${levelVal}`;
+
+    try {
+      const grid = document.getElementById('coursesGrid');
+      grid.innerHTML = '<p class="text-center w-100 py-5"><i class="fas fa-spinner fa-spin"></i> Loading courses...</p>';
+
+      const response = await fetch(url, { credentials: 'same-origin' });
+      const data = await response.json();
+
+      const results = data.results || [];
+      totalCount = data.count || results.length;
+
+      if (results.length === 0) {
+        grid.innerHTML = `
+          <div class="col-12">
+            <div class="empty-state">
+              <div class="empty-state-icon">📚</div>
+              <h4>No Courses Found</h4>
+              <p>Try modifying your search or filter options.</p>
+            </div>
+          </div>
+        `;
+        updatePagination(false, false);
+        return;
+      }
+
+      grid.innerHTML = results.map(course => `
+        <div class="col-sm-6 col-lg-4 inner-course">
+          <article class="post" onclick="window.location.href='/course/?slug=${course.slug}'">
+            <figure class="feature-image">
+              <img src="${course.thumbnail || 'https://via.placeholder.com/400x220'}" alt="${course.title}"/>
+            </figure>
+            <div class="entry-content">
+              <h4>
+                <a href="/course/?slug=${course.slug}" onclick="event.stopPropagation();">
+                  ${course.title}
+                </a>
+              </h4>
+              <p class="course-desc">${course.description || 'No description available for this course.'}</p>
+              
+              <div class="price-delivery">
+                <span class="course-price">₹${course.price}</span>
+                <span class="delivery-mode">${course.delivery_mode.replace('_', ' ')}</span>
+              </div>
+              
+              <div class="entry-meta">
+                ${course.is_accessible ? `
+                  <a href="/course/?slug=${course.slug}" class="stretched-link" onclick="event.stopPropagation();">
+                    VIEW COURSE
+                    <i class="fas fa-long-arrow-alt-right"></i>
+                  </a>
+                ` : `
+                  <button type="button" class="btn-purchase-course" onclick="event.stopPropagation(); handleCoursePurchase(event, '${course.slug}', '${(course.title || '').replace(/'/g, "\\'")}', '${course.price}')">
+                    <i class="fas fa-lock me-1"></i> PURCHASE ₹${course.price}
+                  </button>
+                `}
+              </div>
+            </div>
+          </article>
+        </div>
+      `).join('');
+
+      // Check pagination states
+      const hasNext = (currentPage * pageSize) < totalCount;
+      const hasPrev = currentPage > 1;
+      updatePagination(hasPrev, hasNext);
+
+    } catch (e) {
+      console.error('Error loading courses:', e);
+      document.getElementById('coursesGrid').innerHTML = `
+        <div class="col-12">
+          <div class="empty-state">
+            <div class="empty-state-icon">⚠️</div>
+            <h4>Error Loading Courses</h4>
+            <p>Could not reach the server. Please try again later.</p>
+          </div>
+        </div>
+      `;
+      updatePagination(false, false);
+    }
+  }
+
+  function updatePagination(hasPrev, hasNext) {
+    document.getElementById('prevPageBtn').disabled = !hasPrev;
+    document.getElementById('nextPageBtn').disabled = !hasNext;
+    document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${Math.ceil(totalCount / pageSize) || 1}`;
+  }
+
+  function changePage(direction) {
+    currentPage += direction;
+    loadCourses();
+    window.scrollTo({ top: 300, behavior: 'smooth' });
+  }
+
+  function resetFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('categoryFilter').value = '';
+    document.getElementById('levelFilter').value = '';
+    currentPage = 1;
+    loadCourses();
+  }
+
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  async function handleCoursePurchase(e, slug, title, priceStr) {
+    if (e) e.preventDefault();
+
+    const isLoggedIn = {% if user.is_authenticated %}true{% else %}false{% endif %};
+    if (!isLoggedIn) {
+      window.location.href = `/login/?next=/courses/`;
+      return;
+    }
+
+    const btn = e ? e.currentTarget : null;
+    const originalText = btn ? btn.innerHTML : '';
+    if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Processing...'; btn.disabled = true; }
+
+    try {
+      const orderRes = await fetch('/payments/api/payment/create-order/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
+        body: JSON.stringify({ amount: parseFloat(priceStr) }),
+      });
+      const orderData = await orderRes.json();
+      if (orderData.status !== 'success') throw new Error(orderData.message || 'Failed to create order.');
+
+      const options = {
+        key: orderData.key_id || "{{ razorpay_key_id }}",
+        amount: orderData.amount,
+        currency: orderData.currency || 'INR',
+        name: 'EduAiQ',
+        description: 'Course Access: ' + title,
+        prefill: {
+          name: "{{ user.get_full_name|default:user.username|escapejs }}",
+          email: "{{ user.email|escapejs }}",
+          contact: "{{ user.phone|default:''|escapejs }}"
+        },
+        theme: { color: '#f97316' },
+        handler: function (response) {
+          fetch('/payments/api/payment/verify-signature/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              amount: orderData.amount / 100,
+              description: 'Course Access: ' + title,
+              source_type: 'course_enrollment',
+            })
+          })
+          .then(r => r.json())
+          .then(verifyData => {
+            if (verifyData.status === 'success') {
+              fetch(`/courses/courses/${slug}/enroll/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') || '' },
+                body: JSON.stringify({ amount_paid: orderData.amount / 100 })
+              })
+              .then(r => r.json())
+              .then(enrollData => {
+                if (enrollData.success) {
+                  alert('🎉 Payment successful! Aapko "' + title + '" course ka access mil gaya hai.');
+                  loadCourses();
+                } else {
+                  alert('Payment verified, but enrollment failed: ' + (enrollData.error || 'Please contact support.'));
+                }
+              });
+            } else {
+              alert('Payment verification failed: ' + verifyData.message);
+            }
+          })
+          .catch(err => { console.error(err); alert('Error verifying payment.'); })
+          .finally(() => { if (btn) { btn.innerHTML = originalText; btn.disabled = false; } });
+        },
+        modal: {
+          ondismiss: function () { if (btn) { btn.innerHTML = originalText; btn.disabled = false; } }
+        }
+      };
+
+      if (orderData.is_real_order && orderData.order_id) {
+        options.order_id = orderData.order_id;
+      }
+
+      const rzp = new Razorpay(options);
+      rzp.on('payment.failed', function (response) {
+        alert('Payment Failed: ' + response.error.description);
+        if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
+      });
+      rzp.open();
+
+    } catch (error) {
+      console.error('Purchase error:', error);
+      alert(error.message || 'Something went wrong. Please try again.');
+      if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', initPage);
+</script>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+{% endblock %}

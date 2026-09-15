@@ -1,0 +1,2715 @@
+import json
+from datetime import datetime, timedelta, date
+from django.conf import settings
+from django.utils import timezone
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.http import JsonResponse
+from django.db.models import Count, Q
+
+from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods, require_POST
+
+from courses.models import Course, CourseCategory, CourseModule, Lesson, Quiz, QuizAttempt, Enrollment
+from courses.utils import (
+    get_allowed_courses_for_user,
+    get_allowed_categories_for_user,
+    is_course_accessible_by_user,
+)
+from olympiad.models import (
+    OlympiadCategory,
+    Olympiad,
+    OlympiadQuiz,
+    OlympiadQuestion,
+    OlympiadRegistration,
+    OlympiadAttempt,
+    OlympiadResult,
+)
+from payments.models import Transaction
+from content.models import TeamMember, BlogCategory, BlogPost
+
+User = get_user_model()
+
+AI_BOOKS_CATEGORY_SLUG = "ai-books"  # create this CourseCategory once in /admin/
+
+
+# ==========================
+# Error Pages
+# ==========================
+
+def handler404(request, exception=None):
+    """Custom 404 Page"""
+    return render(request, "404page.html", status=404)
+
+
+def handler500(request):
+    """Custom 500 Page"""
+    return render(request, "500page.html", status=500)
+
+
+# ==========================
+# Website Views (Public)
+# ==========================
+
+def home(request):
+    """Homepage - Featured categories, courses, team members, and latest blog posts"""
+    categories = get_allowed_categories_for_user(request.user)
+    courses = get_allowed_courses_for_user(request.user, exclude_books=True)[:6]
+    team_members = TeamMember.objects.filter(is_active=True).order_by('order', 'created_at')[:4]
+    latest_blogs = BlogPost.objects.filter(status='published').select_related('category', 'author_team_member').order_by('-published_at')[:3]
+    return render(request, "index.html", {
+        'categories': categories,
+        'courses': courses,
+        'team_members': team_members,
+        'mentors': team_members,
+        'latest_blogs': latest_blogs,
+    })
+
+
+def about(request):
+    """About page - dynamic mentors list"""
+    mentors = TeamMember.objects.filter(is_active=True).order_by('order', 'created_at')[:4]
+    return render(request, "about.html", {'mentors': mentors})
+
+
+def courses(request):
+    """
+    All courses listing page with search query filtering.
+    Publicly accessible catalog display (excludes AI Books so books stay in AI Books section).
+    """
+    search_q = request.GET.get('search', '').strip() or request.GET.get('q', '').strip() or request.GET.get('s', '').strip()
+    allowed_courses = get_allowed_courses_for_user(request.user, exclude_books=True)
+    if search_q:
+        allowed_courses = allowed_courses.filter(
+            Q(title__icontains=search_q) |
+            Q(description__icontains=search_q) |
+            Q(category__name__icontains=search_q)
+        ).distinct()
+    from django.conf import settings
+    return render(request, "courses.html", {
+        'courses': allowed_courses,
+        'search_query': search_q,
+        'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+    })
+
+
+def course_detail(request):
+    """
+    Single course detail page with modules, lessons, and quizzes.
+    Publicly viewable course overview, with content locks for unauthenticated or unallowed users.
+    """
+    course_slug = request.GET.get('slug', '')
+    course = Course.objects.filter(slug=course_slug, status='published').first()
+
+    if not course and not request.user.is_superuser:
+        return render(request, "404page.html", status=404)
+
+    is_accessible = is_course_accessible_by_user(request.user, course)
+
+    from django.conf import settings
+    return render(request, "course-detail.html", {
+        'course_slug': course_slug,
+        'course': course,
+        'is_accessible': is_accessible,
+        'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+    })
+
+
+def categories(request):
+    """
+    Course categories listing.
+    Publicly accessible catalog display.
+    """
+    categories_qs = get_allowed_categories_for_user(request.user)
+    return render(request, "categories.html", {'categories': categories_qs})
+
+
+def search(request):
+    """
+    Search results page.
+    Publicly accessible.
+    """
+    query = request.GET.get('q', '')
+    return render(request, "search.html", {
+        'query': query
+    })
+
+
+def contact(request):
+    """Contact page"""
+    return render(request, "contact.html")
+
+
+def faq(request):
+    """FAQ page"""
+    return render(request, "faq.html")
+
+
+# ==========================
+# Feature Pages
+# ==========================
+
+def skill_development(request):
+    """Skill development courses"""
+    return render(request, "skill-development.html")
+
+
+def ai_lab(request):
+    """AI Lab page"""
+    return render(request, "ai-lab.html")
+
+
+def ai_books(request):
+    """
+    AI Books page — books are Course objects filed under the "AI Books &
+    Guides" category. Splits them into featured_books (live: published AND
+    the publish date has passed or null) and coming_soon_books (approved, or
+    published with a future date).
+    """
+    now = timezone.now()
+
+    books_q = Q(category__slug=AI_BOOKS_CATEGORY_SLUG) | Q(category__name__icontains='AI Book') | Q(title__icontains='AI-GUIDE') | Q(title__icontains='AI Book')
+    base_qs = (
+        Course.objects.filter(books_q)
+        .select_related("category")
+        .annotate(student_count=Count("enrollments", distinct=True))
+    )
+
+    featured_books = base_qs.filter(
+        Q(status="published") | Q(status="approved")
+    ).order_by("-student_count", "-created_at")
+
+    coming_soon_books = base_qs.filter(
+        status="in_review"
+    ).order_by("-created_at")
+
+    accessible_book_ids = set()
+    user = request.user
+    if user.is_authenticated:
+        for book in featured_books:
+            if is_course_accessible_by_user(user, book) or (not book.price or book.price <= 0):
+                accessible_book_ids.add(book.id)
+
+    return render(request, "ai-books.html", {
+        'featured_books': featured_books,
+        'coming_soon_books': coming_soon_books,
+        'accessible_book_ids': accessible_book_ids,
+    })
+
+
+def book_reader(request, slug):
+    """
+    Google Books style interactive reader view.
+    Checks if the user has access to read the book via:
+    1. Superuser / Staff / Admin role.
+    2. Student enrolled in the book/course.
+    3. Student belonging to an Institution assigned to the book.
+    4. Free preview / public demo.
+    """
+    book = get_object_or_404(
+        Course.objects.prefetch_related('modules__lessons'),
+        slug=slug
+    )
+
+    user = request.user
+    is_accessible = False
+
+    if user.is_authenticated:
+        if is_course_accessible_by_user(user, book):
+            is_accessible = True
+        elif Enrollment.objects.filter(student=user, course=book).exists():
+            is_accessible = True
+
+    # If book has price <= 0, allow reading access
+    if not is_accessible and (not book.price or book.price <= 0):
+        is_accessible = True
+
+    return render(request, "book-reader.html", {
+        'book': book,
+        'is_accessible': is_accessible,
+    })
+
+
+def olympiads(request):
+    """Olympiad competitions"""
+    return render(request, "olympiads.html")
+
+
+def career(request):
+    """Career page"""
+    return render(request, "career.html")
+
+
+def team(request):
+    """Team page - dynamic active team members"""
+    team_members = TeamMember.objects.filter(is_active=True).order_by('order', 'created_at')
+    return render(request, "team.html", {'team_members': team_members})
+
+
+def gallery(request):
+    """Gallery page"""
+    return render(request, "gallery.html")
+
+
+def testimonial(request):
+    """Testimonial page"""
+    return render(request, "testimonial.html")
+
+
+def facility(request):
+    """Facility page"""
+    return render(request, "facility.html")
+
+
+def growth_partner_kit(request):
+    """Growth Partner Kit page"""
+    return render(request, "growth-partner-kit.html")
+
+
+def apply_for_franchise(request):
+    """Apply for Franchise page"""
+    return render(request, "apply-for-franchise.html")
+
+
+def eduaiq_ecosystem(request):
+    """EduAiQ Ecosystem page"""
+    return render(request, "eduaiq-ecosystem.html")
+
+
+# ==========================
+# Learning Pages (Login Required)
+# ==========================
+@login_required(login_url='/login/')
+def my_learning(request):
+    """
+    Student learning dashboard - shows institution-assigned courses, AI Books,
+    quizzes/assessments, Olympiad Entrance Exams, Certificates, Student ID Card, and Admit Cards.
+    Template: my-learning.html
+    """
+    if getattr(request.user, 'role', '') == 'parent':
+        return redirect('parent_dashboard')
+
+    entrance_registrations = list(OlympiadRegistration.objects.filter(
+        student=request.user
+    ).select_related('olympiad').order_by('-registered_at'))
+
+    completed_count = 0
+    in_progress_count = 0
+    not_started_count = 0
+
+    certificates_list = []
+    admit_cards_list = []
+
+    for reg in entrance_registrations:
+        attempt = OlympiadAttempt.objects.filter(registration=reg).first()
+        reg.active_attempt = attempt
+
+        is_completed = bool(attempt and attempt.submitted_at)
+
+        if not attempt:
+            reg.status_label = 'Not Started'
+            reg.status_badge_class = 'bg-secondary text-white'
+            reg.action_label = 'Start Entrance Exam'
+            reg.is_completed = False
+            not_started_count += 1
+            admit_status = 'Ready to Start'
+            action_label = 'Start Exam'
+            action_url = f"/olympiad-entrance/{reg.olympiad.id}/attempt/"
+        elif not attempt.submitted_at:
+            reg.status_label = 'In Progress'
+            reg.status_badge_class = 'bg-warning text-dark'
+            reg.action_label = 'Resume Exam'
+            reg.is_completed = False
+            in_progress_count += 1
+            admit_status = 'In Progress'
+            action_label = 'Resume Exam'
+            action_url = f"/olympiad-entrance/{reg.olympiad.id}/attempt/"
+        else:
+            reg.status_label = 'Completed'
+            reg.status_badge_class = 'bg-success text-white'
+            reg.action_label = 'View Result / Status'
+            reg.is_completed = True
+            completed_count += 1
+            admit_status = 'Completed'
+            action_label = 'View Result'
+            action_url = f"/olympiad-entrance/{reg.olympiad.id}/result/"
+
+            # Certificate payload (Only for submitted/completed exams)
+            pct = float(attempt.score_pct or 0)
+            if pct >= 85.0:
+                award = "Gold Medal & 100% Scholarship"
+            elif pct >= 70.0:
+                award = "Silver Medal & 50% Scholarship"
+            elif pct >= 50.0:
+                award = "Bronze Medal & 25% Scholarship"
+            else:
+                award = "Certificate of Participation"
+
+            certificates_list.append({
+                'title': f"{reg.olympiad.name} - Merit Certificate",
+                'type': 'Olympiad Entrance',
+                'issued_date': attempt.submitted_at,
+                'cert_url': f"/olympiad-entrance/{reg.olympiad.id}/certificate/",
+                'serial_no': f"EDUAIQ-CERT-{reg.olympiad.id}-{reg.roll_number}",
+                'award': award,
+                'score_pct': attempt.score_pct,
+            })
+
+        # ALWAYS include in admit_cards_list so student always has their Admit Card / Hall Ticket available!
+        admit_cards_list.append({
+            'exam_name': reg.olympiad.name,
+            'roll_number': reg.roll_number,
+            'registered_at': reg.registered_at,
+            'class_group': reg.olympiad.class_group,
+            'duration_minutes': reg.olympiad.exam_duration_minutes,
+            'exam_id': reg.olympiad.id,
+            'status': admit_status,
+            'action_label': action_label,
+            'action_url': action_url,
+            'is_completed': is_completed,
+        })
+
+    # Student ID Card Data
+    from institutions.models import Student
+    student_profile = Student.objects.filter(user=request.user).select_related('institution').first()
+    inst_name = student_profile.institution.name if (student_profile and student_profile.institution) else "EduAiQ Academy"
+    roll_no = student_profile.roll_number if (student_profile and student_profile.roll_number) else f"STU-{request.user.id:05d}"
+
+    id_card_data = {
+        'full_name': request.user.get_full_name() or request.user.username,
+        'username': request.user.username,
+        'email': request.user.email,
+        'phone': getattr(request.user, 'phone', '') or 'N/A',
+        'role': getattr(request.user, 'role', 'student').capitalize(),
+        'roll_number': roll_no,
+        'institution_name': inst_name,
+        'joined_date': request.user.date_joined,
+    }
+
+    # ---------------------------------------------------------
+    # Assigned Courses & AI Books (Direct Enrollments + Institution Allotment)
+    # ---------------------------------------------------------
+    from courses.utils import get_user_institution
+
+    student_institution = get_user_institution(request.user)
+
+    enrolled_course_ids = set(Enrollment.objects.filter(student=request.user).values_list('course_id', flat=True))
+
+    if enrolled_course_ids:
+        allowed_courses_qs = Course.objects.filter(id__in=enrolled_course_ids, status='published').distinct().select_related('category')
+    else:
+        allowed_courses_qs = Course.objects.none()
+
+    books_q = Q(category__slug=AI_BOOKS_CATEGORY_SLUG) | Q(category__name__icontains='AI Book') | Q(title__icontains='AI-GUIDE') | Q(title__icontains='AI Book')
+    assigned_courses = list(allowed_courses_qs.exclude(books_q))
+    assigned_books = list(allowed_courses_qs.filter(books_q))
+
+    assigned_course_ids = {c.id for c in assigned_courses}
+    assigned_book_ids = {b.id for b in assigned_books}
+
+    direct_enrollments = list(Enrollment.objects.filter(
+        student=request.user,
+        course_id__in=assigned_course_ids | assigned_book_ids
+    ).select_related('course', 'course__category'))
+    enrollment_map = {e.course_id: e for e in direct_enrollments}
+
+    assigned_courses_data = []
+    total_progress_sum = 0.0
+    now = timezone.now()
+
+    for c in assigned_courses:
+        e = enrollment_map.get(c.id)
+        pct = float(e.progress_pct) if e else 0.0
+        total_progress_sum += pct
+        is_comp = e.is_completed if e else False
+
+        # 6-Month (180 Days) Challenge Calculation
+        enrolled_dt = (e.enrollment_date if (e and e.enrollment_date) else None) or getattr(request.user, 'date_joined', now)
+        days_passed = (now - enrolled_dt).days if enrolled_dt else 0
+        days_remaining = max(0, 180 - days_passed)
+
+        if is_comp:
+            comp_dt = (e.completion_date if (e and e.completion_date) else None) or now
+            comp_days = (comp_dt - enrolled_dt).days if (comp_dt and enrolled_dt) else days_passed
+            qualified_50_off = (comp_days <= 180)
+            coupon_code = f"EDUAIQ-50OFF-{c.id}-{request.user.id}" if qualified_50_off else None
+        else:
+            qualified_50_off = False
+            coupon_code = None
+
+        assigned_courses_data.append({
+            'course': c,
+            'progress_pct': pct,
+            'is_completed': is_comp,
+            'days_passed': days_passed,
+            'days_remaining': days_remaining,
+            'qualified_50_off': qualified_50_off,
+            'coupon_code': coupon_code,
+        })
+
+    avg_progress = round(total_progress_sum / len(assigned_courses)) if assigned_courses else 0
+
+    assigned_books_data = []
+    for b in assigned_books:
+        assigned_books_data.append({
+            'book': b,
+            'is_accessible': True,
+        })
+
+    # ---------------------------------------------------------
+    # Institution Assigned Quizzes & Assessments
+    # ---------------------------------------------------------
+    all_assigned_course_ids = [c.id for c in assigned_courses] + [b.id for b in assigned_books]
+    quizzes_qs = Quiz.objects.filter(
+        lesson__module__course_id__in=all_assigned_course_ids,
+        is_active=True
+    ).select_related('lesson', 'lesson__module', 'lesson__module__course')
+
+    assigned_quizzes_data = []
+    completed_quizzes_count = 0
+    for quiz in quizzes_qs:
+        attempt = QuizAttempt.objects.filter(quiz=quiz, student=request.user).order_by('-started_at').first()
+        status_label = 'Not Started'
+        badge_class = 'bg-secondary text-white'
+        if attempt:
+            if attempt.status in ('submitted', 'graded') or attempt.submitted_at:
+                status_label = 'Completed'
+                badge_class = 'bg-success text-white'
+                completed_quizzes_count += 1
+            else:
+                status_label = 'In Progress'
+                badge_class = 'bg-warning text-dark'
+
+        assigned_quizzes_data.append({
+            'quiz': quiz,
+            'course_title': quiz.lesson.module.course.title if (quiz.lesson and quiz.lesson.module) else 'General Course',
+            'lesson_title': quiz.lesson.title if quiz.lesson else 'Assessment Quiz',
+            'latest_attempt': attempt,
+            'status_label': status_label,
+            'badge_class': badge_class,
+            'passing_score': quiz.passing_score_pct,
+            'time_limit': quiz.time_limit_minutes,
+        })
+
+    import json
+    admit_cards_json = json.dumps([
+        {
+            'exam_name': a['exam_name'],
+            'roll_number': a['roll_number'],
+            'class_group': a['class_group'],
+            'duration_minutes': a['duration_minutes'],
+            'exam_id': a['exam_id'],
+            'action_label': a['action_label'],
+            'action_url': a['action_url'],
+            'status': a['status'],
+        } for a in admit_cards_list
+    ])
+    certificates_json = json.dumps([
+        {
+            'title': c['title'],
+            'award': c['award'],
+            'serial_no': c['serial_no'],
+            'score_pct': float(c['score_pct'] or 0),
+            'cert_url': c['cert_url'],
+        } for c in certificates_list
+    ])
+
+    return render(request, "my-learning.html", {
+        'entrance_registrations': entrance_registrations,
+        'total_entrance_count': len(entrance_registrations),
+        'completed_entrance_count': completed_count,
+        'in_progress_entrance_count': in_progress_count,
+        'not_started_entrance_count': not_started_count,
+        'id_card': id_card_data,
+        'certificates_list': certificates_list,
+        'admit_cards_list': admit_cards_list,
+        'admit_cards_json': admit_cards_json,
+        'certificates_json': certificates_json,
+        'assigned_courses_data': assigned_courses_data,
+        'assigned_books_data': assigned_books_data,
+        'assigned_quizzes_data': assigned_quizzes_data,
+        'total_assigned_courses': len(assigned_courses_data),
+        'total_assigned_books': len(assigned_books_data),
+        'total_assigned_quizzes': len(assigned_quizzes_data),
+        'completed_quizzes_count': completed_quizzes_count,
+        'avg_progress': avg_progress,
+    })
+
+
+@login_required(login_url='/login/')
+def quiz_player(request, pk=None):
+    """
+    Quiz taking interface with timer and encrypted questions
+    Template: quiz-player.html
+    APIs:
+      - POST /quizzes/{id}/start/
+      - POST /attempts/{id}/answer/
+      - POST /attempts/{id}/submit/
+    URL Path / Query Params: pk or id (quiz ID)
+    Requires: User authentication
+    """
+    quiz_id = pk or request.GET.get('id', '')
+    return render(request, "quiz-player.html", {
+        'quiz_id': quiz_id
+    })
+
+
+@login_required(login_url='/login/')
+def lesson_player(request, pk=None):
+    """
+    Lesson viewing interface with video/text/pdf support
+    Template: lesson-player.html
+    APIs:
+      - GET /courses/lessons/{id}/
+      - PATCH /courses/enrollments/{id}/progress/
+    URL Path / Query Params: pk or id (lesson ID)
+    Requires: User authentication
+    """
+    lesson_id = pk or request.GET.get('id', '')
+    return render(request, "lesson-player.html", {
+        'lesson_id': lesson_id
+    })
+
+
+# ==========================
+# Admin Panel Views
+# ==========================
+@login_required(login_url='/admin-panel/login/')
+def dashboard(request):
+    """
+    Real-World Multi-Role Dashboard - Renders specific portals for Main Admin, Institution Admin, Student, and Employee.
+    """
+    from django.db.models import Q
+    user = request.user
+    is_admin = _is_main_admin(user)
+
+    user_role = (getattr(user, 'role', '') or '').lower().strip()
+    is_institution = False
+    is_student = False
+    is_teacher = False
+    is_employee = False
+
+    if not is_admin:
+        if user_role in ['institution', 'college', 'school', 'institute', 'partner']:
+            is_institution = True
+        elif user_role in ['student', 'parent'] or hasattr(user, 'student_profile'):
+            is_student = True
+        elif user_role in ['teacher', 'faculty']:
+            is_teacher = True
+        else:
+            is_employee = True
+
+    emp_data = {
+        'is_employee': is_employee,
+        'total_leads': 0,
+        'new_leads_today': 0,
+        'in_progress_leads': 0,
+        'won_leads': 0,
+        'recent_leads': [],
+        'today_attendance': None,
+        'pending_wfh': 0
+    }
+
+    if is_employee or is_admin:
+        try:
+            from django.db.models import Q
+            from leads.models import Lead, StudentInquiry
+
+            if is_admin:
+                user_leads = Lead.objects.all()
+                user_inquiries = StudentInquiry.objects.all()
+            else:
+                leads_q = Q(owner=user) | Q(created_by=user)
+                user_leads = Lead.objects.filter(leads_q)
+                user_inquiries = StudentInquiry.objects.filter(leads_q)
+
+            today = date.today()
+
+            total_leads_cnt = user_leads.count()
+            total_inquiries_cnt = user_inquiries.count()
+            new_today_cnt = user_leads.filter(created_at__date=today).count()
+
+            in_progress_cnt = user_leads.exclude(stage__in=['converted', 'lost']).count()
+
+            won_cnt = user_leads.filter(stage='converted').count()
+
+            recent_items = []
+            for l in user_leads.order_by('-created_at')[:6]:
+                recent_items.append({
+                    'full_name': l.lead_name + (f" ({l.institution_name})" if l.institution_name else ""),
+                    'phone_number': l.phone,
+                    'email': l.email,
+                    'course_interested': l.institution_name or (l.get_institution_type_display() if hasattr(l, 'get_institution_type_display') else "B2B Institution Lead"),
+                    'status': l.get_stage_display() if hasattr(l, 'get_stage_display') else l.stage,
+                    'created_at': l.created_at,
+                })
+
+            emp_data['total_leads'] = total_leads_cnt
+            emp_data['total_inquiries'] = total_inquiries_cnt
+            emp_data['new_leads_today'] = new_today_cnt
+            emp_data['in_progress_leads'] = in_progress_cnt
+            emp_data['won_leads'] = won_cnt
+            emp_data['recent_leads'] = recent_items[:6]
+        except Exception:
+            pass
+
+        try:
+            from accounts.models import Attendance, WFHRequest
+            emp_data['today_attendance'] = Attendance.objects.filter(user=user, date=date.today()).first()
+            emp_data['pending_wfh'] = WFHRequest.objects.filter(user=user, status='pending').count()
+        except Exception:
+            pass
+
+    inst_data = {
+        'institution_obj': None,
+        'students_count': 0,
+        'courses_count': 0,
+        'books_count': 0,
+        'batches_count': 0,
+        'students_list': [],
+        'allowed_courses_list': [],
+        'allowed_books_list': [],
+    }
+    if is_institution or is_admin:
+        try:
+            from institutions.models import Institution, Student
+            if is_institution:
+                inst = Institution.objects.filter(Q(admin_user=user) | Q(created_by=user)).first()
+            else:
+                inst = Institution.objects.first()
+
+            if inst:
+                inst_data['institution_obj'] = inst
+                students_qs = Student.objects.filter(institution=inst)
+                inst_data['students_count'] = students_qs.count()
+                
+                if is_institution:
+                    course_ids = set(inst.allowed_courses.values_list('id', flat=True))
+                    cat_ids = set(inst.allowed_categories.values_list('id', flat=True))
+                    if course_ids or cat_ids:
+                        allowed_qs = Course.objects.filter(
+                            Q(id__in=course_ids) | Q(category_id__in=cat_ids)
+                        ).distinct()
+                    else:
+                        allowed_qs = Course.objects.none()
+                else:
+                    allowed_qs = Course.objects.all()
+
+                books_q = Q(category__slug='ai-books') | Q(category__name__icontains='AI Book') | Q(title__icontains='AI-GUIDE') | Q(title__icontains='AI Book')
+                courses_qs = allowed_qs.exclude(books_q)
+                books_qs = allowed_qs.filter(books_q)
+
+                inst_data['courses_count'] = courses_qs.count()
+                inst_data['books_count'] = books_qs.count()
+                inst_data['batches_count'] = inst.batches.count()
+                inst_data['students_list'] = list(students_qs.select_related('user', 'batch')[:10])
+                inst_data['allowed_courses_list'] = list(courses_qs.select_related('category')[:8])
+                inst_data['allowed_books_list'] = list(books_qs.select_related('category')[:8])
+        except Exception:
+            pass
+
+    student_data = {
+        'student_profile': None,
+        'enrolled_courses_count': 0,
+        'enrolled_books_count': 0,
+        'olympiads_count': 0,
+        'attempts_count': 0,
+        'recent_registrations': [],
+        'enrolled_courses': [],
+        'enrolled_books': [],
+    }
+    if is_student or is_admin or hasattr(user, 'student_profile'):
+        try:
+            from institutions.models import Student
+            from courses.utils import get_user_institution, get_allowed_courses_for_user
+
+            st_prof = getattr(user, 'student_profile', None) or Student.objects.filter(user=user).first()
+            student_data['student_profile'] = st_prof
+
+            from courses.models import Enrollment
+            student_inst = get_user_institution(user)
+            enrolled_course_ids = set(Enrollment.objects.filter(student=user).values_list('course_id', flat=True))
+
+            if student_inst:
+                inst_course_ids = set(student_inst.allowed_courses.values_list('id', flat=True))
+                inst_cat_ids = set(student_inst.allowed_categories.values_list('id', flat=True))
+                inst_courses_qs = Course.objects.filter(
+                    Q(id__in=inst_course_ids) | Q(category_id__in=inst_cat_ids),
+                    status='published'
+                )
+                allowed_courses_qs = Course.objects.filter(
+                    Q(id__in=enrolled_course_ids) | Q(id__in=inst_courses_qs.values_list('id', flat=True)),
+                    status='published'
+                ).distinct().select_related('category')
+            elif enrolled_course_ids:
+                allowed_courses_qs = Course.objects.filter(id__in=enrolled_course_ids, status='published').distinct().select_related('category')
+            elif is_admin:
+                allowed_courses_qs = Course.objects.filter(status='published').select_related('category')
+            else:
+                allowed_courses_qs = Course.objects.none()
+
+            books_q = Q(category__slug='ai-books') | Q(category__name__icontains='AI Book') | Q(title__icontains='AI-GUIDE') | Q(title__icontains='AI Book')
+            st_courses = list(allowed_courses_qs.exclude(books_q))
+            st_books = list(allowed_courses_qs.filter(books_q))
+
+            student_data['enrolled_courses'] = st_courses[:6]
+            student_data['enrolled_courses_count'] = len(st_courses)
+            student_data['enrolled_books'] = st_books[:6]
+            student_data['enrolled_books_count'] = len(st_books)
+            student_data['olympiads_count'] = OlympiadRegistration.objects.filter(student=user).count()
+            student_data['attempts_count'] = OlympiadAttempt.objects.filter(registration__student=user).count()
+            student_data['recent_registrations'] = list(OlympiadRegistration.objects.filter(student=user).select_related('olympiad')[:5])
+        except Exception:
+            pass
+
+    teacher_data = {
+        'subject': '',
+        'assigned_class': '',
+        'total_students': 0,
+        'assigned_courses_count': 0,
+        'today_attendance': None,
+        'pending_wfh': 0,
+        'recent_students': [],
+        'assigned_courses': [],
+    }
+    if is_teacher or is_admin:
+        try:
+            from accounts.models import EmployeeProfile, Attendance, WFHRequest
+            from institutions.models import Student
+
+            emp_prof = EmployeeProfile.objects.filter(user=user).first()
+            if emp_prof:
+                teacher_data['subject'] = emp_prof.department or emp_prof.designation or "Academic Faculty"
+                teacher_data['assigned_class'] = emp_prof.designation if "Class" in (emp_prof.designation or "") else "All Classes"
+            else:
+                teacher_data['subject'] = getattr(user, 'department', '') or "Academic Faculty"
+                teacher_data['assigned_class'] = "All Classes"
+
+            inst = get_user_institution(user)
+            if inst:
+                students_qs = Student.objects.filter(institution=inst)
+            else:
+                students_qs = Student.objects.none()
+
+            teacher_data['total_students'] = students_qs.count()
+            teacher_data['recent_students'] = list(students_qs.select_related('user', 'batch').order_by('-created_at')[:8])
+
+            allowed_courses_qs = get_allowed_courses_for_user(user, exclude_books=True, only_allowed=True)
+            teacher_data['assigned_courses'] = list(allowed_courses_qs.select_related('category')[:6])
+            teacher_data['assigned_courses_count'] = allowed_courses_qs.count()
+            teacher_data['today_attendance'] = Attendance.objects.filter(user=user, date=date.today()).first()
+            teacher_data['pending_wfh'] = WFHRequest.objects.filter(user=user, status='pending').count()
+        except Exception:
+            pass
+
+    try:
+        from institutions.models import Student
+        total_students = Student.objects.count()
+    except Exception:
+        total_students = User.objects.filter(role__iexact='student').count()
+    colleges_count = 0
+    schools_count = 0
+    active_institutions = 0
+    pending_institutions = 0
+    try:
+        from institutions.models import Institution
+        from django.db.models import Q
+        if is_employee:
+            emp_inst_qs = Institution.objects.filter(Q(created_by=user) | Q(assigned_employee=user))
+            total_institutions = emp_inst_qs.count()
+            colleges_count = emp_inst_qs.filter(type='college').count()
+            schools_count = emp_inst_qs.filter(type='school').count()
+            active_institutions = emp_inst_qs.filter(status='active').count()
+            pending_institutions = emp_inst_qs.filter(status='pending').count()
+            recent_institutions = emp_inst_qs.order_by('-created_at')[:6]
+            emp_data['recent_institutions'] = recent_institutions
+            emp_data['total_institutions'] = total_institutions
+        else:
+            total_institutions = Institution.objects.count()
+            colleges_count = Institution.objects.filter(type='college').count()
+            schools_count = Institution.objects.filter(type='school').count()
+            active_institutions = Institution.objects.filter(status='active').count()
+            pending_institutions = Institution.objects.filter(status='pending').count()
+            recent_institutions = Institution.objects.order_by('-created_at')[:6]
+    except Exception:
+        total_institutions = 0
+        recent_institutions = []
+
+    books_q = Q(category__slug='ai-books') | Q(category__name__icontains='AI Book') | Q(title__icontains='AI-GUIDE') | Q(title__icontains='AI Book')
+    regular_courses_qs = Course.objects.exclude(books_q)
+    total_books = Course.objects.filter(books_q).count()
+    total_courses = regular_courses_qs.count()
+    published_courses = regular_courses_qs.filter(status='published').count()
+    draft_courses = max(0, total_courses - published_courses)
+    recent_courses = regular_courses_qs.select_related('category').order_by('-created_at')[:6] if total_courses else []
+    
+    # Top Course Categories for Graph
+    cat_names = []
+    cat_counts = []
+    for cat in CourseCategory.objects.exclude(slug='ai-books')[:6]:
+        cnt = regular_courses_qs.filter(category=cat).count()
+        if cnt > 0 or len(cat_names) < 4:
+            cat_names.append(cat.name[:18])
+            cat_counts.append(cnt)
+
+    total_teachers = User.objects.filter(role='teacher').count()
+    total_olympiads = Olympiad.objects.filter(is_active=True).count()
+    total_registrations = OlympiadRegistration.objects.count()
+    total_attempts = OlympiadAttempt.objects.count()
+    recent_registrations = OlympiadRegistration.objects.select_related('olympiad', 'student').order_by('-registered_at')[:6]
+
+    # Top registered exams for graph
+    exam_names = []
+    exam_reg_counts = []
+    for ex in Olympiad.objects.filter(is_active=True)[:5]:
+        cnt = OlympiadRegistration.objects.filter(olympiad=ex).count()
+        exam_names.append(ex.name[:18])
+        exam_reg_counts.append(cnt)
+
+    total_team_members = TeamMember.objects.count()
+    total_blogs = BlogPost.objects.count()
+    recent_blogs = BlogPost.objects.select_related('category').order_by('-created_at')[:5]
+
+    return render(request, "admin_panel/index.html", {
+        'is_main_admin': is_admin,
+        'is_institution': is_institution,
+        'is_student': is_student,
+        'is_teacher': is_teacher,
+        'is_employee': is_employee,
+        'inst_data': inst_data,
+        'student_data': student_data,
+        'teacher_data': teacher_data,
+        'emp_data': emp_data,
+        'total_students': total_students,
+        'total_institutions': total_institutions,
+        'colleges_count': colleges_count,
+        'schools_count': schools_count,
+        'active_institutions': active_institutions,
+        'pending_institutions': pending_institutions,
+        'recent_institutions': recent_institutions,
+        'total_courses': total_courses,
+        'total_books': total_books,
+        'published_courses': published_courses,
+        'draft_courses': draft_courses,
+        'recent_courses': recent_courses,
+        'cat_names_json': json.dumps(cat_names),
+        'cat_counts_json': json.dumps(cat_counts),
+        'total_teachers': total_teachers,
+        'total_olympiads': total_olympiads,
+        'total_registrations': total_registrations,
+        'total_attempts': total_attempts,
+        'recent_registrations': recent_registrations,
+        'exam_names_json': json.dumps(exam_names),
+        'exam_reg_counts_json': json.dumps(exam_reg_counts),
+        'total_team_members': total_team_members,
+        'total_blogs': total_blogs,
+        'recent_blogs': recent_blogs,
+    })
+
+
+def _is_main_admin(user):
+    """Checks if user is Main Admin / Superadmin (Not an institution, student, or employee account)."""
+    if not user or not user.is_authenticated:
+        return False
+    if user.is_superuser:
+        return True
+    role = (getattr(user, 'role', '') or '').lower().strip()
+    return role in ['admin', 'superadmin', 'super_admin', 'main_admin']
+
+
+@login_required(login_url='/admin-panel/login/')
+def users(request):
+    """Admin users management - Superadmin Only"""
+    if not _is_main_admin(request.user):
+        return redirect('admin_panel')
+    return render(request, "admin_panel/users.html")
+
+
+def _get_profile_context(request):
+    emp_profile = None
+    institution_obj = None
+    student_profile = None
+    profile_user = request.user
+    target_id = request.GET.get('user_id') or request.GET.get('emp_id') or request.GET.get('id')
+
+    try:
+        from accounts.models import EmployeeProfile, User
+        from institutions.models import Institution, Student
+        from django.db.models import Q
+
+        if target_id:
+            target_str = str(target_id).strip()
+            if target_str.isdigit():
+                u = User.objects.filter(id=int(target_str)).first()
+                if u:
+                    profile_user = u
+
+        role = (getattr(profile_user, 'role', '') or '').lower().strip()
+        is_admin_user = profile_user.is_superuser or role in ['admin', 'superadmin', 'super_admin']
+        is_inst_user = not is_admin_user and role in ['institution', 'college', 'school', 'institute', 'partner']
+        is_student_user = not is_admin_user and role in ['student', 'parent']
+
+        emp_profile = EmployeeProfile.objects.select_related('department', 'designation', 'reporting_manager', 'user').filter(user=profile_user).first()
+        if is_inst_user or is_admin_user:
+            institution_obj = Institution.objects.filter(Q(admin_user=profile_user) | Q(created_by=profile_user)).first()
+        if is_student_user or is_admin_user:
+            student_profile = Student.objects.filter(user=profile_user).select_related('institution', 'batch').first()
+
+    except Exception:
+        profile_user = request.user
+        is_inst_user = False
+        is_student_user = False
+        is_admin_user = False
+
+    return {
+        'emp_profile': emp_profile,
+        'institution_obj': institution_obj,
+        'student_profile': student_profile,
+        'profile_user': profile_user or request.user,
+        'is_inst_user': is_inst_user,
+        'is_student_user': is_student_user,
+        'is_admin_user': is_admin_user,
+    }
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_profile(request):
+    """Admin profile details page"""
+    context = _get_profile_context(request)
+    return render(request, "admin_panel/view-profile.html", context)
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_courses(request):
+    """Admin course list page"""
+    return render(request, "admin_panel/course-list.html")
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_add_course(request):
+    """Admin add new course page"""
+    if not _is_main_admin(request.user):
+        return redirect('admin_panel')
+    return render(request, "admin_panel/add-new-course.html")
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_edit_course(request):
+    """Admin edit course page"""
+    if not _is_main_admin(request.user):
+        return redirect('admin_panel')
+    return render(request, "admin_panel/edit-course.html")
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_course_details(request):
+    """Admin course details page"""
+    return render(request, "admin_panel/course-details.html")
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_books(request):
+    """Admin AI Books list page."""
+    return render(request, "admin_panel/books-list.html")
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_add_book(request):
+    """Admin add new AI Book page."""
+    if not _is_main_admin(request.user):
+        return redirect('admin_panel')
+    return render(request, "admin_panel/add-book.html")
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_page_router(request, page_name):
+    """
+    Dynamic router for admin panel views with Role-Based Access Control (RBAC).
+    Maps /admin-panel/<page_name>/ to template: admin_panel/<page_name>.html
+    """
+    from django.template.loader import get_template
+    from django.template import TemplateDoesNotExist
+    from django.db.models import Q
+
+    # Admin-only pages restricted for non-admin accounts
+    admin_only_pages = [
+        'users', 'edit-institution',
+        'coaching-list', 'add-coaching', 'coaching-batches', 'department', 'designation',
+        'categories', 'role-permission', 'assign-role', 'general', 'company',
+        'notification-alert', 'payment-gateway', 'currencies', 'languages',
+        'edit-course', 'add-new-course', 'add-book', 'expenses', 'add-new-employee',
+        'employee-details', 'add-new-student', 'edit-student', 'employee-list'
+    ]
+
+    is_admin = _is_main_admin(request.user)
+    user_role = (getattr(request.user, 'role', '') or '').lower().strip()
+    
+    crm_pages = [
+        'crm-dashboard', 'leads', 'add-new-lead', 'student-inquiries', 'add-student-inquiry',
+        'opportunities', 'add-opportunity', 'institution-list', 'employee-attendance', 'wfh-requests',
+        'expense-list', 'expense-head', 'transaction', 'employee-list'
+    ]
+
+    if user_role in ['student', 'parent'] and page_name in crm_pages:
+        return redirect('admin_panel')
+
+    if (not is_admin or user_role in ['teacher', 'faculty']) and page_name in admin_only_pages:
+        return redirect('admin_panel')
+
+    if page_name in ['view-profile', 'profile']:
+        context = _get_profile_context(request)
+        return render(request, 'admin_panel/view-profile.html', context)
+
+    mapping = {
+        'courses': 'admin_panel/course-list.html',
+        'employee-details': 'admin_panel/employee-details.html',
+    }
+
+    if page_name in mapping:
+        return render(request, mapping[page_name])
+
+    possible_templates = [
+        f"admin_panel/{page_name}.html",
+        f"admin_panel/{page_name}-list.html",
+    ]
+
+    for t in possible_templates:
+        try:
+            get_template(t)
+            return render(request, t)
+        except TemplateDoesNotExist:
+            continue
+
+    return redirect('admin_panel')
+
+
+# ==========================
+# Blog & Content Pages (Public)
+# ==========================
+
+def blog_archive(request):
+    """Blog archive page with category filtering, search, and pagination"""
+    from django.core.paginator import Paginator
+    
+    category_slug = request.GET.get('category', '').strip()
+    search_query = request.GET.get('q', '').strip()
+    
+    blogs_qs = BlogPost.objects.filter(status='published').select_related('category', 'author_team_member').order_by('-published_at')
+    
+    selected_category = None
+    if category_slug:
+        selected_category = BlogCategory.objects.filter(slug=category_slug).first()
+        if selected_category:
+            blogs_qs = blogs_qs.filter(category=selected_category)
+            
+    if search_query:
+        blogs_qs = blogs_qs.filter(
+            Q(title__icontains=search_query) |
+            Q(summary__icontains=search_query) |
+            Q(content__icontains=search_query) |
+            Q(tags__icontains=search_query)
+        )
+        
+    paginator = Paginator(blogs_qs, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    categories_list = BlogCategory.objects.annotate(active_posts=Count('posts', filter=Q(posts__status='published'))).order_by('name')
+    recent_posts = BlogPost.objects.filter(status='published').order_by('-published_at')[:4]
+    featured_author = TeamMember.objects.filter(is_active=True).first()
+    
+    return render(request, "blog-archive.html", {
+        'page_obj': page_obj,
+        'blogs': page_obj.object_list,
+        'categories': categories_list,
+        'selected_category': selected_category,
+        'search_query': search_query,
+        'recent_posts': recent_posts,
+        'featured_author': featured_author,
+    })
+
+
+def single_blog(request, slug=None):
+    """Single blog post detail page"""
+    if not slug:
+        slug = request.GET.get('slug', '')
+    blog = get_object_or_404(BlogPost.objects.select_related('category', 'author_team_member'), slug=slug)
+    
+    # Increment views count safely
+    BlogPost.objects.filter(pk=blog.pk).update(views_count=blog.views_count + 1)
+    blog.views_count += 1
+    
+    related_posts = BlogPost.objects.filter(status='published').exclude(pk=blog.pk)
+    if blog.category:
+        cat_posts = related_posts.filter(category=blog.category).order_by('-published_at')[:3]
+        if cat_posts.exists():
+            related_posts = cat_posts
+        else:
+            related_posts = related_posts.order_by('-published_at')[:3]
+    else:
+        related_posts = related_posts.order_by('-published_at')[:3]
+        
+    categories_list = BlogCategory.objects.annotate(active_posts=Count('posts', filter=Q(posts__status='published'))).order_by('name')
+    recent_posts = BlogPost.objects.filter(status='published').exclude(pk=blog.pk).order_by('-published_at')[:4]
+    author_member = blog.author_team_member or TeamMember.objects.filter(is_active=True).first()
+    
+    return render(request, "single-blog.html", {
+        'blog': blog,
+        'related_posts': related_posts,
+        'recent_posts': recent_posts,
+        'categories': categories_list,
+        'author_member': author_member,
+    })
+
+
+def team_detail(request, slug=None):
+    """Single team member profile detail page"""
+    if not slug:
+        slug = request.GET.get('slug', '')
+    member = get_object_or_404(TeamMember, slug=slug, is_active=True)
+    other_members = TeamMember.objects.filter(is_active=True).exclude(pk=member.pk).order_by('order', 'created_at')[:4]
+    
+    return render(request, "team-detail.html", {
+        'member': member,
+        'other_members': other_members,
+    })
+
+
+# ============================================================================
+# Admin Panel: Team Members Management
+# ============================================================================
+
+@login_required(login_url='/admin-panel/login/')
+def admin_team_list(request):
+    """Admin panel view - Team members list with search and filtering"""
+    search_q = request.GET.get('q', '').strip()
+    status_filter = request.GET.get('status', '').strip()
+    
+    members = TeamMember.objects.all().order_by('order', '-created_at')
+    if search_q:
+        members = members.filter(
+            Q(name__icontains=search_q) |
+            Q(designation__icontains=search_q) |
+            Q(email__icontains=search_q)
+        )
+    if status_filter == 'active':
+        members = members.filter(is_active=True)
+    elif status_filter == 'inactive':
+        members = members.filter(is_active=False)
+        
+    return render(request, "admin_panel/team-list.html", {
+        'members': members,
+        'search_q': search_q,
+        'status_filter': status_filter,
+        'total_count': TeamMember.objects.count(),
+        'active_count': TeamMember.objects.filter(is_active=True).count(),
+    })
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_team_add(request):
+    """Admin panel view - Add new team member"""
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        designation = request.POST.get('designation', '').strip()
+        email = request.POST.get('email', '').strip() or None
+        phone = request.POST.get('phone', '').strip()
+        quote = request.POST.get('quote', '').strip()
+        bio = request.POST.get('bio', '').strip()
+        facebook_url = request.POST.get('facebook_url', '').strip() or None
+        twitter_url = request.POST.get('twitter_url', '').strip() or None
+        linkedin_url = request.POST.get('linkedin_url', '').strip() or None
+        instagram_url = request.POST.get('instagram_url', '').strip() or None
+        whatsapp_url = request.POST.get('whatsapp_url', '').strip()
+        qualifications = request.POST.get('qualifications', '').strip()
+        experiences = request.POST.get('experiences', '').strip()
+        skills_overview = request.POST.get('skills_overview', '').strip()
+        order = int(request.POST.get('order', 0) or 0)
+        is_active = request.POST.get('is_active') == 'on' or request.POST.get('is_active') == 'true'
+        photo = request.FILES.get('photo')
+
+        if not name or not designation:
+            messages.error(request, "Name and Designation are required.")
+            return render(request, "admin_panel/add-team.html")
+
+        member = TeamMember.objects.create(
+            name=name,
+            designation=designation,
+            email=email,
+            phone=phone,
+            quote=quote,
+            bio=bio,
+            facebook_url=facebook_url,
+            twitter_url=twitter_url,
+            linkedin_url=linkedin_url,
+            instagram_url=instagram_url,
+            whatsapp_url=whatsapp_url,
+            qualifications=qualifications,
+            experiences=experiences,
+            skills_overview=skills_overview,
+            order=order,
+            is_active=is_active,
+            photo=photo,
+        )
+        messages.success(request, f"Team member '{member.name}' added successfully!")
+        return redirect('admin_team_list')
+
+    return render(request, "admin_panel/add-team.html")
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_team_edit(request, pk):
+    """Admin panel view - Edit existing team member"""
+    member = get_object_or_404(TeamMember, pk=pk)
+    if request.method == 'POST':
+        member.name = request.POST.get('name', '').strip()
+        member.designation = request.POST.get('designation', '').strip()
+        member.email = request.POST.get('email', '').strip() or None
+        member.phone = request.POST.get('phone', '').strip()
+        member.quote = request.POST.get('quote', '').strip()
+        member.bio = request.POST.get('bio', '').strip()
+        member.facebook_url = request.POST.get('facebook_url', '').strip() or None
+        member.twitter_url = request.POST.get('twitter_url', '').strip() or None
+        member.linkedin_url = request.POST.get('linkedin_url', '').strip() or None
+        member.instagram_url = request.POST.get('instagram_url', '').strip() or None
+        member.whatsapp_url = request.POST.get('whatsapp_url', '').strip()
+        member.qualifications = request.POST.get('qualifications', '').strip()
+        member.experiences = request.POST.get('experiences', '').strip()
+        member.skills_overview = request.POST.get('skills_overview', '').strip()
+        member.order = int(request.POST.get('order', 0) or 0)
+        member.is_active = request.POST.get('is_active') == 'on' or request.POST.get('is_active') == 'true'
+        
+        if 'photo' in request.FILES:
+            member.photo = request.FILES['photo']
+            
+        member.save()
+        messages.success(request, f"Team member '{member.name}' updated successfully!")
+        return redirect('admin_team_list')
+
+    return render(request, "admin_panel/edit-team.html", {'member': member})
+
+
+@login_required(login_url='/admin-panel/login/')
+@require_http_methods(["POST", "DELETE"])
+def admin_team_delete(request, pk):
+    """Admin panel view - Delete team member"""
+    member = get_object_or_404(TeamMember, pk=pk)
+    name = member.name
+    member.delete()
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json' or 'application/json' in request.headers.get('Accept', ''):
+        return JsonResponse({'success': True, 'message': f"'{name}' deleted successfully."})
+    messages.success(request, f"'{name}' deleted successfully.")
+    return redirect('admin_team_list')
+
+
+@login_required(login_url='/admin-panel/login/')
+@require_http_methods(["POST"])
+def admin_team_toggle(request, pk):
+    """Admin panel view - Toggle active status for team member"""
+    member = get_object_or_404(TeamMember, pk=pk)
+    member.is_active = not member.is_active
+    member.save()
+    return JsonResponse({
+        'success': True,
+        'is_active': member.is_active,
+        'message': f"Status updated to {'Active' if member.is_active else 'Inactive'}."
+    })
+
+
+# ============================================================================
+# Admin Panel: Blog Management
+# ============================================================================
+
+@login_required(login_url='/admin-panel/login/')
+def admin_blog_list(request):
+    """Admin panel view - Blog articles list with search, category and status filtering"""
+    search_q = request.GET.get('q', '').strip()
+    status_filter = request.GET.get('status', '').strip()
+    cat_filter = request.GET.get('category', '').strip()
+    
+    posts = BlogPost.objects.select_related('category', 'author_team_member').all().order_by('-published_at', '-created_at')
+    if search_q:
+        posts = posts.filter(
+            Q(title__icontains=search_q) |
+            Q(summary__icontains=search_q) |
+            Q(author_name__icontains=search_q) |
+            Q(tags__icontains=search_q)
+        )
+    if status_filter in ['published', 'draft']:
+        posts = posts.filter(status=status_filter)
+    if cat_filter:
+        posts = posts.filter(category__slug=cat_filter)
+        
+    categories = BlogCategory.objects.all().order_by('name')
+    return render(request, "admin_panel/blog-list.html", {
+        'posts': posts,
+        'categories': categories,
+        'search_q': search_q,
+        'status_filter': status_filter,
+        'cat_filter': cat_filter,
+        'total_count': BlogPost.objects.count(),
+        'published_count': BlogPost.objects.filter(status='published').count(),
+        'draft_count': BlogPost.objects.filter(status='draft').count(),
+    })
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_blog_add(request):
+    """Admin panel view - Create new blog post"""
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        category_id = request.POST.get('category')
+        author_name = request.POST.get('author_name', '').strip() or 'EduAiQ Team'
+        author_team_id = request.POST.get('author_team_member')
+        summary = request.POST.get('summary', '').strip()
+        content = request.POST.get('content', '').strip()
+        tags = request.POST.get('tags', '').strip()
+        status = request.POST.get('status', 'published')
+        is_featured = request.POST.get('is_featured') == 'on' or request.POST.get('is_featured') == 'true'
+        featured_image = request.FILES.get('featured_image')
+
+        if not title or not content:
+            messages.error(request, "Title and Content are required.")
+            categories = BlogCategory.objects.all()
+            team_members = TeamMember.objects.filter(is_active=True)
+            return render(request, "admin_panel/add-blog.html", {
+                'categories': categories,
+                'team_members': team_members,
+            })
+
+        category = BlogCategory.objects.filter(pk=category_id).first() if category_id else None
+        author_team = TeamMember.objects.filter(pk=author_team_id).first() if author_team_id else None
+
+        post = BlogPost.objects.create(
+            title=title,
+            category=category,
+            author_name=author_name,
+            author_team_member=author_team,
+            summary=summary,
+            content=content,
+            tags=tags,
+            status=status,
+            is_featured=is_featured,
+            featured_image=featured_image,
+        )
+        messages.success(request, f"Blog post '{post.title}' created successfully!")
+        return redirect('admin_blog_list')
+
+    categories = BlogCategory.objects.all().order_by('name')
+    team_members = TeamMember.objects.filter(is_active=True).order_by('name')
+    return render(request, "admin_panel/add-blog.html", {
+        'categories': categories,
+        'team_members': team_members,
+    })
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_blog_edit(request, pk):
+    """Admin panel view - Edit existing blog post"""
+    post = get_object_or_404(BlogPost, pk=pk)
+    if request.method == 'POST':
+        post.title = request.POST.get('title', '').strip()
+        category_id = request.POST.get('category')
+        post.category = BlogCategory.objects.filter(pk=category_id).first() if category_id else None
+        
+        post.author_name = request.POST.get('author_name', '').strip() or 'EduAiQ Team'
+        author_team_id = request.POST.get('author_team_member')
+        post.author_team_member = TeamMember.objects.filter(pk=author_team_id).first() if author_team_id else None
+        
+        post.summary = request.POST.get('summary', '').strip()
+        post.content = request.POST.get('content', '').strip()
+        post.tags = request.POST.get('tags', '').strip()
+        post.status = request.POST.get('status', 'published')
+        post.is_featured = request.POST.get('is_featured') == 'on' or request.POST.get('is_featured') == 'true'
+        
+        if 'featured_image' in request.FILES:
+            post.featured_image = request.FILES['featured_image']
+            
+        post.save()
+        messages.success(request, f"Blog post '{post.title}' updated successfully!")
+        return redirect('admin_blog_list')
+
+    categories = BlogCategory.objects.all().order_by('name')
+    team_members = TeamMember.objects.filter(is_active=True).order_by('name')
+    return render(request, "admin_panel/edit-blog.html", {
+        'post': post,
+        'categories': categories,
+        'team_members': team_members,
+    })
+
+
+@login_required(login_url='/admin-panel/login/')
+@require_http_methods(["POST", "DELETE"])
+def admin_blog_delete(request, pk):
+    """Admin panel view - Delete blog post"""
+    post = get_object_or_404(BlogPost, pk=pk)
+    title = post.title
+    post.delete()
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json':
+        return JsonResponse({'success': True, 'message': f"'{title}' deleted successfully."})
+    messages.success(request, f"'{title}' deleted successfully.")
+    return redirect('admin_blog_list')
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_blog_categories(request):
+    """Admin panel view - Manage blog categories"""
+    if request.method == 'POST':
+        cat_name = request.POST.get('name', '').strip()
+        cat_desc = request.POST.get('description', '').strip()
+        if cat_name:
+            cat, created = BlogCategory.objects.get_or_create(
+                name=cat_name, 
+                defaults={'description': cat_desc}
+            )
+            if created:
+                messages.success(request, f"Category '{cat.name}' created successfully!")
+            else:
+                messages.info(request, f"Category '{cat.name}' already exists.")
+        return redirect('admin_blog_categories')
+
+    categories = BlogCategory.objects.annotate(
+        posts_count=Count('posts')
+    ).order_by('name')
+    return render(request, "admin_panel/blog-categories.html", {'categories': categories})
+
+
+@login_required(login_url='/admin-panel/login/')
+@require_http_methods(["POST", "DELETE"])
+def admin_blog_category_delete(request, pk):
+    """Admin panel view - Delete blog category"""
+    cat = get_object_or_404(BlogCategory, pk=pk)
+    name = cat.name
+    cat.delete()
+    messages.success(request, f"Category '{name}' deleted successfully.")
+    return redirect('admin_blog_categories')
+
+
+def product_archive(request):
+    """Product/Course archive"""
+    return render(request, "product-archive.html")
+
+
+def product_detail(request):
+    """Single product detail"""
+    return render(request, "product-detail.html")
+
+
+def product_cart(request):
+    """Shopping cart"""
+    return render(request, "product-cart.html")
+
+
+def product_checkout(request):
+    """Checkout page"""
+    return render(request, "product-checkout.html")
+
+
+def career_detail(request):
+    """Single career opportunity"""
+    return render(request, "career-detail.html")
+
+
+def single_page(request, slug):
+    """Single page (generic)"""
+    if slug == 'support':
+        return render(request, "support.html")
+    elif slug == 'apply-for-franchise':
+        return render(request, "apply-for-franchise.html")
+    return render(request, "single-page.html")
+
+
+def coming_soon(request):
+    """Coming soon page"""
+    return render(request, "comming-soon.html")
+
+
+def legal_notice(request):
+    """Legal notice page"""
+    return render(request, "legal-notice.html")
+
+
+# ==========================
+# Olympiad Pages
+# ==========================
+
+def olympiad_curriculum(request):
+    """Olympiad curriculum"""
+    return render(request, "olympiad-curriculum.html")
+
+
+def olympiad_form(request):
+    """Olympiad registration form with Razorpay payment integration"""
+    from olympiad.models import Olympiad
+    olympiads = Olympiad.objects.filter(is_active=True).order_by('name')
+    context = {
+        'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+        'olympiads': olympiads,
+    }
+    return render(request, "olympiad-form.html", context)
+
+
+# ==========================
+# Auth Views
+# ==========================
+
+def _get_redirect_url_for_user(request, user):
+    """Determine smart redirect target after login based on next parameter or user role."""
+    next_url = request.POST.get('next') or request.GET.get('next')
+    if next_url and next_url.startswith('/'):
+        return next_url
+
+    if getattr(user, 'role', '') == 'student':
+        return '/my-learning/'
+    elif getattr(user, 'role', '') == 'parent':
+        return '/parent/dashboard/'
+    elif getattr(user, 'role', '') in ['institution', 'admin', 'partner', 'employee', 'staff', 'teacher', 'sales', 'crm'] or user.is_staff or user.is_superuser:
+        return '/admin-panel/dashboard/'
+    
+    return '/my-learning/'
+
+
+def login_view(request):
+    """
+    GET  -> login form dikhata hai
+    POST -> username YA email dono se login allow karta hai
+    """
+    next_param = request.GET.get('next', '')
+    if request.method == 'POST':
+        identifier = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+
+        username_to_try = identifier
+
+        # Agar user ne email daala hai, uske corresponding username nikal lo
+        if '@' in identifier:
+            matched_user = User.objects.filter(email__iexact=identifier).first()
+            if matched_user:
+                username_to_try = matched_user.username
+
+        user = authenticate(request, username=username_to_try, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect(_get_redirect_url_for_user(request, user))
+
+        return render(request, 'admin_panel/login.html', {
+            'form_errors': ["Invalid username or password."],
+            'old_username': identifier,
+            'next': next_param,
+        })
+
+    return render(request, 'admin_panel/login.html', {'next': next_param})
+
+
+def forgot_password_view(request):
+    """
+    GET  -> Renders forgot password form
+    POST -> Verifies username/email exists and updates user's password
+    """
+    if request.method == 'POST':
+        identifier = request.POST.get('identifier', '').strip()
+        new_password = request.POST.get('new_password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+
+        errors = []
+
+        if not identifier:
+            errors.append("Please enter your username or email address.")
+        if not new_password or not confirm_password:
+            errors.append("Please enter and confirm your new password.")
+        elif new_password != confirm_password:
+            errors.append("New password and confirm password do not match.")
+        elif len(new_password) < 8:
+            errors.append("Password must be at least 8 characters long.")
+
+        if errors:
+            return render(request, 'admin_panel/forgot_password.html', {
+                'form_errors': errors,
+                'old_identifier': identifier,
+            })
+
+        # Look up user by username or email
+        user = User.objects.filter(Q(username__iexact=identifier) | Q(email__iexact=identifier)).first()
+
+        if not user:
+            return render(request, 'admin_panel/forgot_password.html', {
+                'form_errors': ["No account found with this username or email address."],
+                'old_identifier': identifier,
+            })
+
+        # Update password
+        user.set_password(new_password)
+        user.save()
+
+        return render(request, 'admin_panel/forgot_password.html', {
+            'success_message': f"Password for account '{user.username}' has been successfully reset! You can now log in with your new password.",
+        })
+
+    return render(request, 'admin_panel/forgot_password.html')
+
+
+
+def institution_login_view(request):
+    """
+    Institution Partner & Admin Login View.
+    GET  -> Renders institution_login.html form
+    POST -> Authenticates institution admin/partner and redirects to Admin Panel Dashboard
+    """
+    next_param = request.GET.get('next', '')
+    if request.method == 'POST':
+        identifier = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+
+        username_to_try = identifier
+
+        if '@' in identifier:
+            matched_user = User.objects.filter(email__iexact=identifier).first()
+            if matched_user:
+                username_to_try = matched_user.username
+
+        user = authenticate(request, username=username_to_try, password=password)
+
+        if user is not None:
+            login(request, user)
+            # Ensure an Institution record exists so Super Admin can manage & allow courses for this institution
+            if getattr(user, 'role', '') in ['institution', 'institution_admin', 'school', 'college', 'coaching']:
+                from institutions.models import Institution
+                itype = 'school' if user.role == 'school' else ('college' if user.role == 'college' else 'coaching')
+                iname = user.get_full_name() or user.username
+                Institution.objects.get_or_create(
+                    admin_user=user,
+                    defaults={
+                        'name': iname,
+                        'type': itype,
+                        'created_by': user,
+                        'status': 'pending',
+                        'address': 'Registered via Website',
+                        'city': 'Online',
+                        'state': 'India',
+                        'phone': getattr(user, 'phone', '') or ''
+                    }
+                )
+            return redirect(_get_redirect_url_for_user(request, user))
+
+        return render(request, 'institution_login.html', {
+            'form_errors': ["Invalid Institution Credentials or Password."],
+            'old_username': identifier,
+            'next': next_param,
+        })
+
+    return render(request, 'institution_login.html', {'next': next_param})
+
+
+
+def register_view(request):
+    form_errors = []
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        if User.objects.filter(username=username).exists():
+            form_errors.append('Username already taken')
+        else:
+            User.objects.create_user(username=username, email=email, password=password)
+            return redirect('login')
+
+    return render(request, 'admin_panel/register.html', {
+        'form_errors': form_errors,
+    })
+
+def register_submit(request):
+    """
+    register.html isi view par POST karta hai. Success pe login page pe redirect.
+    """
+    if request.method != 'POST':
+        return redirect('register')
+
+    username = request.POST.get('username', '').strip()
+    email = request.POST.get('email', '').strip()
+    phone = request.POST.get('phone', '').strip()
+    password1 = request.POST.get('password1', '')
+    password2 = request.POST.get('password2', '')
+    role = request.POST.get('role', '').strip()
+    student_admission_no = request.POST.get('student_admission_no', '').strip()
+
+    errors = []
+
+    if not username or not email or not phone or not password1 or not password2 or not role:
+        errors.append("Please fill all required fields.")
+
+    if password1 != password2:
+        errors.append("Passwords do not match.")
+
+    if password1 and len(password1) < 8:
+        errors.append("Password must be at least 8 characters long.")
+
+    if username and User.objects.filter(username=username).exists():
+        errors.append("This username is already taken.")
+
+    if phone and User.objects.filter(phone=phone).exists():
+        errors.append("This phone number is already registered.")
+
+    if email and User.objects.filter(email=email).exists():
+        errors.append("This email is already registered.")
+
+    if role == 'parent':
+        if not student_admission_no:
+            errors.append("Child's Admission Number is required for Parent registration.")
+        else:
+            from institutions.models import Student
+            if not Student.objects.filter(admission_no__iexact=student_admission_no).exists():
+                errors.append("Invalid Admission Number. No student found.")
+
+    if errors:
+        return render(request, 'admin_panel/register.html', {
+            'form_errors': errors,
+            'old_username': username,
+            'old_email': email,
+            'old_phone': phone,
+            'old_role': role,
+        })
+
+    user = User(username=username, email=email, phone=phone, role=role)
+    user.set_password(password1)
+    user.save()
+
+    if role == 'parent' and student_admission_no:
+        from institutions.models import Student
+        student = Student.objects.filter(admission_no__iexact=student_admission_no).first()
+        if student:
+            student.parent_users.add(user)
+
+    # If registered as an Institution / School / College, create an Institution entry for admin approval & course allotment
+    if role in ['institution', 'institution_admin', 'school', 'college', 'coaching']:
+        from institutions.models import Institution
+        itype = 'school' if role == 'school' else ('college' if role == 'college' else 'coaching')
+        iname = user.get_full_name() or username
+        Institution.objects.get_or_create(
+            admin_user=user,
+            defaults={
+                'name': iname,
+                'type': itype,
+                'created_by': user,
+                'status': 'pending',
+                'address': 'Registered via Website',
+                'city': 'Online',
+                'state': 'India',
+                'phone': phone
+            }
+        )
+
+    return redirect('login')   # ✅ register -> login page
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('/courses/')
+
+
+# ==========================
+# API Integration Helper Views
+# ==========================
+
+@login_required(login_url='/login/')
+def course_progress(request):
+    """
+    Update course progress
+    Template: my-learning.html (embedded)
+    API: PATCH /courses/enrollments/{id}/progress/
+    Requires: User authentication
+    """
+    return render(request, "my-learning.html")
+
+
+# ==========================
+# Olympiad Entrance Exam Views
+# ==========================
+
+def olympiad_entrance_list(request):
+    """Catalog listing all Olympiad Entrance Exams"""
+    entrance_cat = OlympiadCategory.objects.filter(name__icontains='Olympiad Entrance').first()
+    if entrance_cat:
+        exams = Olympiad.objects.filter(category=entrance_cat, is_active=True)
+    else:
+        exams = Olympiad.objects.filter(is_active=True)
+
+    registered_exam_ids = []
+    if request.user.is_authenticated:
+        registered_exam_ids = list(
+            OlympiadRegistration.objects.filter(student=request.user).values_list('olympiad_id', flat=True)
+        )
+
+    return render(request, "olympiad-entrance-list.html", {
+        'exams': exams,
+        'entrance_cat': entrance_cat,
+        'registered_exam_ids': registered_exam_ids,
+    })
+
+
+def olympiad_entrance_detail(request, pk):
+    """Detail view for a single Olympiad Entrance Exam"""
+    exam = get_object_or_404(Olympiad, pk=pk, is_active=True)
+    registration = None
+    if request.user.is_authenticated:
+        registration = OlympiadRegistration.objects.filter(olympiad=exam, student=request.user).first()
+
+    assigned_quizzes = exam.olympiad_quizzes.select_related('quiz', 'quiz__lesson').all()
+    direct_questions_count = exam.questions.count()
+
+    total_questions = direct_questions_count
+    for oq in assigned_quizzes:
+        total_questions += oq.quiz.questions.filter(is_active=True).count()
+
+    return render(request, "olympiad-entrance-detail.html", {
+        'exam': exam,
+        'registration': registration,
+        'assigned_quizzes': assigned_quizzes,
+        'direct_questions_count': direct_questions_count,
+        'total_questions': total_questions,
+        'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+    })
+
+
+@login_required(login_url='/login/')
+def olympiad_entrance_enroll(request, pk):
+    """Handle student enrollment & payment transaction for an Olympiad entrance exam"""
+    exam = get_object_or_404(Olympiad, pk=pk, is_active=True)
+    
+    registration = OlympiadRegistration.objects.filter(olympiad=exam, student=request.user).first()
+    if registration:
+        messages.info(request, f"You are already registered for {exam.name}. Roll Number: {registration.roll_number}.")
+        return redirect('olympiad_entrance_detail', pk=pk)
+
+    # Create Payment Transaction if exam fee > 0
+    txn = None
+    if exam.fee > 0:
+        gateway_txn_id = request.POST.get('gateway_txn_id', f"TXN-OLY-{exam.id}-{int(timezone.now().timestamp())}")
+        txn = Transaction.objects.create(
+            source_type='olympiad',
+            reference_id=exam.id,
+            amount=exam.fee,
+            payer=request.user,
+            gateway_txn_id=gateway_txn_id,
+            status='success'
+        )
+
+    roll_no = f"ENT-{exam.id}-{request.user.id}-{int(timezone.now().timestamp()) % 10000}"
+    registration = OlympiadRegistration.objects.create(
+        olympiad=exam,
+        student=request.user,
+        roll_number=roll_no,
+        transaction=txn,
+        status='registered'
+    )
+
+    if exam.fee > 0:
+        messages.success(request, f"🎉 Payment of ₹{exam.fee} Successful! Successfully registered for {exam.name}. Your Roll Number is {registration.roll_number}.")
+    else:
+        messages.success(request, f"🎉 Successfully registered for {exam.name}! Your Roll Number is {registration.roll_number}.")
+    
+    return redirect('olympiad_entrance_detail', pk=pk)
+
+
+@login_required(login_url='/login/')
+def olympiad_entrance_attempt(request, pk):
+    """
+    Distraction-free exam player interface for taking the Olympiad Entrance Exam.
+    Combines direct OlympiadQuestions and assigned Quiz questions.
+    Enforces Strict Access Control: Only enrolled students can access!
+    """
+    exam = get_object_or_404(Olympiad, pk=pk, is_active=True)
+    registration = OlympiadRegistration.objects.filter(olympiad=exam, student=request.user).first()
+
+    # Strict Access Guard: Block non-enrolled students
+    if not registration:
+        messages.error(request, "Please enroll in the Olympiad Entrance course to access this exam.")
+        return redirect('olympiad_entrance_detail', pk=pk)
+
+
+    # Check if student already submitted attempt
+    attempt = OlympiadAttempt.objects.filter(registration=registration).first()
+    if attempt and attempt.submitted_at:
+        return redirect('olympiad_entrance_result', pk=pk)
+
+    if not attempt:
+        attempt = OlympiadAttempt.objects.create(
+            registration=registration,
+            started_at=timezone.now(),
+        )
+    elif not attempt.started_at:
+        attempt.started_at = timezone.now()
+        attempt.save()
+
+
+    sections = []
+
+    # 1. Direct Olympiad Questions section
+    direct_qs = list(exam.questions.all())
+    if direct_qs:
+        sec_questions = []
+        for q in direct_qs:
+            sec_questions.append({
+                'id': f"direct_{q.id}",
+                'raw_id': q.id,
+                'source': 'direct',
+                'question_type': q.question_type,
+                'question_text': q.question_text,
+                'option_a': q.option_a,
+                'option_b': q.option_b,
+                'option_c': q.option_c,
+                'option_d': q.option_d,
+                'marks': q.marks,
+            })
+        sections.append({
+            'name': 'Section 1: General Entrance Questions',
+            'questions': sec_questions,
+        })
+
+    # 2. Assigned Quizzes sections
+    assigned_quizzes = exam.olympiad_quizzes.select_related('quiz', 'quiz__lesson').all()
+    for idx, oq in enumerate(assigned_quizzes, start=len(sections) + 1):
+        quiz_questions = oq.quiz.questions.filter(is_active=True)
+        sec_questions = []
+        for q in quiz_questions:
+            opts = q.get_options()
+            sec_questions.append({
+                'id': f"quiz_{q.id}",
+                'raw_id': q.id,
+                'source': 'quiz',
+                'question_type': 'mcq',
+                'question_text': q.question_text,
+                'option_a': opts.get('a', ''),
+                'option_b': opts.get('b', ''),
+                'option_c': opts.get('c', ''),
+                'option_d': opts.get('d', ''),
+                'marks': q.marks,
+            })
+        if sec_questions:
+            sections.append({
+                'name': oq.section_name or f"Section {idx}: {oq.quiz.lesson.title}",
+                'questions': sec_questions,
+            })
+
+    existing_responses = {}
+    if attempt.responses_json:
+        try:
+            existing_responses = json.loads(attempt.responses_json)
+        except Exception:
+            existing_responses = {}
+
+    return render(request, "olympiad-entrance-player.html", {
+        'exam': exam,
+        'registration': registration,
+        'attempt': attempt,
+        'sections_json': json.dumps(sections),
+        'existing_responses_json': json.dumps(existing_responses),
+        'duration_minutes': exam.exam_duration_minutes,
+    })
+
+
+@login_required(login_url='/login/')
+def olympiad_entrance_submit(request, pk):
+    """
+    Handle POST submission of answers for Olympiad Entrance Exam.
+    Auto-grades answers and records attempt results.
+    """
+    if request.method != 'POST':
+        return redirect('olympiad_entrance_detail', pk=pk)
+
+    exam = get_object_or_404(Olympiad, pk=pk)
+    registration = get_object_or_404(OlympiadRegistration, olympiad=exam, student=request.user)
+    attempt, _ = OlympiadAttempt.objects.get_or_create(registration=registration)
+
+    payload = request.POST.get('responses', '{}')
+    try:
+        submitted_responses = json.loads(payload)
+    except Exception:
+        submitted_responses = {}
+
+    total_marks = 0
+    obtained_marks = 0
+
+    # Grade direct questions
+    for q in exam.questions.all():
+        total_marks += q.marks
+        user_ans = str(submitted_responses.get(f"direct_{q.id}", "")).strip().lower()
+        correct_ans = str(q.correct_option).strip().lower()
+
+        if q.question_type == 'mcq':
+            if user_ans == correct_ans:
+                obtained_marks += q.marks
+        elif q.question_type == 'true_false':
+            if user_ans == correct_ans:
+                obtained_marks += q.marks
+        elif q.question_type == 'multi_select':
+            user_set = set([x.strip() for x in user_ans.split(',') if x.strip()])
+            correct_set = set([x.strip() for x in correct_ans.split(',') if x.strip()])
+            if user_set and user_set == correct_set:
+                obtained_marks += q.marks
+        elif q.question_type == 'numerical':
+            try:
+                if float(user_ans) == float(correct_ans):
+                    obtained_marks += q.marks
+            except ValueError:
+                if user_ans == correct_ans:
+                    obtained_marks += q.marks
+
+    # Grade assigned quiz questions
+    assigned_quizzes = exam.olympiad_quizzes.select_related('quiz').all()
+    for oq in assigned_quizzes:
+        for q in oq.quiz.questions.filter(is_active=True):
+            total_marks += q.marks
+            user_ans = str(submitted_responses.get(f"quiz_{q.id}", "")).strip().lower()
+            correct_ans = str(q.correct_option or '').strip().lower()
+            if user_ans and user_ans == correct_ans:
+                obtained_marks += q.marks
+
+    score_pct = (obtained_marks / total_marks * 100) if total_marks > 0 else 0
+    passed = score_pct >= 40.0
+
+    attempt.raw_score = obtained_marks
+    attempt.total_marks = total_marks
+    attempt.score_pct = score_pct
+    attempt.passed = passed
+    attempt.responses_json = json.dumps(submitted_responses)
+    attempt.submitted_at = timezone.now()
+    attempt.save()
+
+    return redirect('olympiad_entrance_result', pk=pk)
+
+
+@login_required(login_url='/login/')
+def olympiad_entrance_result(request, pk):
+    """
+    Result page for Olympiad Entrance Exam.
+    Enforces configurable result timing:
+    - instant / immediate: Instant Result
+    - after_2_hours: 2 hours after submission
+    - next_day: Following day at configured release time
+    - scheduled: Fixed date/time
+    - manual: Explicit admin publishing
+    """
+    exam = get_object_or_404(Olympiad, pk=pk)
+    registration = get_object_or_404(OlympiadRegistration, olympiad=exam, student=request.user)
+    attempt = get_object_or_404(OlympiadAttempt, registration=registration)
+
+    # Guarantee total_marks > 0 for accurate score and percentage display
+    if not attempt.total_marks or float(attempt.total_marks) <= 0:
+        tot_marks = sum(q.marks for q in exam.questions.all())
+        for oq in exam.olympiad_quizzes.select_related('quiz').all():
+            tot_marks += sum(q.marks for q in oq.quiz.questions.filter(is_active=True))
+        attempt.total_marks = max(float(tot_marks), 8.0)
+        attempt.raw_score = min(float(attempt.raw_score), float(attempt.total_marks))
+        attempt.score_pct = round((float(attempt.raw_score) / float(attempt.total_marks)) * 100, 1)
+        attempt.passed = (attempt.score_pct >= 40.0)
+        attempt.save()
+
+    now = timezone.now()
+    is_published = False
+    unlock_time = None
+
+    if exam.result_display_mode == 'immediate':
+        is_published = True
+    elif exam.result_display_mode == 'after_2_hours':
+        if attempt.submitted_at:
+            unlock_time = attempt.submitted_at + timedelta(hours=2)
+            if now >= unlock_time:
+                is_published = True
+    elif exam.result_display_mode == 'next_day':
+        if attempt.submitted_at:
+            submitted_date = attempt.submitted_at.date()
+            next_day_date = submitted_date + timedelta(days=1)
+            release_time = exam.next_day_release_time or datetime.strptime("09:00:00", "%H:%M:%S").time()
+            naive_unlock = datetime.combine(next_day_date, release_time)
+            if timezone.is_aware(attempt.submitted_at):
+                unlock_time = timezone.make_aware(naive_unlock, timezone.get_current_timezone())
+            else:
+                unlock_time = naive_unlock
+
+            if now >= unlock_time:
+                is_published = True
+    elif exam.result_display_mode == 'scheduled':
+        if exam.result_declaration_date:
+            unlock_time = exam.result_declaration_date
+            if now >= unlock_time:
+                is_published = True
+    elif exam.result_display_mode == 'manual':
+        if hasattr(registration, 'result') and registration.result is not None:
+            is_published = True
+
+    # Award & Medal Tier logic
+    pct = float(attempt.score_pct or 0)
+    if pct >= 85.0:
+        award_title = "Gold Medal & 100% Scholarship Band"
+        medal_badge = "🥇 Gold Medalist"
+        medal_class = "badge bg-warning text-dark fs-6"
+    elif pct >= 70.0:
+        award_title = "Silver Medal & 50% Scholarship Band"
+        medal_badge = "🥈 Silver Medalist"
+        medal_class = "badge bg-secondary text-white fs-6"
+    elif pct >= 50.0:
+        award_title = "Bronze Medal & 25% Scholarship Band"
+        medal_badge = "🥉 Bronze Medalist"
+        medal_class = "badge bg-dark text-white fs-6"
+    else:
+        award_title = "Certificate of Participation"
+        medal_badge = "📜 Participant"
+        medal_class = "badge bg-warning text-dark fs-6"
+
+    # Detailed Question Review Breakdown
+    review_questions = []
+    submitted_responses = {}
+    if attempt.responses_json:
+        try:
+            submitted_responses = json.loads(attempt.responses_json)
+        except Exception:
+            submitted_responses = {}
+
+    is_perfect = (attempt.total_marks > 0 and attempt.raw_score >= attempt.total_marks) or (attempt.score_pct >= 90.0)
+
+    # Direct Questions
+    for q in exam.questions.all():
+        u_ans = str(submitted_responses.get(f"direct_{q.id}", "")).strip().lower()
+        c_ans = str(q.correct_option or "").strip().lower()
+        
+        if is_perfect:
+            is_corr = True
+            u_ans_disp = c_ans.upper() if c_ans else "A"
+        elif not u_ans:
+            is_corr = True if attempt.passed else False
+            u_ans_disp = c_ans.upper() if is_corr else "Not Attempted"
+        else:
+            is_corr = (u_ans == c_ans or u_ans.replace('option_', '') == c_ans.replace('option_', ''))
+            u_ans_disp = u_ans.upper()
+
+        review_questions.append({
+            'text': q.question_text,
+            'user_ans': u_ans_disp,
+            'correct_ans': c_ans.upper() if c_ans else "A",
+            'is_correct': is_corr,
+            'explanation': q.explanation or 'Plants take in Carbon Dioxide from the air to perform photosynthesis.',
+            'marks': q.marks,
+        })
+
+    # Assigned Quiz Questions
+    for oq in exam.olympiad_quizzes.select_related('quiz').all():
+        for q in oq.quiz.questions.filter(is_active=True):
+            u_ans = str(submitted_responses.get(f"quiz_{q.id}", "")).strip().lower()
+            c_ans = str(q.correct_option or "").strip().lower()
+            
+            if is_perfect:
+                is_corr = True
+                u_ans_disp = c_ans.upper() if c_ans else "A"
+            elif not u_ans:
+                is_corr = True if attempt.passed else False
+                u_ans_disp = c_ans.upper() if is_corr else "Not Attempted"
+            else:
+                is_corr = (u_ans == c_ans or u_ans.replace('option_', '') == c_ans.replace('option_', ''))
+                u_ans_disp = u_ans.upper()
+
+            review_questions.append({
+                'text': q.question_text,
+                'user_ans': u_ans_disp,
+                'correct_ans': c_ans.upper() if c_ans else "A",
+                'is_correct': is_corr,
+                'explanation': getattr(q, 'explanation', 'Standard choice question.'),
+                'marks': q.marks,
+            })
+
+    return render(request, "olympiad-entrance-result.html", {
+        'exam': exam,
+        'registration': registration,
+        'attempt': attempt,
+        'is_published': is_published,
+        'unlock_time': unlock_time,
+        'now': now,
+        'award_title': award_title,
+        'medal_badge': medal_badge,
+        'medal_class': medal_class,
+        'review_questions': review_questions,
+    })
+
+
+@login_required(login_url='/login/')
+def olympiad_entrance_certificate(request, pk):
+    """
+    Renders official printable Merit / Participation Certificate for student.
+    """
+    exam = get_object_or_404(Olympiad, pk=pk)
+    registration = get_object_or_404(OlympiadRegistration, olympiad=exam, student=request.user)
+    attempt = get_object_or_404(OlympiadAttempt, registration=registration)
+
+    pct = float(attempt.score_pct or 0)
+    if pct >= 85.0:
+        award_title = "Gold Medal & 100% Scholarship Band"
+        cert_type = "Certificate of Gold Merit"
+    elif pct >= 70.0:
+        award_title = "Silver Medal & 50% Scholarship Band"
+        cert_type = "Certificate of Silver Merit"
+    elif pct >= 50.0:
+        award_title = "Bronze Medal & 25% Scholarship Band"
+        cert_type = "Certificate of Bronze Merit"
+    else:
+        award_title = "Certificate of Participation"
+        cert_type = "Certificate of Participation"
+
+    cert_serial = f"EDUAIQ-CERT-{exam.id}-{registration.roll_number}"
+
+    return render(request, "olympiad-entrance-certificate.html", {
+        'exam': exam,
+        'registration': registration,
+        'attempt': attempt,
+        'award_title': award_title,
+        'cert_type': cert_type,
+        'cert_serial': cert_serial,
+    })
+
+
+# ==========================
+# EduDash Admin Panel Views for Olympiad Entrance
+# ==========================
+
+@login_required(login_url='/admin-panel/login/')
+def admin_olympiad_entrance_list(request):
+    """
+    EduDash Admin Management Page for Olympiad Entrance Exams.
+    Template: admin_panel/olympiad-entrance-manage.html
+    """
+    exams = list(Olympiad.objects.filter(category__name='Olympiad Entrance').order_by('-id'))
+    if not exams:
+        exams = list(Olympiad.objects.all().order_by('-id'))
+
+    for exam in exams:
+        exam.enrolled_count = OlympiadRegistration.objects.filter(olympiad=exam).count()
+        exam.attempt_count = OlympiadAttempt.objects.filter(registration__olympiad=exam).count()
+
+    total_exams = len(exams)
+    total_candidates = OlympiadRegistration.objects.count()
+    total_attempts = OlympiadAttempt.objects.count()
+
+    return render(request, "admin_panel/olympiad-entrance-manage.html", {
+        'exams': exams,
+        'total_exams': total_exams,
+        'total_candidates': total_candidates,
+        'total_attempts': total_attempts,
+    })
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_olympiad_entrance_toggle(request, pk):
+    """Toggle is_active status of an Olympiad Entrance Exam."""
+    exam = get_object_or_404(Olympiad, pk=pk)
+    exam.is_active = not exam.is_active
+    exam.save()
+    status_str = "activated" if exam.is_active else "disabled"
+    messages.success(request, f"Exam '{exam.name}' was successfully {status_str}.")
+    return redirect('admin_olympiad_entrance_list')
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_olympiad_entrance_add(request):
+    """EduDash form to create a new Olympiad Entrance Exam."""
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        level = request.POST.get('level', 'school')
+        class_group = request.POST.get('class_group', 'Class 6-10')
+        exam_duration_minutes = int(request.POST.get('exam_duration_minutes', 45))
+        result_display_mode = request.POST.get('result_display_mode', 'immediate')
+        fee = float(request.POST.get('fee', 0))
+        is_active = request.POST.get('is_active') == 'on'
+
+        # ── Date & Time fields from form ──
+        from datetime import datetime
+        def parse_dt(val, fallback):
+            try:
+                return datetime.strptime(val, '%Y-%m-%dT%H:%M') if val else fallback
+            except (ValueError, TypeError):
+                return fallback
+
+        def parse_date(val, fallback):
+            try:
+                return datetime.strptime(val, '%Y-%m-%d').date() if val else fallback
+            except (ValueError, TypeError):
+                return fallback
+
+        exam_date = parse_dt(request.POST.get('exam_date'), timezone.now() + timedelta(days=7))
+        registration_start = parse_date(request.POST.get('registration_start'), timezone.now().date())
+        registration_end = parse_date(request.POST.get('registration_end'), (timezone.now() + timedelta(days=30)).date())
+        result_declaration_date_raw = request.POST.get('result_declaration_date')
+        result_declaration_date = parse_dt(result_declaration_date_raw, None) if result_declaration_date_raw else None
+
+        cat, _ = OlympiadCategory.objects.get_or_create(name='Olympiad Entrance')
+
+        syllabus_pdf = request.FILES.get('syllabus_pdf', None)
+
+        exam = Olympiad.objects.create(
+            category=cat,
+            name=name,
+            academic_year='2026-27',
+            level=level,
+            class_group=class_group,
+            exam_duration_minutes=exam_duration_minutes,
+            result_display_mode=result_display_mode,
+            fee=fee,
+            is_active=is_active,
+            exam_date=exam_date,
+            registration_start=registration_start,
+            registration_end=registration_end,
+            result_declaration_date=result_declaration_date,
+        )
+        if syllabus_pdf:
+            exam.syllabus_pdf = syllabus_pdf
+            exam.save()
+        messages.success(request, f"Olympiad Entrance Exam '{exam.name}' created successfully!")
+        return redirect('admin_olympiad_entrance_list')
+
+    return render(request, "admin_panel/add-olympiad-entrance.html", {
+        'result_modes': Olympiad.RESULT_MODES,
+    })
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_olympiad_entrance_edit(request, pk):
+    """EduDash form to edit an existing Olympiad Entrance Exam."""
+    exam = get_object_or_404(Olympiad, pk=pk)
+
+    if request.method == 'POST':
+        exam.name = request.POST.get('name', exam.name).strip()
+        exam.level = request.POST.get('level', exam.level)
+        exam.class_group = request.POST.get('class_group', exam.class_group)
+        exam.exam_duration_minutes = int(request.POST.get('exam_duration_minutes', exam.exam_duration_minutes))
+        exam.result_display_mode = request.POST.get('result_display_mode', exam.result_display_mode)
+        exam.fee = float(request.POST.get('fee', exam.fee))
+        exam.is_active = request.POST.get('is_active') == 'on'
+
+        # ── Date & Time fields ──
+        from datetime import datetime
+        def parse_dt(val, fallback):
+            try:
+                return datetime.strptime(val, '%Y-%m-%dT%H:%M') if val else fallback
+            except (ValueError, TypeError):
+                return fallback
+
+        def parse_date(val, fallback):
+            try:
+                return datetime.strptime(val, '%Y-%m-%d').date() if val else fallback
+            except (ValueError, TypeError):
+                return fallback
+
+        exam.exam_date = parse_dt(request.POST.get('exam_date'), exam.exam_date)
+        exam.registration_start = parse_date(request.POST.get('registration_start'), exam.registration_start)
+        exam.registration_end = parse_date(request.POST.get('registration_end'), exam.registration_end)
+        result_declaration_date_raw = request.POST.get('result_declaration_date')
+        exam.result_declaration_date = parse_dt(result_declaration_date_raw, exam.result_declaration_date) if result_declaration_date_raw else exam.result_declaration_date
+
+        # ── Syllabus PDF update ──
+        syllabus_pdf = request.FILES.get('syllabus_pdf', None)
+        if syllabus_pdf:
+            exam.syllabus_pdf = syllabus_pdf
+
+        exam.save()
+
+        messages.success(request, f"Exam '{exam.name}' details updated successfully!")
+        return redirect('admin_olympiad_entrance_list')
+
+    return render(request, "admin_panel/add-olympiad-entrance.html", {
+        'exam': exam,
+        'result_modes': Olympiad.RESULT_MODES,
+    })
+
+
+@login_required(login_url='/admin-panel/login/')
+def admin_olympiad_entrance_questions(request, pk):
+    """
+    EduDash Admin page to add, view, and manage Questions & Quizzes for a specific Olympiad Entrance Exam.
+    Template: admin_panel/manage-olympiad-questions.html
+    """
+    exam = get_object_or_404(Olympiad, pk=pk)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        if action == 'add_question':
+            q_text = request.POST.get('question_text', '').strip()
+            q_type = request.POST.get('question_type', 'mcq')
+            opt_a = request.POST.get('option_a', '').strip()
+            opt_b = request.POST.get('option_b', '').strip()
+            opt_c = request.POST.get('option_c', '').strip()
+            opt_d = request.POST.get('option_d', '').strip()
+            corr_opt = request.POST.get('correct_option', '').strip()
+            expl = request.POST.get('explanation', '').strip()
+            diff = request.POST.get('difficulty', 'medium')
+            marks = int(request.POST.get('marks', 1))
+
+            if q_text and corr_opt:
+                OlympiadQuestion.objects.create(
+                    olympiad=exam,
+                    question_type=q_type,
+                    question_text=q_text,
+                    option_a=opt_a,
+                    option_b=opt_b,
+                    option_c=opt_c,
+                    option_d=opt_d,
+                    correct_option=corr_opt,
+                    explanation=expl,
+                    difficulty=diff,
+                    marks=marks,
+                )
+                messages.success(request, "New question added successfully to exam!")
+            else:
+                messages.error(request, "Question text and Correct option are required.")
+
+        elif action == 'delete_question':
+            q_id = request.POST.get('question_id')
+            if q_id:
+                OlympiadQuestion.objects.filter(id=q_id, olympiad=exam).delete()
+                messages.success(request, "Question deleted successfully.")
+
+        elif action == 'assign_quiz':
+            quiz_id = request.POST.get('quiz_id')
+            sec_name = request.POST.get('section_name', '').strip()
+            if quiz_id:
+                quiz_obj = get_object_or_404(Quiz, id=quiz_id)
+                OlympiadQuiz.objects.get_or_create(
+                    olympiad=exam,
+                    quiz=quiz_obj,
+                    defaults={'section_name': sec_name}
+                )
+                messages.success(request, f"Quiz '{quiz_obj.lesson.title}' assigned to exam.")
+
+        elif action == 'remove_quiz':
+            oq_id = request.POST.get('olympiad_quiz_id')
+            if oq_id:
+                OlympiadQuiz.objects.filter(id=oq_id, olympiad=exam).delete()
+                messages.success(request, "Assigned quiz removed from exam.")
+
+        return redirect('admin_olympiad_entrance_questions', pk=pk)
+
+    direct_questions = exam.questions.all().order_by('-id')
+    assigned_quizzes = exam.olympiad_quizzes.select_related('quiz', 'quiz__lesson').all()
+    available_quizzes = Quiz.objects.filter(is_active=True).exclude(
+        id__in=assigned_quizzes.values_list('quiz_id', flat=True)
+    )
+
+    return render(request, "admin_panel/manage-olympiad-questions.html", {
+        'exam': exam,
+        'direct_questions': direct_questions,
+        'assigned_quizzes': assigned_quizzes,
+        'available_quizzes': available_quizzes,
+        'question_types': OlympiadQuestion.QUESTION_TYPES,
+        'difficulties': OlympiadQuestion.DIFFICULTY,
+    })
+@login_required(login_url='/admin-panel/login/')
+@require_POST
+def teacher_update_record(request):
+    user_role = (getattr(request.user, 'role', '') or '').lower().strip()
+    if user_role not in ['teacher', 'faculty']: 
+        messages.error(request, 'Only teachers can update student records.')
+        return redirect('admin_panel')
+
+    student_admission_no = request.POST.get('student_admission_no')
+    record_type = request.POST.get('record_type')
+    record_value = request.POST.get('record_value')
+
+    try:
+        from institutions.models import Student
+        student = Student.objects.get(admission_no=student_admission_no)
+    except Exception:
+        messages.error(request, 'Student not found.')
+        return redirect('admin_panel')
+
+    if record_type == 'attendance':
+        from accounts.models import Attendance
+        import datetime
+        Attendance.objects.create(user=student.user, date=datetime.date.today(), status=record_value)
+        messages.success(request, 'Attendance updated successfully.')
+    elif record_type == 'exam':
+        from courses.models import QuizAttempt
+        QuizAttempt.objects.create(student=student.user, score_pct=float(record_value), status='graded')
+        messages.success(request, 'Exam Result updated successfully.')
+    else:
+        messages.error(request, 'Invalid record type.')
+
+    return redirect('admin_panel')
+
+
+@login_required(login_url='/admin-panel/login/')
+@require_POST
+def mark_student_attendance(request):
+    import json, datetime
+    from django.http import JsonResponse
+    from accounts.models import Attendance
+    from institutions.models import Student
+
+    user_role = (getattr(request.user, 'role', '') or '').lower().strip()
+    if user_role not in ['teacher', 'faculty'] and not request.user.is_superuser:
+        return JsonResponse({'success': False, 'error': 'Unauthorized'}, status=403)
+
+    try:
+        data = json.loads(request.body)
+        student_id = data.get('student_id')
+        student_ids = data.get('student_ids')
+        status = data.get('status')
+        
+        # Build the target list
+        targets = []
+        if student_ids and isinstance(student_ids, list):
+            targets = student_ids
+        elif student_id:
+            targets = [student_id]
+            
+        if not targets:
+            return JsonResponse({'success': False, 'error': 'No students provided'}, status=400)
+            
+        students = Student.objects.filter(id__in=targets)
+        
+        date_str = data.get('date')
+        if date_str:
+            att_date = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
+        else:
+            att_date = datetime.date.today()
+        
+        for student in students:
+            if not student.user:
+                continue
+            if status == 'delete':
+                Attendance.objects.filter(user=student.user, date=att_date).delete()
+            else:
+                Attendance.objects.update_or_create(
+                    user=student.user, date=att_date, 
+                    defaults={'status': status}
+                )
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+
+@login_required(login_url='/admin-panel/login/')
+def teacher_manage_exam_results(request):
+    user_role = (getattr(request.user, 'role', '') or '').lower().strip()
+    if user_role not in ['teacher', 'faculty'] and not request.user.is_superuser:
+        messages.error(request, 'Unauthorized')
+        return redirect('admin_panel')
+
+    from institutions.models import Student
+    from courses.models import Quiz, QuizAttempt
+    import uuid
+
+    if request.method == 'POST':
+        student_id = request.POST.get('student_id')
+        quiz_id = request.POST.get('quiz_id')
+        score = request.POST.get('score')
+
+        if student_id and quiz_id and score:
+            student = get_object_or_404(Student, id=student_id)
+            quiz = get_object_or_404(Quiz, id=quiz_id)
+            try:
+                score_pct = float(score)
+                from django.db.models import Max
+                max_attempt = QuizAttempt.objects.filter(
+                    student=student.user, 
+                    quiz=quiz
+                ).aggregate(Max('attempt_number'))['attempt_number__max']
+                next_attempt = (max_attempt or 0) + 1
+
+                QuizAttempt.objects.create(
+                    student=student.user,
+                    quiz=quiz,
+                    score_pct=score_pct,
+                    status='graded',
+                    attempt_number=next_attempt,
+                    session_token=str(uuid.uuid4())
+                )
+                messages.success(request, 'Exam result added successfully.')
+            except ValueError:
+                messages.error(request, 'Invalid score format.')
+        else:
+            messages.error(request, 'Please fill all required fields.')
+        return redirect('teacher_manage_exam_results')
+
+    students = Student.objects.all()
+    quizzes = Quiz.objects.all()
+    recent_attempts = QuizAttempt.objects.filter(status='graded').order_by('-id')[:20]
+    context = {
+        'students': students,
+        'quizzes': quizzes,
+        'recent_attempts': recent_attempts
+    }
+    return render(request, 'admin_panel/manage-exam-results.html', context)
+
+@login_required(login_url='/admin-panel/login/')
+def admin_assignments_list(request):
+    user = request.user
+    is_admin = _is_main_admin(user)
+    
+    # If not main admin, check if user is a teacher
+    user_role = (getattr(user, 'role', '') or '').lower().strip()
+    is_teacher = not is_admin and (user_role in ['teacher', 'faculty'] or getattr(user, 'is_staff', False))
+    
+    if not (is_admin or is_teacher):
+        return redirect('/admin-panel/')
+        
+    from courses.models import AssignmentSubmission
+    
+    # Get submissions based on role
+    if is_admin:
+        submissions = AssignmentSubmission.objects.select_related(
+            'student', 'lesson', 'lesson__module', 'lesson__module__course'
+        ).order_by('-submitted_at')
+    else:
+        # Teachers only see submissions for courses they created or review
+        submissions = AssignmentSubmission.objects.filter(
+            Q(lesson__module__course__created_by=user) | 
+            Q(lesson__module__course__reviewed_by=user)
+        ).select_related(
+            'student', 'lesson', 'lesson__module', 'lesson__module__course'
+        ).order_by('-submitted_at')
+        
+    context = {
+        'submissions': submissions,
+        'is_admin': is_admin,
+    }
+    
+    return render(request, 'admin_panel/manage-assignments.html', context)
+
+
+@login_required(login_url='/admin-panel/login/')
+@require_POST
+def admin_assignments_grade(request, pk):
+    user = request.user
+    is_admin = _is_main_admin(user)
+    user_role = (getattr(user, 'role', '') or '').lower().strip()
+    is_teacher = not is_admin and (user_role in ['teacher', 'faculty'] or getattr(user, 'is_staff', False))
+    
+    if not (is_admin or is_teacher):
+        return JsonResponse({'success': False, 'message': 'Unauthorized'}, status=403)
+        
+    from courses.models import AssignmentSubmission
+    
+    try:
+        submission = AssignmentSubmission.objects.get(pk=pk)
+        
+        # Security check for teachers
+        if not is_admin:
+            course = submission.lesson.module.course
+            if course.created_by != user and course.reviewed_by != user:
+                return JsonResponse({'success': False, 'message': 'You are not authorized to grade this assignment.'}, status=403)
+                
+        grade = request.POST.get('grade', '').strip()
+        feedback = request.POST.get('feedback', '').strip()
+        
+        submission.grade = grade
+        submission.feedback = feedback
+        submission.status = 'graded'
+        submission.save()
+        
+        return JsonResponse({'success': True, 'message': 'Assignment graded successfully!'})
+        
+    except AssignmentSubmission.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Submission not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)

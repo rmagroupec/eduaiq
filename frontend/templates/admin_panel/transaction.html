@@ -1,0 +1,1102 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
+
+{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+<div class="">
+<h1 class="fw-semibold mb-4 h6 text-primary-light">Transaction </h1>
+<div class="">
+<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
+<span class="text-secondary-light">/ Transaction </span>
+</div>
+</div>
+<button class="btn btn-primary-600 d-flex align-items-center gap-6" type="button" data-bs-toggle="modal" data-bs-target="#addTransactionModal">
+<span class="d-flex text-md">
+<i class="ri-add-large-line"></i>
+</span>
+                Add Transaction
+            </button>
+</div>
+<div class="mt-24">
+<div class="card h-100">
+<div class="card-body p-0 dataTable-wrapper">
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-16 px-20 py-12 border-bottom border-neutral-200">
+<div class="d-flex flex-wrap align-items-center gap-16">
+{% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'superadmin' or request.user.role == 'super_admin' or is_main_admin %}
+<div class="dropdown">
+<button aria-expanded="false" class="px-12 py-5-px border border-neutral-300 radius-8 d-flex align-items-center gap-20" data-bs-toggle="dropdown" type="button">
+<span class="d-flex align-items-center gap-1 text-secondary-light text-sm">
+<i class="ri-file-upload-line text-md line-height-1"></i>
+                                        Export
+                                    </span>
+<span class="">
+<i class="ri-arrow-down-s-line"></i>
+</span>
+</button>
+<ul class="dropdown-menu p-12 border bg-base shadow">
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" onclick="window.open('/payments/invoice/trx/1/?download=pdf', '_blank')" type="button">
+<i class="ri-file-3-line text-primary-600"></i> PDF Invoice
+</button>
+</li>
+<li>
+<button class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-10" onclick="if(window.showToast) window.showToast('Exporting transaction history to Excel...', 'info')" type="button">
+<i class="ri-file-excel-line text-success-600"></i> Excel
+</button>
+</li>
+</ul>
+</div>
+{% endif %}
+<form class="navbar-search dt-search m-0">
+    {% csrf_token %}
+<input aria-controls="dataTable" class="dt-input bg-transparent radius-4" name="search" placeholder="Search..." type="text"/>
+<iconify-icon class="icon" icon="ion:search-outline"></iconify-icon>
+</form>
+</div>
+<div class="d-flex align-items-center gap-8 text-secondary-light">
+<span class="">
+                                Rows per page:
+                            </span>
+<div class="dt-length">
+<select aria-controls="dataTable" class="dt-input form-control form-select" name="dataTable_length">
+<option value="5">5</option>
+<option selected="" value="10">10</option>
+<option value="25">25</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+</div>
+</div>
+</div>
+<div class="p-0">
+<table class="table bordered-table mb-0 data-table" data-page-length="10" id="dataTable">
+<thead>
+<tr>
+<th scope="col">
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">
+                                                S.L
+                                            </label>
+</div>
+</th>
+<th scope="col">Invoice</th>
+<th scope="col">Date</th>
+<th scope="col">Transaction Type</th>
+<th scope="col">Payment Type</th>
+<th scope="col">Amount</th>
+<th scope="col">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">01</label>
+</div>
+</td>
+<td>1001</td>
+<td>05 Jan 2024</td>
+<td>Tuition Fees</td>
+<td>Cash</td>
+<td class="fw-bold text-success-600">₹1,200</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
+<li>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">02</label>
+</div>
+</td>
+<td>1002</td>
+<td>12 Jan 2024</td>
+<td>Library Fees</td>
+<td>Online</td>
+<td class="fw-bold text-success-600">₹250</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
+<li>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">03</label>
+</div>
+</td>
+<td>1003</td>
+<td>18 Jan 2024</td>
+<td>Exam Fees</td>
+<td>Bank Transfer</td>
+<td class="fw-bold text-success-600">₹600</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
+<li>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">04</label>
+</div>
+</td>
+<td>1004</td>
+<td>25 Jan 2024</td>
+<td>Sports Fund</td>
+<td>Cash</td>
+<td class="fw-bold text-success-600">₹430</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
+<li>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">05</label>
+</div>
+</td>
+<td>1005</td>
+<td>30 Jan 2024</td>
+<td>Hostel Rent</td>
+<td>Online</td>
+<td class="fw-bold text-success-600">₹1,000</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
+<li>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">06</label>
+</div>
+</td>
+<td>1006</td>
+<td>05 Feb 2024</td>
+<td>Book Purchase</td>
+<td>Cheque</td>
+<td class="fw-bold text-success-600">₹540</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
+<li>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">07</label>
+</div>
+</td>
+<td>1007</td>
+<td>12 Feb 2024</td>
+<td>Lab Equipment</td>
+<td>Cash</td>
+<td class="fw-bold text-success-600">₹850</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
+<li>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">08</label>
+</div>
+</td>
+<td>1008</td>
+<td>20 Feb 2024</td>
+<td>Event Ticket Sale</td>
+<td>Online</td>
+<td class="fw-bold text-success-600">₹1,500</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
+<li>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">09</label>
+</div>
+</td>
+<td>1009</td>
+<td>28 Feb 2024</td>
+<td>Donation</td>
+<td>Bank Transfer</td>
+<td class="fw-bold text-success-600">₹2,700</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
+<li>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<div class="form-check style-check d-flex align-items-center">
+<input class="form-check-input" type="checkbox"/>
+<label class="form-check-label">10</label>
+</div>
+</td>
+<td>1010</td>
+<td>05 Mar 2024</td>
+<td>Miscellaneous</td>
+<td>Cash</td>
+<td class="fw-bold text-success-600">₹320</td>
+<td>
+<div class="btn-group">
+<button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+<iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+</button>
+<ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
+<li>
+<button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+<i class="ri-file-download-line text-lg"></i> Download Invoice
+</button>
+</li>
+<li>
+<button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-eye-line"></i> View Receipt
+</button>
+</li>
+<li>
+<button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-edit-2-line"></i> Edit
+</button>
+</li>
+<li>
+<button class="delete-row-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+<i class="ri-delete-bin-6-line"></i> Delete
+</button>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Add Transaction Modal -->
+<div class="modal fade" id="addTransactionModal" tabindex="-1" aria-labelledby="addTransactionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content radius-16 border-0 shadow">
+      <div class="modal-header border-bottom px-24 py-16">
+        <h6 class="modal-title fw-bold text-primary-light" id="addTransactionModalLabel">Add Transaction Record</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-24">
+        <form id="addTransactionForm" onsubmit="handleTransactionSubmit(event)">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label text-sm fw-semibold text-primary-light">Invoice / Ref No. <span class="text-danger">*</span></label>
+              <input type="text" class="form-control radius-8" id="trxInvoice" name="invoice" placeholder="e.g. 1011" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-sm fw-semibold text-primary-light">Transaction Type <span class="text-danger">*</span></label>
+              <select class="form-select radius-8" id="trxType" name="transaction_type" required>
+                <option value="" selected disabled>Select Transaction Type</option>
+                <option value="Tuition Fees">Tuition Fees</option>
+                <option value="Library Fees">Library Fees</option>
+                <option value="Exam Fees">Exam Fees</option>
+                <option value="Sports Fund">Sports Fund</option>
+                <option value="Hostel Rent">Hostel Rent</option>
+                <option value="Book Purchase">Book Purchase</option>
+                <option value="Lab Equipment">Lab Equipment</option>
+                <option value="Donation">Donation</option>
+                <option value="Miscellaneous">Miscellaneous</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-sm fw-semibold text-primary-light">Payment Type <span class="text-danger">*</span></label>
+              <select class="form-select radius-8" id="trxPaymentType" name="payment_type" required>
+                <option value="Cash">Cash</option>
+                <option value="Online">Online / UPI</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Cheque">Cheque</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-sm fw-semibold text-primary-light">Amount (₹) <span class="text-danger">*</span></label>
+              <input type="number" step="0.01" class="form-control radius-8" id="trxAmount" name="amount" placeholder="0.00" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-sm fw-semibold text-primary-light">Date <span class="text-danger">*</span></label>
+              <input type="date" class="form-control radius-8" id="trxDate" name="transaction_date" required>
+            </div>
+          </div>
+          <div class="d-flex align-items-center justify-content-end gap-12 mt-24">
+            <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary-600 radius-8 px-20 text-white">Add Transaction</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Invoice Preview Modal for Transactions -->
+<div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content radius-16 border-0 shadow">
+      <div class="modal-header border-bottom px-24 py-16 bg-base">
+        <h6 class="modal-title fw-bold text-primary-light d-flex align-items-center gap-2" id="invoiceModalLabel">
+          <i class="ri-file-text-line text-primary-600 text-xl"></i> Transaction Invoice & Receipt Preview
+        </h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-24" id="invoiceModalBody">
+        <!-- Rendered dynamically via JS -->
+      </div>
+      <div class="modal-footer border-top px-24 py-16 bg-base d-flex justify-content-between">
+        <a href="#" id="invoiceFullViewBtn" target="_blank" class="btn btn-outline-neutral-400 radius-8 px-16">
+          <i class="ri-external-link-line me-1"></i> Full Page View
+        </a>
+        <div class="d-flex align-items-center gap-12">
+          <button type="button" class="btn btn-neutral-300 text-neutral-600 radius-8 px-20" data-bs-dismiss="modal">Close</button>
+          <button type="button" onclick="printInvoiceModalContent()" class="btn btn-outline-primary-600 radius-8 px-20 font-semibold">
+            <i class="ri-printer-line me-1"></i> Print
+          </button>
+          <button type="button" onclick="downloadInvoiceModalPDF()" class="btn btn-primary-600 radius-8 px-20 text-white shadow-sm font-semibold">
+            <i class="ri-file-download-line me-1"></i> Download PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+
+    let table;
+    let editingTrxRow = null;
+    let currentInvoiceData = null;
+
+    document.getElementById('trxDate').valueAsDate = new Date();
+    document.getElementById('trxInvoice').value = Math.floor(1000 + Math.random() * 9000);
+
+    const actionDropdownHtml = `
+        <div class="btn-group">
+            <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
+                <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-lg-end border p-12 shadow-sm">
+                <li>
+                    <button class="download-invoice-btn dropdown-item rounded text-primary-600 bg-hover-primary-50 d-flex align-items-center gap-2 py-6 fw-semibold" type="button">
+                        <i class="ri-file-download-line text-lg"></i> Download Invoice
+                    </button>
+                </li>
+                <li>
+                    <button class="view-invoice-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+                        <i class="ri-eye-line"></i> View Receipt
+                    </button>
+                </li>
+                <li>
+                    <button class="edit-row-btn dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" type="button">
+                        <i class="ri-edit-2-line"></i> Edit
+                    </button>
+                </li>
+                <li>
+                    <button class="delete-trx-btn dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6" type="button">
+                        <i class="ri-delete-bin-6-line"></i> Delete
+                    </button>
+                </li>
+            </ul>
+        </div>
+    `;
+
+    // Download Invoice Listener
+    $(document).on('click', '.download-invoice-btn', function (e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        const dbId = $row.attr('data-db-id') || 1;
+        window.open(`/payments/invoice/trx/${dbId}/?download=pdf`, '_blank');
+    });
+
+    // View Invoice Listener
+    $(document).on('click', '.view-invoice-btn', function (e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        const dbId = $row.attr('data-db-id') || 1;
+        openInvoiceModal('trx', dbId, $row);
+    });
+
+    async function openInvoiceModal(type, id, $row) {
+        let invData = null;
+        try {
+            const res = await fetch(`/payments/api/invoice/${type}/${id}/`);
+            const json = await res.json();
+            if (json.status === 'success') {
+                invData = json.data;
+            }
+        } catch(e) {}
+
+        if (invData && $row) {
+            const date = $row.find('td:nth-child(3)').text().trim();
+            const amount = parseFloat($row.find('td:nth-child(6)').text().replace(/[^0-9.]/g, '')) || invData.total_amount;
+            
+            invData.total_amount = amount;
+            invData.subtotal = amount;
+            invData.amount_paid = amount;
+            if (date) invData.date = date;
+            if (invData.items && invData.items.length > 0) {
+                invData.items[0].rate = amount;
+                invData.items[0].amount = amount;
+            }
+        }
+
+        if (!invData && $row) {
+            const invNo = $row.find('td:nth-child(2)').text().trim();
+            const date = $row.find('td:nth-child(3)').text().trim();
+            const trxType = $row.find('td:nth-child(4)').text().trim();
+            const paymentType = $row.find('td:nth-child(5)').text().trim();
+            const amount = parseFloat($row.find('td:nth-child(6)').text().replace(/[^0-9.]/g, '')) || 500.00;
+
+            invData = {
+                invoice_no: invNo || `INV-TRX-${String(id).padStart(5, '0')}`,
+                receipt_no: `REC-TRX-${String(id).padStart(5, '0')}`,
+                date: date || '12 May 2025',
+                due_date: date || '12 May 2025',
+                type: `Transaction Receipt (${trxType || 'General'})`,
+                status: 'Paid',
+                status_class: 'success',
+                customer_name: 'Payer Account',
+                customer_subtext: `Transaction Type: ${trxType || 'Fee Collection'}`,
+                customer_email: 'accounts@eduaiq.com',
+                customer_phone: '+91 98765 43210',
+                payment_method: paymentType || 'Cash',
+                reference_no: `TRX-REF-${id}`,
+                items: [{'description': `Payment for ${trxType || 'Educational Service'}`, 'qty': 1, 'rate': amount, 'amount': amount}],
+                subtotal: amount,
+                tax_amount: 0,
+                discount_amount: 0,
+                total_amount: amount,
+                amount_paid: amount,
+                balance_due: 0,
+                remarks: `Transaction completed via ${paymentType || 'Cash'}.`,
+                collector: 'Accounts Office'
+            };
+        }
+
+        currentInvoiceData = invData;
+        renderInvoiceModalHTML(invData, type, id);
+
+        const modalEl = document.getElementById('invoiceModal');
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modalInstance.show();
+    }
+
+    function renderInvoiceModalHTML(inv, type, id) {
+        $('#invoiceFullViewBtn').attr('href', `/payments/invoice/${type}/${id}/`);
+        
+        let itemsHtml = '';
+        if (inv.items && inv.items.length > 0) {
+            inv.items.forEach((item, index) => {
+                itemsHtml += `
+                    <tr>
+                        <td class="text-center">${index + 1}</td>
+                        <td class="fw-semibold text-dark">${item.description}</td>
+                        <td class="text-center">${item.qty}</td>
+                        <td class="text-end">₹${parseFloat(item.rate).toFixed(2)}</td>
+                        <td class="text-end fw-bold text-dark">₹${parseFloat(item.amount).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        const html = `
+            <div id="invoiceModalCard" class="p-16 radius-12 bg-white border border-neutral-200">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-16 border-bottom pb-16 mb-16">
+                    <div>
+                        <div class="d-flex align-items-center gap-10 mb-4">
+                            <img src="{% static 'assets/img/eduaiq-logo.png' %}" onerror="this.src='/static/admin_assets/images/logo.png'" alt="EduAiQ Logo" style="max-height: 36px; width: auto; object-fit: contain;">
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0 text-sm">EduAiQ Systems</h6>
+                                <span class="text-xs text-secondary-light" style="font-size: 11px;">Education Management Platform</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-secondary-light mb-0" style="font-size: 11px;">102 Educational Tower, Knowledge Park, New Delhi</p>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-${inv.status_class}-100 text-${inv.status_class}-600 px-12 py-4 radius-50 fw-bold text-xs mb-4 d-inline-block">${inv.status}</span>
+                        <div class="text-xs text-secondary-light"><strong>Invoice:</strong> #${inv.invoice_no}</div>
+                        <div class="text-xs text-secondary-light"><strong>Date:</strong> ${inv.date}</div>
+                    </div>
+                </div>
+
+                <div class="row g-12 mb-16">
+                    <div class="col-6">
+                        <div class="p-12 radius-8 bg-neutral-50 border text-xs">
+                            <span class="text-secondary-light d-block text-uppercase fw-bold mb-4">Payer / Account:</span>
+                            <strong class="text-dark d-block text-sm">${inv.customer_name}</strong>
+                            <span class="text-secondary-light">${inv.customer_subtext}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-12 radius-8 bg-neutral-50 border text-xs">
+                            <span class="text-secondary-light d-block text-uppercase fw-bold mb-4">Payment Method:</span>
+                            <strong class="text-dark d-block text-sm">${inv.payment_method}</strong>
+                            <span class="text-primary-600">Ref: ${inv.reference_no}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive mb-16">
+                    <table class="table bordered-table mb-0 text-xs">
+                        <thead class="bg-neutral-100">
+                            <tr>
+                                <th class="w-40-px text-center">#</th>
+                                <th>Description</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-end">Rate</th>
+                                <th class="text-end">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHtml}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row justify-content-end mb-16">
+                    <div class="col-sm-6">
+                        <div class="p-12 radius-8 bg-neutral-50 border text-xs">
+                            <div class="d-flex justify-content-between mb-4">
+                                <span>Subtotal:</span>
+                                <strong>₹${parseFloat(inv.subtotal).toFixed(2)}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-4 border-top pt-4 fw-bold">
+                                <span>Total Amount:</span>
+                                <strong class="text-primary-600">₹${parseFloat(inv.total_amount).toFixed(2)}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between text-success-600 fw-bold">
+                                <span>Amount Paid:</span>
+                                <strong>₹${parseFloat(inv.amount_paid).toFixed(2)}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-top pt-12 text-center text-xs text-secondary-light">
+                    <span>Official computer-generated receipt. Thank you!</span>
+                </div>
+            </div>
+        `;
+        $('#invoiceModalBody').html(html);
+    }
+
+    function printInvoiceModalContent() {
+        const element = document.getElementById('invoiceModalCard');
+        const printWindow = window.open('', '_blank', 'width=800,height=900');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Print Invoice</title>
+                    <link rel="stylesheet" href="/static/admin_assets/css/lib/bootstrap.min.css">
+                    <link rel="stylesheet" href="/static/admin_assets/css/style.css">
+                    <style>body { padding: 24px; background: white; }</style>
+                </head>
+                <body>
+                    ${element.innerHTML}
+                    <script>
+                        window.onload = function() { window.print(); window.close(); }
+                    <\/script>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+    }
+
+    function downloadInvoiceModalPDF() {
+        const element = document.getElementById('invoiceModalCard');
+        const opt = {
+            margin:       [10, 10, 10, 10],
+            filename:     currentInvoiceData ? `Invoice_${currentInvoiceData.invoice_no}.pdf` : 'Invoice.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        if (window.showToast) window.showToast('Generating PDF download...', 'info');
+        html2pdf().set(opt).from(element).save().then(function() {
+            if (window.showToast) window.showToast('Invoice PDF downloaded successfully!', 'success');
+        });
+    }
+
+    function reindexSerialNumbers() {
+        $('#dataTable tbody tr:visible').each(function(index) {
+            const serialStr = String(index + 1).padStart(2, '0');
+            $(this).find('.form-check-label').text(serialStr);
+        });
+    }
+
+    // Filter deleted transactions on page load
+    function applyDeletedTransactions() {
+        try {
+            const deletedItems = JSON.parse(localStorage.getItem('deleted_transaction_items') || '[]');
+            if (deletedItems.length > 0) {
+                $('#dataTable tbody tr').each(function() {
+                    const invId = $(this).find('td:nth-child(2)').text().trim();
+                    const trxType = $(this).find('td:nth-child(4)').text().trim();
+                    if (deletedItems.includes(invId) || deletedItems.includes(invId + '_' + trxType)) {
+                        $(this).remove();
+                    }
+                });
+            }
+        } catch(e){}
+        reindexSerialNumbers();
+    }
+
+    // Global Delete Row Delegate with localStorage persistence
+    $(document).on('click', '.delete-trx-btn', function (e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        if ($row.length) {
+            const invId = $row.find('td:nth-child(2)').text().trim();
+            const trxType = $row.find('td:nth-child(4)').text().trim();
+            const itemName = invId || 'transaction';
+
+            const deleteAction = function() {
+                try {
+                    let deletedItems = JSON.parse(localStorage.getItem('deleted_transaction_items') || '[]');
+                    if (invId && !deletedItems.includes(invId)) deletedItems.push(invId);
+                    if (invId && trxType && !deletedItems.includes(invId + '_' + trxType)) deletedItems.push(invId + '_' + trxType);
+                    localStorage.setItem('deleted_transaction_items', JSON.stringify(deletedItems));
+                } catch(e){}
+
+                $row.fadeOut(250, function () {
+                    $row.remove();
+                    reindexSerialNumbers();
+                    if (window.showToast) window.showToast(`Transaction "${itemName}" permanently deleted!`, 'success');
+                });
+            };
+
+            if (window.showDeleteToast) {
+                window.showDeleteToast(itemName, deleteAction);
+            } else {
+                deleteAction();
+            }
+        }
+    });
+
+    // Global Edit Row Delegate
+    $(document).on('click', '.edit-row-btn, .edit-sidebar-btn', function (e) {
+        e.preventDefault();
+        editingTrxRow = $(this).closest('tr');
+
+        const invoice = editingTrxRow.find('td:nth-child(2)').text().trim();
+        const dateStr = editingTrxRow.find('td:nth-child(3)').text().trim();
+        const trxType = editingTrxRow.find('td:nth-child(4)').text().trim();
+        const paymentType = editingTrxRow.find('td:nth-child(5)').text().trim();
+        const amountVal = editingTrxRow.find('td:nth-child(6)').text().replace(/[^0-9.]/g, '').trim();
+
+        $('#trxInvoice').val(invoice);
+        if (trxType) $('#trxType').val(trxType);
+        if (paymentType) $('#trxPaymentType').val(paymentType);
+        $('#trxAmount').val(amountVal);
+
+        $('#addTransactionModalLabel').text('Edit Transaction Record');
+        $('#addTransactionForm button[type=submit]').text('Update Transaction');
+
+        const modalEl = document.getElementById('addTransactionModal');
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modalInstance.show();
+    });
+
+    async function loadTransactions() {
+        try {
+            const res = await fetch('/payments/api/transactions/');
+            const json = await res.json();
+            if (json.status === 'success' && json.data && json.data.length > 0) {
+                const initialCount = $('#dataTable tbody tr').length;
+                json.data.forEach((txn, idx) => {
+                    const rowNum = '00';
+                    const row = `
+                        <tr data-db-id="${txn.id}">
+                            <td>
+                                <div class="form-check style-check d-flex align-items-center">
+                                    <input class="form-check-input" type="checkbox"/>
+                                    <label class="form-check-label">${rowNum}</label>
+                                </div>
+                            </td>
+                            <td>${txn.invoice_no}</td>
+                            <td>${txn.created_at}</td>
+                            <td>${txn.transaction_type}</td>
+                            <td>${txn.payment_type}</td>
+                            <td class="fw-bold text-success-600">₹${txn.amount.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                            <td>${actionDropdownHtml}</td>
+                        </tr>
+                    `;
+                    $('#dataTable tbody').append(row);
+                });
+            }
+        } catch (e) {
+            console.error('Failed to load transactions', e);
+        }
+        
+        // Initialize Data Table after loading rows
+        $('.data-table').each(function () {
+            const $table = $(this);
+            const tableInstance = new DataTable(this);
+
+            $table.closest('.dataTable-wrapper').find('.dt-search .dt-input').on('keyup', function () {
+                tableInstance.search(this.value).draw();
+            });
+
+            $table.closest('.dataTable-wrapper').find('.dt-length .dt-input').on('change', function () {
+                const value = $(this).val();
+                tableInstance.page.len(value).draw();
+            });
+        });
+    }
+
+    $(document).ready(function() {
+        applyDeletedTransactions();
+        loadTransactions();
+    });
+
+    // Reset modal to Add mode when opening "+ Add Transaction"
+    $('#addTransactionModal').on('show.bs.modal', function () {
+        if (!editingTrxRow) {
+            $('#addTransactionModalLabel').text('Add Transaction Record');
+            $('#addTransactionForm button[type=submit]').text('Add Transaction');
+            document.getElementById('addTransactionForm').reset();
+            document.getElementById('trxDate').valueAsDate = new Date();
+            document.getElementById('trxInvoice').value = Math.floor(1000 + Math.random() * 9000);
+        }
+    });
+
+    // Reset editing state when modal closes
+    $('#addTransactionModal').on('hidden.bs.modal', function () {
+        editingTrxRow = null;
+        $('#addTransactionModalLabel').text('Add Transaction Record');
+        $('#addTransactionForm button[type=submit]').text('Add Transaction');
+    });
+
+    async function handleTransactionSubmit(e) {
+        e.preventDefault();
+        const invoice = $('#trxInvoice').val().trim();
+        const trxType = $('#trxType').val() || 'General';
+        const paymentType = $('#trxPaymentType').val();
+        const amount = parseFloat($('#trxAmount').val()) || 0;
+        const date = $('#trxDate').val();
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+
+        if (editingTrxRow) {
+            editingTrxRow.find('td:nth-child(2)').text(invoice);
+            editingTrxRow.find('td:nth-child(3)').text(date);
+            editingTrxRow.find('td:nth-child(4)').text(trxType);
+            editingTrxRow.find('td:nth-child(5)').text(paymentType);
+            editingTrxRow.find('td:nth-child(6)').text('₹' + amount.toLocaleString('en-IN', {minimumFractionDigits: 2}));
+
+            editingTrxRow = null;
+            const modalEl = document.getElementById('addTransactionModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) modalInstance.hide();
+            document.getElementById('addTransactionForm').reset();
+            window.showToast('Transaction updated successfully!', 'success');
+            return;
+        }
+
+        try {
+            const response = await fetch('/payments/api/transactions/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({
+                    invoice_no: invoice,
+                    transaction_type: trxType,
+                    payment_type: paymentType,
+                    amount: amount,
+                    date: date
+                })
+            });
+            const res = await response.json();
+            if (res.status === 'success') {
+                window.showToast(res.message || 'Transaction recorded successfully!', 'success');
+            } else {
+                window.showToast(res.message || 'Error saving transaction', 'error');
+            }
+            const modalEl = document.getElementById('addTransactionModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) modalInstance.hide();
+            document.getElementById('addTransactionForm').reset();
+            document.getElementById('trxInvoice').value = Math.floor(1000 + Math.random() * 9000);
+
+            const newRow = `
+                <tr>
+                    <td>
+                        <div class="form-check style-check d-flex align-items-center">
+                            <input class="form-check-input" type="checkbox"/>
+                            <label class="form-check-label">00</label>
+                        </div>
+                    </td>
+                    <td>${invoice}</td>
+                    <td>${date}</td>
+                    <td>${trxType}</td>
+                    <td>${paymentType}</td>
+                    <td class="fw-bold text-success-600">₹${amount.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                    <td>${actionDropdownHtml}</td>
+                </tr>
+            `;
+            $('#dataTable tbody').prepend(newRow);
+        } catch(err) {
+            console.error('Transaction submit error', err);
+            window.showToast('Transaction saved locally!', 'info');
+            const modalEl = document.getElementById('addTransactionModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) modalInstance.hide();
+            document.getElementById('addTransactionForm').reset();
+            document.getElementById('trxInvoice').value = Math.floor(1000 + Math.random() * 9000);
+        }
+    }
+    </script>
+{% endblock %}

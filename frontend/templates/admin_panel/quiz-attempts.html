@@ -1,0 +1,217 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Quiz Attempts - EduAIQ Admin{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Quiz Attempts</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <span class="text-secondary-light">/</span>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/quizzes/">Quizzes</a>
+      <span class="text-secondary-light">/ Attempts</span>
+    </div>
+  </div>
+</div>
+
+<!-- Filters Card -->
+<div class="card mb-24">
+  <div class="card-body p-24">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label for="quizFilterSelect" class="form-label fw-semibold text-primary-light">Filter by Quiz:</label>
+        <select id="quizFilterSelect" class="form-select" onchange="loadAttempts()">
+          <option value="">-- All Quizzes --</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label for="statusFilterSelect" class="form-label fw-semibold text-primary-light">Filter by Status:</label>
+        <select id="statusFilterSelect" class="form-select" onchange="loadAttempts()">
+          <option value="">-- All Statuses --</option>
+          <option value="in_progress">In Progress</option>
+          <option value="submitted">Submitted</option>
+          <option value="graded">Graded</option>
+          <option value="flagged">Flagged for Review</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label for="searchStudent" class="form-label fw-semibold text-primary-light">Search Student Username/Name:</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0"><i class="ri-search-2-line"></i></span>
+          <input type="text" id="searchStudent" class="form-control border-start-0" placeholder="Type student username..." oninput="debounceSearch()">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- List of Quiz Attempts -->
+<div class="card h-100">
+  <div class="card-header bg-white border-bottom py-16 px-24 d-flex justify-content-between align-items-center">
+    <h6 class="mb-0 text-md fw-semibold text-primary-light">Student Quiz Attempts</h6>
+    <span id="attemptCountBadge" class="badge bg-primary">0 Attempts</span>
+  </div>
+  <div class="card-body p-24">
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Attempt ID</th>
+            <th>Student</th>
+            <th>Quiz / Lesson Context</th>
+            <th style="width: 80px;" class="text-center">Attempt #</th>
+            <th style="width: 140px;">Status</th>
+            <th style="width: 100px;" class="text-center">Score</th>
+            <th>Result</th>
+            <th>Time Started</th>
+            <th>Proctoring Info</th>
+          </tr>
+        </thead>
+        <tbody id="attemptsTableBody">
+          <tr>
+            <td colspan="9" class="text-center py-4 text-muted">
+              Loading attempts...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+  let preselectedQuizId = new URLSearchParams(window.location.search).get('quiz');
+  let searchDebounceTimeout = null;
+
+  async function initPage() {
+    await loadQuizzesList();
+    if (preselectedQuizId) {
+      document.getElementById('quizFilterSelect').value = preselectedQuizId;
+    }
+    loadAttempts();
+  }
+
+  async function loadQuizzesList() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/admin/quizzes/`);
+      const data = await response.json();
+      const select = document.getElementById('quizFilterSelect');
+      const results = data.results || [];
+
+      results.forEach(q => {
+        const opt = document.createElement('option');
+        opt.value = q.id;
+        opt.textContent = `${q.title} (${q.course_title})`;
+        select.appendChild(opt);
+      });
+    } catch (e) {
+      console.error('Error fetching quiz list for filtering', e);
+    }
+  }
+
+  function debounceSearch() {
+    clearTimeout(searchDebounceTimeout);
+    searchDebounceTimeout = setTimeout(loadAttempts, 300);
+  }
+
+  async function loadAttempts() {
+    const tbody = document.getElementById('attemptsTableBody');
+    tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-muted"><i class="ri-loader-4-line ri-spin align-middle me-2"></i> Loading attempts...</td></tr>`;
+
+    const quizId = document.getElementById('quizFilterSelect').value;
+    const status = document.getElementById('statusFilterSelect').value;
+    const query = document.getElementById('searchStudent').value.trim().toLowerCase();
+
+    let url = `${API_BASE_URL}/courses/admin/attempts/`;
+    const params = [];
+    if (quizId) params.push(`quiz=${quizId}`);
+    if (status) params.push(`status=${status}`);
+    
+    if (params.length > 0) {
+      url += `?${params.join('&')}`;
+    }
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      let results = data.results || [];
+
+      // Client-side student filtering if query is entered
+      if (query) {
+        results = results.filter(a => 
+          a.student_username.toLowerCase().includes(query) || 
+          a.student_name.toLowerCase().includes(query)
+        );
+      }
+
+      document.getElementById('attemptCountBadge').textContent = `${results.length} Attempts`;
+
+      if (results.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-muted">No quiz attempts matching filters found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = results.map(a => {
+        let statusBadge = '';
+        if (a.status === 'in_progress') {
+          statusBadge = '<span class="badge bg-warning-focus text-warning-main"><i class="ri-time-line align-middle me-1"></i> In Progress</span>';
+        } else if (a.status === 'submitted') {
+          statusBadge = '<span class="badge bg-info-focus text-info-main"><i class="ri-checkbox-circle-line align-middle me-1"></i> Submitted</span>';
+        } else if (a.status === 'graded') {
+          statusBadge = '<span class="badge bg-success-focus text-success-main"><i class="ri-award-line align-middle me-1"></i> Graded</span>';
+        } else if (a.status === 'flagged') {
+          statusBadge = '<span class="badge bg-danger-focus text-danger-main"><i class="ri-error-warning-line align-middle me-1"></i> Flagged</span>';
+        }
+
+        const scoreText = a.status === 'in_progress' ? '-' : `${a.score_pct}% (${a.score_marks} pts)`;
+        
+        let resultText = '-';
+        if (a.status !== 'in_progress') {
+          resultText = a.passed 
+            ? '<span class="badge bg-success">Passed</span>' 
+            : '<span class="badge bg-danger">Failed</span>';
+        }
+
+        const formattedDate = a.started_at ? new Date(a.started_at).toLocaleString() : '-';
+
+        let proctoringText = '<span class="text-success text-xs"><i class="ri-shield-check-line"></i> Secure</span>';
+        if (a.cheating_detected) {
+          proctoringText = `
+            <span class="text-danger text-xs fw-bold cursor-pointer" title="${a.cheating_details || 'Cheating detected'}" onclick="alert('${a.cheating_details?.replace(/'/g, "\\'") || 'Potential cheating behavior flagged.'}')">
+              <i class="ri-alert-line"></i> Cheating Flagged
+            </span>
+          `;
+        }
+
+        return `
+          <tr>
+            <td class="font-monospace"># ${a.id}</td>
+            <td>
+              <div class="fw-semibold text-dark">${a.student_name}</div>
+              <div class="text-muted text-xs">@${a.student_username}</div>
+            </td>
+            <td>
+              <div class="fw-semibold text-dark">${a.quiz_title}</div>
+            </td>
+            <td class="text-center font-monospace">${a.attempt_number}</td>
+            <td>${statusBadge}</td>
+            <td class="text-center font-monospace">${scoreText}</td>
+            <td>${resultText}</td>
+            <td class="text-xs text-muted">${formattedDate}</td>
+            <td>${proctoringText}</td>
+          </tr>
+        `;
+      }).join('');
+    } catch (e) {
+      console.error(e);
+      tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-danger">Failed to load quiz attempts.</td></tr>`;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', initPage);
+</script>
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Edudash - School, College & LMS Admin Dashboard Template | Bootstrap 5{% endblock %}
+
+{% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+<div class="">
+<h1 class="fw-semibold mb-4 h6 text-primary-light">Subscription Plan </h1>
+<div class="">
+<a class="text-secondary-light hover-text-primary hover-underline" href="index">Dashboard </a>
+<span class="text-secondary-light">/ Subscription Plan</span>
+</div>
+</div>
+</div>
+<div class="mt-24">
+<div class="card h-100 p-0 radius-12 overflow-hidden mt-24">
+<div class="card-body p-40">
+<div class="row justify-content-center">
+<div class="col-xxl-10">
+<div class="text-center">
+<h4 class="mb-0">Simple, Transparent Pricing</h4>
+</div>
+<div class="pricing-tab">
+<div class="form-switch switch-primary d-flex align-items-center gap-3 mt-28 justify-content-center">
+<label class="form-check-label line-height-1 fw-medium text-secondary-light" for="yes">Monthly</label>
+<input class="form-check-input choose-plan-input" id="yes" role="switch" type="checkbox"/>
+<label class="form-check-label line-height-1 fw-medium text-secondary-light" for="yes">Annually</label>
+</div>
+</div>
+<div class="row gy-4">
+<div class="col-xxl-4 col-sm-6">
+<div class="pricing-plan position-relative radius-24 overflow-hidden border bg-base">
+<div class="d-flex align-items-center gap-16">
+<span class="w-72-px h-72-px d-flex justify-content-center align-items-center radius-16 bg-primary-50">
+<img alt="Image" src="{% static 'admin_assets/images/icons/price-icon1.png' %}"/>
+</span>
+<div class="">
+<span class="fw-medium text-md text-secondary-light">For
+                                                    individuals</span>
+<h6 class="mb-0">Basic</h6>
+</div>
+</div>
+<p class="mt-16 mb-0 text-secondary-light mb-28">Lorem ipsum dolor sit amet
+                                            doloroli sitiol conse ctetur adipiscing elit. </p>
+<h3 class="mb-24">
+                                            $<span class="price-range">99</span>
+<span class="fw-medium text-md text-secondary-light">/monthly</span>
+</h3>
+<span class="mb-20 fw-medium">What's included</span>
+<ul>
+<li class="d-flex align-items-center gap-16 mb-16">
+<span class="w-24-px h-24-px d-flex justify-content-center align-items-center bg-primary-600 rounded-circle"><iconify-icon class="text-white text-lg" icon="iconamoon:check-light"></iconify-icon></span>
+<span class="text-secondary-light text-lg">All analytics features</span>
+</li>
+<li class="d-flex align-items-center gap-16 mb-16">
+<span class="w-24-px h-24-px d-flex justify-content-center align-items-center bg-primary-600 rounded-circle"><iconify-icon class="text-white text-lg" icon="iconamoon:check-light"></iconify-icon></span>
+<span class="text-secondary-light text-lg">Up to 250,000 tracked
+                                                    visits</span>
+</li>
+<li class="d-flex align-items-center gap-16 mb-16">
+<span class="w-24-px h-24-px d-flex justify-content-center align-items-center bg-primary-600 rounded-circle"><iconify-icon class="text-white text-lg" icon="iconamoon:check-light"></iconify-icon></span>
+<span class="text-secondary-light text-lg">Normal support</span>
+</li>
+<li class="d-flex align-items-center gap-16">
+<span class="w-24-px h-24-px d-flex justify-content-center align-items-center bg-primary-600 rounded-circle"><iconify-icon class="text-white text-lg" icon="iconamoon:check-light"></iconify-icon></span>
+<span class="text-secondary-light text-lg">Up to 3 team members</span>
+</li>
+</ul>
+<button class="bg-primary-600 bg-hover-primary-700 text-white text-center border border-primary-600 text-sm btn-sm px-12 py-10 w-100 radius-8 mt-28" data-bs-target="#exampleModal" data-bs-toggle="modal" type="button">Get started</button>
+</div>
+</div>
+<div class="col-xxl-4 col-sm-6">
+<div class="pricing-plan featured-item position-relative radius-24 overflow-hidden border bg-primary-600 text-white z-1">
+<img alt="Image" class="position-absolute end-0 top-10 z-n1" src="{% static 'admin_assets/images/icons/pricing-shape.png' %}"/>
+<span class="bg-white bg-opacity-25 text-white radius-24 py-8 px-24 text-sm position-absolute end-0 top-0 z-1 rounded-start-top-0 rounded-end-bottom-0">Popular</span>
+<div class="d-flex align-items-center gap-16">
+<span class="w-72-px h-72-px d-flex justify-content-center align-items-center radius-16 bg-base">
+<img alt="Image" src="{% static 'admin_assets/images/icons/price-icon2.png' %}"/>
+</span>
+<div class="">
+<span class="fw-medium text-md text-white">For startups</span>
+<h6 class="mb-0 text-white">Pro</h6>
+</div>
+</div>
+<p class="mt-16 mb-0 text-white mb-28">Lorem ipsum dolor sit amet doloroli
+                                            sitiol conse ctetur adipiscing elit. </p>
+<h3 class="mb-24 text-white">
+                                            $<span class="price-range">199</span>
+<span class="fw-medium text-md text-white">/monthly</span>
+</h3>
+<span class="mb-20 fw-medium">What's included</span>
+<ul>
+<li class="d-flex align-items-center gap-16 mb-16">
+<span class="w-24-px h-24-px d-flex justify-content-center align-items-center bg-white rounded-circle text-primary-600"><iconify-icon class="text-lg" icon="iconamoon:check-light"></iconify-icon></span>
+<span class="text-white text-lg">All analytics features</span>
+</li>
+<li class="d-flex align-items-center gap-16 mb-16">
+<span class="w-24-px h-24-px d-flex justify-content-center align-items-center bg-white rounded-circle text-primary-600"><iconify-icon class="text-lg" icon="iconamoon:check-light"></iconify-icon></span>
+<span class="text-white text-lg">Up to 250,000 tracked visits</span>
+</li>
+<li class="d-flex align-items-center gap-16 mb-16">
+<span class="w-24-px h-24-px d-flex justify-content-center align-items-center bg-white rounded-circle text-primary-600"><iconify-icon class="text-lg" icon="iconamoon:check-light"></iconify-icon></span>
+<span class="text-white text-lg">Normal support</span>
+</li>
+<li class="d-flex align-items-center gap-16">
+<span class="w-24-px h-24-px d-flex justify-content-center align-items-center bg-white rounded-circle text-primary-600"><iconify-icon class="text-lg" icon="iconamoon:check-light"></iconify-icon></span>
+<span class="text-white text-lg">Up to 3 team members</span>
+</li>
+</ul>
+<button class="bg-white text-primary-600 text-white text-center border border-white text-sm btn-sm px-12 py-10 w-100 radius-8 mt-28" data-bs-target="#exampleModal" data-bs-toggle="modal" type="button">Get started</button>
+</div>
+</div>
+<div class="col-xxl-4 col-sm-6">
+<div class="pricing-plan position-relative radius-24 overflow-hidden border bg-base">
+<div class="d-flex align-items-center gap-16">
+<span class="w-72-px h-72-px d-flex justify-content-center align-items-center radius-16 bg-primary-50">
+<img alt="Image" src="{% static 'admin_assets/images/icons/price-icon3.png' %}"/>
+</span>
+<div class="">
+<span class="fw-medium text-md text-secondary-light">For big
+                                                    companies</span>
+<h6 class="mb-0">Enterprise</h6>
+</div>
+</div>
+<p class="mt-16 mb-0 text-secondary-light mb-28">Lorem ipsum dolor sit amet
+                                            doloroli sitiol conse ctetur adipiscing elit. </p>
+<h3 class="mb-24">
+                                            $<span class="price-range">399</span>
+<span class="fw-medium text-md text-secondary-light">/monthly</span>
+</h3>
+<span class="mb-20 fw-medium">What's included</span>
+<ul>
+<li class="d-flex align-items-center gap-16 mb-16">
+<span class="w-24-px h-24-px d-flex justify-content-center align-items-center bg-primary-600 rounded-circle"><iconify-icon class="text-white text-lg" icon="iconamoon:check-light"></iconify-icon></span>
+<span class="text-secondary-light text-lg">All analytics features</span>
+</li>
+<li class="d-flex align-items-center gap-16 mb-16">
+<span class="w-24-px h-24-px d-flex justify-content-center align-items-center bg-primary-600 rounded-circle"><iconify-icon class="text-white text-lg" icon="iconamoon:check-light"></iconify-icon></span>
+<span class="text-secondary-light text-lg">Up to 250,000 tracked
+                                                    visits</span>
+</li>
+<li class="d-flex align-items-center gap-16 mb-16">
+<span class="w-24-px h-24-px d-flex justify-content-center align-items-center bg-primary-600 rounded-circle"><iconify-icon class="text-white text-lg" icon="iconamoon:check-light"></iconify-icon></span>
+<span class="text-secondary-light text-lg">Normal support</span>
+</li>
+<li class="d-flex align-items-center gap-16">
+<span class="w-24-px h-24-px d-flex justify-content-center align-items-center bg-primary-600 rounded-circle"><iconify-icon class="text-white text-lg" icon="iconamoon:check-light"></iconify-icon></span>
+<span class="text-secondary-light text-lg">Up to 3 team members</span>
+</li>
+</ul>
+<button class="bg-primary-600 bg-hover-primary-700 text-white text-center border border-primary-600 text-sm btn-sm px-12 py-10 w-100 radius-8 mt-28" data-bs-target="#exampleModal" data-bs-toggle="modal" type="button">Get started</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script>
+
+    let choosePlanInput = document.querySelector('.choose-plan-input');
+    let priceRanges = document.querySelectorAll('.price-range');
+
+    // Store original prices (once)
+    priceRanges.forEach(price => {
+        price.dataset.original = price.innerHTML.trim();
+    });
+
+    choosePlanInput.addEventListener('change', function () {
+
+        if (this.checked) {
+            // When checked → Multiply by 10
+            priceRanges.forEach(price => {
+                let cleanValue = price.dataset.original.replace(/[^0-9.]/g, '').trim();
+                let multiplied = Number(cleanValue) * 10;
+                price.innerHTML = multiplied;
+            });
+
+        } else {
+            // When unchecked → Restore original values
+            priceRanges.forEach(price => {
+                price.innerHTML = price.dataset.original;
+            });
+        }
+    });
+
+    </script>
+{% endblock %}

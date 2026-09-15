@@ -1,0 +1,509 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us - EduAiQ | AI-Powered Education ERP, LMS & Digital Campus Solutions{% endblock %}
+
+{% block description %}EduAiQ is India's AI-powered Education ERP platform offering LMS, Admission CRM, AI Lab, Student Information System, Digital Classroom, Examination Management, and Campus Automation solutions for schools, colleges, universities, and coaching institutes.{% endblock %}
+
+{% block css %}
+<style>
+    /* EduAiQ About Us - Logo Theme Alignment */
+    .title-divider, .title-divider-center {
+        background-color: #ea580c !important;
+    }
+
+    .about-section .about-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+        margin-bottom: 24px !important;
+    }
+
+    /* Counter Cards */
+    .counter-inner {
+        margin-top: 40px !important;
+    }
+    .counter-item {
+        background: #ffffff !important;
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 24px 16px !important;
+        box-shadow: 0 6px 20px rgba(234, 88, 12, 0.05) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-align: center;
+    }
+    .counter-item:hover {
+        transform: translateY(-4px) !important;
+        border-color: #f97316 !important;
+        box-shadow: 0 12px 28px rgba(234, 88, 12, 0.15) !important;
+    }
+    .counter-no {
+        color: #ea580c !important;
+        font-weight: 800 !important;
+        font-size: 2.2rem !important;
+        line-height: 1 !important;
+        margin-bottom: 8px !important;
+    }
+    .Completed {
+        color: #334155 !important;
+        font-weight: 700 !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Experience Banner Overlay & Image Height Reduction */
+    .about-section .about-banner {
+        position: relative;
+        border-radius: 24px !important;
+    }
+    .about-section .about-banner .about-image {
+        overflow: hidden !important;
+        border-radius: 24px !important;
+    }
+    .about-section .about-banner .about-image img {
+        max-height: 440px !important;
+        width: 100% !important;
+        object-fit: cover !important;
+        object-position: center 25% !important;
+        border-radius: 24px !important;
+        display: block !important;
+    }
+    @media screen and (min-width: 992px) {
+        .about-section .about-banner .about-left-banner {
+            bottom: 30px !important;
+        }
+        .about-section .about-banner .about-right-banner {
+            bottom: 30px !important;
+            padding: 24px 24px !important;
+        }
+        .about-section .about-banner .about-right-banner h5 {
+            margin-bottom: 16px !important;
+        }
+        .about-section .about-banner .about-right-banner .video-button {
+            margin-bottom: 20px !important;
+        }
+        .about-section .about-banner .about-right-banner .video-button a {
+            height: 70px !important;
+            width: 70px !important;
+            line-height: 70px !important;
+            font-size: 20px !important;
+        }
+    }
+    .about-left-banner {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 28px rgba(234, 88, 12, 0.35) !important;
+    }
+    .about-left-banner h3 {
+        color: #ffffff !important;
+        font-weight: 800 !important;
+    }
+    .about-left-banner .banner-icon i {
+        color: #ffffff !important;
+    }
+
+    /* Feature Cards */
+    .home-feature-section {
+        padding: 70px 0 !important;
+        background-color: #f8fafc !important;
+    }
+    .feature-section-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+    }
+    .feature-wrapper {
+        margin-top: 40px !important;
+    }
+    .feature-type {
+        background: #ffffff !important;
+        border: 1.5px solid #ffedd5 !important;
+        border-radius: 20px !important;
+        padding: 32px 24px !important;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative;
+    }
+    .feature-type:hover {
+        transform: translateY(-5px) !important;
+        border-color: #f97316 !important;
+        box-shadow: 0 14px 32px rgba(234, 88, 12, 0.18) !important;
+    }
+    .feature-icon {
+        color: #ea580c !important;
+    }
+    .feature-icon i,
+    .feature-type:nth-child(even) .feature-icon i {
+        color: #ea580c !important;
+    }
+    .feature-icon .meta-no,
+    .feature-type:nth-child(even) .feature-icon .meta-no {
+        background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+    }
+    .feature-heading {
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        margin-bottom: 12px !important;
+    }
+    .right-arrow-link i {
+        width: 52px !important;
+        height: 52px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 50% !important;
+        background-color: #0F172A !important;
+        border: 2px solid #fd7e14 !important;
+        color: #fd7e14 !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .feature-type:hover .right-arrow-link i,
+    .right-arrow-link:hover i {
+        background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        border-color: #ea580c !important;
+        transform: scale(1.12) !important;
+        box-shadow: 0 8px 24px rgba(249, 115, 22, 0.45) !important;
+    }
+
+    /* Video Banner & Scroll Top Overrides */
+    .about-right-banner h5 {
+        color: #ea580c !important;
+        font-weight: 800 !important;
+    }
+    .video-button a {
+        background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        box-shadow: 0 8px 24px rgba(249, 115, 22, 0.45) !important;
+    }
+    .video-button a:before,
+    .video-button a:after {
+        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.6) !important;
+    }
+
+    /* Team Section */
+    .home-team-section {
+        padding: 80px 0 !important;
+        background-color: #ffffff !important;
+    }
+    .team-section-title {
+        color: #0f172a !important;
+        font-weight: 800 !important;
+    }
+    .team-content h4 a {
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        transition: color 0.2s ease !important;
+    }
+    .team-content h4 a:hover {
+        color: #ea580c !important;
+    }
+    .team-social-link a {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 10px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3) !important;
+        transition: all 0.3s ease !important;
+    }
+    .team-social-link a:hover {
+        transform: translateY(-3px) scale(1.08) !important;
+        box-shadow: 0 8px 18px rgba(234, 88, 12, 0.5) !important;
+    }
+
+    /* Buttons */
+    .button-round-secondary {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        border-radius: 50rem !important;
+        padding: 12px 28px !important;
+        box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4) !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-transform: uppercase !important;
+        border: none !important;
+        text-decoration: none !important;
+        display: inline-block !important;
+    }
+    .button-round-secondary:hover {
+        transform: translateY(-2px) scale(1.02) !important;
+        box-shadow: 0 10px 28px rgba(234, 88, 12, 0.55) !important;
+        color: #ffffff !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="inner-banner-wrap">
+<div class="inner-baner-container" style="background-image: url({% static 'assets/img/blog-default-indian.jpg' %});">
+<div class="container">
+<div class="inner-banner-content">
+<h1 class="inner-title">About Us</h1>
+<div class="breadcrumb-content">
+<ul class="breadcrumb">
+
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+<section class="about-section">
+<div class="container">
+<div class="title-divider-center"></div>
+<h2 class="about-title text-center">About EduAiQ</h2>
+<div class="row">
+<div class="col-md-6">
+<p class="about-describe info-left">
+                                EduAiQ is India's innovative EdTech platform helping students, working professionals,
+                                and institutions master in-demand skills through AI-driven online courses, e-books, and
+                                practical training. Our mission is smart learning that leads to real careers and better
+                                outcomes.
+                            </p>
+</div>
+<div class="col-md-6">
+<p class="about-describe info-right">
+                                Beyond individual learners, EduAiQ is India's AI-powered Education ERP platform —
+                                offering LMS, Admission CRM, an AI Lab, Student Information System, Digital Classroom,
+                                Examination Management, and Campus Automation solutions for schools, colleges,
+                                universities, and coaching institutes.
+                            </p>
+</div>
+</div>
+<div class="counter-inner">
+<div class="counter-item-wrap row g-3">
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
+<div class="counter-no">
+<span class="counter">45</span>k+
+                                </div>
+<div class="Completed">
+                                    Active Students
+                                </div>
+</div>
+</div>
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
+<div class="counter-no">
+<span class="counter">72</span>+
+                                </div>
+<div class="Completed">
+                                    AI-Powered Courses
+                                </div>
+</div>
+</div>
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
+<div class="counter-no">
+<span class="counter">90</span>+
+                                </div>
+<div class="Completed">
+                                    Expert Mentors
+                                </div>
+</div>
+</div>
+<div class="col-lg-3 col-sm-6">
+<div class="counter-item">
+<div class="counter-no">
+<span class="counter">35</span>
+</div>
+<span class="Completed">
+                                    Partner Institutions
+                                </span>
+</div>
+</div>
+</div>
+</div>
+<div class="about-banner">
+<figure class="about-image figure-round-border">
+<img alt="" src="{% static 'assets/img/educator-img14.jpg' %}"/>
+</figure>
+<div class="about-left-banner">
+<div class="banner-icon">
+<i aria-hidden="true" class="fas fa-trophy"></i>
+</div>
+<h3>EXCELLENCE IN EDUCATION</h3>
+</div>
+<div class="about-right-banner">
+<h5>Platform Overview</h5>
+<div class="video-button">
+<a data-video-id="IUN664s7N-c" id="video-container">
+<i class="fas fa-play"></i>
+</a>
+</div>
+<h4>Empowering Future Leaders</h4>
+<p>
+                                EduAiQ provides AI-driven learning tools and institution ERP systems designed to bridge the gap between classroom education and industry demands.
+                            </p>
+</div>
+</div>
+</div>
+</section>
+
+<section class="home-feature-section">
+<div class="container">
+<div class="row">
+<div class="col-lg-6 offset-lg-3">
+<div class="title-divider"></div>
+<h2 class="feature-section-title text-center">Why Choose EduAiQ</h2>
+<p class="feature-section-info text-center">
+                                One platform, connected from your first lesson through certification — for
+                                learners and institutions alike.
+                            </p>
+</div>
+</div>
+<div class="feature-wrapper">
+<div class="feature-type" onclick="window.location.href='/ai-lab/'">
+<div class="feature-img-wrapper">
+<img alt="AI-Driven Learning" class="feature-card-img" src="{% static 'assets/img/eduaiq-smart-classroom.jpg' %}" />
+<h5 class="meta-no">1</h5>
+</div>
+<h4 class="feature-heading"><a href="/ai-lab/" class="text-dark text-decoration-none">AI-Driven Learning</a></h4>
+<p class="feature-info">Hands-on AI Lab projects and adaptive assessments — not just
+                                video lectures.</p>
+<a class="right-arrow-link" href="/ai-lab/">
+<i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
+</a>
+</div>
+<div class="feature-type" onclick="window.location.href='/skill-development/'">
+<div class="feature-img-wrapper">
+<img alt="Expert Mentors" class="feature-card-img" src="{% static 'assets/img/eduaiq-smart-classroom.jpg' %}" />
+<h5 class="meta-no">2</h5>
+</div>
+<h4 class="feature-heading"><a href="/skill-development/" class="text-dark text-decoration-none">Expert Mentors</a></h4>
+<p class="feature-info">90+ mentors guiding learners through real projects and career
+                                paths, not just grading assignments.</p>
+<a class="right-arrow-link" href="/skill-development/">
+<i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
+</a>
+</div>
+<div class="feature-type" onclick="window.location.href='/about/'">
+<div class="feature-img-wrapper">
+<img alt="Built For Institutions" class="feature-card-img" src="{% static 'assets/img/eduaiq-smart-classroom.jpg' %}" />
+<h5 class="meta-no">3</h5>
+</div>
+<h4 class="feature-heading"><a href="/about/" class="text-dark text-decoration-none">Built For Institutions</a></h4>
+<p class="feature-info">LMS, admission CRM, and campus automation for schools, colleges,
+                                and coaching institutes.</p>
+<a class="right-arrow-link" href="/about/">
+<i aria-hidden="true" class="fas fa-long-arrow-alt-right"></i>
+</a>
+</div>
+</div>
+</div>
+</section>
+<div class="slider-section about-slider">
+<div class="container">
+<div class="client-slider text-center">
+<div class="client-item">
+<figure>
+<img alt="" src="{% static 'assets/img/educator-img16.png' %}"/>
+</figure>
+</div>
+<div class="client-item">
+<figure>
+<img alt="" src="{% static 'assets/img/educator-img17.png' %}"/>
+</figure>
+</div>
+<div class="client-item">
+<figure>
+<img alt="" src="{% static 'assets/img/educator-img18.png' %}"/>
+</figure>
+</div>
+<div class="client-item">
+<figure>
+<img alt="" src="{% static 'assets/img/educator-img19.png' %}"/>
+</figure>
+</div>
+<div class="client-item">
+<figure>
+<img alt="" src="{% static 'assets/img/educator-img20.png' %}"/>
+</figure>
+</div>
+<div class="client-item">
+<figure>
+<img alt="" src="{% static 'assets/img/educator-img18.png' %}"/>
+</figure>
+</div>
+</div>
+</div>
+</div>
+
+
+<section class="home-team-section">
+<div class="container">
+<div class="overlay"></div>
+<div class="row align-items-end">
+<div class="col-md-6 text-md-start text-center">
+<div class="title-divider"></div>
+<h2 class="team-section-title">Meet Our Mentors</h2>
+</div>
+<div class="col-md-6 text-md-end text-center">
+<a class="button-round-secondary" href="/team/">ALL TEAM MEMBERS</a>
+</div>
+</div>
+<div class="group-member">
+<div class="row justify-content-center">
+{% for mentor in mentors %}
+<div class="col-sm-6 col-md-4 col-lg-3 p-3">
+<figure class="team-img">
+<a href="/team/{{ mentor.slug }}/">
+<img alt="{{ mentor.name }}" src="{{ mentor.photo_url }}"/>
+</a>
+</figure>
+<div class="team-content text-center">
+<h4>
+<a href="/team/{{ mentor.slug }}/">{{ mentor.name }}</a>
+</h4>
+<p>{{ mentor.designation }}</p>
+</div>
+<div class="d-flex justify-content-center align-items-center">
+<div class="social-links team-social-link">
+<ul>
+{% if mentor.facebook_url %}
+<li>
+<a href="{{ mentor.facebook_url }}" target="_blank">
+<i class="fab fa-facebook-f"></i>
+</a>
+</li>
+{% endif %}
+{% if mentor.twitter_url %}
+<li>
+<a href="{{ mentor.twitter_url }}" target="_blank">
+<i class="fab fa-twitter"></i>
+</a>
+</li>
+{% endif %}
+{% if mentor.whatsapp_url %}
+<li>
+<a href="{{ mentor.whatsapp_url }}" target="_blank">
+<i class="fab fa-whatsapp"></i>
+</a>
+</li>
+{% endif %}
+{% if mentor.linkedin_url %}
+<li>
+<a href="{{ mentor.linkedin_url }}" target="_blank">
+<i class="fab fa-linkedin-in"></i>
+</a>
+</li>
+{% endif %}
+</ul>
+</div>
+</div>
+</div>
+{% empty %}
+<div class="col-12 text-center py-4">
+<p class="text-muted">No mentors listed yet.</p>
+</div>
+{% endfor %}
+</div>
+</div>
+</div>
+</section>
+{% endblock %}

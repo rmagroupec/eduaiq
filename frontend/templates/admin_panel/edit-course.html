@@ -1,0 +1,415 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Edit Course - EduAIQ Admin{% endblock %}
+
+{% block content %}
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Edit Course</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard</a>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/courses/">/ Courses</a>
+      <span class="text-secondary-light">/ Edit Course</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header border-bottom py-16 px-24">
+    <h5 class="card-title mb-0">Edit Course Details</h5>
+  </div>
+  <div class="card-body p-24">
+    <form id="editCourseForm" onsubmit="submitCourseEdit(event)" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row g-3">
+        <!-- Title -->
+        <div class="col-md-6">
+          <label class="form-label" for="title">Course Title <span class="text-danger">*</span></label>
+          <input type="text" id="title" name="title" class="form-control" required/>
+        </div>
+
+        <!-- Slug -->
+        <div class="col-md-6">
+          <label class="form-label" for="slug">Course Slug <span class="text-danger">*</span></label>
+          <input type="text" id="slug" name="slug" class="form-control" required/>
+        </div>
+
+        <!-- Category -->
+        <div class="col-md-6">
+          <label class="form-label" for="category">Category <span class="text-danger">*</span></label>
+          <select id="category" name="category" class="form-select" required>
+            <option value="" disabled>Select Category</option>
+            <!-- Categories loaded dynamically -->
+          </select>
+        </div>
+
+        <!-- Delivery Mode -->
+        <div class="col-md-6">
+          <label class="form-label" for="delivery_mode">Delivery Mode <span class="text-danger">*</span></label>
+          <select id="delivery_mode" name="delivery_mode" class="form-select" required onchange="toggleUploadModeFieldsEdit()">
+            <option value="hybrid">Hybrid — Video + Content</option>
+            <option value="video_lecture">Video Lecture Based</option>
+            <option value="content_based">Content/Reading Based</option>
+          </select>
+        </div>
+
+        <!-- Price -->
+        <div class="col-md-4">
+          <label class="form-label" for="price">Price (INR) <span class="text-danger">*</span></label>
+          <input type="number" id="price" name="price" class="form-control" min="1" step="0.01" required/>
+        </div>
+
+        <!-- Status -->
+        <div class="col-md-4">
+          <label class="form-label" for="status">Status <span class="text-danger">*</span></label>
+          <select id="status" name="status" class="form-select" required onchange="togglePublishDateFieldEdit()">
+            <option value="draft">Draft</option>
+            <option value="in_review">In Review</option>
+            <option value="approved">Approved (Coming Soon)</option>
+            <option value="published">Published</option>
+            <option value="archived">Archived</option>
+          </select>
+        </div>
+
+        <!-- Version -->
+        <div class="col-md-4">
+          <label class="form-label" for="version">Version <span class="text-danger">*</span></label>
+          <input type="number" id="version" name="version" class="form-control" min="1" required/>
+        </div>
+
+        <!-- Published At -->
+        <div class="col-md-4" id="publishedAtCol">
+          <label class="form-label" for="published_at">Published At Date</label>
+          <input type="datetime-local" id="published_at" name="published_at" class="form-control"/>
+        </div>
+
+        <!-- Author -->
+        <div class="col-md-6">
+          <label class="form-label" for="author">Author / Publisher</label>
+          <input type="text" id="author" name="author" class="form-control" placeholder="e.g. EduAiQ Editorial Team"/>
+        </div>
+
+        <!-- Dynamic Content Uploading Container -->
+        <div class="col-12" id="uploadModeContainerEdit">
+          <div class="p-20 radius-8 border border-neutral-200 bg-neutral-50">
+            <h6 class="fw-semibold text-primary-600 mb-12" id="uploadModeTitleEdit">
+              <i class="ri-upload-cloud-line me-1"></i> Content & Media Uploading Mode
+            </h6>
+            <div class="row g-3">
+              <!-- Video Upload & Link Field -->
+              <div class="col-md-6" id="videoUploadColEdit">
+                <label class="form-label fw-semibold" for="video_url">
+                  Course Video Link / URL <span class="text-xs text-muted">(YouTube / Vimeo / Direct Link)</span>
+                </label>
+                <input type="url" id="video_url" name="video_url" class="form-control mb-2" placeholder="https://www.youtube.com/watch?v=..."/>
+
+                <label class="form-label fw-semibold" for="video_file">
+                  OR Update Video File <span class="text-xs text-muted">(MP4 / WebM)</span>
+                </label>
+                <input type="file" id="video_file" name="video_file" class="form-control" accept="video/*"/>
+                <div id="videoCurrentStatus" class="mt-1 text-xs text-secondary-light"></div>
+              </div>
+
+              <!-- PDF Upload Field -->
+              <div class="col-md-6" id="pdfUploadColEdit">
+                <label class="form-label fw-semibold" for="pdf_file">
+                  Book PDF Document <span class="text-primary-600">(For Digital Reader)</span>
+                </label>
+                <input type="file" id="pdf_file" name="pdf_file" class="form-control" accept="application/pdf"/>
+                <div id="pdfCurrentStatus" class="mt-1 text-xs text-secondary-light"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Current Thumbnail View -->
+        <div class="col-12" id="thumbnailPreviewContainer" style="display: none;">
+          <label class="form-label d-block">Current Thumbnail</label>
+          <img id="thumbnailPreview" src="" alt="Thumbnail" style="width: 150px; height: 100px; object-fit: cover; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 10px;">
+        </div>
+
+        <!-- Thumbnail File Input -->
+        <div class="col-12">
+          <label class="form-label" for="thumbnail">Update Course Thumbnail <span class="text-xs text-muted">(JPG, JPEG, PNG, WEBP)</span></label>
+          <input type="file" id="thumbnail" name="thumbnail" class="form-control" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" onchange="previewSelectedImageEdit(event)"/>
+        </div>
+
+        <!-- Description -->
+        <div class="col-12">
+          <label class="form-label" for="description">Course / Book Description</label>
+          <textarea id="description" name="description" class="form-control" rows="5"></textarea>
+        </div>
+
+        <!-- Book Chapters & Pages Management Section -->
+        <div class="col-12 mt-4 p-20 radius-8 border border-neutral-200 bg-neutral-50">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+            <div>
+              <h6 class="fw-semibold text-primary-600 mb-1">
+                <i class="ri-book-open-line me-1"></i> Book Chapters & Reading Pages
+              </h6>
+              <span class="text-sm text-secondary-light">Create and organize chapters (modules) and digital reading pages (lessons) for this book.</span>
+            </div>
+            <div class="d-flex gap-2">
+              <a class="btn btn-sm btn-outline-primary" id="manageChaptersBtn" href="#" target="_blank">
+                <i class="ri-pages-line"></i> Manage Chapters
+              </a>
+              <a class="btn btn-sm btn-outline-secondary" id="managePagesBtn" href="#" target="_blank">
+                <i class="ri-file-text-line"></i> Manage Digital Pages
+              </a>
+            </div>
+          </div>
+          <div id="bookChaptersList" class="text-sm text-muted">
+            <em>Loading book chapters and pages...</em>
+          </div>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="col-12 mt-4 text-end">
+          <a class="btn btn-outline-secondary me-2" id="cancelBtn" href="/admin-panel/courses/">Cancel</a>
+          <button type="submit" class="btn btn-primary-600">Save Changes</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = window.location.origin;
+  const urlParams = new URLSearchParams(window.location.search);
+  const querySlug = urlParams.get('slug');
+  const redirectUrl = urlParams.get('next') || (document.referrer.includes('/admin-panel/books/') ? '/admin-panel/books/' : '/admin-panel/courses/');
+
+  function toggleUploadModeFieldsEdit() {
+    const modeSelect = document.getElementById('delivery_mode');
+    if (!modeSelect) return;
+    const mode = modeSelect.value;
+    const videoCol = document.getElementById('videoUploadColEdit');
+    const pdfCol = document.getElementById('pdfUploadColEdit');
+    const title = document.getElementById('uploadModeTitleEdit');
+
+    if (mode === 'video_lecture') {
+      if (videoCol) videoCol.classList.remove('d-none');
+      if (pdfCol) pdfCol.classList.add('d-none');
+      if (title) title.innerHTML = '<i class="ri-video-line me-1"></i> Video Lecture Uploading Mode';
+    } else if (mode === 'content_based') {
+      if (videoCol) videoCol.classList.add('d-none');
+      if (pdfCol) pdfCol.classList.remove('d-none');
+      if (title) title.innerHTML = '<i class="ri-file-pdf-line me-1"></i> Content & Reading Document Uploading Mode';
+    } else {
+      if (videoCol) videoCol.classList.remove('d-none');
+      if (pdfCol) pdfCol.classList.remove('d-none');
+      if (title) title.innerHTML = '<i class="ri-sparkles-line me-1"></i> Hybrid Uploading Mode (Video + Reading Material)';
+    }
+  }
+
+  function togglePublishDateFieldEdit() {
+    // optional helper if needed
+  }
+
+  function previewSelectedImageEdit(event) {
+    const file = event.target.files[0];
+    const previewContainer = document.getElementById('thumbnailPreviewContainer');
+    const previewImg = document.getElementById('thumbnailPreview');
+
+    if (file) {
+      const allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
+      const ext = file.name.split('.').pop().toLowerCase();
+      if (!allowedExts.includes(ext)) {
+        showToast('Invalid image format! Only JPG, JPEG, PNG, and WEBP files are allowed.', 'error');
+        event.target.value = '';
+        if (previewImg) previewImg.src = '';
+        if (previewContainer) previewContainer.style.display = 'none';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        previewImg.src = e.target.result;
+        previewContainer.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  async function initEditPage() {
+    const cancelBtn = document.getElementById('cancelBtn');
+    if (cancelBtn) cancelBtn.href = redirectUrl;
+
+    if (!querySlug) {
+      showToast('No course slug specified for editing!', 'error');
+      setTimeout(() => {
+        window.location.href = redirectUrl;
+      }, 1500);
+      return;
+    }
+    await loadCategories();
+    await loadCourseData();
+  }
+
+  async function loadCategories() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/categories/?exclude_books=false`);
+      const data = await response.json();
+      const select = document.getElementById('category');
+      
+      if (data.results) {
+        select.innerHTML = '<option value="" disabled>Select Category</option>';
+        data.results.forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat.id;
+          opt.textContent = cat.name;
+          select.appendChild(opt);
+        });
+      }
+    } catch (e) {
+      console.error('Error loading categories:', e);
+    }
+  }
+
+  async function loadCourseData() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/courses/${querySlug}/`);
+      const data = await response.json();
+      const c = data.course;
+
+      document.getElementById('title').value = c.title;
+      document.getElementById('slug').value = c.slug;
+      
+      const catVal = (c.category && typeof c.category === 'object') ? c.category.id : c.category;
+      if (catVal) {
+        document.getElementById('category').value = String(catVal);
+      }
+
+      document.getElementById('delivery_mode').value = c.delivery_mode;
+      toggleUploadModeFieldsEdit();
+      document.getElementById('price').value = c.price;
+      document.getElementById('status').value = c.status;
+      document.getElementById('version').value = c.version;
+      document.getElementById('description').value = c.description || '';
+
+      if (document.getElementById('author')) {
+        document.getElementById('author').value = c.author || 'EduAiQ Editorial Team';
+      }
+      if (document.getElementById('video_url')) {
+        document.getElementById('video_url').value = c.video_url || '';
+      }
+
+      if (c.pdf_file && document.getElementById('pdfCurrentStatus')) {
+        document.getElementById('pdfCurrentStatus').innerHTML = `Current PDF: <a href="${c.pdf_file}" target="_blank" class="text-primary-600 fw-semibold hover-underline"><i class="ri-file-pdf-line"></i> View Current Ebook PDF</a>`;
+      }
+      if (c.video_file && document.getElementById('videoCurrentStatus')) {
+        document.getElementById('videoCurrentStatus').innerHTML = `Current Video: <a href="${c.video_file}" target="_blank" class="text-info fw-semibold hover-underline"><i class="ri-video-line"></i> View Current Video</a>`;
+      }
+
+      // Update Pages & Chapters management links
+      if (document.getElementById('manageChaptersBtn')) {
+        document.getElementById('manageChaptersBtn').href = `/admin-panel/modules/?slug=${c.slug}`;
+      }
+      if (document.getElementById('managePagesBtn')) {
+        document.getElementById('managePagesBtn').href = `/admin-panel/lessons/?slug=${c.slug}`;
+      }
+
+      // Render mini chapters summary
+      const chaptersContainer = document.getElementById('bookChaptersList');
+      if (chaptersContainer) {
+        if (c.modules && c.modules.length > 0) {
+          chaptersContainer.innerHTML = `
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered bg-white mb-0 align-middle">
+                <thead>
+                  <tr class="table-light"><th>Order</th><th>Chapter Title</th><th>Reading Pages</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                  ${c.modules.map(m => `
+                    <tr>
+                      <td class="fw-bold text-center" style="width: 100px;">Chapter ${m.order}</td>
+                      <td>${m.title}</td>
+                      <td>${m.lessons ? m.lessons.length : 0} page(s)</td>
+                      <td>
+                        <a href="/admin-panel/lessons/?slug=${c.slug}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2 text-xs">
+                          <i class="ri-add-line"></i> Manage Pages
+                        </a>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
+        } else {
+          chaptersContainer.innerHTML = `
+            <div class="alert alert-info py-2 px-3 mb-0 text-sm">
+              No digital chapters created yet. Click <strong>"Manage Chapters"</strong> above to create book chapters and digital pages.
+            </div>
+          `;
+        }
+      }
+
+      if (c.published_at) {
+        document.getElementById('published_at').value = c.published_at.substring(0, 16);
+      }
+
+      if (c.thumbnail) {
+        document.getElementById('thumbnailPreview').src = c.thumbnail;
+        document.getElementById('thumbnailPreviewContainer').style.display = 'block';
+      }
+    } catch (e) {
+      console.error(e);
+      showToast('Error fetching course data.', 'error');
+    }
+  }
+
+  async function submitCourseEdit(e) {
+    e.preventDefault();
+    const form = document.getElementById('editCourseForm');
+    const formData = new FormData(form);
+
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(`${API_BASE_URL}/courses/courses/${querySlug}/`, {
+        method: 'PUT',
+        headers: {
+          'X-CSRFToken': csrfToken
+        },
+        body: formData,
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (response.ok || data.success) {
+        showToast('Saved successfully!', 'success');
+        setTimeout(() => {
+          window.location.href = redirectUrl;
+        }, 1200);
+      } else {
+        let errMsg = data.error || 'Validation failed.';
+        if (data.errors) {
+          errMsg += ' | ' + Object.entries(data.errors).map(([f, errs]) => `${f}: ${errs.join(', ')}`).join(' | ');
+        }
+        showToast(errMsg, 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Error saving changes.', 'error');
+    }
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener('DOMContentLoaded', initEditPage);
+</script>
+{% endblock %}

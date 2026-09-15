@@ -1,0 +1,1949 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard | EduAiQ Management Dashboard{% endblock %}
+
+{% block description %}EduAiQ Platform Administration Dashboard - Real-time metrics for Institutions, Courses, Students,
+and Olympiad Exams.{% endblock %}
+
+{% block content %}
+{% if is_main_admin %}
+<!-- ADMIN DASHBOARD CONTENT -->
+<!-- Top Header / Breadcrumb -->
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h5 class="fw-bold text-dark mb-1">
+      <i class="ri-dashboard-3-line text-warning me-2"></i>EduAiQ Management Dashboard
+    </h5>
+    <p class="text-neutral-600 text-sm mb-0">Live visual analytics of active institutions, courses, user registrations,
+      and entrance examinations.</p>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="badge-orange-single px-12 py-8 font-weight-bold text-sm">
+      <i class="ri-checkbox-circle-fill me-1"></i> Live Real-Time Analytics
+    </span>
+  </div>
+</div>
+
+<!-- STAT CARDS OVERVIEW (EduAiQ Brand Theme & Micro-Hover Effects) -->
+<!-- STAT CARDS OVERVIEW (EduAiQ Brand Theme & Micro-Hover Effects) -->
+<div class="row gy-4 mb-24">
+  <!-- 1. Total Institutions -->
+  <div class="col-xxl-3 col-xl-3 col-md-6 col-sm-6">
+    <a href="/admin-panel/institution-list/" class="text-decoration-none d-block h-100">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq">
+            <i class="ri-building-line"></i>
+          </span>
+          <span class="badge-orange-single">Live</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Institutions</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ total_institutions|default:0 }}</h3>
+      </div>
+    </a>
+  </div>
+
+  <!-- 2. Total Courses -->
+  <div class="col-xxl-3 col-xl-3 col-md-6 col-sm-6">
+    <a href="/admin-panel/courses/" class="text-decoration-none d-block h-100">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq">
+            <i class="ri-book-open-line"></i>
+          </span>
+          <span class="badge-orange-single">Catalog</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Courses</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ total_courses|default:0 }}</h3>
+      </div>
+    </a>
+  </div>
+
+  <!-- 2.5. Total AI Books -->
+  <div class="col-xxl-3 col-xl-3 col-md-6 col-sm-6">
+    <a href="/admin-panel/books/" class="text-decoration-none d-block h-100">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq">
+            <i class="ri-file-pdf-2-line"></i>
+          </span>
+          <span class="badge-orange-single">E-Books</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total AI Books</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ total_books|default:0 }}</h3>
+      </div>
+    </a>
+  </div>
+
+  <!-- 3. Total Students -->
+  <div class="col-xxl-3 col-xl-3 col-md-6 col-sm-6">
+    <a href="/admin-panel/student-list/" class="text-decoration-none d-block h-100">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq">
+            <i class="ri-graduation-cap-line"></i>
+          </span>
+          <span class="badge-orange-single">Registered</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Students</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ total_students|default:0 }}</h3>
+      </div>
+    </a>
+  </div>
+
+  <!-- 4. Teachers -->
+  <div class="col-xxl-3 col-xl-3 col-md-6 col-sm-6">
+    <a href="/admin-panel/teacher-list/" class="text-decoration-none d-block h-100">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq">
+            <i class="ri-user-follow-line"></i>
+          </span>
+          <span class="badge-orange-single">Active</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Teachers</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ total_teachers|default:0 }}</h3>
+      </div>
+    </a>
+  </div>
+
+  <!-- 5. Olympiad Exams -->
+  <div class="col-xxl-3 col-xl-3 col-md-6 col-sm-6">
+    <a href="/admin-panel/olympiad-entrance/" class="text-decoration-none d-block h-100">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq">
+            <i class="ri-trophy-line"></i>
+          </span>
+          <span class="badge-orange-single">Active</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Olympiad Exams</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ total_olympiads|default:0 }}</h3>
+      </div>
+    </a>
+  </div>
+
+  <!-- 6. Exam Registrations -->
+  <div class="col-xxl-3 col-xl-3 col-md-6 col-sm-6">
+    <a href="/admin-panel/olympiad-entrance/" class="text-decoration-none d-block h-100">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq">
+            <i class="ri-file-user-line"></i>
+          </span>
+          <span class="badge-orange-single">Enrolled</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Exam Registrations</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ total_registrations|default:0 }}</h3>
+      </div>
+    </a>
+  </div>
+
+  <!-- 7. Team Members -->
+  <div class="col-xxl-3 col-xl-3 col-md-6 col-sm-6">
+    <a href="/admin-panel/team/" class="text-decoration-none d-block h-100">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq">
+            <i class="ri-team-line"></i>
+          </span>
+          <span class="badge-orange-single">Mentors</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Team Members</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ total_team_members|default:0 }}</h3>
+      </div>
+    </a>
+  </div>
+
+  <!-- 8. Blog Posts -->
+  <div class="col-xxl-3 col-xl-3 col-md-6 col-sm-6">
+    <a href="/admin-panel/blogs/" class="text-decoration-none d-block h-100">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq">
+            <i class="ri-article-line"></i>
+          </span>
+          <span class="badge-orange-single">Articles</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Blog Posts</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ total_blogs|default:0 }}</h3>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- CHARTS & GRAPH ANALYTICS SECTION -->
+<div class="row gy-4 mb-24">
+  <!-- Line / Area Chart: Platform Activity & Growth Trend -->
+  <div class="col-xxl-8 col-xl-7 col-lg-12">
+    <div class="card radius-16 border border-neutral-200 h-100 bg-base shadow-xs p-24">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-20">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-line-chart-line text-warning me-2"></i>Platform Activity & Growth Trend
+          </h6>
+          <p class="text-neutral-500 text-sm mb-0">Monthly analysis of student registrations, courses created & exam
+            attempts</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge-orange-single px-12 py-6 text-xs">
+            <i class="ri-pulse-line me-1"></i> Live Activity
+          </span>
+        </div>
+      </div>
+      <div id="growthLineChart" style="min-height: 330px;"></div>
+    </div>
+  </div>
+
+  <!-- Donut / Radial Chart: Platform Distribution -->
+  <div class="col-xxl-4 col-xl-5 col-lg-12">
+    <div class="card radius-16 border border-neutral-200 h-100 bg-base shadow-xs p-24">
+      <div class="d-flex align-items-center justify-content-between mb-20">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-pie-chart-2-line text-warning me-2"></i>Entity Distribution
+          </h6>
+          <p class="text-neutral-500 text-sm mb-0">Proportional breakdown of core platform modules</p>
+        </div>
+      </div>
+      <div id="entityDonutChart" class="d-flex justify-content-center align-items-center" style="min-height: 260px;">
+      </div>
+      <div class="row g-2 mt-3 pt-3 border-top border-neutral-100 text-center">
+        <div class="col-4">
+          <span class="text-secondary-light text-xs d-block font-medium">Institutions</span>
+          <span class="fw-bold text-dark text-sm">{{ total_institutions|default:0 }}</span>
+        </div>
+        <div class="col-4">
+          <span class="text-secondary-light text-xs d-block font-medium">Courses</span>
+          <span class="fw-bold text-dark text-sm">{{ total_courses|default:0 }}</span>
+        </div>
+        <div class="col-4">
+          <span class="text-secondary-light text-xs d-block font-medium">Students</span>
+          <span class="fw-bold text-dark text-sm">{{ total_students|default:0 }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK MANAGEMENT SHORTCUTS -->
+<div class="card radius-16 border border-neutral-200 p-20 mb-24 bg-base shadow-xs">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-16">
+    <h6 class="fw-bold text-dark mb-0"><i class="ri-flashlight-line text-warning me-2"></i>Quick Management Shortcuts
+    </h6>
+    <span class="text-neutral-500 text-xs">Direct actions to manage system entities</span>
+  </div>
+  <div class="d-flex flex-wrap gap-3">
+    {% if request.user.role != 'institution' %}
+    <a href="/admin-panel/crm-dashboard/" class="btn-eduaiq-primary">
+      <i class="ri-line-chart-line me-1.5"></i> Sales CRM Pipeline
+    </a>
+    <a href="/admin-panel/add-new-lead/" class="btn-eduaiq-outline">
+      <i class="ri-building-line me-1.5"></i> + Add Lead
+    </a>
+    <a href="/admin-panel/add-new-institution/" class="btn-eduaiq-outline">
+      <i class="ri-building-line me-1.5"></i> + Add Institution
+    </a>
+    <a href="/admin-panel/add-new-course/" class="btn-eduaiq-outline">
+      <i class="ri-add-circle-line me-1.5"></i> + Add New Course
+    </a>
+    <a href="/admin-panel/books/add/" class="btn-eduaiq-outline">
+      <i class="ri-file-pdf-line me-1.5"></i> + Add AI Book
+    </a>
+    <a href="/admin-panel/olympiad-entrance/" class="btn-eduaiq-outline">
+      <i class="ri-trophy-line me-1.5"></i> Olympiad Entrance
+    </a>
+    {% endif %}
+    <a href="/admin-panel/add-new-student/" class="btn-eduaiq-outline">
+      <i class="ri-user-add-line me-1.5"></i> + Add New Student
+    </a>
+  </div>
+</div>
+
+<!-- GRAPHICAL DASHBOARD SECTIONS (Recent Institutions, Courses & Olympiads) -->
+<div class="row gy-4 mb-24">
+
+  <!-- 1. RECENT INSTITUTIONS (Graphical & Data Card) -->
+  {% if request.user.role != 'institution' %}
+  <div class="col-xxl-6 col-lg-12">
+    <div class="card radius-16 border border-neutral-200 h-100 bg-base shadow-xs">
+      <div
+        class="card-header border-bottom border-neutral-200 p-20 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-building-4-line me-2 text-warning"></i>Recent Institutions & Types
+          </h6>
+          <span class="text-neutral-500 text-xs">College vs School ratio & onboarding list</span>
+        </div>
+        <!-- View Mode Switcher Tabs -->
+        <ul class="nav nav-pills custom-chart-pills" id="instTabs" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active" id="inst-graph-tab" data-bs-toggle="pill" data-bs-target="#inst-graph"
+              type="button">
+              <i class="ri-bar-chart-box-line me-1"></i> Graph
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="inst-table-tab" data-bs-toggle="pill" data-bs-target="#inst-table"
+              type="button">
+              <i class="ri-table-line me-1"></i> Table
+            </button>
+          </li>
+          <li class="nav-item ms-2">
+            <a href="/admin-panel/institution-list/" class="btn-view-all-pill">
+              View All <i class="ri-arrow-right-line ms-1"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card-body p-20">
+        <div class="tab-content" id="instTabsContent">
+
+          <!-- Graphical View -->
+          <div class="tab-pane fade show active" id="inst-graph" role="tabpanel">
+            <!-- Metric Chips -->
+            <div class="row g-2 mb-16">
+              <div class="col-4">
+                <div class="metric-mini-card">
+                  <span class="metric-label text-neutral-500">Colleges</span>
+                  <span class="metric-val text-dark fw-bold">{{ colleges_count|default:0 }}</span>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="metric-mini-card">
+                  <span class="metric-label text-neutral-500">Schools</span>
+                  <span class="metric-val text-dark fw-bold">{{ schools_count|default:0 }}</span>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="metric-mini-card">
+                  <span class="metric-label text-neutral-500">Active Rate</span>
+                  <span class="metric-val text-success fw-bold">{{ active_institutions|default:0 }}/{{ total_institutions|default:0 }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Institutions Donut / Radial Chart -->
+            <div class="chart-container-box mb-16">
+              <div id="institutionsTypeChart" style="min-height: 180px;"></div>
+            </div>
+
+            <!-- Recent Institution Visual Feed -->
+            <div class="recent-visual-list">
+              <span class="text-xs fw-bold text-neutral-600 text-uppercase letter-spacing-1 d-block mb-10">Recently
+                Added Institutions</span>
+              <div class="d-flex flex-column gap-2">
+                {% for inst in recent_institutions|slice:":4" %}
+                <div class="visual-list-item d-flex align-items-center justify-content-between p-12 radius-10">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="avatar-icon-box bg-orange-soft">
+                      <i class="ri-building-2-line text-warning"></i>
+                    </div>
+                    <div>
+                      <h6 class="text-sm fw-bold text-dark mb-0">{{ inst.name }}</h6>
+                      <span class="text-xs text-neutral-500">{{ inst.city }}, {{ inst.state }}</span>
+                    </div>
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-neutral-100 text-neutral-700 text-xs px-2 py-1 radius-6 text-capitalize">{{ inst.get_type_display }}</span>
+                    {% if inst.status == 'active' %}
+                    <span class="badge-orange-single text-xs">Active</span>
+                    {% else %}
+                    <span class="badge bg-neutral-200 text-neutral-600 text-xs">{{ inst.status }}</span>
+                    {% endif %}
+                  </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-muted text-sm my-3">No institutions registered yet.</p>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Table View -->
+          <div class="tab-pane fade" id="inst-table" role="tabpanel">
+            <div class="table-responsive">
+              <table class="table text-left align-middle mb-0">
+                <thead class="bg-neutral-100 text-neutral-600 text-xs fw-bold">
+                  <tr>
+                    <th class="ps-12">Institution Name</th>
+                    <th>Type</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for inst in recent_institutions %}
+                  <tr>
+                    <td class="ps-12 fw-semibold text-dark text-sm">{{ inst.name }}</td>
+                    <td><span class="badge bg-neutral-200 text-neutral-800 text-capitalize">{{ inst.get_type_display }}</span></td>
+                    <td class="text-secondary-light text-xs">{{ inst.city }}, {{ inst.state }}</td>
+                    <td>
+                      {% if inst.status == 'active' %}
+                      <span class="badge-orange-single text-xs">Active</span>
+                      {% else %}
+                      <span class="badge bg-neutral-200 text-neutral-700 text-xs text-capitalize">{{ inst.status }}</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="4" class="text-center py-20 text-secondary-light text-sm">No institutions registered
+                      yet.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- 2. RECENT COURSES (Graphical & Data Card) -->
+  <div class="{% if request.user.role != 'institution' %}col-xxl-6 col-lg-12{% else %}col-12{% endif %}">
+    <div class="card radius-16 border border-neutral-200 h-100 bg-base shadow-xs">
+      <div
+        class="card-header border-bottom border-neutral-200 p-20 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-book-3-line me-2 text-warning"></i>Course Categories & Catalog
+          </h6>
+          <span class="text-neutral-500 text-xs">Category distribution & catalog status</span>
+        </div>
+        <!-- View Mode Switcher Tabs -->
+        <ul class="nav nav-pills custom-chart-pills" id="coursesTabs" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active" id="courses-graph-tab" data-bs-toggle="pill" data-bs-target="#courses-graph"
+              type="button">
+              <i class="ri-bar-chart-horizontal-line me-1"></i> Graph
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="courses-table-tab" data-bs-toggle="pill" data-bs-target="#courses-table"
+              type="button">
+              <i class="ri-table-line me-1"></i> Table
+            </button>
+          </li>
+          <li class="nav-item ms-2">
+            <a href="/admin-panel/courses/" class="btn-view-all-pill">
+              View All <i class="ri-arrow-right-line ms-1"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card-body p-20">
+        <div class="tab-content" id="coursesTabsContent">
+
+          <!-- Graphical View -->
+          <div class="tab-pane fade show active" id="courses-graph" role="tabpanel">
+            <!-- Status Progress -->
+            <div class="d-flex align-items-center justify-content-between mb-8">
+              <span class="text-xs fw-bold text-neutral-600">Publication Status</span>
+              <span class="text-xs fw-bold text-warning">{{ published_courses|default:0 }} Published <span
+                  class="text-neutral-400 font-normal">/ {{ draft_courses|default:0 }} Drafts</span></span>
+            </div>
+            <div class="progress mb-16 radius-50" style="height: 7px; background-color: #f1f5f9;">
+              <div class="progress-bar bg-warning" role="progressbar"
+                style="width: {% if total_courses %}{% widthratio published_courses total_courses 100 %}{% else %}0{% endif %}%;">
+              </div>
+            </div>
+
+            <!-- Categories Horizontal / Bar Chart -->
+            <div class="chart-container-box mb-16">
+              <div id="courseCategoriesChart" style="min-height: 180px;"></div>
+            </div>
+
+            <!-- Recent Courses Visual Feed -->
+            <div class="recent-visual-list">
+              <span class="text-xs fw-bold text-neutral-600 text-uppercase letter-spacing-1 d-block mb-10">Recently
+                Added Courses</span>
+              <div class="d-flex flex-column gap-2">
+                {% for course in recent_courses|slice:":4" %}
+                <div class="visual-list-item d-flex align-items-center justify-content-between p-12 radius-10">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="avatar-icon-box bg-orange-soft">
+                      <i class="ri-book-open-line text-warning"></i>
+                    </div>
+                    <div>
+                      <h6 class="text-sm fw-bold text-dark mb-0">{{ course.title|truncatechars:38 }}</h6>
+                      <span class="text-xs text-neutral-500">{{ course.category.name|default:"General Track" }}</span>
+                    </div>
+                  </div>
+                  <div>
+                    {% if course.status == 'published' %}
+                    <span class="badge-orange-single text-xs">Published</span>
+                    {% else %}
+                    <span class="badge bg-neutral-200 text-neutral-600 text-xs">Draft</span>
+                    {% endif %}
+                  </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-muted text-sm my-3">No courses available.</p>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Table View -->
+          <div class="tab-pane fade" id="courses-table" role="tabpanel">
+            <div class="table-responsive">
+              <table class="table text-left align-middle mb-0">
+                <thead class="bg-neutral-100 text-neutral-600 text-xs fw-bold">
+                  <tr>
+                    <th class="ps-12">Course Title</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for course in recent_courses %}
+                  <tr>
+                    <td class="ps-12 fw-semibold text-dark text-sm">{{ course.title }}</td>
+                    <td class="text-secondary-light text-xs">{{ course.category.name|default:"General" }}</td>
+                    <td>
+                      {% if course.status == 'published' %}
+                      <span class="badge-orange-single text-xs">Published</span>
+                      {% else %}
+                      <span class="badge bg-neutral-200 text-neutral-700 text-xs">Draft</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="3" class="text-center py-20 text-secondary-light text-sm">No courses available.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. RECENT OLYMPIAD ENTRANCE REGISTRATIONS (Full-Width Graphical Dashboard Card) -->
+  <div class="col-12">
+    <div class="card radius-16 border border-neutral-200 bg-base shadow-xs">
+      <div
+        class="card-header border-bottom border-neutral-200 p-20 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-trophy-line me-2 text-warning"></i>Recent Olympiad Entrance Registrations & Trends
+          </h6>
+          <span class="text-neutral-500 text-xs">Candidate entrance registrations, exam breakdown & timeline</span>
+        </div>
+        <!-- View Mode Switcher Tabs -->
+        <ul class="nav nav-pills custom-chart-pills" id="olympiadTabs" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active" id="olympiad-graph-tab" data-bs-toggle="pill"
+              data-bs-target="#olympiad-graph" type="button">
+              <i class="ri-line-chart-line me-1"></i> Visual Feed & Graph
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="olympiad-table-tab" data-bs-toggle="pill" data-bs-target="#olympiad-table"
+              type="button">
+              <i class="ri-table-line me-1"></i> Table View
+            </button>
+          </li>
+          <li class="nav-item ms-2">
+            <a href="/admin-panel/olympiad-entrance/" class="btn-view-all-pill">
+              Manage Exams <i class="ri-arrow-right-line ms-1"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card-body p-20">
+        <div class="tab-content" id="olympiadTabsContent">
+
+          <!-- Graphical / Visual Feed View -->
+          <div class="tab-pane fade show active" id="olympiad-graph" role="tabpanel">
+            <div class="row g-4 align-items-center">
+
+              <!-- Left Chart: Olympiad Exams Registration Volume Graph -->
+              <div class="col-lg-6">
+                <div class="p-16 radius-12 border border-neutral-100 bg-neutral-50 h-100">
+                  <div class="d-flex align-items-center justify-content-between mb-12">
+                    <span class="text-xs fw-bold text-dark text-uppercase letter-spacing-1">Registrations by
+                      Examination</span>
+                    <span class="badge-orange-single text-xs">{{ total_registrations|default:0 }} Total Regs</span>
+                  </div>
+                  <div id="olympiadExamsChart" style="min-height: 250px;"></div>
+                </div>
+              </div>
+
+              <!-- Right: Visual Registrations Activity Stream -->
+              <div class="col-lg-6">
+                <div class="p-16 radius-12 border border-neutral-100 bg-white h-100">
+                  <div class="d-flex align-items-center justify-content-between mb-12">
+                    <span class="text-xs fw-bold text-dark text-uppercase letter-spacing-1">Live Registration
+                      Stream</span>
+                    <span class="text-xs text-neutral-500">Real-time candidate enrollments</span>
+                  </div>
+                  <div class="d-flex flex-column gap-2">
+                    {% for reg in recent_registrations|slice:":5" %}
+                    <div class="visual-list-item d-flex align-items-center justify-content-between p-12 radius-10">
+                      <div class="d-flex align-items-center gap-3">
+                        <div class="avatar-circle-pill">
+                          {{ reg.student.username|slice:":2"|upper }}
+                        </div>
+                        <div>
+                          <div class="d-flex align-items-center gap-2">
+                            <h6 class="text-sm fw-bold text-dark mb-0">{{ reg.student.get_full_name|default:reg.student.username }}</h6>
+                            <span class="badge-orange-single text-2xs py-1 px-6">Roll: {{ reg.roll_number|default:"N/A" }}</span>
+                          </div>
+                          <span class="text-xs text-neutral-500 d-block">{{ reg.student.email }}</span>
+                          <span class="text-xs fw-bold text-warning d-block mt-2"><i class="ri-award-line me-1"></i>{{ reg.olympiad.name|default:"Olympiad Entrance Exam" }}</span>
+                        </div>
+                      </div>
+                      <div class="text-end">
+                        <span class="badge bg-neutral-100 text-neutral-600 text-xs px-2 py-1 radius-6 d-block">{{ reg.registered_at|date:"d M Y" }}</span>
+                        <span class="text-2xs text-neutral-400 mt-1 d-block">{{ reg.registered_at|date:"h:i A" }}</span>
+                      </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-center text-muted text-sm py-4">No Olympiad registrations recorded yet.</p>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Table View -->
+          <div class="tab-pane fade" id="olympiad-table" role="tabpanel">
+            <div class="table-responsive">
+              <table class="table text-left align-middle mb-0">
+                <thead class="bg-neutral-100 text-neutral-600 text-xs fw-bold">
+                  <tr>
+                    <th class="ps-12">Candidate Name</th>
+                    <th>Email</th>
+                    <th>Exam Title</th>
+                    <th>Roll Number</th>
+                    <th>Date Registered</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for reg in recent_registrations %}
+                  <tr>
+                    <td class="ps-12 fw-semibold text-dark text-sm">
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="avatar-circle-mini">{{ reg.student.username|slice:":2"|upper }}</span>
+                        {{ reg.student.get_full_name|default:reg.student.username }}
+                      </div>
+                    </td>
+                    <td class="text-secondary-light text-xs">{{ reg.student.email }}</td>
+                    <td class="fw-semibold text-dark text-xs text-warning">{{ reg.olympiad.name|default:"Olympiad Exam" }}</td>
+                    <td><span class="badge bg-neutral-100 text-neutral-700 text-xs">{{ reg.roll_number|default:"-" }}</span></td>
+                    <td class="text-secondary-light text-xs">{{ reg.registered_at|date:"d M Y, h:i A" }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="5" class="text-center py-20 text-secondary-light text-sm">No Olympiad registrations
+                      recorded yet.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% elif is_institution %}
+<!-- INSTITUTION PORTAL DASHBOARD -->
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h5 class="fw-bold text-dark mb-1">
+      <i class="ri-building-3-line text-primary-600 me-2"></i>Institution Management Portal
+    </h5>
+    <p class="text-neutral-600 text-sm mb-0">Welcome back, <strong class="text-dark">{{ inst_data.institution_obj.name|default:request.user.username }}</strong>! Manage your institution students,
+      enrolled courses, and academic operations.</p>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="badge bg-primary-100 text-primary-700 px-12 py-8 font-weight-bold text-sm radius-8">
+      <i class="ri-government-line me-1"></i> Role: {{ inst_data.institution_obj.get_type_display|default:request.user.role|title }} Admin
+    </span>
+  </div>
+</div>
+
+<!-- INSTITUTION KPI STAT CARDS -->
+<div class="row gy-4 mb-24">
+  <div class="col-xxl col-xl col-md-4 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-primary-100 text-primary-600">
+          <i class="ri-graduation-cap-line"></i>
+        </span>
+        <span class="badge bg-primary-50 text-primary-600 text-xs px-2 py-1 radius-6">Enrolled</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Students</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ inst_data.students_count|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl col-xl col-md-4 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-success-100 text-success-600">
+          <i class="ri-book-open-line"></i>
+        </span>
+        <span class="badge bg-success-50 text-success-600 text-xs px-2 py-1 radius-6">Active</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Allowed Courses</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ inst_data.courses_count|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl col-xl col-md-4 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-purple-100 text-purple-600" style="background-color: #f3e8ff; color: #9333ea;">
+          <i class="ri-book-read-line"></i>
+        </span>
+        <span class="badge bg-purple-50 text-purple-600 text-xs px-2 py-1 radius-6"
+          style="background-color: #faf5ff; color: #9333ea;">AI Books</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Allowed AI Books</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ inst_data.books_count|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl col-xl col-md-4 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-info-100 text-info-600">
+          <i class="ri-group-line"></i>
+        </span>
+        <span class="badge bg-info-50 text-info-600 text-xs px-2 py-1 radius-6">Academic</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Active Batches</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ inst_data.batches_count|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl col-xl col-md-4 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-warning-100 text-warning-600">
+          <i class="ri-verified-badge-line"></i>
+        </span>
+        <span class="badge bg-warning-50 text-warning-600 text-xs px-2 py-1 radius-6">Status</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Institution Status</span>
+      <h3 class="mb-0 fw-bold text-success-600 text-lg">{{ inst_data.institution_obj.status|default:"Active"|title }}
+      </h3>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK ACTION SHORTCUTS -->
+<div class="card radius-12 border border-neutral-200 p-20 mb-24 bg-base">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-16">
+    <h6 class="fw-bold text-dark mb-0"><i class="ri-flashlight-fill text-warning me-2"></i>Institution Portal Shortcuts
+    </h6>
+    <span class="text-xs text-neutral-500">Quick management actions</span>
+  </div>
+  <div class="d-flex flex-wrap gap-12">
+    <a href="/admin-panel/courses/"
+      class="btn btn-outline-primary radius-8 px-16 py-8 text-sm d-inline-flex align-items-center gap-2">
+      <i class="ri-book-3-line"></i> My Allowed Courses
+    </a>
+    <a href="/admin-panel/courses/?type=book"
+      class="btn btn-outline-purple radius-8 px-16 py-8 text-sm d-inline-flex align-items-center gap-2"
+      style="border-color: #9333ea; color: #9333ea;">
+      <i class="ri-book-read-line"></i> My Allowed AI Books
+    </a>
+    <a href="/admin-panel/view-profile/"
+      class="btn btn-outline-secondary radius-8 px-16 py-8 text-sm d-inline-flex align-items-center gap-2">
+      <i class="ri-user-settings-line"></i> Institution Profile
+    </a>
+  </div>
+</div>
+
+<!-- STUDENTS LIST TABLE -->
+<div class="card radius-16 border border-neutral-200 bg-base shadow-xs mb-24 p-24">
+  <div class="d-flex align-items-center justify-content-between mb-20">
+    <div>
+      <h6 class="fw-bold text-dark mb-1"><i class="ri-user-follow-line text-primary-600 me-2"></i>Institution Enrolled
+        Students</h6>
+      <p class="text-neutral-500 text-sm mb-0">Roster of students registered under your institution portal</p>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table align-middle text-left mb-0">
+      <thead class="bg-neutral-100 text-neutral-600 text-xs fw-bold">
+        <tr>
+          <th class="ps-12">Student Name</th>
+          <th>Admission No</th>
+          <th>Roll No</th>
+          <th>Class / Grade</th>
+          <th>Batch</th>
+          <th>Email / Phone</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for st in inst_data.students_list %}
+        <tr>
+          <td class="ps-12 fw-semibold text-dark text-sm">
+            {{ st.user.get_full_name|default:st.user.username }}
+          </td>
+          <td><span class="badge bg-neutral-100 text-neutral-700 text-xs">{{ st.admission_no }}</span></td>
+          <td class="text-xs text-neutral-600">{{ st.roll_number|default:"-" }}</td>
+          <td class="text-xs font-medium text-primary-600">{{ st.class_grade }}</td>
+          <td class="text-xs text-neutral-500">{{ st.batch.name|default:"General" }}</td>
+          <td class="text-xs text-secondary-light">{{ st.user.email|default:st.guardian_phone }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center py-20 text-secondary-light text-sm">No students currently linked to this
+            institution.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% elif is_student %}
+<!-- STUDENT LEARNING PORTAL DASHBOARD -->
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h5 class="fw-bold text-dark mb-1">
+      <i class="ri-graduation-cap-line text-warning me-2"></i>Student Learning Portal
+    </h5>
+    <p class="text-neutral-600 text-sm mb-0">Welcome back, <strong class="text-dark">{{ request.user.get_full_name|default:request.user.username }}</strong>! Access your learning modules, courses, and
+      Olympiad exams.</p>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="badge bg-success-100 text-success-700 px-12 py-8 font-weight-bold text-sm radius-8">
+      <i class="ri-user-smile-line me-1"></i> Role: Student Portal
+    </span>
+  </div>
+</div>
+
+<!-- STUDENT KPI CARDS -->
+<div class="row gy-4 mb-24">
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-primary-100 text-primary-600">
+          <i class="ri-book-open-line"></i>
+        </span>
+        <span class="badge bg-primary-50 text-primary-600 text-xs px-2 py-1 radius-6">Enrolled</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">My Enrolled Courses</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ student_data.enrolled_courses_count|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-success-100 text-success-600">
+          <i class="ri-book-read-line"></i>
+        </span>
+        <span class="badge bg-success-50 text-success-600 text-xs px-2 py-1 radius-6">AI Books</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Allowed AI Books</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ student_data.enrolled_books_count|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-warning-100 text-warning-600">
+          <i class="ri-trophy-line"></i>
+        </span>
+        <span class="badge bg-warning-50 text-warning-600 text-xs px-2 py-1 radius-6">Active</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Olympiad Exams</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ student_data.olympiads_count|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-info-100 text-info-600">
+          <i class="ri-award-line"></i>
+        </span>
+        <span class="badge bg-info-50 text-info-600 text-xs px-2 py-1 radius-6">Attempts</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Exam Attempts</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ student_data.attempts_count|default:0 }}</h3>
+    </div>
+  </div>
+</div>
+
+<!-- STUDENT SHORTCUTS -->
+<div class="card radius-12 border border-neutral-200 p-20 mb-24 bg-base">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-16">
+    <h6 class="fw-bold text-dark mb-0"><i class="ri-flashlight-fill text-warning me-2"></i>My Learning Shortcuts</h6>
+  </div>
+  <div class="d-flex flex-wrap gap-12">
+    <a href="/my-learning/"
+      class="btn btn-primary-600 text-white radius-8 px-16 py-8 text-sm d-inline-flex align-items-center gap-2">
+      <i class="ri-play-circle-line"></i> My Learning Dashboard
+    </a>
+    <a href="/olympiad-entrance/"
+      class="btn btn-outline-warning radius-8 px-16 py-8 text-sm d-inline-flex align-items-center gap-2 text-warning-700">
+      <i class="ri-trophy-line"></i> Olympiad Entrance Exams
+    </a>
+    <a href="/admin-panel/view-profile/"
+      class="btn btn-outline-secondary radius-8 px-16 py-8 text-sm d-inline-flex align-items-center gap-2">
+      <i class="ri-user-3-line"></i> My Profile
+    </a>
+  </div>
+</div>
+
+<!-- MY ENROLLED COURSES & ALLOWED AI BOOKS SECTIONS -->
+<div class="row gy-4 mb-24">
+  <!-- ENROLLED COURSES CARD -->
+  <div class="col-lg-6">
+    <div class="card radius-16 border border-neutral-200 bg-base shadow-xs h-100 p-24">
+      <div class="d-flex align-items-center justify-content-between mb-20">
+        <div>
+          <h6 class="fw-bold text-dark mb-1">
+            <i class="ri-book-open-line text-primary-600 me-2"></i>My Enrolled Courses
+          </h6>
+          <p class="text-neutral-500 text-xs mb-0">Courses assigned to your student profile</p>
+        </div>
+        <a href="/admin-panel/courses/" class="btn btn-sm btn-outline-primary radius-8 text-xs">View All</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table align-middle text-left mb-0">
+          <thead class="bg-neutral-100 text-neutral-600 text-xs fw-bold">
+            <tr>
+              <th class="ps-12">Course Title</th>
+              <th>Category</th>
+              <th class="text-end pe-12">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for course in student_data.enrolled_courses %}
+            <tr>
+              <td class="ps-12 fw-semibold text-dark text-sm">
+                <div class="d-flex align-items-center gap-2">
+                  <span
+                    class="w-32-px h-32-px rounded-circle bg-primary-50 text-primary-600 d-inline-flex align-items-center justify-content-center text-sm">
+                    <i class="ri-book-open-fill"></i>
+                  </span>
+                  <span>{{ course.title }}</span>
+                </div>
+              </td>
+              <td><span class="badge bg-primary-50 text-primary-600 text-xs">{{ course.category.name|default:"General" }}</span></td>
+              <td class="text-end pe-12">
+                <a href="/my-learning/"
+                  class="btn btn-xs btn-primary-600 text-white radius-6 px-12 py-4 text-xs">Open</a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3" class="text-center py-20 text-secondary-light text-sm">No courses currently enrolled.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALLOWED AI BOOKS CARD -->
+  <div class="col-lg-6">
+    <div class="card radius-16 border border-neutral-200 bg-base shadow-xs h-100 p-24">
+      <div class="d-flex align-items-center justify-content-between mb-20">
+        <div>
+          <h6 class="fw-bold text-dark mb-1">
+            <i class="ri-book-read-line text-success-600 me-2"></i>Allowed AI Books
+          </h6>
+          <p class="text-neutral-500 text-xs mb-0">AI learning guides and interactive books allowed for you</p>
+        </div>
+        <a href="/admin-panel/courses/?type=book" class="btn btn-sm btn-outline-success radius-8 text-xs">View All</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table align-middle text-left mb-0">
+          <thead class="bg-neutral-100 text-neutral-600 text-xs fw-bold">
+            <tr>
+              <th class="ps-12">Book Title</th>
+              <th>Category</th>
+              <th class="text-end pe-12">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for book in student_data.enrolled_books %}
+            <tr>
+              <td class="ps-12 fw-semibold text-dark text-sm">
+                <div class="d-flex align-items-center gap-2">
+                  <span
+                    class="w-32-px h-32-px rounded-circle bg-success-50 text-success-600 d-inline-flex align-items-center justify-content-center text-sm">
+                    <i class="ri-book-read-fill"></i>
+                  </span>
+                  <span>{{ book.title }}</span>
+                </div>
+              </td>
+              <td><span class="badge bg-success-50 text-success-600 text-xs">{{ book.category.name|default:"AI Book" }}</span></td>
+              <td class="text-end pe-12">
+                <a href="/my-learning/"
+                  class="btn btn-xs btn-success-600 text-white radius-6 px-12 py-4 text-xs">Read</a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3" class="text-center py-20 text-secondary-light text-sm">No AI books currently allowed.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% elif is_teacher %}
+<!-- TEACHER ACADEMIC WORKSPACE DASHBOARD -->
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h5 class="fw-bold text-dark mb-1">
+      <i class="ri-user-follow-line text-warning me-2"></i>Teacher Academic Workspace Dashboard
+    </h5>
+    <p class="text-neutral-600 text-sm mb-0">Welcome back, <strong class="text-dark">{{ request.user.get_full_name|default:request.user.username }}</strong>! Here is your daily academic overview,
+      student roster, and attendance status.</p>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="badge bg-warning-100 text-warning-700 px-12 py-8 font-weight-bold text-sm radius-8">
+      <i class="ri-shield-user-line me-1"></i> Role: Academic Teacher ({{ teacher_data.subject|default:"Faculty" }})
+    </span>
+  </div>
+</div>
+
+
+<!-- TEACHER KPI STAT CARDS -->
+<div class="row gy-4 mb-24">
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-primary-100 text-primary-600">
+          <i class="ri-book-open-line"></i>
+        </span>
+        <span class="badge bg-primary-50 text-primary-600 text-xs px-2 py-1 radius-6">Subject</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Subject / Department</span>
+      <h4 class="mb-0 fw-bold text-dark text-lg">{{ teacher_data.subject|default:"Academic Faculty" }}</h4>
+    </div>
+  </div>
+
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-info-100 text-info-600">
+          <i class="ri-graduation-cap-line"></i>
+        </span>
+        <span class="badge bg-info-50 text-info-600 text-xs px-2 py-1 radius-6">Enrolled</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Students</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ teacher_data.total_students|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-success-100 text-success-600">
+          <i class="ri-fingerprint-line"></i>
+        </span>
+        <span class="badge bg-success-50 text-success-600 text-xs px-2 py-1 radius-6">Attendance</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Shift Status</span>
+      <h5 class="mb-0 fw-bold text-dark text-sm mt-2">
+        {% if teacher_data.today_attendance %}
+        <span class="text-success"><i class="ri-checkbox-circle-fill me-1"></i>Punched In</span>
+        {% else %}
+        <span class="text-neutral-500"><i class="ri-time-line me-1"></i>Not Punched</span>
+        {% endif %}
+      </h5>
+    </div>
+  </div>
+
+  <div class="col-xxl-3 col-xl-3 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-secondary-100 text-secondary-600">
+          <i class="ri-hotel-bed-line"></i>
+        </span>
+        <span class="badge bg-secondary-50 text-secondary-600 text-xs px-2 py-1 radius-6">Pending</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">WFH / Leave Requests</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ teacher_data.pending_wfh|default:0 }}</h3>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK TEACHER SHORTCUTS -->
+<div class="card radius-16 border border-neutral-200 p-20 mb-24 bg-base shadow-xs">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-16">
+    <h6 class="fw-bold text-dark mb-0"><i class="ri-flashlight-line text-warning me-2"></i>Teacher Workspace Shortcuts
+    </h6>
+    <span class="text-neutral-500 text-xs">Direct access to your academic and profile actions</span>
+  </div>
+  <div class="d-flex flex-wrap gap-3">
+    <a href="/admin-panel/student-list/" class="btn-eduaiq-primary">
+      <i class="ri-graduation-cap-line me-1.5"></i> Students Roster
+    </a>
+    <a href="/admin-panel/courses/" class="btn-eduaiq-outline">
+      <i class="ri-book-open-line me-1.5"></i> Course Catalog & Syllabus
+    </a>
+    <a href="/admin-panel/employee-attendance/" class="btn-eduaiq-outline">
+      <i class="ri-fingerprint-line me-1.5"></i> My Attendance
+    </a>
+    <a href="/admin-panel/wfh-requests/" class="btn-eduaiq-outline">
+      <i class="ri-hotel-bed-line me-1.5"></i> Apply WFH / Leave
+    </a>
+    <a href="/admin-panel/view-profile/" class="btn-eduaiq-outline">
+      <i class="ri-user-settings-line me-1.5"></i> My Profile
+    </a>
+  </div>
+</div>
+
+<!-- TEACHER DATA GRID: RECENT STUDENTS & SHIFT ATTENDANCE -->
+<div class="row gy-4 mb-24">
+  <!-- Left Column: Student Roster -->
+  <div class="col-xxl-8 col-xl-7 col-lg-12">
+    <div class="card radius-16 border border-neutral-200 h-100 bg-base shadow-xs">
+      <div
+        class="card-header border-bottom border-neutral-200 p-20 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-user-follow-line me-2 text-warning"></i>Student Academic Roster
+          </h6>
+          <span class="text-neutral-500 text-xs">Registered students and class details</span>
+        </div>
+        <a href="/admin-panel/student-list/" class="btn-view-all-pill">
+          View All Students <i class="ri-arrow-right-line ms-1"></i>
+        </a>
+      </div>
+      <div class="card-body p-20">
+        <div class="table-responsive">
+          <table class="table border-neutral-200 table-hover align-middle radius-8">
+            <thead class="bg-neutral-50">
+              <tr>
+                <th scope="col">Student Name</th>
+                <th scope="col">Admission / Roll No</th>
+                <th scope="col">Class / Section</th>
+                <th scope="col">Contact</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for st in teacher_data.recent_students %}
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div
+                      class="w-32-px h-32-px bg-orange-soft text-warning rounded-circle d-flex align-items-center justify-content-center fw-bold text-xs">
+                      {{ st.user.username|slice:":2"|upper }}
+                    </div>
+                    <span class="fw-semibold text-dark text-sm">{{ st.user.get_full_name|default:st.user.username }}</span>
+                  </div>
+                </td>
+                <td class="text-xs text-secondary-light">
+                  <div>Admission: <strong>{{ st.admission_no|default:"-" }}</strong></div>
+                  <div>Roll: <strong>{{ st.roll_number|default:"-" }}</strong></div>
+                </td>
+                <td class="text-xs fw-medium text-neutral-700">{{ st.class_grade|default:"General" }}</td>
+                <td class="text-xs text-secondary-light">
+                  <div>{{ st.user.email|default:st.guardian_phone }}</div>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="text-center py-30 text-secondary-light text-sm">
+                  <i class="ri-inbox-line text-2xl d-block mb-8 text-neutral-400"></i>
+                  No students found in the roster.
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Today's Shift Attendance -->
+  <div class="col-xxl-4 col-xl-5 col-lg-12">
+    <div class="card radius-16 border border-neutral-200 h-100 bg-base shadow-xs p-24">
+      <div class="d-flex align-items-center justify-content-between mb-20">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-fingerprint-line text-warning me-2"></i>Today's Attendance Status
+          </h6>
+          <span class="text-neutral-500 text-xs">Live shift activity & punch logs</span>
+        </div>
+      </div>
+
+      <div class="p-20 radius-12 bg-neutral-50 border border-neutral-100 text-center mb-20">
+        {% if teacher_data.today_attendance %}
+        <div
+          class="w-50-px h-50-px bg-success-100 text-success-600 rounded-circle mx-auto d-flex align-items-center justify-content-center text-2xl mb-12">
+          <i class="ri-checkbox-circle-fill"></i>
+        </div>
+        <h6 class="fw-bold text-success mb-4">Checked In Today</h6>
+        <p class="text-xs text-neutral-600 mb-0">Punch In Time: <strong class="text-dark">{{ teacher_data.today_attendance.check_in_time|date:"h:i A"|default:"Recorded" }}</strong></p>
+        {% if teacher_data.today_attendance.check_out_time %}
+        <p class="text-xs text-neutral-600 mb-0">Punch Out Time: <strong class="text-dark">{{ teacher_data.today_attendance.check_out_time|date:"h:i A" }}</strong></p>
+        {% endif %}
+        {% else %}
+        <div
+          class="w-50-px h-50-px bg-warning-100 text-warning-600 rounded-circle mx-auto d-flex align-items-center justify-content-center text-2xl mb-12">
+          <i class="ri-time-line"></i>
+        </div>
+        <h6 class="fw-bold text-dark mb-4">Not Punched In Yet</h6>
+        <p class="text-xs text-neutral-500 mb-0">Don't forget to mark your daily shift attendance.</p>
+        {% endif %}
+      </div>
+
+      <a href="/admin-panel/employee-attendance/"
+        class="btn btn-primary-600 w-100 radius-8 py-10 fw-bold d-flex align-items-center justify-content-center gap-2">
+        <i class="ri-fingerprint-line text-lg"></i>
+        <span>Go to Attendance Portal</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<!-- EMPLOYEE / SALES WORKSPACE DASHBOARD -->
+<div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+  <div>
+    <h5 class="fw-bold text-dark mb-1">
+      <i class="ri-user-star-line text-warning me-2"></i>Employee Workspace Dashboard
+    </h5>
+    <p class="text-neutral-600 text-sm mb-0">Welcome back, <strong class="text-dark">{{ request.user.get_full_name|default:request.user.username }}</strong>! Here is your daily work portal overview.
+    </p>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="badge bg-warning-100 text-warning-700 px-12 py-8 font-weight-bold text-sm radius-8">
+      <i class="ri-shield-user-line me-1"></i> Role: {{ request.user.role|default:"Employee"|title }}
+    </span>
+  </div>
+</div>
+
+<!-- EMPLOYEE KPI STAT CARDS -->
+<div class="row gy-4 mb-24">
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <a href="/admin-panel/leads/" class="text-decoration-none d-block h-100">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq">
+            <i class="ri-contacts-line"></i>
+          </span>
+          <span class="badge-orange-single">Assigned</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total CRM Leads</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ emp_data.total_leads|default:0 }}</h3>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-primary-100 text-primary-600">
+          <i class="ri-user-add-line"></i>
+        </span>
+        <span class="badge bg-primary-50 text-primary-600 text-xs px-2 py-1 radius-6">Today</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">New Leads Today</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ emp_data.new_leads_today|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-info-100 text-info-600">
+          <i class="ri-time-line"></i>
+        </span>
+        <span class="badge bg-info-50 text-info-600 text-xs px-2 py-1 radius-6">In Progress</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Pipeline Deals</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ emp_data.in_progress_leads|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-warning-100 text-warning-600">
+          <i class="ri-building-line"></i>
+        </span>
+        <span class="badge bg-warning-50 text-warning-600 text-xs px-2 py-1 radius-6">Active</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Institutions</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ total_institutions|default:0 }}</h3>
+    </div>
+  </div>
+
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-success-100 text-success-600">
+          <i class="ri-fingerprint-line"></i>
+        </span>
+        <span class="badge bg-success-50 text-success-600 text-xs px-2 py-1 radius-6">Attendance</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Shift Status</span>
+      <h5 class="mb-0 fw-bold text-dark text-sm mt-2">
+        {% if emp_data.today_attendance %}
+        <span class="text-success"><i class="ri-checkbox-circle-fill me-1"></i>Punched In</span>
+        {% else %}
+        <span class="text-neutral-500"><i class="ri-time-line me-1"></i>Not Punched</span>
+        {% endif %}
+      </h5>
+    </div>
+  </div>
+
+  <div class="col-xxl-2 col-xl-4 col-sm-6">
+    <div class="card stat-card-eduaiq h-100 p-20">
+      <div class="d-flex align-items-center justify-content-between mb-16">
+        <span class="icon-box-eduaiq bg-secondary-100 text-secondary-600">
+          <i class="ri-hotel-bed-line"></i>
+        </span>
+        <span class="badge bg-secondary-50 text-secondary-600 text-xs px-2 py-1 radius-6">Pending</span>
+      </div>
+      <span class="text-neutral-600 text-sm font-medium d-block mb-4">WFH / Leave Requests</span>
+      <h3 class="mb-0 fw-bold stat-num">{{ emp_data.pending_wfh|default:0 }}</h3>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK EMPLOYEE SHORTCUTS -->
+<div class="card radius-16 border border-neutral-200 p-20 mb-24 bg-base shadow-xs">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-16">
+    <h6 class="fw-bold text-dark mb-0"><i class="ri-flashlight-line text-warning me-2"></i>My Workspace Shortcuts</h6>
+    <span class="text-neutral-500 text-xs">Direct access to your assigned daily actions</span>
+  </div>
+  <div class="d-flex flex-wrap gap-3">
+    <a href="/admin-panel/leads/" class="btn-eduaiq-primary">
+      <i class="ri-contacts-book-line me-1.5"></i> My Leads Pipeline
+    </a>
+    <a href="/admin-panel/add-new-lead/" class="btn-eduaiq-outline">
+      <i class="ri-add-circle-line me-1.5"></i> + Add New Lead
+    </a>
+    <a href="/admin-panel/institution-list/" class="btn-eduaiq-outline">
+      <i class="ri-building-line me-1.5"></i> Institutions List
+    </a>
+    <a href="/admin-panel/employee-attendance/" class="btn-eduaiq-outline">
+      <i class="ri-fingerprint-line me-1.5"></i> My Attendance
+    </a>
+    <a href="/admin-panel/wfh-requests/" class="btn-eduaiq-outline">
+      <i class="ri-hotel-bed-line me-1.5"></i> Apply WFH / Leave
+    </a>
+    <a href="/admin-panel/view-profile/" class="btn-eduaiq-outline">
+      <i class="ri-user-settings-line me-1.5"></i> My Profile
+    </a>
+  </div>
+</div>
+
+
+<!-- EMPLOYEE DATA GRID: RECENT LEADS & TODAY'S PUNCH STATUS -->
+<div class="row gy-4 mb-24">
+  <!-- Left Column: Recent Assigned Leads -->
+  <div class="col-xxl-8 col-xl-7 col-lg-12">
+    <div class="card radius-16 border border-neutral-200 h-100 bg-base shadow-xs">
+      <div
+        class="card-header border-bottom border-neutral-200 p-20 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-contacts-book-2-line me-2 text-warning"></i>Recent Assigned Leads
+          </h6>
+          <span class="text-neutral-500 text-xs">Your latest CRM leads & inquiries</span>
+        </div>
+        <a href="/admin-panel/leads/" class="btn-view-all-pill">
+          View All Pipeline <i class="ri-arrow-right-line ms-1"></i>
+        </a>
+      </div>
+      <div class="card-body p-20">
+        <div class="table-responsive">
+          <table class="table border-neutral-200 table-hover align-middle radius-8">
+            <thead class="bg-neutral-50">
+              <tr>
+                <th scope="col">Lead Name</th>
+                <th scope="col">Contact Info</th>
+                <th scope="col">Course / Interest</th>
+                <th scope="col">Status</th>
+                <th scope="col" class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for lead in emp_data.recent_leads %}
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div
+                      class="w-32-px h-32-px bg-orange-soft text-warning rounded-circle d-flex align-items-center justify-content-center fw-bold text-xs">
+                      {{ lead.full_name|slice:":2"|upper }}
+                    </div>
+                    <span class="fw-semibold text-dark text-sm">{{ lead.full_name }}</span>
+                  </div>
+                </td>
+                <td class="text-xs text-secondary-light">
+                  <div><i class="ri-phone-line me-1"></i>{{ lead.phone_number|default:"-" }}</div>
+                  <div><i class="ri-mail-line me-1"></i>{{ lead.email|default:"-" }}</div>
+                </td>
+                <td class="text-xs fw-medium text-neutral-700">{{ lead.course_interested|default:"General Inquiry" }}
+                </td>
+                <td>
+                  <span class="badge bg-warning-50 text-warning-700 text-xs px-8 py-4 radius-6 text-capitalize">
+                    {{ lead.status }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <a href="/admin-panel/leads/" class="btn btn-sm btn-outline-primary radius-8 px-8 py-4">
+                    <i class="ri-eye-line me-1"></i> View
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="5" class="text-center py-30 text-secondary-light text-sm">
+                  <i class="ri-inbox-line text-2xl d-block mb-8 text-neutral-400"></i>
+                  No leads assigned to you yet. Click <a href="/admin-panel/add-new-lead/"
+                    class="text-warning fw-bold">Add New Lead</a> to create one!
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Today's Punch In / Attendance Status -->
+  <div class="col-xxl-4 col-xl-5 col-lg-12">
+    <div class="card radius-16 border border-neutral-200 h-100 bg-base shadow-xs p-24">
+      <div class="d-flex align-items-center justify-content-between mb-20">
+        <div>
+          <h6 class="fw-bold mb-1 text-dark">
+            <i class="ri-fingerprint-line text-warning me-2"></i>Today's Attendance Status
+          </h6>
+          <span class="text-neutral-500 text-xs">Live shift activity & punch logs</span>
+        </div>
+      </div>
+
+      <div class="p-20 radius-12 bg-neutral-50 border border-neutral-100 text-center mb-20">
+        {% if emp_data.today_attendance %}
+        <div
+          class="w-50-px h-50-px bg-success-100 text-success-600 rounded-circle mx-auto d-flex align-items-center justify-content-center text-2xl mb-12">
+          <i class="ri-checkbox-circle-fill"></i>
+        </div>
+        <h6 class="fw-bold text-success mb-4">Checked In Today</h6>
+        <p class="text-xs text-neutral-600 mb-0">Punch In Time: <strong class="text-dark">{{ emp_data.today_attendance.check_in_time|date:"h:i A"|default:"Recorded" }}</strong></p>
+        {% if emp_data.today_attendance.check_out_time %}
+        <p class="text-xs text-neutral-600 mb-0">Punch Out Time: <strong class="text-dark">{{ emp_data.today_attendance.check_out_time|date:"h:i A" }}</strong></p>
+        {% endif %}
+        {% else %}
+        <div
+          class="w-50-px h-50-px bg-warning-100 text-warning-600 rounded-circle mx-auto d-flex align-items-center justify-content-center text-2xl mb-12">
+          <i class="ri-time-line"></i>
+        </div>
+        <h6 class="fw-bold text-dark mb-4">Not Punched In Yet</h6>
+        <p class="text-xs text-neutral-500 mb-0">Don't forget to mark your daily shift attendance.</p>
+        {% endif %}
+      </div>
+
+      <a href="/admin-panel/employee-attendance/"
+        class="btn btn-primary-600 w-100 radius-8 py-10 fw-bold d-flex align-items-center justify-content-center gap-2">
+        <i class="ri-fingerprint-line text-lg"></i>
+        <span>Go to Attendance Portal</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- MY ADDED & MANAGED INSTITUTIONS -->
+  <div class="card radius-16 border border-neutral-200 bg-base shadow-xs mb-24 p-24">
+    <div class="d-flex align-items-center justify-content-between mb-20 flex-wrap gap-2">
+      <div>
+        <h6 class="fw-bold text-dark mb-1">
+          <i class="ri-building-line text-warning me-2"></i>My Added & Managed Institutions
+        </h6>
+        <p class="text-neutral-500 text-sm mb-0">Institutions created by you or assigned to you for onboarding &
+          management</p>
+      </div>
+      <a href="/admin-panel/add-new-institution/" class="btn-eduaiq-outline">
+        <i class="ri-building-line me-1.5"></i> + Add Institution
+      </a>
+    </div>
+    <div class="table-responsive">
+      <table class="table align-middle text-left mb-0 border-neutral-200">
+        <thead class="bg-neutral-100 text-neutral-600 text-xs fw-bold">
+          <tr>
+            <th class="ps-12">Institution Name</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Date Added</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inst in recent_institutions %}
+          <tr>
+            <td class="ps-12 fw-semibold text-dark text-sm">
+              <div class="d-flex align-items-center gap-2">
+                <div
+                  class="w-32-px h-32-px bg-orange-soft text-warning rounded-circle d-flex align-items-center justify-content-center fw-bold text-xs">
+                  <i class="ri-building-2-line"></i>
+                </div>
+                {{ inst.name }}
+              </div>
+            </td>
+            <td><span class="badge bg-neutral-200 text-neutral-800 text-capitalize text-xs">{{ inst.get_type_display }}</span></td>
+            <td class="text-secondary-light text-xs">{{ inst.city }}, {{ inst.state }}</td>
+            <td>
+              {% if inst.status == 'active' %}
+              <span class="badge-orange-single text-xs">Active</span>
+              {% else %}
+              <span class="badge bg-neutral-200 text-neutral-700 text-xs text-capitalize">{{ inst.status }}</span>
+              {% endif %}
+            </td>
+            <td class="text-secondary-light text-xs">{{ inst.created_at|date:"d M Y" }}</td>
+            <td class="text-center">
+              <a href="/admin-panel/institution-list/" class="btn btn-sm btn-outline-primary radius-8 px-8 py-4">
+                <i class="ri-eye-line me-1"></i> View List
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-24 text-secondary-light text-sm">
+              <i class="ri-building-4-line text-2xl d-block mb-8 text-neutral-400"></i>
+              No institutions added by or assigned to you yet. Click <a href="/admin-panel/add-new-institution/"
+                class="text-warning fw-bold">+ Add Institution</a> to onboard your first institution!
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+
+  <!-- CUSTOM GRAPHICAL DASHBOARD CSS -->
+  <style>
+    /* Tabs / Pill Switchers */
+    .custom-chart-pills {
+      background: #f8fafc;
+      border-radius: 50rem;
+      padding: 3px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .custom-chart-pills .nav-link {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #64748b;
+      border-radius: 50rem;
+      padding: 5px 14px;
+      transition: all 0.25s ease;
+    }
+
+    .custom-chart-pills .nav-link.active {
+      background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 3px 10px rgba(249, 115, 22, 0.35);
+    }
+
+    .btn-view-all-pill {
+      display: inline-flex;
+      align-items: center;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #ea580c;
+      text-decoration: none;
+      padding: 5px 12px;
+      border-radius: 50rem;
+      background: #fff7ed;
+      border: 1px solid #ffedd5;
+      transition: all 0.2s ease;
+    }
+
+    .btn-view-all-pill:hover {
+      background: #ea580c;
+      color: #ffffff;
+    }
+
+    /* Metric Mini Cards */
+    .metric-mini-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 8px 12px;
+      text-align: center;
+    }
+
+    .metric-mini-card .metric-label {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .metric-mini-card .metric-val {
+      font-size: 15px;
+      line-height: 1.2;
+      display: block;
+    }
+
+    /* Visual Item Feeds */
+    .visual-list-item {
+      background: #f8fafc;
+      border: 1px solid #edf2f7;
+      transition: all 0.25s ease;
+    }
+
+    .visual-list-item:hover {
+      background: #ffffff;
+      border-color: #ffedd5;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    }
+
+    .bg-orange-soft {
+      background: #fff7ed !important;
+    }
+
+    .avatar-icon-box {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .avatar-circle-pill {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      color: #fd7e14;
+      font-weight: 800;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 2px solid #ffedd5;
+    }
+
+    .avatar-circle-mini {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #0F172A;
+      color: #fd7e14;
+      font-size: 9px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 6px;
+    }
+
+    .text-2xs {
+      font-size: 10px !important;
+    }
+
+    .letter-spacing-1 {
+      letter-spacing: 0.5px;
+    }
+
+    .radius-16 {
+      border-radius: 16px !important;
+    }
+
+    .radius-12 {
+      border-radius: 12px !important;
+    }
+
+    .radius-10 {
+      border-radius: 10px !important;
+    }
+  </style>
+  {% endblock %}
+
+  {% block js %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+      // ==========================================
+      // 1. Line / Area Growth Chart
+      // ==========================================
+      var growthOptions = {
+        series: [
+          {
+            name: 'Students Registered',
+            data: [3, 5, 7, 9, 10, {{ total_students|default:12 }}]
+          },
+          {
+            name: 'Courses Published',
+            data: [4, 7, 11, 14, 16, {{ total_courses|default:21 }}]
+          },
+          {
+            name: 'Exam Attempts',
+            data: [1, 3, 5, 8, 10, {{ total_attempts|default:12 }}]
+          }
+        ],
+        chart: {
+          type: 'area',
+          height: 330,
+          toolbar: { show: false },
+          fontFamily: 'Inter, sans-serif'
+        },
+        colors: ['#fd7e14', '#0F172A', '#10b981'],
+        dataLabels: { enabled: false },
+        stroke: { curve: 'smooth', width: 3 },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shadeIntensity: 1,
+            opacityFrom: 0.4,
+            opacityTo: 0.05,
+            stops: [0, 90, 100]
+          }
+        },
+        xaxis: {
+          categories: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+          labels: { style: { colors: '#64748b', fontSize: '12px' } },
+          axisBorder: { show: false },
+          axisTicks: { show: false }
+        },
+        yaxis: {
+          labels: { style: { colors: '#64748b', fontSize: '12px' } }
+        },
+        grid: {
+          borderColor: '#f1f5f9',
+          strokeDashArray: 4
+        },
+        legend: {
+          position: 'top',
+          horizontalAlign: 'right',
+          fontSize: '13px',
+          markers: { radius: 12 }
+        },
+        tooltip: { theme: 'light' }
+      };
+
+      var growthChartElement = document.querySelector("#growthLineChart");
+      if (growthChartElement) {
+        var growthChart = new ApexCharts(growthChartElement, growthOptions);
+        growthChart.render();
+      }
+
+      // ==========================================
+      // 2. Donut Entity Distribution Chart
+      // ==========================================
+      var donutOptions = {
+        series: [
+          {{ total_institutions|default:12 }},
+          {{ total_courses|default:21 }},
+          {{ total_students|default:12 }},
+          {{ total_teachers|default:1 }},
+          {{ total_olympiads|default:12 }}
+        ],
+        labels: ['Institutions', 'Courses', 'Students', 'Teachers', 'Olympiad Exams'],
+        chart: {
+          type: 'donut',
+          height: 260,
+          fontFamily: 'Inter, sans-serif'
+        },
+        colors: ['#fd7e14', '#0F172A', '#10b981', '#6366f1', '#f59e0b'],
+        legend: {
+          position: 'bottom',
+          fontSize: '11px',
+          markers: { radius: 12 }
+        },
+        plotOptions: {
+          pie: {
+            donut: {
+              size: '72%',
+              labels: {
+                show: true,
+                total: {
+                  show: true,
+                  label: 'Total Active',
+                  fontSize: '12px',
+                  color: '#64748b',
+                  formatter: function (w) {
+                    return w.globals.seriesTotals.reduce(function (a, b) { return a + b; }, 0);
+                  }
+                }
+              }
+            }
+          }
+        },
+        dataLabels: { enabled: false }
+      };
+
+      var donutChartElement = document.querySelector("#entityDonutChart");
+      if (donutChartElement) {
+        var donutChart = new ApexCharts(donutChartElement, donutOptions);
+        donutChart.render();
+      }
+
+      // ==========================================
+      // 3. Institution Types Chart (Colleges vs Schools)
+      // ==========================================
+      var instChartElement = document.querySelector("#institutionsTypeChart");
+      if (instChartElement) {
+        var instOptions = {
+          series: [{{ colleges_count|default:8 }}, {{ schools_count|default:4 }}],
+          labels: ['Colleges', 'Schools'],
+          chart: {
+            type: 'donut',
+            height: 180,
+            fontFamily: 'Inter, sans-serif'
+          },
+          colors: ['#fd7e14', '#0F172A'],
+          legend: {
+            position: 'right',
+            fontSize: '12px',
+            offsetY: 20
+          },
+          dataLabels: { enabled: false },
+          plotOptions: {
+            pie: {
+              donut: {
+                size: '70%',
+                labels: {
+                  show: true,
+                  total: {
+                    show: true,
+                    label: 'Total',
+                    fontSize: '11px',
+                    color: '#64748b'
+                  }
+                }
+              }
+            }
+          }
+        };
+        var instChart = new ApexCharts(instChartElement, instOptions);
+        instChart.render();
+      }
+
+      // ==========================================
+      // 4. Course Categories Bar Chart
+      // ==========================================
+      var catNames = {{ cat_names_json|safe|default:"['AI Books', 'Languages', 'Science', 'Math']" }};
+      var catCounts = {{ cat_counts_json|safe|default:"[8, 4, 3, 2]" }};
+
+      var courseCatElement = document.querySelector("#courseCategoriesChart");
+      if (courseCatElement) {
+        var courseCatOptions = {
+          series: [{
+            name: 'Courses in Category',
+            data: catCounts.length ? catCounts : [6, 4, 3, 2]
+          }],
+          chart: {
+            type: 'bar',
+            height: 180,
+            toolbar: { show: false },
+            fontFamily: 'Inter, sans-serif'
+          },
+          colors: ['#fd7e14'],
+          plotOptions: {
+            bar: {
+              borderRadius: 6,
+              columnWidth: '45%',
+              distributed: false
+            }
+          },
+          dataLabels: { enabled: false },
+          xaxis: {
+            categories: catNames.length ? catNames : ['AI Books', 'Languages', 'Science', 'Math'],
+            labels: { style: { colors: '#64748b', fontSize: '10.5px' } },
+            axisBorder: { show: false },
+            axisTicks: { show: false }
+          },
+          yaxis: {
+            labels: { style: { colors: '#64748b', fontSize: '11px' } }
+          },
+          grid: {
+            borderColor: '#f1f5f9',
+            strokeDashArray: 4
+          }
+        };
+        var courseCatChart = new ApexCharts(courseCatElement, courseCatOptions);
+        courseCatChart.render();
+      }
+
+      // ==========================================
+      // 5. Olympiad Registration Breakdown Chart
+      // ==========================================
+      var examNames = {{ exam_names_json|safe|default:"['Math Olympiad', 'Science Olympiad', 'AI Olympiad']" }};
+      var examRegCounts = {{ exam_reg_counts_json|safe|default:"[6, 5, 3]" }};
+
+      var olympiadExamsElement = document.querySelector("#olympiadExamsChart");
+      if (olympiadExamsElement) {
+        var olympiadExamsOptions = {
+          series: [{
+            name: 'Candidate Registrations',
+            data: examRegCounts.length ? examRegCounts : [5, 4, 3]
+          }],
+          chart: {
+            type: 'bar',
+            height: 240,
+            toolbar: { show: false },
+            fontFamily: 'Inter, sans-serif'
+          },
+          colors: ['#0F172A'],
+          plotOptions: {
+            bar: {
+              horizontal: true,
+              borderRadius: 6,
+              barHeight: '50%'
+            }
+          },
+          dataLabels: { enabled: true, style: { fontSize: '11px', colors: ['#ffffff'] } },
+          xaxis: {
+            categories: examNames.length ? examNames : ['Math Olympiad', 'Science Olympiad', 'AI Olympiad'],
+            labels: { style: { colors: '#64748b', fontSize: '11px' } }
+          },
+          yaxis: {
+            labels: { style: { colors: '#0F172A', fontSize: '11px', fontWeight: 600 } }
+          },
+          grid: {
+            borderColor: '#f1f5f9',
+            strokeDashArray: 4
+          }
+        };
+        var olympiadExamsChart = new ApexCharts(olympiadExamsElement, olympiadExamsOptions);
+        olympiadExamsChart.render();
+      }
+
+    });
+  </script>
+  {% endblock %}
