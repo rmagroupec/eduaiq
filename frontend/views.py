@@ -1039,7 +1039,7 @@ def admin_page_router(request, page_name):
         'categories', 'role-permission', 'assign-role', 'general', 'company',
         'notification-alert', 'payment-gateway', 'currencies', 'languages',
         'edit-course', 'add-new-course', 'add-book', 'expenses', 'add-new-employee',
-        'employee-details', 'add-new-student', 'edit-student', 'employee-list'
+        'employee-details', 'employee-list'
     ]
 
     is_admin = _is_main_admin(request.user)
@@ -1781,7 +1781,25 @@ def register_submit(request):
         from institutions.models import Student
         student = Student.objects.filter(admission_no__iexact=student_admission_no).first()
         if student:
-            student.parent_users.add(user)
+            if hasattr(student, 'parent_users'):
+                try:
+                    student.parent_users.add(user)
+                except AttributeError:
+                    pass
+            elif hasattr(student, 'parent_user'):
+                student.parent_user = user
+                student.save()
+
+    if role == 'student':
+        from institutions.models import Student
+        import time
+        adm_no = f"REG-{int(time.time())}"
+        Student.objects.create(
+            user=user,
+            admission_no=adm_no,
+            class_grade="Self-Registered",
+            status="active"
+        )
 
     # If registered as an Institution / School / College, create an Institution entry for admin approval & course allotment
     if role in ['institution', 'institution_admin', 'school', 'college', 'coaching']:

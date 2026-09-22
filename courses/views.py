@@ -49,7 +49,7 @@ def _body(request):
 
 
 def _is_staff(user):
-    return bool(user and user.is_authenticated and (user.is_staff or user.is_superuser or getattr(user, 'role', '') in ['admin', 'institution']))
+    return bool(user and user.is_authenticated and (user.is_staff or user.is_superuser or getattr(user, 'role', '') in ['admin', 'institution', 'institution_admin', 'superadmin', 'super_admin']))
 
 
 def _client_ip(request):
@@ -1116,6 +1116,22 @@ def admin_enrollments(request):
         'total_pages': total_pages,
         'results': [serialize_enrollment(e, request=request) for e in results]
     })
+
+
+@login_required
+@require_http_methods(['DELETE'])
+def admin_enrollment_delete(request, pk):
+    """Admin-only endpoint to delete a student enrollment."""
+    user_role = (getattr(request.user, 'role', '') or '').lower()
+    if not request.user.is_superuser and user_role not in ['admin', 'superadmin', 'super_admin']:
+        return JsonResponse({'error': 'Forbidden'}, status=403)
+        
+    try:
+        enrollment = Enrollment.objects.get(pk=pk)
+        enrollment.delete()
+        return JsonResponse({'success': True})
+    except Enrollment.DoesNotExist:
+        return JsonResponse({'error': 'Enrollment not found'}, status=404)
 
 
 # ============================================================================

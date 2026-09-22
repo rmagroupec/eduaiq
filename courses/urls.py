@@ -69,4 +69,5 @@ urlpatterns = [
     path('admin/quizzes/', views.quiz_list, name='admin-quiz-list'),
     path('admin/attempts/', views.admin_attempts, name='admin-quiz-attempts'),
     path('admin/enrollments/', views.admin_enrollments, name='admin-enrollment-list'),
+    path('admin/enrollments/<int:pk>/', views.admin_enrollment_delete, name='admin-enrollment-delete'),
 ]

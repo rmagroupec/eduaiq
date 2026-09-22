@@ -91,13 +91,46 @@
   </div>
 </div>
 
+<!-- Edit Module Modal -->
+<div class="modal fade" id="editModuleModal" tabindex="-1" aria-labelledby="editModuleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="editModuleModalLabel">Edit Module</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editModuleForm" onsubmit="submitEditModule(event)">
+          <input type="hidden" id="editModId" name="id">
+          <div class="mb-3">
+            <label for="editModTitle" class="form-label">Module Title <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="editModTitle" name="title" required>
+          </div>
+          <div class="mb-3">
+            <label for="editModOrder" class="form-label">Order <span class="text-danger">*</span></label>
+            <input type="number" class="form-control" id="editModOrder" name="order" min="1" required>
+          </div>
+          <div class="mb-3">
+            <label for="editModDesc" class="form-label">Description</label>
+            <textarea class="form-control" id="editModDesc" name="description" rows="3"></textarea>
+          </div>
+          <div class="text-end">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   const API_BASE_URL = window.location.origin;
   let selectedCourseSlug = '';
 
   async function loadCourses() {
     try {
-      const response = await fetch(`${API_BASE_URL}/courses/courses/?exclude_books=false`);
+      const response = await fetch(`${API_BASE_URL}/courses/courses/?exclude_books=false&page_size=100`);
       const data = await response.json();
       const select = document.getElementById('courseSelect');
       const results = data.results || [];
@@ -158,9 +191,14 @@
             <span class="badge bg-success">Active</span>
           </td>
           <td>
-            <button class="btn btn-sm btn-outline-danger" onclick="deleteModule(${m.id}, '${m.title}')">
-              <i class="ri-delete-bin-line"></i> Delete
-            </button>
+            <div class="d-flex align-items-center gap-3">
+              <button class="btn btn-sm btn-outline-info radius-8" onclick='openEditModule(${m.id}, ${JSON.stringify(m.title).replace(/'/g, "&apos;")}, ${m.order}, ${JSON.stringify(m.description || "").replace(/'/g, "&apos;")})'>
+                <i class="ri-pencil-line"></i> Edit
+              </button>
+              <button class="btn btn-sm btn-outline-danger radius-8" onclick='deleteModule(${m.id}, ${JSON.stringify(m.title).replace(/'/g, "&apos;")})'>
+                <i class="ri-delete-bin-line"></i> Delete
+              </button>
+            </div>
           </td>
         </tr>
       `).join('');
@@ -205,6 +243,53 @@
     } catch (err) {
       console.error(err);
       showToast('Error saving module.', 'error');
+    }
+  }
+
+  function openEditModule(id, title, order, desc) {
+    document.getElementById('editModId').value = id;
+    document.getElementById('editModTitle').value = title;
+    document.getElementById('editModOrder').value = order;
+    document.getElementById('editModDesc').value = desc;
+
+    const modalEl = document.getElementById('editModuleModal');
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
+  }
+
+  async function submitEditModule(e) {
+    e.preventDefault();
+    const id = document.getElementById('editModId').value;
+    const form = document.getElementById('editModuleForm');
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((val, key) => data[key] = val);
+
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(`${API_BASE_URL}/courses/modules/${id}/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(data),
+        credentials: 'include'
+      });
+
+      const resData = await response.json();
+      if (response.ok || resData.success) {
+        showToast('Module updated successfully!', 'success');
+        const modalEl = document.getElementById('editModuleModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal.hide();
+        loadAdminModules();
+      } else {
+        showToast('Failed to update module: ' + JSON.stringify(resData.errors || resData.error), 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Error updating module.', 'error');
     }
   }
 

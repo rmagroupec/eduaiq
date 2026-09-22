@@ -6,11 +6,15 @@
   <div class="">
     <div class="sidebar-logo d-flex align-items-center justify-content-center position-relative px-3 py-3">
       <a href="/admin-panel/dashboard/" class="d-flex align-items-center justify-content-center w-100">
-        <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" class="light-logo" style="max-height: 90px; width: auto; object-fit: contain;">
-        <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" class="dark-logo" style="max-height: 90px; width: auto; object-fit: contain;">
-        <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" class="logo-icon" style="max-height: 54px; width: auto; object-fit: contain;">
+        <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" class="light-logo"
+          style="max-height: 90px; width: auto; object-fit: contain;">
+        <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" class="dark-logo"
+          style="max-height: 90px; width: auto; object-fit: contain;">
+        <img src="{% static 'assets/img/eduaiq-logo.png' %}" alt="EduAiQ Logo" class="logo-icon"
+          style="max-height: 54px; width: auto; object-fit: contain;">
       </a>
-      <button type="button" class="text-xxl d-xl-flex d-none line-height-1 sidebar-toggle text-neutral-500 position-absolute end-0 me-3"
+      <button type="button"
+        class="text-xxl d-xl-flex d-none line-height-1 sidebar-toggle text-neutral-500 position-absolute end-0 me-3"
         aria-label="Collapse Sidebar">
         <i class="ri-contract-left-line"></i>
       </button>
@@ -23,8 +27,9 @@
         class="profile-dropdown__button d-flex align-items-center justify-content-between p-10 w-100 overflow-hidden bg-neutral-50 radius-12 "
         data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
         <span class="d-flex align-items-start gap-10">
-          <img src="{% if request.user.profile_image %}{{ request.user.profile_image.url }}{% else %}{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}{% endif %}" alt="Profile Picture"
-            class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0">
+          <img
+            src="{% if request.user.profile_image %}{{ request.user.profile_image.url }}{% else %}{% static 'admin_assets/images/thumbs/leave-request-img2.png' %}{% endif %}"
+            alt="Profile Picture" class="w-40-px h-40-px rounded-circle object-fit-cover flex-shrink-0">
           <span class="profile-dropdown__contents">
             <span class="h6 mb-0 text-md d-block text-primary-light">{% if request.user.is_authenticated %}{{ request.user.first_name|default:request.user.username|title }}{% else %}Admin User{% endif %}</span>
             <span class="text-secondary-light text-sm mb-0 d-block">
@@ -63,7 +68,8 @@
 
       {% if request.user.role == 'institution' %}
       <!-- INSTITUTION ADMIN RESTRICTED MENU -->
-      <li class="sidebar-menu-header" style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #f73859; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
+      <li class="sidebar-menu-header"
+        style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #f73859; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
         Institution Portal
       </li>
       <li>
@@ -91,12 +97,6 @@
         </a>
         <ul class="sidebar-submenu">
           <li>
-            <a href="/admin-panel/student-list/">
-              <i class="ri-circle-fill circle-icon w-auto"></i>
-              Enrolled Students
-            </a>
-          </li>
-          <li>
             <a href="/admin-panel/add-new-student/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               + Add New Student
@@ -113,7 +113,8 @@
 
       {% elif request.user.role == 'teacher' %}
       <!-- TEACHER PORTAL RESTRICTED MENU -->
-      <li class="sidebar-menu-header" style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #ff9f43; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
+      <li class="sidebar-menu-header"
+        style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #ff9f43; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
         Academic Teacher Portal
       </li>
       <li>
@@ -141,6 +142,12 @@
         </a>
       </li>
       <li>
+        <a href="/admin-panel/student-attendance/">
+          <i class="ri-user-follow-line"></i>
+          <span>Mark Student Attendance</span>
+        </a>
+      </li>
+      <li>
         <a href="/admin-panel/wfh-requests/">
           <i class="ri-calendar-close-line"></i>
           <span>Leave & WFH Requests</span>
@@ -163,9 +170,10 @@
           <i class="ri-user-3-line"></i>
           <span>My Profile</span>
         </a>
-      {% elif request.user.role == 'student' %}
-      <!-- STUDENT PORTAL RESTRICTED MENU -->
-      <li class="sidebar-menu-header" style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
+        {% elif request.user.role == 'student' %}
+        <!-- STUDENT PORTAL RESTRICTED MENU -->
+      <li class="sidebar-menu-header"
+        style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
         Student Learning Portal
       </li>
       <li>
@@ -201,7 +209,8 @@
 
       {% elif request.user.role == 'parent' %}
       <!-- PARENT PORTAL RESTRICTED MENU -->
-      <li class="sidebar-menu-header" style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
+      <li class="sidebar-menu-header"
+        style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
         Child Profile
       </li>
       <li>
@@ -223,21 +232,22 @@
         </a>
       </li>
       <li>
-        <a href="#fee-section">
-          <i class="ri-wallet-3-line"></i>
-          <span>Fee Details</span>
-        </a>
-      </li>
-      <li>
         <a href="/parent/assignments/">
           <i class="ri-file-edit-line"></i>
           <span>Assignments</span>
         </a>
       </li>
+      <li>
+        <a href="#fee-section">
+          <i class="ri-wallet-3-line"></i>
+          <span>Fee Details</span>
+        </a>
+      </li>
 
       {% elif not request.user.is_superuser and request.user.role != 'admin' %}
       <!-- SALES & EMPLOYEE PORTAL RESTRICTED MENU -->
-      <li class="sidebar-menu-header" style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #487fff; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
+      <li class="sidebar-menu-header"
+        style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #487fff; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
         Sales & CRM Portal
       </li>
       <li>
@@ -270,6 +280,12 @@
             <a href="/admin-panel/add-new-lead/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               + Add Lead
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/franchise-applications/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Franchise Applications
             </a>
           </li>
           <li>
@@ -312,6 +328,12 @@
         <a href="/admin-panel/employee-attendance/">
           <i class="ri-calendar-check-line"></i>
           <span>Attendance</span>
+        </a>
+      </li>
+      <li>
+        <a href="/admin-panel/student-attendance/">
+          <i class="ri-user-follow-line"></i>
+          <span>Student Attendance</span>
         </a>
       </li>
 
@@ -363,6 +385,12 @@
             <a href="/admin-panel/add-new-lead/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               + Add Lead
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/franchise-applications/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Franchise Applications
             </a>
           </li>
           <li>
@@ -710,6 +738,12 @@
             <a href="/admin-panel/employee-attendance/">
               <i class="ri-circle-fill circle-icon w-auto"></i>
               Attendance & Salary Count
+            </a>
+          </li>
+          <li>
+            <a href="/admin-panel/student-attendance/">
+              <i class="ri-circle-fill circle-icon w-auto"></i>
+              Student Attendance
             </a>
           </li>
           <li>

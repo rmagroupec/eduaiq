@@ -283,7 +283,14 @@ $(document).ready(function() {
                         searching: true,
                         paging: true,
                         info: false,
-                        lengthChange: false
+                        lengthChange: false,
+                        scrollX: true,
+                        dom: '<"table-responsive"tr><"d-flex justify-content-between align-items-center mt-3"<"text-secondary-light"i><"pagination-wrapper"p>>'
+                    });
+                    
+                    // Bind custom search input
+                    $('.dt-search input[name="search"]').on('keyup', function() {
+                        dataTableInstance.search(this.value).draw();
                     });
                 }
             },

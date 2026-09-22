@@ -46,7 +46,7 @@ def get_allowed_courses_for_user(user, exclude_books=True, only_books=False, onl
                     allowed_course_ids = set(inst.allowed_courses.values_list('id', flat=True))
                     allowed_cat_ids = set(inst.allowed_categories.values_list('id', flat=True))
                     qs = Course.objects.filter(
-                        models.Q(id__in=allowed_course_ids) | models.Q(category_id__in=allowed_cat_ids)
+                        models.Q(id__in=allowed_course_ids) | models.Q(category_id__in=allowed_cat_ids) | models.Q(created_by=user)
                     ).distinct()
                 else:
                     qs = Course.objects.none()
@@ -74,7 +74,7 @@ def get_allowed_courses_for_user(user, exclude_books=True, only_books=False, onl
         else:
             qs = Course.objects.filter(status='published')
 
-    books_q = models.Q(category__slug='ai-books') | models.Q(category__name__icontains='AI Book') | models.Q(title__icontains='AI-GUIDE') | models.Q(title__icontains='AI Book')
+    books_q = models.Q(category__slug='ai-books') | models.Q(category__name__icontains='AI Book') | models.Q(title__icontains='AI-GUIDE') | models.Q(title__icontains='AI Book') | models.Q(title__icontains='hand Book') | models.Q(title__icontains='handbook')
     if only_books:
         return qs.filter(books_q)
     elif exclude_books:

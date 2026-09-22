@@ -828,8 +828,10 @@ def create_institution_student(request):
     from accounts.models import User
     from courses.models import Course, Enrollment
 
-    if User.objects.filter(username=username).exists():
-        return JsonResponse({'success': False, 'error': 'Username already exists. Please choose a different username.'}, status=400)
+    original_username = username
+    while User.objects.filter(username=username).exists():
+        import random
+        username = f"{original_username}{random.randint(100, 9999)}"
 
     if email and User.objects.filter(email__iexact=email).exists():
         return JsonResponse({'success': False, 'error': 'Email address already exists.'}, status=400)

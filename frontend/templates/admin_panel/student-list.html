@@ -78,21 +78,8 @@
         </select>
         <span class="text-sm text-secondary-light">entries</span>
       </div>
-      <div class="d-flex align-items-center gap-16">
         <div id="attendanceStats" class="d-none align-items-center gap-2 px-12 py-4 bg-primary-50 text-primary-600 radius-8 text-sm fw-medium">
           <!-- Stats will be injected here -->
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <button type="button" id="markPagePresentBtn" class="btn btn-sm btn-success d-flex align-items-center gap-2 rounded-pill px-16 shadow-sm">
-            <i class="ri-check-double-line"></i> Mark Page Present
-          </button>
-          <button type="button" id="markPageAbsentBtn" class="btn btn-sm btn-danger d-flex align-items-center gap-2 rounded-pill px-16 shadow-sm">
-            <i class="ri-close-circle-line"></i> Mark Page Absent
-          </button>
-        </div>
-        <div class="d-flex align-items-center gap-8 border-start ps-16">
-          <label for="attendanceDate" class="text-sm text-secondary-light text-nowrap fw-medium">Attendance Date:</label>
-          <input type="date" id="attendanceDate" class="form-control form-control-sm radius-8" value="{% now 'Y-m-d' %}">
         </div>
         <div class="position-relative border-start ps-16">
           <input type="text" class="form-control form-control-sm ps-32 radius-8" id="searchQuery" placeholder="Search Admission No, Name, Username...">
@@ -107,9 +94,10 @@
         <thead>
           <tr class="bg-neutral-50">
             <th scope="col">Student Name</th>
-            <th scope="col">Roll No</th>
+            <th scope="col">Admission No</th>
             <th scope="col">Class & Section</th>
-            <th scope="col" class="text-center">Attendance</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="text-center">Action</th>
           </tr>
         </thead>
         <tbody id="studentTableBody">
@@ -300,43 +288,30 @@ $(document).ready(function() {
     }
 
     data.results.forEach(student => {
-      const rollNo = student.roll_number || '-';
       const admissionNo = student.admission_no || '-';
       const secText = student.section ? `(${student.section})` : '';
       const classSecText = `${student.class_grade || '-'} ${secText}`;
       const name = student.student_name || 'Unnamed Student';
+      const email = student.email || '';
       const photo = student.profile_photo || student.profile_image || '{% static "admin_assets/images/thumbs/leave-request-img2.png" %}';
       const defaultImg = '{% static "admin_assets/images/thumbs/leave-request-img2.png" %}';
 
-      let pBtnClass = 'btn-outline-success radius-8';
-      let aBtnClass = 'btn-outline-danger radius-8';
-      let dBtnClass = 'btn-outline-secondary radius-8';
-      
-      if (student.attendance_status === 'Present' || student.attendance_status === 'P') {
-        pBtnClass = 'btn-success text-white shadow-sm radius-8';
-      } else if (student.attendance_status === 'Absent' || student.attendance_status === 'A') {
-        aBtnClass = 'btn-danger text-white shadow-sm radius-8';
-      }
-      
-      const attDateVal = $('#attendanceDate').val();
-      let isSunday = false;
-      if (attDateVal) {
-        const d = new Date(attDateVal);
-        if (d.getDay() === 0) isSunday = true;
-      }
-      
-      let actionButtonsHtml = '';
-      if (isSunday) {
-        actionButtonsHtml = '<span class="badge bg-warning-100 text-warning-700">Sunday (Holiday)</span>';
+      let statusBadge = '';
+      if (student.status === 'active' || student.status === 'Active') {
+        statusBadge = '<span class="badge bg-success-100 text-success-600 px-12 py-4 radius-8">Active</span>';
+      } else if (student.status === 'inactive' || student.status === 'Inactive') {
+        statusBadge = '<span class="badge bg-danger-100 text-danger-600 px-12 py-4 radius-8">Inactive</span>';
       } else {
-        actionButtonsHtml = `
-          <div class="d-flex align-items-center justify-content-center gap-2">
-            <button class="btn btn-sm ${pBtnClass} mark-attendance-btn" data-id="${student.id}" data-status="Present" title="Mark Present">P</button>
-            <button class="btn btn-sm ${aBtnClass} mark-attendance-btn" data-id="${student.id}" data-status="Absent" title="Mark Absent">A</button>
-            <button class="btn btn-sm ${dBtnClass} mark-attendance-btn" data-id="${student.id}" data-status="delete" title="Clear Attendance"><i class="ri-eraser-line"></i></button>
-          </div>
-        `;
+        statusBadge = `<span class="badge bg-secondary-100 text-secondary-600 px-12 py-4 radius-8 text-capitalize">${student.status || 'Unknown'}</span>`;
       }
+      
+      let actionButtonsHtml = `
+        <div class="d-flex align-items-center justify-content-center gap-2">
+          <a href="/admin-panel/student-details/?id=${student.id}" class="btn btn-sm btn-outline-primary radius-8" title="View"><i class="ri-eye-line"></i></a>
+          <a href="/admin-panel/edit-student/?id=${student.id}" class="btn btn-sm btn-outline-info radius-8" title="Edit"><i class="ri-pencil-line"></i></a>
+          <button class="btn btn-sm btn-outline-danger radius-8 delete-student-btn" data-id="${student.id}" title="Delete"><i class="ri-delete-bin-line"></i></button>
+        </div>
+      `;
 
       tbody.append(`
         <tr>
@@ -345,11 +320,13 @@ $(document).ready(function() {
               <img src="${photo}" onerror="this.onerror=null; this.src='${defaultImg}';" alt="${name}" class="flex-shrink-0 me-12 radius-8 object-fit-cover" style="width:40px; height:40px;">
               <div>
                 <h6 class="text-md mb-0 fw-medium text-neutral-800">${name}</h6>
+                ${email ? `<span class="text-sm text-secondary-light">${email}</span>` : ''}
               </div>
             </div>
           </td>
-          <td>${rollNo}</td>
+          <td>${admissionNo}</td>
           <td>${classSecText}</td>
+          <td>${statusBadge}</td>
           <td class="text-center">
             ${actionButtonsHtml}
           </td>
@@ -523,36 +500,59 @@ $(document).ready(function() {
         return;
       }
       
-      if(!confirm(`Are you sure you want to mark ${window.currentPageStudentIds.length} students as PRESENT for ${attendanceDate}?`)) {
-        return;
-      }
-      
-      const btn = $(this);
-      const originalHtml = btn.html();
-      btn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Marking...').prop('disabled', true);
-      
-      $.ajax({
-        url: '{% url "mark_student_attendance" %}',
-        method: 'POST',
-        headers: { 'X-CSRFToken': getCsrfToken() },
-        contentType: 'application/json',
-        data: JSON.stringify({
-          student_ids: window.currentPageStudentIds,
-          status: 'Present',
-          date: attendanceDate
-        }),
-        success: function(response) {
-          btn.html(originalHtml).prop('disabled', false);
-          if (response.success) {
-            showToast(`Marked ${window.currentPageStudentIds.length} students as Present!`, 'success');
-            loadStudents(currentPage);
-          } else {
-            showToast('Error: ' + response.error, 'error');
-          }
-        },
-        error: function() {
-          btn.html(originalHtml).prop('disabled', false);
-          showToast('Failed to mark bulk attendance', 'error');
+      Swal.fire({
+        title: 'Confirm Attendance',
+        text: `Are you sure you want to mark ${window.currentPageStudentIds.length} students as PRESENT for ${attendanceDate}?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#10b981',
+        cancelButtonColor: '#ef4444',
+        confirmButtonText: 'Yes, Mark Present',
+        cancelButtonText: 'Cancel',
+        customClass: { popup: 'radius-12 shadow-lg' }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const btn = $(this);
+          const originalHtml = btn.html();
+          btn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Marking...').prop('disabled', true);
+          
+          $.ajax({
+            url: '{% url "mark_student_attendance" %}',
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCsrfToken() },
+            contentType: 'application/json',
+            data: JSON.stringify({
+              student_ids: window.currentPageStudentIds,
+              status: 'Present',
+              date: attendanceDate
+            }),
+            success: function(response) {
+              btn.html(originalHtml).prop('disabled', false);
+              if (response.success) {
+                Swal.fire({
+                  html: `
+                    <div class="text-center mt-3">
+                      <div class="bg-success-100 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);">
+                        <i class="ri-check-line text-success-main" style="font-size: 46px; font-weight: bold;"></i>
+                      </div>
+                      <h4 class="fw-bold text-dark mb-2">Success!</h4>
+                      <p class="text-secondary-light mb-0" style="font-size: 15px;">Marked ${window.currentPageStudentIds.length} students as Present!</p>
+                    </div>
+                  `,
+                  showConfirmButton: false,
+                  timer: 2000,
+                  customClass: { popup: 'radius-16 shadow-lg border-0' }
+                });
+                loadStudents(currentPage);
+              } else {
+                Swal.fire('Error', response.error, 'error');
+              }
+            },
+            error: function() {
+              btn.html(originalHtml).prop('disabled', false);
+              Swal.fire('Failed', 'Failed to mark bulk attendance', 'error');
+            }
+          });
         }
       });
     });
@@ -570,36 +570,59 @@ $(document).ready(function() {
         return;
       }
       
-      if(!confirm(`Are you sure you want to mark ${window.currentPageStudentIds.length} students as ABSENT for ${attendanceDate}?`)) {
-        return;
-      }
-      
-      const btn = $(this);
-      const originalHtml = btn.html();
-      btn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Marking...').prop('disabled', true);
-      
-      $.ajax({
-        url: '{% url "mark_student_attendance" %}',
-        method: 'POST',
-        headers: { 'X-CSRFToken': getCsrfToken() },
-        contentType: 'application/json',
-        data: JSON.stringify({
-          student_ids: window.currentPageStudentIds,
-          status: 'Absent',
-          date: attendanceDate
-        }),
-        success: function(response) {
-          btn.html(originalHtml).prop('disabled', false);
-          if (response.success) {
-            showToast(`Marked ${window.currentPageStudentIds.length} students as Absent!`, 'success');
-            loadStudents(currentPage);
-          } else {
-            showToast('Error: ' + response.error, 'error');
-          }
-        },
-        error: function() {
-          btn.html(originalHtml).prop('disabled', false);
-          showToast('Failed to mark bulk attendance', 'error');
+      Swal.fire({
+        title: 'Confirm Absence',
+        text: `Are you sure you want to mark ${window.currentPageStudentIds.length} students as ABSENT for ${attendanceDate}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, Mark Absent',
+        cancelButtonText: 'Cancel',
+        customClass: { popup: 'radius-12 shadow-lg' }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const btn = $(this);
+          const originalHtml = btn.html();
+          btn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Marking...').prop('disabled', true);
+          
+          $.ajax({
+            url: '{% url "mark_student_attendance" %}',
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCsrfToken() },
+            contentType: 'application/json',
+            data: JSON.stringify({
+              student_ids: window.currentPageStudentIds,
+              status: 'Absent',
+              date: attendanceDate
+            }),
+            success: function(response) {
+              btn.html(originalHtml).prop('disabled', false);
+              if (response.success) {
+                Swal.fire({
+                  html: `
+                    <div class="text-center mt-3">
+                      <div class="bg-success-100 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);">
+                        <i class="ri-check-line text-success-main" style="font-size: 46px; font-weight: bold;"></i>
+                      </div>
+                      <h4 class="fw-bold text-dark mb-2">Success!</h4>
+                      <p class="text-secondary-light mb-0" style="font-size: 15px;">Marked ${window.currentPageStudentIds.length} students as Absent!</p>
+                    </div>
+                  `,
+                  showConfirmButton: false,
+                  timer: 2000,
+                  customClass: { popup: 'radius-16 shadow-lg border-0' }
+                });
+                loadStudents(currentPage);
+              } else {
+                Swal.fire('Error', response.error, 'error');
+              }
+            },
+            error: function() {
+              btn.html(originalHtml).prop('disabled', false);
+              Swal.fire('Failed', 'Failed to mark bulk attendance', 'error');
+            }
+          });
         }
       });
     });
@@ -637,7 +660,20 @@ $(document).ready(function() {
           headers: { 'X-CSRFToken': token },
           xhrFields: { withCredentials: true },
           success: function(res) {
-            Swal.fire({ icon: 'success', title: 'Deleted!', text: 'Student profile deleted successfully.', timer: 1500, showConfirmButton: false });
+            Swal.fire({
+              html: `
+                <div class="text-center mt-3">
+                  <div class="bg-success-100 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);">
+                    <i class="ri-check-line text-success-main" style="font-size: 46px; font-weight: bold;"></i>
+                  </div>
+                  <h4 class="fw-bold text-dark mb-2">Deleted!</h4>
+                  <p class="text-secondary-light mb-0" style="font-size: 15px;">Student profile deleted successfully.</p>
+                </div>
+              `,
+              showConfirmButton: false,
+              timer: 2000,
+              customClass: { popup: 'radius-16 shadow-lg border-0' }
+            });
           },
           error: function(err) {
             loadStudents(currentPage);
