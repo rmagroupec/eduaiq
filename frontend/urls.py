@@ -131,6 +131,7 @@ urlpatterns = [
     path('admin-panel/blog-categories/<int:pk>/delete/', views.admin_blog_category_delete, name='admin_blog_category_delete'),
 
     path('admin-panel/users/', views.users, name='admin_users'),
+    path('admin-panel/edit-student/', views.edit_student, name='edit_student'),
     path('admin-panel/courses/', views.admin_courses, name='admin_courses'),
     path('admin-panel/courses/add/', views.admin_add_course, name='admin_add_course'),
     path('admin-panel/courses/edit/', views.admin_edit_course, name='admin_edit_course'),

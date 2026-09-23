@@ -114,6 +114,36 @@ def signup(request):
     if form.is_valid():
         user = form.save()
         Profile.objects.get_or_create(user=user)
+        
+        role = user.role
+        if role == 'student':
+            from institutions.models import Student
+            import time
+            adm_no = f"REG-{int(time.time())}"
+            Student.objects.create(
+                user=user,
+                admission_no=adm_no,
+                class_grade="Self-Registered",
+                status="active"
+            )
+        elif role in ['institution', 'institution_admin', 'school', 'college', 'coaching']:
+            from institutions.models import Institution
+            itype = 'school' if role == 'school' else ('college' if role == 'college' else 'coaching')
+            iname = user.get_full_name() or user.username
+            Institution.objects.get_or_create(
+                admin_user=user,
+                defaults={
+                    'name': iname,
+                    'type': itype,
+                    'created_by': user,
+                    'status': 'pending',
+                    'address': 'Registered via Website',
+                    'city': 'Online',
+                    'state': 'India',
+                    'phone': user.phone
+                }
+            )
+            
         login(request, user)
         return JsonResponse({'success': True, 'user': serialize_user(user)}, status=201)
     return JsonResponse({'success': False, 'errors': form.errors}, status=400)
@@ -2179,8 +2209,8 @@ def parent_attendance_view(request):
         
         all_attendances = Attendance.objects.filter(user=child.user).order_by('-date')
         total_days = all_attendances.count()
-        present_days = all_attendances.filter(status__iexact='Present').count()
-        absent_days = all_attendances.filter(status__iexact='Absent').count()
+        present_days = all_attendances.filter(status__in=['P', 'Present']).count()
+        absent_days = all_attendances.filter(status__in=['A', 'Absent']).count()
         attendance_percentage = (present_days / total_days * 100) if total_days > 0 else 0
         
         context['attendance_summary'] = {

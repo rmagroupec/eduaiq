@@ -300,6 +300,11 @@ def serialize_student_full(s, request=None):
     if s.user_id:
         from courses.models import Enrollment
         enrolled_course_ids = list(Enrollment.objects.filter(student_id=s.user_id).values_list('course_id', flat=True))
+        
+    name = s.user.get_full_name().strip() if s.user_id else ''
+    if s.user_id and not name:
+        name = s.user.username
+        
     return {
         'id': s.id,
         'user_id': s.user_id,
@@ -308,7 +313,7 @@ def serialize_student_full(s, request=None):
         'last_name': s.user.last_name if s.user_id else '',
         'email': s.user.email if s.user_id else '',
         'phone': s.user.phone if s.user_id else '',
-        'student_name': s.user.get_full_name() if s.user_id else None,
+        'student_name': name or None,
         'institution_id': s.institution_id,
         'institution_name': s.institution.name if s.institution_id else None,
         'batch_id': s.batch_id,
@@ -597,7 +602,7 @@ def student_list(request, institution_pk=None):
                 # Attach status to each student in the page for the specific date
                 if student_users:
                     attendances = Attendance.objects.filter(user_id__in=student_users, date=att_date)
-                    att_map = {a.user_id: a.status for a in attendances}
+                    att_map = {a.user_id: {'status': a.status, 'remarks': a.remarks} for a in attendances}
                     
                     # Fetch last 5 days of attendance (including today)
                     last_5_days = [att_date - datetime.timedelta(days=i) for i in range(4, -1, -1)]
@@ -610,7 +615,9 @@ def student_list(request, institution_pk=None):
                     
                     for s in payload['results']:
                         user_id = s.get('user_id')
-                        s['attendance_status'] = att_map.get(user_id) if user_id else None
+                        att_data = att_map.get(user_id) if user_id else {}
+                        s['attendance_status'] = att_data.get('status')
+                        s['attendance_note'] = att_data.get('remarks', '')
                         
                         s['recent_attendance'] = []
                         for d in last_5_days:
@@ -668,7 +675,7 @@ def _get_student_or_404(pk):
         return None
 
 
-@require_http_methods(['GET', 'PUT', 'PATCH', 'DELETE'])
+@require_http_methods(['GET', 'PUT', 'PATCH', 'DELETE', 'POST'])
 def student_detail(request, pk):
     student = _get_student_or_404(pk)
     if student is None:
@@ -701,6 +708,7 @@ def student_detail(request, pk):
         try:
             student.full_clean()
             student.save()
+            form.save_m2m()
 
             # Sync user profile details if provided
             if student.user:

@@ -997,8 +997,7 @@ def admin_add_course(request):
 @login_required(login_url='/admin-panel/login/')
 def admin_edit_course(request):
     """Admin edit course page"""
-    if not _is_main_admin(request.user):
-        return redirect('admin_panel')
+    pass
     return render(request, "admin_panel/edit-course.html")
 
 
@@ -2572,6 +2571,10 @@ def mark_student_attendance(request):
         student_id = data.get('student_id')
         student_ids = data.get('student_ids')
         status = data.get('status')
+        notes = data.get('notes', {})
+        if status and status.lower() != 'delete':
+            status_map = {'present': 'P', 'absent': 'A', 'holiday': 'H', 'half day': 'F', 'half_day': 'F', 'late': 'L', 'wfh': 'WFH'}
+            status = status_map.get(status.lower(), status)
         
         # Build the target list
         targets = []
@@ -2597,9 +2600,10 @@ def mark_student_attendance(request):
             if status == 'delete':
                 Attendance.objects.filter(user=student.user, date=att_date).delete()
             else:
+                note = notes.get(str(student.id), "")
                 Attendance.objects.update_or_create(
                     user=student.user, date=att_date, 
-                    defaults={'status': status}
+                    defaults={'status': status, 'remarks': note}
                 )
         return JsonResponse({'success': True})
     except Exception as e:
@@ -2731,3 +2735,8 @@ def admin_assignments_grade(request, pk):
         return JsonResponse({'success': False, 'message': 'Submission not found'}, status=404)
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)}, status=500)
+
+
+@login_required(login_url='/admin-panel/login/')
+def edit_student(request):
+    return render(request, 'admin_panel/edit-student.html')

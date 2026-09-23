@@ -165,8 +165,8 @@ class Course(models.Model):
         return self.title
 
     def clean(self):
-        if self.price <= 0:
-            raise ValidationError("Price must be greater than 0")
+        if self.price is not None and self.price < 0:
+            raise ValidationError("Price cannot be negative")
 
     def save(self, *args, **kwargs):
         if self.status == 'published' and not self.published_at:

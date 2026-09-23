@@ -81,10 +81,12 @@
                 <span class="badge bg-success-focus text-success-main px-3 py-2 rounded-pill fw-semibold"><i class="ri-checkbox-circle-fill me-1"></i>Present</span>
               {% elif log.status|lower == 'absent' or log.status|lower == 'a' %}
                 <span class="badge bg-danger-focus text-danger-main px-3 py-2 rounded-pill fw-semibold"><i class="ri-close-circle-fill me-1"></i>Absent</span>
+              {% elif log.status|lower == 'late' or log.status|lower == 'l' %}
+                <span class="badge bg-warning-focus text-warning-main px-3 py-2 rounded-pill fw-semibold"><i class="ri-time-line me-1"></i>Late</span>
               {% elif log.status|lower == 'h' or log.status|lower == 'wfh' or 'holiday' in log.status|lower %}
                 <span class="badge bg-info-focus text-info-main px-3 py-2 rounded-pill fw-semibold"><i class="ri-home-4-fill me-1"></i>Holiday</span>
               {% else %}
-                <span class="badge bg-secondary-focus text-secondary-main px-3 py-2 rounded-pill fw-semibold">{{ log.status }}</span>
+                <span class="badge bg-secondary-focus text-secondary-main px-3 py-2 rounded-pill fw-semibold">{{ log.get_status_display }}</span>
               {% endif %}
             </td>
             <td class="text-neutral-500 text-sm border-0 py-3" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">{{ log.remarks|default:"-" }}</td>

@@ -4,6 +4,14 @@
 {% block title %}EduAIQ - Edit Student Profile{% endblock %}
 
 {% block content %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+  .select2-container--default .select2-selection--multiple { border: 1px solid #e5e7eb; border-radius: 8px; min-height: 48px; padding-bottom: 2px; padding-left: 4px; }
+  .select2-container--default.select2-container--focus .select2-selection--multiple { border-color: #3b82f6; outline: 0; box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25); }
+  .select2-container--default .select2-selection--multiple .select2-selection__choice { background-color: #f8f9fa; border: 1px solid #d1d5db; border-radius: 6px; margin-top: 8px; padding: 4px 8px; color: #374151; font-weight: 500; display: flex; align-items: center; flex-direction: row-reverse; gap: 8px; }
+  .select2-container--default .select2-selection--multiple .select2-selection__choice__remove { border: none; background: transparent; color: #6b7280; font-weight: bold; font-size: 16px; margin: 0; padding: 0; position: static; }
+  .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover { color: #ef4444; background: transparent; }
+</style>
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
   <div>
     <h1 class="fw-semibold mb-4 h6 text-primary-light">Edit Student Profile</h1>
@@ -302,6 +310,7 @@
 {% endblock %}
 
 {% block js %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 $(document).ready(function() {
   const API_BASE_URL = window.location.origin;
@@ -387,9 +396,18 @@ $(document).ready(function() {
         const select = $('#parent_users');
         if (response.results && response.results.length > 0) {
           response.results.forEach(user => {
-            select.append(`<option value="${user.id}">${user.first_name || ''} ${user.last_name || ''} (${user.username})</option>`);
+            const fName = user.first_name || '';
+            const lName = user.last_name || '';
+            const fullName = (fName + ' ' + lName).trim();
+            const displayName = fullName ? `${fullName} (${user.username})` : user.username;
+            select.append(`<option value="${user.id}">${displayName}</option>`);
           });
         }
+        select.select2({
+          placeholder: "-- Search and select Parent --",
+          allowClear: true,
+          width: '100%'
+        });
         if (callback) callback();
       }
     });
@@ -485,11 +503,11 @@ $(document).ready(function() {
         loadAvailableBatches(student.institution_id, student.batch_id);
 
         if (student.parent_users_ids && student.parent_users_ids.length > 0) {
-            $('#parent_users').val(student.parent_users_ids);
+            $('#parent_users').val(student.parent_users_ids).trigger('change');
         } else if (student.parent_user_id) {
-            $('#parent_users').val([student.parent_user_id]);
+            $('#parent_users').val([student.parent_user_id]).trigger('change');
         } else {
-            $('#parent_users').val([]);
+            $('#parent_users').val([]).trigger('change');
         }
 
         // Account User info
@@ -570,7 +588,7 @@ $(document).ready(function() {
 
     $.ajax({
       url: `/api/students/${studentId}/`,
-      type: 'PATCH',
+      type: 'POST',
       headers: { 'X-CSRFToken': csrf },
       data: formData,
       processData: false,

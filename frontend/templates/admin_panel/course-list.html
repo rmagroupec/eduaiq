@@ -162,14 +162,12 @@
                 <i class="ri-book-read-line"></i> Read Book
               </a>
               ` : ''}
-              ${IS_SUPERADMIN ? `
               <a class="btn btn-sm btn-outline-primary" href="/admin-panel/courses/edit/?slug=${c.slug}">
                 <i class="ri-edit-line"></i> Edit
               </a>
               <button class="btn btn-sm btn-outline-danger" onclick="deleteCourse('${c.slug}', '${c.title.replace(/'/g, "\\'")}')">
                 <i class="ri-delete-bin-line"></i> Delete
               </button>
-              ` : ''}
             </div>
           </td>
         </tr>

@@ -504,9 +504,7 @@ def _get_course_or_404(slug):
 def _can_manage_course(user, course=None):
     if not user or not user.is_authenticated:
         return False
-    if getattr(user, 'role', '') == 'institution':
-        return False
-    return bool(user.is_superuser or getattr(user, 'role', '') in ['admin', 'superadmin'] or getattr(user, 'is_staff', False))
+    return bool(user.is_superuser or getattr(user, 'role', '') in ['admin', 'superadmin', 'institution', 'institution_admin'] or getattr(user, 'is_staff', False))
 
 
 @require_http_methods(['GET', 'PUT', 'PATCH', 'DELETE'])

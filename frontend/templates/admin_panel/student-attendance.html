@@ -191,7 +191,8 @@
 
     async function loadStudents() {
         try {
-            const res = await fetch('/api/students/');
+            const attDate = $('#attendanceDate').val() || new Date().toISOString().split('T')[0];
+            const res = await fetch(`/api/students/?attendance_date=${attDate}&page_size=200`);
             const data = await res.json();
             const students = data.results || [];
             
@@ -203,6 +204,9 @@
                 const cls = student.class_grade || 'N/A';
                 const adm = student.admission_no || '-';
                 const id = student.id;
+                
+                const attStatus = student.attendance_status || '';
+                const attNote = student.attendance_note || '';
                 
                 html += `
                 <tr>
@@ -226,28 +230,28 @@
                 <td>
                 <div class="d-flex align-items-center flex-wrap gap-28">
                 <div class="form-check checked-primary d-flex align-items-center gap-2">
-                <input class="form-check-input att-radio" data-id="${id}" value="P" id="p${id}" name="radio${id}" type="radio" checked/>
+                <input class="form-check-input att-radio" data-id="${id}" value="P" id="p${id}" name="radio${id}" type="radio" ${attStatus === 'P' ? 'checked' : ''}/>
                 <label class="form-check-label" for="p${id}">Present</label>
                 </div>
                 <div class="form-check checked-primary d-flex align-items-center gap-2">
-                <input class="form-check-input att-radio" data-id="${id}" value="L" id="l${id}" name="radio${id}" type="radio"/>
+                <input class="form-check-input att-radio" data-id="${id}" value="L" id="l${id}" name="radio${id}" type="radio" ${attStatus === 'L' ? 'checked' : ''}/>
                 <label class="form-check-label" for="l${id}">Late</label>
                 </div>
                 <div class="form-check checked-primary d-flex align-items-center gap-2">
-                <input class="form-check-input att-radio" data-id="${id}" value="A" id="a${id}" name="radio${id}" type="radio"/>
+                <input class="form-check-input att-radio" data-id="${id}" value="A" id="a${id}" name="radio${id}" type="radio" ${attStatus === 'A' ? 'checked' : ''}/>
                 <label class="form-check-label" for="a${id}">Absent</label>
                 </div>
                 <div class="form-check checked-primary d-flex align-items-center gap-2">
-                <input class="form-check-input att-radio" data-id="${id}" value="F" id="h${id}" name="radio${id}" type="radio"/>
+                <input class="form-check-input att-radio" data-id="${id}" value="F" id="h${id}" name="radio${id}" type="radio" ${attStatus === 'F' ? 'checked' : ''}/>
                 <label class="form-check-label" for="h${id}">Halfday</label>
                 </div>
                 <div class="form-check checked-primary d-flex align-items-center gap-2">
-                <input class="form-check-input att-radio" data-id="${id}" value="H" id="ho${id}" name="radio${id}" type="radio"/>
+                <input class="form-check-input att-radio" data-id="${id}" value="H" id="ho${id}" name="radio${id}" type="radio" ${attStatus === 'H' ? 'checked' : ''}/>
                 <label class="form-check-label" for="ho${id}">Holiday</label>
                 </div>
                 </div>
                 </td>
-                <td><input class="form-control att-note" data-id="${id}" placeholder="Write note..." type="text"/></td>
+                <td><input class="form-control att-note" data-id="${id}" value="${attNote}" placeholder="Write note..." type="text"/></td>
                 </tr>`;
             });
 
@@ -279,12 +283,17 @@
     $(document).ready(function() {
         loadStudents();
 
+        $(document).on('change', '#attendanceDate', function() {
+            loadStudents();
+        });
+
         $('#saveAttendanceBtn').on('click', async function() {
             const btn = $(this);
             btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Saving...');
             
             const attDate = $('#attendanceDate').val();
             const attendanceMap = {}; // { status: [studentIds] }
+            const notesMap = {}; // { studentId: "note" }
             
             // Note: Since DataTable might paginate, we should ideally read from all pages.
             // Using jQuery on the DOM only gets visible rows if pagination is active, but we set length to 50.
@@ -295,6 +304,11 @@
                 if (!attendanceMap[status]) attendanceMap[status] = [];
                 attendanceMap[status].push(stId);
             });
+            
+            dataTableInstance.$('.att-note').each(function() {
+                const stId = parseInt($(this).data('id'));
+                notesMap[stId] = $(this).val();
+            });
 
             let hasErrors = false;
             
@@ -303,7 +317,8 @@
                     const payload = {
                         student_ids: ids,
                         status: status,
-                        date: attDate
+                        date: attDate,
+                        notes: notesMap
                     };
                     try {
                         const res = await fetch('/teacher/mark-student-attendance/', {

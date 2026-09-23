@@ -26,7 +26,6 @@
           <tr>
             <th>Enrollment ID</th>
             <th>Student</th>
-            <th>Thumbnail</th>
             <th>Course Title</th>
             <th>Category</th>
             <th>Price Paid</th>
@@ -37,7 +36,7 @@
         </thead>
         <tbody id="enrollmentsTableBody">
           <tr>
-            <td colspan="9" class="text-center py-5 text-muted">
+            <td colspan="8" class="text-center py-5 text-muted">
               <i class="ri-loader-4-line ri-spin align-middle me-2"></i> Loading enrollments...
             </td>
           </tr>
@@ -61,7 +60,7 @@
       const results = data.results || [];
 
       if (results.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-muted">No student enrollments found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No student enrollments found.</td></tr>`;
         return;
       }
 
@@ -74,9 +73,6 @@
           <td>
             <div class="fw-semibold text-dark">${studentName}</div>
             <div class="text-xs text-muted">${studentEmail}</div>
-          </td>
-          <td>
-            <img src="${e.course?.thumbnail || 'https://via.placeholder.com/80x50'}" alt="${e.course?.title}" style="width: 80px; height: 50px; object-fit: cover; border-radius: 4px;">
           </td>
           <td class="fw-semibold text-dark">${e.course?.title || 'Unknown Course'}</td>
           <td><span class="badge bg-neutral-100 text-secondary-light px-8 py-4 radius-4">${e.course?.category || 'General'}</span></td>
@@ -101,7 +97,7 @@
       console.error(e);
       document.getElementById('enrollmentsTableBody').innerHTML = `
         <tr>
-          <td colspan="9" class="text-center py-4 text-danger">Failed to load enrollments.</td>
+          <td colspan="8" class="text-center py-4 text-danger">Failed to load enrollments.</td>
         </tr>
       `;
     }
