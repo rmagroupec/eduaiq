@@ -262,13 +262,21 @@
 
   // ================== Password Show Hide Js Start ==========
   function initializePasswordToggle(toggleSelector) {
-    $(toggleSelector).on("click", function () {
-      $(this).toggleClass("ri-eye-off-line");
+    $(toggleSelector).on("click", function (e) {
+      if ($(this).attr('onclick')) return; // Ignore inline handlers
+      e.stopImmediatePropagation(); // Prevent conflicts with other scripts
+      var $icon = $(this).find("i");
+      if ($icon.length === 0) $icon = $(this);
       var input = $($(this).attr("data-toggle"));
-      if (input.attr("type") === "password") {
-        input.attr("type", "text");
-      } else {
-        input.attr("type", "password");
+      if (input.length === 0) input = $(this).siblings("input");
+      if (input.length > 0) {
+        if (input.attr("type") === "password") {
+          input.attr("type", "text");
+          $icon.removeClass("ri-eye-line").addClass("ri-eye-off-line");
+        } else {
+          input.attr("type", "password");
+          $icon.removeClass("ri-eye-off-line").addClass("ri-eye-line");
+        }
       }
     });
   }

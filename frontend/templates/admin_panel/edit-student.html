@@ -420,7 +420,7 @@ $(document).ready(function() {
     const enrolledSet = new Set((enrolledIds || []).map(id => Number(id)));
 
     $.ajax({
-      url: `${API_BASE_URL}/courses/courses/?exclude_books=false&page_size=100`,
+      url: `${API_BASE_URL}/courses/courses/?exclude_books=false&page_size=100&only_allowed=true`,
       type: 'GET',
       xhrFields: { withCredentials: true },
       success: function(data) {

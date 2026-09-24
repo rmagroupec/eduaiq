@@ -6,6 +6,42 @@
 {% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
 
 {% block content %}
+<style>
+    /* Force DataTables wrapper to stay within the card width */
+    .dataTables_wrapper {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    /* Ensure table fits perfectly on 100% zoom screens without overflowing the card */
+    #dataTable th, #dataTable td {
+        padding: 10px 14px !important;
+        font-size: 14px !important;
+    }
+    
+    .dataTables_wrapper .table-responsive {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Premium look for the action dropdown */
+    .dropdown-menu {
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+        border: 1px solid #eee !important;
+    }
+
+    /* Prevent pagination text from getting squished */
+    .pagination-wrapper {
+        white-space: nowrap;
+    }
+    .page-item .page-link {
+        white-space: nowrap !important;
+        padding: 0.5rem 0.75rem !important;
+    }
+</style>
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
 <div class="">
 <h1 class="fw-semibold mb-4 h6 text-primary-light">Teacher List</h1>
@@ -14,6 +50,7 @@
 <a class="text-secondary-light hover-text-primary hover-underline d-none" href="javascript:void(0)"> /
         Teacher</a>
 <span class="text-secondary-light">/ Teacher List</span>
+</div>
 </div>
 <div class="d-flex align-items-center gap-2">
   {% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'superadmin' or request.user.role == 'super_admin' or is_main_admin %}
@@ -27,6 +64,7 @@
     </span>
     Add Teacher
   </a>
+</div>
 </div>
 </div>
 <div class="mt-24">
@@ -130,11 +168,10 @@
 </div>
 </div>
 </div>
-<div class="p-0">
-<table class="table bordered-table mb-0 data-table" data-page-length="10" id="dataTable">
+<table class="table bordered-table mb-0 text-nowrap" data-page-length="10" id="dataTable">
 <thead>
 <tr>
-<th scope="col">
+<th scope="col" class="w-40-px">
 <div class="form-check style-check d-flex align-items-center">
 <input class="form-check-input" type="checkbox"/>
 <label class="form-check-label">
@@ -160,7 +197,24 @@
 </div>
 </div>
 </div>
-</div>
+<!-- Global Action Menu to avoid table clipping -->
+<ul class="dropdown-menu border p-12 shadow-lg" id="globalActionMenu" style="position: absolute; display: none; z-index: 1060; list-style: none;">
+    <li>
+        <a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" id="globalActionView" href="#">
+            <i class="ri-user-3-line"></i> View Profile
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" id="globalActionEdit" href="#">
+            <i class="ri-edit-line text-primary-600"></i> Edit Profile
+        </a>
+    </li>
+    <li>
+        <button class="dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6 delete-teacher-btn" id="globalActionDelete">
+            <i class="ri-delete-bin-6-line"></i> Delete Teacher
+        </button>
+    </li>
+</ul>
 {% endblock %}
 
 {% block js %}
@@ -229,28 +283,9 @@ $(document).ready(function() {
                                 <td>${tch.joining_date || '-'}</td>
                                 <td>${statusBadge}</td>
                                 <td>
-                                    <div class="btn-group">
-                                        <button aria-expanded="false" class="text-primary-light text-xl" data-bs-display="static" data-bs-toggle="dropdown" type="button">
-                                            <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-lg-end border p-12">
-                                            <li>
-                                                <a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="${viewUrl}">
-                                                    <i class="ri-user-3-line"></i> View Profile
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6" href="/admin-panel/add-new-teacher/?user_id=${tch.user_id || ''}&emp_id=${tch.id}">
-                                                    <i class="ri-edit-line text-primary-600"></i> Edit Profile
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <button class="dropdown-item rounded text-danger-600 bg-hover-danger-100 d-flex align-items-center gap-2 py-6 delete-teacher-btn" data-id="${tch.id}" data-name="${tch.full_name}">
-                                                    <i class="ri-delete-bin-6-line"></i> Delete Teacher
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <button class="text-primary-light text-xl global-action-btn border-0 bg-transparent" data-id="${tch.id}" data-name="${tch.full_name}" data-view="${viewUrl}" data-edit="/admin-panel/add-new-teacher/?user_id=${tch.user_id || ''}&emp_id=${tch.id}">
+                                        <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+                                    </button>
                                 </td>
                             </tr>`;
                             tbody.append(rowHtml);
@@ -279,13 +314,23 @@ $(document).ready(function() {
                 if ($.fn.DataTable && $('#dataTable tbody tr').length > 0 && !tbody.find('td[colspan]').length) {
                     dataTableInstance = $('#dataTable').DataTable({
                         destroy: true,
-                        pageLength: 10,
+                        pageLength: parseInt($('.dt-length .dt-input').val()) || 10,
                         searching: true,
                         paging: true,
-                        info: false,
+                        info: true,
                         lengthChange: false,
-                        scrollX: true,
-                        dom: '<"table-responsive"tr><"d-flex justify-content-between align-items-center mt-3"<"text-secondary-light"i><"pagination-wrapper"p>>'
+                        autoWidth: false,
+                        language: {
+                            paginate: {
+                                previous: 'Previous',
+                                next: 'Next'
+                            }
+                        },
+                        columnDefs: [
+                            { orderable: false, targets: [0, 9] },
+                            { width: "60px", targets: 0 }
+                        ],
+                        dom: '<"table-responsive p-0"t><"d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3 px-3 pb-3"<"text-secondary-light"i><"pagination-wrapper"p>>'
                     });
                     
                     // Bind custom search input
@@ -322,6 +367,48 @@ $(document).ready(function() {
         if (dataTableInstance) {
             dataTableInstance.page.len($(this).val()).draw();
         }
+    });
+
+    // Global Action Menu Logic
+    let currentActionTeacher = null;
+    $(document).on('click', '.global-action-btn', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const tchId = $(this).data('id');
+        
+        if ($('#globalActionMenu').is(':visible') && currentActionTeacher === tchId) {
+            $('#globalActionMenu').hide();
+            return;
+        }
+        
+        currentActionTeacher = tchId;
+        const viewUrl = $(this).data('view');
+        const editUrl = $(this).data('edit');
+        const name = $(this).data('name');
+        
+        $('#globalActionView').attr('href', viewUrl);
+        $('#globalActionEdit').attr('href', editUrl);
+        $('#globalActionDelete').attr('data-id', tchId).attr('data-name', name);
+        
+        const rect = this.getBoundingClientRect();
+        
+        $('#globalActionMenu').css({
+            top: (rect.bottom + window.scrollY + 5) + 'px',
+            left: (rect.left + window.scrollX - 140) + 'px',
+            display: 'block'
+        });
+    });
+
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.global-action-btn').length) {
+            $('#globalActionMenu').hide();
+        }
+    });
+
+    // Hide menu on table scroll
+    $('.table-responsive').on('scroll', function() {
+        $('#globalActionMenu').hide();
     });
 
     // Delete Teacher with SweetAlert2 confirmation

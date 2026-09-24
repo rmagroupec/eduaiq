@@ -86,7 +86,7 @@
         <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
           <div>
             <span class="text-secondary-light text-sm mb-4 fw-medium">Target Exams</span>
-            <h5 class="fw-bold mb-0 text-primary-light">NEET • JEE • CUET</h5>
+            <h5 class="fw-bold mb-0 text-primary-light" id="kpiTargetExams">-</h5>
           </div>
           <div class="w-50-px h-50-px bg-warning-100 text-warning-600 rounded-circle d-flex justify-content-center align-items-center text-2xl">
             <i class="ri-award-line"></i>
@@ -112,11 +112,6 @@
         <label class="text-sm fw-semibold text-primary-light mb-8" for="examFilter">Target Exam</label>
         <select class="form-control form-select radius-8" id="examFilter">
           <option value="">All Exams</option>
-          <option value="NEET">NEET-UG</option>
-          <option value="JEE">IIT-JEE</option>
-          <option value="Foundation">Foundation</option>
-          <option value="CUET">CUET</option>
-          <option value="UPSC">UPSC</option>
         </select>
       </div>
       <div class="col-md-3">
@@ -270,6 +265,7 @@ $(document).ready(function() {
         allBatches = res.results || [];
         renderBatchesTable(allBatches);
         updateKPIs(allBatches);
+        populateExamFilter(allBatches);
       },
       error: function() {
         $('#masterBatchesTableBody').html('<tr><td colspan="8" class="text-center py-40 text-danger-600">Failed to load batches.</td></tr>');
@@ -281,12 +277,38 @@ $(document).ready(function() {
     $('#kpiBatchesTotal').text(batches.length);
     let active = 0;
     let students = 0;
+    let exams = new Set();
     batches.forEach(b => {
       if (b.is_active) active++;
       students += (b.total_students || 0);
+      if (b.target_exam) exams.add(b.target_exam.trim());
     });
     $('#kpiBatchesActive').text(active);
     $('#kpiBatchStudents').text(students);
+    
+    const uniqueExams = Array.from(exams);
+    let examsText = uniqueExams.length > 0 ? uniqueExams.slice(0, 3).join('   ') : '-';
+    if (uniqueExams.length > 3) examsText += ' ...';
+    $('#kpiTargetExams').text(examsText);
+  }
+
+  function populateExamFilter(batches) {
+    const filter = $('#examFilter');
+    const currentVal = filter.val();
+    
+    // Only repopulate if no specific exam is currently selected
+    if (!currentVal) {
+      let exams = new Set();
+      batches.forEach(b => {
+        if (b.target_exam) exams.add(b.target_exam.trim());
+      });
+      
+      filter.empty();
+      filter.append('<option value="">All Exams</option>');
+      Array.from(exams).sort().forEach(exam => {
+        filter.append(`<option value="${exam}">${exam}</option>`);
+      });
+    }
   }
 
   function renderBatchesTable(batches) {
@@ -335,7 +357,7 @@ $(document).ready(function() {
             </a>
           </td>
           <td><code>${b.code || '-'}</code></td>
-          <td><span class="badge bg-warning-50 text-warning-700 text-xs px-10 py-4 radius-6 fw-bold border border-warning-200">${b.target_exam || 'General'}</span></td>
+          <td><span class="badge bg-warning-50 text-warning-700 text-xs px-10 py-4 radius-6 fw-bold border border-warning-200">${b.target_exam ? b.target_exam : '-'}</span></td>
           <td><span class="badge bg-primary-50 text-primary-600 text-xs px-10 py-4 radius-12 fw-bold">${b.total_students || 0} Aspirants</span></td>
           <td><span class="text-xs text-neutral-700">${b.start_date || 'Flexible'} to ${b.end_date || 'Ongoing'}</span></td>
           <td><span class="badge ${b.is_active ? 'bg-success-100 text-success-600' : 'bg-neutral-100 text-neutral-600'} text-xs px-8 py-4 radius-4">${b.is_active ? 'ACTIVE' : 'INACTIVE'}</span></td>

@@ -685,70 +685,80 @@ and Olympiad Exams.{% endblock %}
 <!-- INSTITUTION KPI STAT CARDS -->
 <div class="row gy-4 mb-24">
   <div class="col-xxl col-xl col-md-4 col-sm-6">
-    <div class="card stat-card-eduaiq h-100 p-20">
-      <div class="d-flex align-items-center justify-content-between mb-16">
-        <span class="icon-box-eduaiq bg-primary-100 text-primary-600">
-          <i class="ri-graduation-cap-line"></i>
-        </span>
-        <span class="badge bg-primary-50 text-primary-600 text-xs px-2 py-1 radius-6">Enrolled</span>
+    <a href="/admin-panel/student-list/" class="text-decoration-none">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq bg-primary-100 text-primary-600">
+            <i class="ri-graduation-cap-line"></i>
+          </span>
+          <span class="badge bg-primary-50 text-primary-600 text-xs px-2 py-1 radius-6">Enrolled</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Students</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ inst_data.students_count|default:0 }}</h3>
       </div>
-      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Total Students</span>
-      <h3 class="mb-0 fw-bold stat-num">{{ inst_data.students_count|default:0 }}</h3>
-    </div>
+    </a>
   </div>
 
   <div class="col-xxl col-xl col-md-4 col-sm-6">
-    <div class="card stat-card-eduaiq h-100 p-20">
-      <div class="d-flex align-items-center justify-content-between mb-16">
-        <span class="icon-box-eduaiq bg-success-100 text-success-600">
-          <i class="ri-book-open-line"></i>
-        </span>
-        <span class="badge bg-success-50 text-success-600 text-xs px-2 py-1 radius-6">Active</span>
+    <a href="/admin-panel/courses/" class="text-decoration-none">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq bg-success-100 text-success-600">
+            <i class="ri-book-open-line"></i>
+          </span>
+          <span class="badge bg-success-50 text-success-600 text-xs px-2 py-1 radius-6">Active</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Allowed Courses</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ inst_data.courses_count|default:0 }}</h3>
       </div>
-      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Allowed Courses</span>
-      <h3 class="mb-0 fw-bold stat-num">{{ inst_data.courses_count|default:0 }}</h3>
-    </div>
+    </a>
   </div>
 
   <div class="col-xxl col-xl col-md-4 col-sm-6">
-    <div class="card stat-card-eduaiq h-100 p-20">
-      <div class="d-flex align-items-center justify-content-between mb-16">
-        <span class="icon-box-eduaiq bg-purple-100 text-purple-600" style="background-color: #f3e8ff; color: #9333ea;">
-          <i class="ri-book-read-line"></i>
-        </span>
-        <span class="badge bg-purple-50 text-purple-600 text-xs px-2 py-1 radius-6"
-          style="background-color: #faf5ff; color: #9333ea;">AI Books</span>
+    <a href="/admin-panel/courses/?type=book" class="text-decoration-none">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq bg-purple-100 text-purple-600" style="background-color: #f3e8ff; color: #9333ea;">
+            <i class="ri-book-read-line"></i>
+          </span>
+          <span class="badge bg-purple-50 text-purple-600 text-xs px-2 py-1 radius-6"
+            style="background-color: #faf5ff; color: #9333ea;">AI Books</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Allowed AI Books</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ inst_data.books_count|default:0 }}</h3>
       </div>
-      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Allowed AI Books</span>
-      <h3 class="mb-0 fw-bold stat-num">{{ inst_data.books_count|default:0 }}</h3>
-    </div>
+    </a>
   </div>
 
   <div class="col-xxl col-xl col-md-4 col-sm-6">
-    <div class="card stat-card-eduaiq h-100 p-20">
-      <div class="d-flex align-items-center justify-content-between mb-16">
-        <span class="icon-box-eduaiq bg-info-100 text-info-600">
-          <i class="ri-group-line"></i>
-        </span>
-        <span class="badge bg-info-50 text-info-600 text-xs px-2 py-1 radius-6">Academic</span>
+    <a href="/admin-panel/coaching-batches/" class="text-decoration-none">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq bg-info-100 text-info-600">
+            <i class="ri-group-line"></i>
+          </span>
+          <span class="badge bg-info-50 text-info-600 text-xs px-2 py-1 radius-6">Academic</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Active Batches</span>
+        <h3 class="mb-0 fw-bold stat-num">{{ inst_data.batches_count|default:0 }}</h3>
       </div>
-      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Active Batches</span>
-      <h3 class="mb-0 fw-bold stat-num">{{ inst_data.batches_count|default:0 }}</h3>
-    </div>
+    </a>
   </div>
 
   <div class="col-xxl col-xl col-md-4 col-sm-6">
-    <div class="card stat-card-eduaiq h-100 p-20">
-      <div class="d-flex align-items-center justify-content-between mb-16">
-        <span class="icon-box-eduaiq bg-warning-100 text-warning-600">
-          <i class="ri-verified-badge-line"></i>
-        </span>
-        <span class="badge bg-warning-50 text-warning-600 text-xs px-2 py-1 radius-6">Status</span>
+    <a href="/admin-panel/view-profile/" class="text-decoration-none">
+      <div class="card stat-card-eduaiq h-100 p-20">
+        <div class="d-flex align-items-center justify-content-between mb-16">
+          <span class="icon-box-eduaiq bg-warning-100 text-warning-600">
+            <i class="ri-verified-badge-line"></i>
+          </span>
+          <span class="badge bg-warning-50 text-warning-600 text-xs px-2 py-1 radius-6">Status</span>
+        </div>
+        <span class="text-neutral-600 text-sm font-medium d-block mb-4">Institution Status</span>
+        <h3 class="mb-0 fw-bold text-success-600 text-lg">{{ inst_data.institution_obj.status|default:"Active"|title }}
+        </h3>
       </div>
-      <span class="text-neutral-600 text-sm font-medium d-block mb-4">Institution Status</span>
-      <h3 class="mb-0 fw-bold text-success-600 text-lg">{{ inst_data.institution_obj.status|default:"Active"|title }}
-      </h3>
-    </div>
+    </a>
   </div>
 </div>
 

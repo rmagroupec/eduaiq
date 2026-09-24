@@ -417,7 +417,7 @@ $(document).ready(function() {
                 </div>
               </td>
               <td><code>${b.code || '-'}</code></td>
-              <td><span class="badge bg-neutral-100 text-neutral-700 text-xs px-8 py-4 radius-4 fw-medium">${b.target_exam || 'General'}</span></td>
+              <td><span class="badge bg-neutral-100 text-neutral-700 text-xs px-8 py-4 radius-4 fw-medium">${b.target_exam ? b.target_exam : '-'}</span></td>
               <td><span class="badge bg-primary-100 text-primary-600 text-xs px-8 py-4 radius-12 fw-bold">${b.total_students || 0} Students</span></td>
               <td><span class="badge ${b.is_active ? 'bg-success-100 text-success-600' : 'bg-neutral-100 text-neutral-600'} text-xs px-8 py-4 radius-4">${b.is_active ? 'ACTIVE' : 'INACTIVE'}</span></td>
               <td class="text-center">

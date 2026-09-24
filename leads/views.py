@@ -409,6 +409,7 @@ def lead_detail(request, pk):
     return JsonResponse({'success': False, 'errors': _form_errors(form)}, status=400)
 
 
+@csrf_exempt
 @login_required
 @require_http_methods(['POST'])
 def lead_convert(request, pk):
@@ -559,6 +560,7 @@ def inquiry_detail(request, pk):
     return JsonResponse({'success': False, 'errors': _form_errors(form)}, status=400)
 
 
+@csrf_exempt
 @login_required
 @require_http_methods(['POST'])
 def inquiry_convert(request, pk):
