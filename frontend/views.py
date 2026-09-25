@@ -789,6 +789,10 @@ def dashboard(request):
             inst = get_user_institution(user)
             if inst:
                 students_qs = Student.objects.filter(institution=inst)
+                if is_teacher:
+                    emp_prof = getattr(user, 'employee_profile', None)
+                    if emp_prof and emp_prof.department:
+                        students_qs = students_qs.filter(class_grade__icontains=emp_prof.department.name)
             else:
                 students_qs = Student.objects.none()
 
@@ -1037,8 +1041,7 @@ def admin_page_router(request, page_name):
         'coaching-list', 'add-coaching', 'coaching-batches', 'department', 'designation',
         'categories', 'role-permission', 'assign-role', 'general', 'company',
         'notification-alert', 'payment-gateway', 'currencies', 'languages',
-        'edit-course', 'add-new-course', 'add-book', 'expenses', 'add-new-employee',
-        'employee-details', 'employee-list'
+        'edit-course', 'add-new-course', 'add-book', 'expenses'
     ]
 
     is_admin = _is_main_admin(request.user)

@@ -65,12 +65,35 @@
           <input type="text" class="form-control radius-8" id="state" name="state" placeholder="e.g. Delhi" required>
         </div>
         <div class="col-md-4">
-          <label class="text-sm fw-semibold text-primary-light mb-8" for="admin_user">Admin User Account <span class="text-danger-600">*</span></label>
-          <select class="form-control form-select radius-8" id="admin_user" name="admin_user" required>
-            <option value="" disabled selected>-- Select Admin User --</option>
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="admin_user">Admin User Account</label>
+          <select class="form-control form-select radius-8" id="admin_user" name="admin_user">
+            <option value="" selected>-- Select Admin User (Optional) --</option>
           </select>
-          <span class="text-xs text-secondary-light">Must be assigned to complete registration.</span>
+          <span class="text-xs text-secondary-light">Select if user already exists.</span>
         </div>
+        
+        <div class="col-12 mt-16"><hr class="border-neutral-200"></div>
+        <div class="col-12 mb-8">
+          <h6 class="text-md fw-bold mb-0 text-primary-600">Create New Admin User</h6>
+          <span class="text-xs text-secondary-light">Fill this to auto-create a new admin user for this institution.</span>
+        </div>
+
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="login_email">Login Email <span class="text-danger-600">*</span></label>
+          <input type="email" class="form-control radius-8" id="login_email" name="login_email" placeholder="admin@institution.com" required>
+        </div>
+        <div class="col-md-6">
+          <label class="text-sm fw-semibold text-primary-light mb-8" for="login_password">Login Password <span class="text-danger-600">*</span></label>
+          <div class="position-relative">
+            <input type="password" class="form-control radius-8 pe-40" id="login_password" name="login_password" placeholder="••••••••" required>
+            <span class="position-absolute top-50 end-0 translate-middle-y me-12 cursor-pointer text-secondary-light" onclick="const p = document.getElementById('login_password'); if(p.type==='password'){p.type='text'; this.innerHTML='<i class=\'ri-eye-line\'></i>';}else{p.type='password'; this.innerHTML='<i class=\'ri-eye-off-line\'></i>';}">
+              <i class="ri-eye-off-line"></i>
+            </span>
+          </div>
+        </div>
+
+        <div class="col-12 mt-16"><hr class="border-neutral-200"></div>
+
         <div class="col-md-12">
           <label class="text-sm fw-semibold text-primary-light mb-8" for="address">Full Physical Address <span class="text-danger-600">*</span></label>
           <textarea class="form-control radius-8" id="address" name="address" rows="3" placeholder="Enter physical street address..." required></textarea>
@@ -228,7 +251,9 @@ $(document).ready(function() {
       status: $('#status').val(),
       city: $('#city').val(),
       state: $('#state').val(),
-      admin_user: parseInt($('#admin_user').val()),
+      admin_user: parseInt($('#admin_user').val()) || null,
+      login_email: $('#login_email').val(),
+      login_password: $('#login_password').val(),
       address: $('#address').val(),
       allowed_courses: selectedCourses
     };

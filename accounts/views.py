@@ -877,7 +877,9 @@ def employee_onboarding_api(request):
                             desig_obj = Designation.objects.create(title=designation_val.strip(), department=existing_emp.department or Department.objects.first())
                         existing_emp.designation = desig_obj
 
-                if reporting_manager_input:
+                if getattr(request.user, 'role', '') == 'institution':
+                    existing_emp.reporting_manager = request.user
+                elif reporting_manager_input:
                     mgr = User.objects.filter(id=reporting_manager_input).first()
                     if mgr:
                         existing_emp.reporting_manager = mgr
@@ -988,7 +990,9 @@ def employee_onboarding_api(request):
 
             # Lookup Reporting Manager User if provided
             reporting_mgr_user = None
-            if reporting_manager_input and str(reporting_manager_input).strip():
+            if getattr(request.user, 'role', '') == 'institution':
+                reporting_mgr_user = request.user
+            elif reporting_manager_input and str(reporting_manager_input).strip():
                 if str(reporting_manager_input).isdigit():
                     reporting_mgr_user = User.objects.filter(id=reporting_manager_input).first()
                 else:

@@ -400,12 +400,42 @@ def institution_list(request):
 
     body = _body(request)
     form = InstitutionForm(body)
+    
+    # Check if we need to auto-create an admin user
+    login_email = body.get('login_email')
+    login_password = body.get('login_password')
+    created_user = None
+
+    if login_email and login_password:
+        from accounts.models import User, Profile
+        if User.objects.filter(email=login_email).exists() or User.objects.filter(username=login_email).exists():
+            return JsonResponse({'success': False, 'errors': {'login_email': 'This email is already in use.'}}, status=400)
+        
+        try:
+            created_user = User.objects.create_user(
+                username=login_email,
+                email=login_email,
+                password=login_password,
+                role='institution_admin'
+            )
+            Profile.objects.get_or_create(user=created_user)
+            
+            # Since form is bound and immutable, we need to inject the admin_user into the body data
+            body_copy = body.copy() if hasattr(body, 'copy') else dict(body)
+            body_copy['admin_user'] = created_user.id
+            form = InstitutionForm(body_copy)
+        except Exception as e:
+            return JsonResponse({'success': False, 'errors': {'user_creation': str(e)}}, status=400)
+
     if form.is_valid():
         institution = form.save(commit=False)
         if not institution.created_by:
             institution.created_by = request.user
         if not institution.assigned_employee and request.user.role in ['employee', 'sales', 'teacher']:
             institution.assigned_employee = request.user
+            
+        # Store plaintext password temporarily in object so serializer can access it just this once? No.
+        
         try:
             institution.full_clean()
             institution.save()
@@ -420,13 +450,19 @@ def institution_list(request):
                     from courses.models import CourseCategory
                     institution.allowed_categories.set(CourseCategory.objects.filter(id__in=cat_ids))
         except DjangoValidationError as e:
+            if created_user:
+                created_user.delete()
             return JsonResponse({'success': False, 'errors': e.message_dict}, status=400)
+            
         AuditLog.log(user=request.user, action='CREATE', module='Institution', object_id=institution.id, description=f"Registered Institution '{institution.name}' ({institution.type})")
         return JsonResponse(
             {'success': True, 'institution': serialize_institution(institution, detailed=True)},
             status=201,
         )
-    return JsonResponse({'success': False, 'errors': _form_errors(form)}, status=400)
+    else:
+        if created_user:
+            created_user.delete()
+        return JsonResponse({'success': False, 'errors': _form_errors(form)}, status=400)
 
 
 def _get_institution_or_404(pk):
@@ -543,20 +579,17 @@ def student_list(request, institution_pk=None):
                         if mgr_insts:
                             inst_ids.extend(mgr_insts)
 
-                    t_filter = Q()
                     if inst_ids:
-                        t_filter |= Q(institution_id__in=inst_ids)
+                        qs = qs.filter(institution_id__in=inst_ids)
+                    else:
+                        qs = qs.none()
+                        
                     if teacher_dept:
-                        t_filter |= Q(class_grade__icontains=teacher_dept)
+                        qs = qs.filter(class_grade__icontains=teacher_dept)
 
                     school_name = getattr(request.user, 'school_name', '')
                     if school_name:
-                        t_filter |= Q(institution__name__icontains=school_name) | Q(class_grade__icontains=school_name)
-
-                    if t_filter:
-                        qs = qs.filter(t_filter)
-                    else:
-                        qs = qs.none()
+                        qs = qs.filter(Q(institution__name__icontains=school_name) | Q(class_grade__icontains=school_name))
 
         if institution:
             qs = qs.filter(institution=institution)

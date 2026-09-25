@@ -170,6 +170,7 @@
             <th scope="col">City</th>
             <th scope="col">State</th>
             <th scope="col">Status</th>
+            <th scope="col">Credentials</th>
             <th scope="col" class="text-center">Action</th>
           </tr>
         </thead>
@@ -345,6 +346,12 @@ $(document).ready(function() {
           <td>${inst.city}</td>
           <td>${inst.state}</td>
           <td><span class="px-16 py-4 radius-4 fw-medium text-sm ${badgeClass}">${inst.status.toUpperCase()}</span></td>
+          <td>
+            <div class="d-flex flex-column">
+              <span class="text-sm fw-medium text-primary-light">${inst.admin_user ? inst.admin_user.username : 'N/A'}</span>
+              <span class="text-xs text-secondary-light">Pass: <i class="ri-eye-off-line"></i> Hidden</span>
+            </div>
+          </td>
           <td class="text-center">
             <div class="d-flex align-items-center justify-content-center gap-8">
               <a href="/admin-panel/institution-details/?id=${inst.id}" class="btn btn-sm btn-outline-neutral-300 text-secondary-light px-8 py-4 radius-8" title="View Details">

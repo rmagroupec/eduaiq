@@ -161,5 +161,5 @@ AUTH_USER_MODEL = "accounts.User"
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # Razorpay Configuration
-RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', 'rzp_test_eduaiq12345')
-RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', 'test_secret_eduaiq12345')
+RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', 'rzp_test_TWImAIRe0FF8t1')
+RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', 'PQFfVlYUE5ivlFor2taiVJu0')

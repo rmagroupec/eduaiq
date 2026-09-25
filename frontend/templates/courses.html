@@ -520,41 +520,50 @@ level.{% endblock %}
         return;
       }
 
-      grid.innerHTML = results.map(course => `
+      grid.innerHTML = results.map(course => {
+        const isFree = parseFloat(course.price) === 0;
+        const isBook = course.pdf_file && course.pdf_file !== '';
+        const targetUrl = isBook ? `/book-reader/${course.slug}/` : `/course/?slug=${course.slug}`;
+
+        return `
         <div class="col-sm-6 col-lg-4 inner-course">
-          <article class="post" onclick="window.location.href='/course/?slug=${course.slug}'">
+          <article class="post" onclick="window.location.href='${targetUrl}'">
             <figure class="feature-image">
               <img src="${course.thumbnail || 'https://via.placeholder.com/400x220'}" alt="${course.title}"/>
             </figure>
             <div class="entry-content">
               <h4>
-                <a href="/course/?slug=${course.slug}" onclick="event.stopPropagation();">
+                <a href="${targetUrl}" onclick="event.stopPropagation();">
                   ${course.title}
                 </a>
               </h4>
               <p class="course-desc">${course.description || 'No description available for this course.'}</p>
               
               <div class="price-delivery">
-                <span class="course-price">₹${course.price}</span>
+                <span class="course-price">${isFree ? 'FREE' : '₹' + course.price}</span>
                 <span class="delivery-mode">${course.delivery_mode.replace('_', ' ')}</span>
               </div>
               
               <div class="entry-meta">
                 ${course.is_accessible ? `
-                  <a href="/course/?slug=${course.slug}" class="stretched-link" onclick="event.stopPropagation();">
-                    VIEW COURSE
+                  <a href="${targetUrl}" class="stretched-link" onclick="event.stopPropagation();">
+                    VIEW ${isBook ? 'BOOK' : 'COURSE'}
                     <i class="fas fa-long-arrow-alt-right"></i>
+                  </a>
+                ` : (isFree ? `
+                  <a href="${targetUrl}" class="btn-purchase-course" style="background:#10b981; border:none; text-decoration:none; color:white; justify-content:center; display:flex; align-items:center;" onclick="event.stopPropagation();">
+                    <i class="fas fa-unlock me-1"></i> FREE
                   </a>
                 ` : `
                   <button type="button" class="btn-purchase-course" onclick="event.stopPropagation(); handleCoursePurchase(event, '${course.slug}', '${(course.title || '').replace(/'/g, "\\'")}', '${course.price}')">
                     <i class="fas fa-lock me-1"></i> PURCHASE ₹${course.price}
                   </button>
-                `}
+                `)}
               </div>
             </div>
           </article>
         </div>
-      `).join('');
+      `}).join('');
 
       // Check pagination states
       const hasNext = (currentPage * pageSize) < totalCount;
