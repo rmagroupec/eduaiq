@@ -40,16 +40,38 @@
             <div class="col-md-6">
               <label class="form-label fw-bold text-neutral-900">Exam Level</label>
               <select name="level" class="form-select radius-8">
-                <option value="school" {% if exam.level == 'school' %}selected{% endif %}>School Level</option>
-                <option value="zonal" {% if exam.level == 'zonal' %}selected{% endif %}>Zonal Level</option>
-                <option value="national" {% if exam.level == 'national' %}selected{% endif %}>National Level</option>
-                <option value="international" {% if exam.level == 'international' %}selected{% endif %}>International Level</option>
+                <option value="olympiad" selected>Olympiad Exam</option>
               </select>
             </div>
 
             <div class="col-md-6">
-              <label class="form-label fw-bold text-neutral-900">Target Class Group</label>
-              <input type="text" name="class_group" class="form-control radius-8" placeholder="e.g. Class 6-10 or Class 11-12" value="{{ exam.class_group|default:'Class 6-10' }}" required>
+              <label class="form-label fw-bold text-neutral-900">Target Class / Class Group</label>
+              <select name="class_group" class="form-select radius-8" required>
+                <optgroup label="Individual Classes (Class-wise Exam)">
+                  <option value="Class 4th" {% if exam.class_group == 'Class 4th' %}selected{% endif %}>Class 4th</option>
+                  <option value="Class 5th" {% if exam.class_group == 'Class 5th' %}selected{% endif %}>Class 5th</option>
+                  <option value="Class 6th" {% if exam.class_group == 'Class 6th' %}selected{% endif %}>Class 6th</option>
+                  <option value="Class 7th" {% if exam.class_group == 'Class 7th' %}selected{% endif %}>Class 7th</option>
+                  <option value="Class 8th" {% if exam.class_group == 'Class 8th' %}selected{% endif %}>Class 8th</option>
+                  <option value="Class 9th" {% if exam.class_group == 'Class 9th' %}selected{% endif %}>Class 9th</option>
+                  <option value="Class 10th" {% if exam.class_group == 'Class 10th' %}selected{% endif %}>Class 10th</option>
+                  <option value="Class 11th" {% if exam.class_group == 'Class 11th' %}selected{% endif %}>Class 11th</option>
+                  <option value="Class 12th" {% if exam.class_group == 'Class 12th' %}selected{% endif %}>Class 12th</option>
+                </optgroup>
+                <optgroup label="Combined Class Groups">
+                  <option value="Class 4 to 12" {% if exam.class_group == 'Class 4 to 12' or not exam.class_group %}selected{% endif %}>Class 4 to 12 (All Classes)</option>
+                  <option value="Class 4-12" {% if exam.class_group == 'Class 4-12' %}selected{% endif %}>Class 4-12</option>
+                  <option value="Class 6-10" {% if exam.class_group == 'Class 6-10' %}selected{% endif %}>Class 6-10</option>
+                  <option value="Class 9-12" {% if exam.class_group == 'Class 9-12' %}selected{% endif %}>Class 9-12</option>
+                  <option value="Class 8-10" {% if exam.class_group == 'Class 8-10' %}selected{% endif %}>Class 8-10</option>
+                  <option value="Class 5-8" {% if exam.class_group == 'Class 5-8' %}selected{% endif %}>Class 5-8</option>
+                  <option value="Class 7-11" {% if exam.class_group == 'Class 7-11' %}selected{% endif %}>Class 7-11</option>
+                  <option value="Class 11-12" {% if exam.class_group == 'Class 11-12' %}selected{% endif %}>Class 11-12</option>
+                </optgroup>
+                {% if exam.class_group and exam.class_group not in 'Class 4th,Class 5th,Class 6th,Class 7th,Class 8th,Class 9th,Class 10th,Class 11th,Class 12th,Class 4 to 12,Class 4-12,Class 6-10,Class 9-12,Class 8-10,Class 5-8,Class 7-11,Class 11-12' %}
+                  <option value="{{ exam.class_group }}" selected>{{ exam.class_group }}</option>
+                {% endif %}
+              </select>
             </div>
           </div>
 

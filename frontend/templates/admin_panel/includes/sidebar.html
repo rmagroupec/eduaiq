@@ -66,7 +66,7 @@
   <div class="sidebar-menu-area">
     <ul class="sidebar-menu" id="sidebar-menu">
 
-      {% if request.user.role == 'institution' %}
+      {% if request.user.role == 'institution' or request.user.role == 'institution_admin' or request.user.role == 'school' or request.user.role == 'college' or request.user.role == 'coaching' or request.user.role == 'institute' %}
       <!-- INSTITUTION ADMIN RESTRICTED MENU -->
       <li class="sidebar-menu-header"
         style="padding: 12px 20px 6px; font-size: 11px; font-weight: 700; color: #f73859; text-transform: uppercase; letter-spacing: 0.8px; list-style: none;">
@@ -271,12 +271,7 @@
           <span>Assignments</span>
         </a>
       </li>
-      <li>
-        <a href="#fee-section">
-          <i class="ri-wallet-3-line"></i>
-          <span>Fee Details</span>
-        </a>
-      </li>
+
 
       {% elif not request.user.is_superuser and request.user.role != 'admin' %}
       <!-- SALES & EMPLOYEE PORTAL RESTRICTED MENU -->

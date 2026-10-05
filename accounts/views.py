@@ -39,7 +39,7 @@ def serialize_user(user):
         'id': user.id,
         'username': user.username,
         'email': user.email or 'info@eduaiq.co.in',
-        'phone': getattr(user, 'phone', None) or '+91 8052350041',
+        'phone': getattr(user, 'phone', None) or '+91 7985267620',
         'first_name': user.first_name,
         'last_name': user.last_name,
         'profile_image': user.profile_image.url if user.profile_image else None,
@@ -88,7 +88,7 @@ def _is_staff(user):
     return user.is_authenticated and (
         user.is_staff or 
         user.is_superuser or 
-        getattr(user, 'role', None) in ('staff', 'super_admin', 'teacher', 'admin', 'sales', 'sales_manager', 'employee')
+        getattr(user, 'role', None) in ('staff', 'super_admin', 'teacher', 'admin', 'sales', 'sales_manager', 'employee', 'institution', 'institution_admin', 'school', 'college')
     )
 
 
@@ -639,6 +639,20 @@ def employee_onboarding_api(request):
             return JsonResponse({'status': 'error', 'message': 'Employee not found.'}, status=404)
 
         employees = EmployeeProfile.objects.select_related('user', 'department', 'designation', 'reporting_manager').prefetch_related('documents').order_by('-created_at')
+        
+        # Filter employees by institution if the user is an institution admin
+        if request.user.is_authenticated:
+            user_role = (getattr(request.user, 'role', '') or '').lower().strip()
+            is_admin = getattr(request.user, 'is_superuser', False) or getattr(request.user, 'is_staff', False) or user_role in ['admin', 'superadmin', 'super_admin', 'staff']
+            if not is_admin:
+                if user_role in ['institution', 'institution_admin', 'school', 'college', 'coaching']:
+                    from institutions.models import Institution
+                    inst = Institution.objects.filter(admin_user=request.user).first()
+                    inst_filter = Q(reporting_manager=request.user)
+                    if inst:
+                        inst_filter |= Q(user__school_name=inst.name)
+                    employees = employees.filter(inst_filter)
+
         data = []
         for emp in employees:
             dept_name = emp.department.name if emp.department else (emp.user.school_name or 'CRM & Sales')
@@ -656,6 +670,7 @@ def employee_onboarding_api(request):
                     except Exception:
                         pass
             raw_pwd = notes_dict.get('initial_password') or notes_dict.get('password') or 'Employee@123'
+            sal_val = notes_dict.get('basic_salary') or notes_dict.get('basicSalary') or ''
 
             data.append({
                 'id': emp.id,
@@ -665,6 +680,8 @@ def employee_onboarding_api(request):
                 'email': emp.user.email or 'N/A',
                 'phone': emp.user.phone or 'N/A',
                 'password': raw_pwd,
+                'basic_salary': sal_val,
+                'basicSalary': sal_val,
                 'role': emp.user.role or 'employee',
                 'department': dept_name,
                 'designation': desig_title,
@@ -790,12 +807,21 @@ def employee_onboarding_api(request):
                 user.last_name = last_name or ''
                 user.email = email or ''
                 user.phone = phone if phone else (user.phone or '')
-                if access_role_input:
+                creator_role = getattr(request.user, 'role', '') or ''
+                is_creator_inst = creator_role in ['institution', 'institution_admin', 'school', 'college', 'coaching']
+                dept_str = str(department_val).lower() if department_val else ''
+                if is_creator_inst or any(k in dept_str for k in ['teacher', 'faculty', 'educator', 'teaching']):
+                    user.role = 'teacher'
+                elif access_role_input and str(access_role_input).strip():
                     role_str = str(access_role_input).strip().lower()
-                    if any(k in role_str for k in ['teacher', 'faculty', 'educator', 'teaching']):
-                        user.role = 'teacher'
-                    else:
+                    if role_str in ['employee', 'sales', 'crm', 'staff']:
                         user.role = role_str
+                    elif not any(k in role_str for k in ['teacher', 'faculty', 'educator', 'teaching']):
+                        user.role = role_str
+                    else:
+                        user.role = 'employee'
+                else:
+                    user.role = 'employee'
                 
                 user.gender = norm_choice(gender, User.GenderChoices.choices)
                 user.father_name = father_name or ''
@@ -877,7 +903,7 @@ def employee_onboarding_api(request):
                             desig_obj = Designation.objects.create(title=designation_val.strip(), department=existing_emp.department or Department.objects.first())
                         existing_emp.designation = desig_obj
 
-                if getattr(request.user, 'role', '') == 'institution':
+                if getattr(request.user, 'role', '') in ['institution', 'institution_admin', 'school', 'college', 'coaching']:
                     existing_emp.reporting_manager = request.user
                 elif reporting_manager_input:
                     mgr = User.objects.filter(id=reporting_manager_input).first()
@@ -916,19 +942,24 @@ def employee_onboarding_api(request):
                 return JsonResponse({'status': 'error', 'message': f'An account with phone number {phone} already exists.'}, status=400)
 
             # Determine role explicitly or fallback from department
-            role = 'employee'
-            if access_role_input and str(access_role_input).strip():
+            creator_role = getattr(request.user, 'role', '') or ''
+            is_creator_inst = creator_role in ['institution', 'institution_admin', 'school', 'college', 'coaching']
+            dept_str = str(department_val).lower() if department_val else ''
+
+            if is_creator_inst or any(k in dept_str for k in ['teacher', 'faculty', 'educator', 'teaching']):
+                role = 'teacher'
+            elif access_role_input and str(access_role_input).strip():
                 role_str = str(access_role_input).strip().lower()
-                if any(k in role_str for k in ['teacher', 'faculty', 'educator', 'teaching']):
-                    role = 'teacher'
-                else:
+                if role_str in ['employee', 'sales', 'crm', 'staff']:
                     role = role_str
+                elif not any(k in role_str for k in ['teacher', 'faculty', 'educator', 'teaching']):
+                    role = role_str
+                else:
+                    role = 'employee'
+            elif 'sales' in dept_str or 'crm' in dept_str:
+                role = 'sales'
             else:
-                dept_str = str(department_val).lower() if department_val else ''
-                if 'sales' in dept_str or 'crm' in dept_str:
-                    role = 'sales'
-                elif any(k in dept_str for k in ['teacher', 'faculty', 'educator', 'teaching']):
-                    role = 'teacher'
+                role = 'employee'
 
             user = User(
                 username=username,
@@ -953,6 +984,13 @@ def employee_onboarding_api(request):
             )
             user.set_password(password)
             
+            if request.user.is_authenticated:
+                if getattr(request.user, 'role', '') in ['institution', 'institution_admin', 'school', 'college', 'coaching']:
+                    from institutions.models import Institution
+                    inst = Institution.objects.filter(admin_user=request.user).first()
+                    if inst:
+                        user.school_name = inst.name
+
             profile_pic_file = request.FILES.get('profile_picture') or request.FILES.get('profile_image') or request.FILES.get('myFile')
             if profile_pic_file:
                 user.profile_image = profile_pic_file
@@ -990,7 +1028,7 @@ def employee_onboarding_api(request):
 
             # Lookup Reporting Manager User if provided
             reporting_mgr_user = None
-            if getattr(request.user, 'role', '') == 'institution':
+            if getattr(request.user, 'role', '') in ['institution', 'institution_admin', 'school', 'college', 'coaching']:
                 reporting_mgr_user = request.user
             elif reporting_manager_input and str(reporting_manager_input).strip():
                 if str(reporting_manager_input).isdigit():
@@ -1168,12 +1206,16 @@ def attendance_api(request):
                 'remarks': rec.remarks or ('Weekly Off' if rec.date.weekday() == 6 else 'On Time')
             })
 
-        basic_salary = 35000.0
+        basic_salary = 0.0
         emp_obj = getattr(user, 'employee_profile', None)
         if emp_obj:
             sal_val = getattr(emp_obj, 'basic_salary', None)
-            if not sal_val and hasattr(emp_obj, 'extra_metadata') and isinstance(emp_obj.extra_metadata, dict):
-                sal_val = emp_obj.extra_metadata.get('basic_salary') or emp_obj.extra_metadata.get('basicSalary')
+            if not sal_val and emp_obj.notes:
+                try:
+                    n_dict = json.loads(emp_obj.notes) if isinstance(emp_obj.notes, str) else emp_obj.notes
+                    sal_val = n_dict.get('basic_salary') or n_dict.get('basicSalary')
+                except Exception:
+                    pass
             if sal_val:
                 try: basic_salary = float(sal_val)
                 except: pass

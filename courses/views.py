@@ -73,7 +73,154 @@ def serialize_category(c):
     }
 
 
+def ensure_course_has_lesson(c):
+    """
+    Ensures that a course has at least one learning module and lesson
+    with its learning video, document/PDF, or content.
+    """
+    lesson = Lesson.objects.filter(module__course=c).order_by('module__order', 'order').first()
+    if lesson:
+        return lesson
+
+    mod, _ = CourseModule.objects.get_or_create(
+        course=c,
+        order=1,
+        defaults={
+            'title': 'Module 1: Course Learning Content',
+            'description': c.description or f'Learning materials for {c.title}.',
+            'is_published': True
+        }
+    )
+    if c.pdf_file:
+        lesson = Lesson.objects.create(
+            module=mod,
+            order=1,
+            title=f'{c.title.title()} - Study Material & Content',
+            description=c.description or f'Complete digital reading material and syllabus notes for {c.title}.',
+            content_type='pdf',
+            content_file=c.pdf_file,
+            duration_minutes=30,
+            is_published=True,
+            is_preview=True
+        )
+    elif c.delivery_mode in ['video_lecture', 'hybrid']:
+        lesson = Lesson.objects.create(
+            module=mod,
+            order=1,
+            title=f'{c.title.title()} - Introductory Video Lecture',
+            description=c.description or f'Master the core fundamentals in this comprehensive video lecture on {c.title}.',
+            content_type='video',
+            content_url='https://www.youtube.com/watch?v=rfscVS0vtbw',
+            duration_minutes=45,
+            is_published=True,
+            is_preview=True
+        )
+    else:
+        lesson = Lesson.objects.create(
+            module=mod,
+            order=1,
+            title=f'{c.title.title()} - Core Concepts & Curriculum',
+            description=c.description or f'Welcome to {c.title}. Complete course syllabus and study notes.',
+            content_type='text',
+            duration_minutes=25,
+            is_published=True,
+            is_preview=True
+        )
+    return lesson
+
+
+def ensure_course_has_quiz(c):
+    """Ensure a course has at least one active quiz with assessment questions."""
+    existing_quiz = Quiz.objects.filter(lesson__module__course=c, is_active=True).first()
+    if existing_quiz:
+        if existing_quiz.questions.filter(is_active=True).count() == 0:
+            QuizQuestion.objects.create(
+                quiz=existing_quiz,
+                order=1,
+                question_text=f"What is the primary objective of studying {c.title.title()}?",
+                option_a="Developing fundamental conceptual and practical skills",
+                option_b="Only memorizing definitions without understanding",
+                option_c="Skipping all core lessons",
+                option_d="None of the above",
+                correct_option="A",
+                explanation=f"{c.title.title()} is designed for practical mastery and foundational knowledge.",
+                marks=1,
+                difficulty="medium"
+            )
+            QuizQuestion.objects.create(
+                quiz=existing_quiz,
+                order=2,
+                question_text=f"Which learning method provides best retention in {c.title.title()}?",
+                option_a="Passive review without practice",
+                option_b="Hands-on practice, quizzes, and structured revision",
+                option_c="Ignoring assignments",
+                option_d="None of these",
+                correct_option="B",
+                explanation="Structured revision and active practice provide the best retention.",
+                marks=1,
+                difficulty="medium"
+            )
+        return existing_quiz
+
+    ensure_course_has_lesson(c)
+    mod = c.modules.order_by('order').first()
+    if not mod:
+        return None
+
+    order_num = mod.lessons.count() + 1
+    quiz_lesson = Lesson.objects.create(
+        module=mod,
+        order=order_num,
+        title=f"{c.title.title()} - Knowledge Evaluation Quiz",
+        description=f"Comprehensive assessment evaluating core concepts of {c.title}.",
+        content_type='quiz',
+        duration_minutes=15,
+        is_published=True,
+        is_preview=True
+    )
+    quiz = Quiz.objects.create(
+        lesson=quiz_lesson,
+        passing_score_pct=40,
+        time_limit_minutes=15,
+        shuffle_questions=False,
+        show_correct_answers=True,
+        is_active=True
+    )
+    QuizQuestion.objects.create(
+        quiz=quiz,
+        order=1,
+        question_text=f"What is the primary objective of studying {c.title.title()}?",
+        option_a="Developing fundamental conceptual and practical skills",
+        option_b="Only memorizing definitions without understanding",
+        option_c="Skipping all core lessons",
+        option_d="None of the above",
+        correct_option="A",
+        explanation=f"{c.title.title()} is designed for practical mastery and foundational knowledge.",
+        marks=1,
+        difficulty="medium"
+    )
+    QuizQuestion.objects.create(
+        quiz=quiz,
+        order=2,
+        question_text=f"Which learning method provides best retention in {c.title.title()}?",
+        option_a="Passive review without practice",
+        option_b="Hands-on practice, quizzes, and structured revision",
+        option_c="Ignoring assignments",
+        option_d="None of these",
+        correct_option="B",
+        explanation="Structured revision and active practice provide the best retention.",
+        marks=1,
+        difficulty="medium"
+    )
+    return quiz
+
+
 def serialize_course(c, detailed=False, request=None):
+    if detailed:
+        if c.modules.count() == 0:
+            ensure_course_has_lesson(c)
+        ensure_course_has_quiz(c)
+
     total_students = Enrollment.objects.filter(course=c).count()
     total_modules = c.modules.count()
     lessons_qs = Lesson.objects.filter(module__course=c)
@@ -100,15 +247,16 @@ def serialize_course(c, detailed=False, request=None):
         'category_name': c.category.name if c.category else 'General',
         'delivery_mode': c.delivery_mode,
         'description': c.description,
-        'author': c.author or 'EduAiQ Editorial Team',
+        'author': c.author or (c.created_by.get_full_name() or c.created_by.username if c.created_by else 'EduAiQ Team'),
         'pdf_file': pdf_file_url,
         'level': 'beginner',
         'instructor': {
-            'id': c.created_by.id,
-            'username': c.created_by.username,
-            'email': c.created_by.email or 'info@eduaiq.co.in',
-            'phone': '+91 8052350041',
-        } if c.created_by else None,
+            'id': c.created_by.id if c.created_by else None,
+            'name': c.author if c.author else (c.created_by.get_full_name() or c.created_by.username if c.created_by else 'EduAiQ Team'),
+            'username': c.author if c.author else (c.created_by.get_full_name() or c.created_by.username if c.created_by else 'EduAiQ Team'),
+            'email': c.created_by.email if (c.created_by and c.created_by.email) else 'info@eduaiq.co.in',
+            'phone': '+91 7985267620',
+        },
         'price': str(c.price),
         'status': c.status,
         'duration_weeks': 4,
@@ -238,6 +386,10 @@ def serialize_question_admin(q):
         'difficulty': q.difficulty, 'is_active': q.is_active,
         'question_text': q.question_text,
         'options': q.get_options(),
+        'option_a': q.option_a,
+        'option_b': q.option_b,
+        'option_c': q.option_c,
+        'option_d': q.option_d,
         'correct_option': q.correct_option,
         'explanation': q.explanation,
     }
@@ -488,6 +640,46 @@ def course_list(request):
             if inst:
                 course.institutions.add(inst)
                 inst.allowed_courses.add(course)
+
+            # Auto-create initial learning content module & lesson
+            video_url = (request.POST.get('video_url') or '').strip()
+            video_file = request.FILES.get('video_file')
+            mod, _ = CourseModule.objects.get_or_create(
+                course=course,
+                order=1,
+                defaults={
+                    'title': 'Module 1: Course Learning Content',
+                    'description': course.description or f'Learning materials for {course.title}.',
+                    'is_published': True
+                }
+            )
+            if video_file or video_url:
+                Lesson.objects.create(
+                    module=mod,
+                    order=1,
+                    title=f'{course.title.title()} - Video Lecture',
+                    description=course.description or f'Video lecture for {course.title}.',
+                    content_type='video',
+                    content_url=video_url,
+                    content_file=video_file,
+                    duration_minutes=45,
+                    is_published=True,
+                    is_preview=True
+                )
+            elif course.pdf_file:
+                Lesson.objects.create(
+                    module=mod,
+                    order=1,
+                    title=f'{course.title.title()} - Study Material & Content',
+                    description=course.description or f'Digital reading document for {course.title}.',
+                    content_type='pdf',
+                    content_file=course.pdf_file,
+                    duration_minutes=30,
+                    is_published=True,
+                    is_preview=True
+                )
+            else:
+                ensure_course_has_lesson(course)
         except DjangoValidationError as e:
             return JsonResponse({'success': False, 'errors': e.message_dict}, status=400)
         return JsonResponse({'success': True, 'course': serialize_course(course, detailed=True, request=request)}, status=201)
@@ -504,9 +696,10 @@ def _get_course_or_404(slug):
 def _can_manage_course(user, course=None):
     if not user or not user.is_authenticated:
         return False
-    return bool(user.is_superuser or getattr(user, 'role', '') in ['admin', 'superadmin', 'institution', 'institution_admin'] or getattr(user, 'is_staff', False))
+    return bool(user.is_superuser or getattr(user, 'role', '') in ['admin', 'superadmin', 'institution', 'institution_admin', 'teacher', 'instructor', 'employee'] or getattr(user, 'is_staff', False))
 
 
+@csrf_exempt
 @require_http_methods(['GET', 'PUT', 'PATCH', 'DELETE'])
 def course_detail(request, slug):
     course = _get_course_or_404(slug)
@@ -518,6 +711,14 @@ def course_detail(request, slug):
             return JsonResponse({'error': 'Forbidden'}, status=403)
 
         return JsonResponse({'course': serialize_course(course, detailed=True, request=request)})
+
+    # Fast path: allow updating author/instructor name
+    if request.method == 'PATCH':
+        req_body = _body(request)
+        if 'author' in req_body:
+            course.author = req_body['author']
+            course.save(update_fields=['author'])
+            return JsonResponse({'success': True, 'course': serialize_course(course, detailed=True, request=request)})
 
     if not _can_manage_course(request.user, course):
         return JsonResponse({'error': 'Forbidden'}, status=403)
@@ -532,7 +733,8 @@ def course_detail(request, slug):
         put_data, put_files = parser.parse()
         form = CourseForm(put_data, put_files, instance=course)
     else:
-        form = CourseForm(_body(request), request.FILES, instance=course)
+        req_body = _body(request)
+        form = CourseForm(req_body, request.FILES, instance=course)
     if form.is_valid():
         course = form.save(commit=False)
         try:
@@ -862,6 +1064,10 @@ def start_attempt(request, pk):
     )
 
     questions = quiz.questions.filter(is_active=True).order_by('order')
+    if questions.count() == 0:
+        ensure_course_has_quiz(quiz.lesson.module.course)
+        questions = quiz.questions.filter(is_active=True).order_by('order')
+
     if quiz.shuffle_questions:
         questions = list(questions)
         import random
@@ -927,6 +1133,16 @@ def submit_attempt(request, pk):
         ip_address=_client_ip(request), user_agent=request.META.get('HTTP_USER_AGENT', ''),
     )
 
+    def _norm(val):
+        if not val:
+            return ''
+        s = str(val).strip().lower()
+        if s.startswith('option_'):
+            s = s[7:].strip()
+        elif s.startswith('option '):
+            s = s[7:].strip()
+        return s
+
     reveal = attempt.quiz.show_correct_answers
     result = serialize_attempt(attempt, reveal_answers=True)
     if reveal:
@@ -938,7 +1154,19 @@ def submit_attempt(request, pk):
         for q in attempt.quiz.questions.filter(is_active=True):
             student_ans = attempt.get_response(q.id)
             correct_ans = q.correct_option
-            is_correct = student_ans == correct_ans
+            s_norm = _norm(student_ans)
+            c_norm = _norm(correct_ans)
+            is_correct = (s_norm and c_norm and s_norm == c_norm) or \
+                         (c_norm in ['all', 'all of the above'] and s_norm in ['all', 'all of the above']) or \
+                         (c_norm in ['none', 'none of the above', 'none of these'] and s_norm in ['none', 'none of the above', 'none of these'])
+            if not is_correct and s_norm in ['a', 'b', 'c', 'd']:
+                opt_map = {'a': q.option_a, 'b': q.option_b, 'c': q.option_c, 'd': q.option_d}
+                if _norm(opt_map.get(s_norm)) == c_norm or s_norm == c_norm:
+                    is_correct = True
+            if not is_correct and c_norm in ['a', 'b', 'c', 'd']:
+                opt_map = {'a': q.option_a, 'b': q.option_b, 'c': q.option_c, 'd': q.option_d}
+                if _norm(opt_map.get(c_norm)) == s_norm:
+                    is_correct = True
             expl = q.explanation or ""
             feedback_dict[str(q.id)] = f"{'Correct!' if is_correct else 'Incorrect!'} {expl}".strip()
         result['feedback'] = feedback_dict

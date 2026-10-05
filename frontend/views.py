@@ -549,9 +549,27 @@ def quiz_player(request, pk=None):
     URL Path / Query Params: pk or id (quiz ID)
     Requires: User authentication
     """
+    from courses.models import Quiz, Course
+    from courses.views import ensure_course_has_quiz
+
     quiz_id = pk or request.GET.get('id', '')
+    course_slug = request.GET.get('course') or request.GET.get('slug', '')
+
+    if not quiz_id and course_slug:
+        course = Course.objects.filter(slug=course_slug).first()
+        if course:
+            q = ensure_course_has_quiz(course)
+            if q:
+                quiz_id = q.id
+
+    if not quiz_id:
+        active_q = Quiz.objects.filter(is_active=True).first()
+        if active_q:
+            quiz_id = active_q.id
+
     return render(request, "quiz-player.html", {
-        'quiz_id': quiz_id
+        'quiz_id': quiz_id,
+        'course_slug': course_slug,
     })
 
 
@@ -567,6 +585,31 @@ def lesson_player(request, pk=None):
     Requires: User authentication
     """
     lesson_id = pk or request.GET.get('id', '')
+    course_slug = request.GET.get('course') or request.GET.get('slug', '')
+
+    if not lesson_id:
+        from courses.models import Course, Lesson
+        from courses.views import ensure_course_has_lesson
+
+        target_course = None
+        if course_slug:
+            target_course = Course.objects.filter(slug=course_slug).first()
+        if not target_course:
+            # Check user enrollments
+            from courses.models import Enrollment
+            enrollment = Enrollment.objects.filter(student=request.user).select_related('course').first()
+            if enrollment:
+                target_course = enrollment.course
+
+        if target_course:
+            lesson = Lesson.objects.filter(module__course=target_course, is_published=True).order_by('module__order', 'order').first()
+            if not lesson:
+                lesson = Lesson.objects.filter(module__course=target_course).order_by('module__order', 'order').first()
+            if not lesson:
+                lesson = ensure_course_has_lesson(target_course)
+            if lesson:
+                lesson_id = lesson.id
+
     return render(request, "lesson-player.html", {
         'lesson_id': lesson_id
     })
@@ -591,7 +634,7 @@ def dashboard(request):
     is_employee = False
 
     if not is_admin:
-        if user_role in ['institution', 'college', 'school', 'institute', 'partner']:
+        if user_role in ['institution', 'college', 'school', 'institute', 'partner', 'institution_admin', 'coaching']:
             is_institution = True
         elif user_role in ['student', 'parent'] or hasattr(user, 'student_profile'):
             is_student = True
@@ -1057,6 +1100,9 @@ def admin_page_router(request, page_name):
         return redirect('admin_panel')
 
     if (not is_admin or user_role in ['teacher', 'faculty']) and page_name in admin_only_pages:
+        return redirect('admin_panel')
+
+    if page_name in ['student-attendance'] and user_role not in ['teacher', 'faculty', 'institution', 'institution_admin', 'school', 'college', 'coaching'] and not is_admin:
         return redirect('admin_panel')
 
     if page_name in ['view-profile', 'profile']:
@@ -1566,7 +1612,7 @@ def _get_redirect_url_for_user(request, user):
         return '/my-learning/'
     elif getattr(user, 'role', '') == 'parent':
         return '/parent/dashboard/'
-    elif getattr(user, 'role', '') in ['institution', 'admin', 'partner', 'employee', 'staff', 'teacher', 'sales', 'crm'] or user.is_staff or user.is_superuser:
+    elif getattr(user, 'role', '') in ['institution', 'institution_admin', 'school', 'college', 'coaching', 'admin', 'partner', 'employee', 'staff', 'teacher', 'sales', 'crm'] or user.is_staff or user.is_superuser:
         return '/admin-panel/dashboard/'
     
     return '/my-learning/'
@@ -1593,6 +1639,16 @@ def login_view(request):
         user = authenticate(request, username=username_to_try, password=password)
 
         if user is not None:
+            if getattr(user, 'role', '') in ['institution', 'institution_admin', 'school', 'college', 'coaching']:
+                from institutions.models import Institution
+                institution = Institution.objects.filter(admin_user=user).first()
+                if not institution:
+                    return render(request, 'admin_panel/login.html', {
+                        'form_errors': ["Your institution is not yet added or approved by the main admin."],
+                        'old_username': identifier,
+                        'next': next_param,
+                    })
+
             login(request, user)
             return redirect(_get_redirect_url_for_user(request, user))
 
@@ -1674,25 +1730,18 @@ def institution_login_view(request):
         user = authenticate(request, username=username_to_try, password=password)
 
         if user is not None:
-            login(request, user)
             # Ensure an Institution record exists so Super Admin can manage & allow courses for this institution
             if getattr(user, 'role', '') in ['institution', 'institution_admin', 'school', 'college', 'coaching']:
                 from institutions.models import Institution
-                itype = 'school' if user.role == 'school' else ('college' if user.role == 'college' else 'coaching')
-                iname = user.get_full_name() or user.username
-                Institution.objects.get_or_create(
-                    admin_user=user,
-                    defaults={
-                        'name': iname,
-                        'type': itype,
-                        'created_by': user,
-                        'status': 'pending',
-                        'address': 'Registered via Website',
-                        'city': 'Online',
-                        'state': 'India',
-                        'phone': getattr(user, 'phone', '') or ''
-                    }
-                )
+                institution = Institution.objects.filter(admin_user=user).first()
+                if not institution:
+                    return render(request, 'institution_login.html', {
+                        'form_errors': ["Your institution is not yet added or approved by the main admin."],
+                        'old_username': identifier,
+                        'next': next_param,
+                    })
+            
+            login(request, user)
             return redirect(_get_redirect_url_for_user(request, user))
 
         return render(request, 'institution_login.html', {
@@ -2492,12 +2541,21 @@ def admin_olympiad_entrance_questions(request, pk):
         elif action == 'assign_quiz':
             quiz_id = request.POST.get('quiz_id')
             sec_name = request.POST.get('section_name', '').strip()
+            target_class = request.POST.get('target_class', '').strip()
             if quiz_id:
                 quiz_obj = get_object_or_404(Quiz, id=quiz_id)
+                if target_class:
+                    if sec_name:
+                        full_sec_name = f"[{target_class}] {sec_name}"
+                    else:
+                        full_sec_name = f"[{target_class}] {quiz_obj.lesson.title}"
+                else:
+                    full_sec_name = sec_name or quiz_obj.lesson.title
+
                 OlympiadQuiz.objects.get_or_create(
                     olympiad=exam,
                     quiz=quiz_obj,
-                    defaults={'section_name': sec_name}
+                    defaults={'section_name': full_sec_name}
                 )
                 messages.success(request, f"Quiz '{quiz_obj.lesson.title}' assigned to exam.")
 
@@ -2510,8 +2568,8 @@ def admin_olympiad_entrance_questions(request, pk):
         return redirect('admin_olympiad_entrance_questions', pk=pk)
 
     direct_questions = exam.questions.all().order_by('-id')
-    assigned_quizzes = exam.olympiad_quizzes.select_related('quiz', 'quiz__lesson').all()
-    available_quizzes = Quiz.objects.filter(is_active=True).exclude(
+    assigned_quizzes = exam.olympiad_quizzes.select_related('quiz', 'quiz__lesson', 'quiz__lesson__module', 'quiz__lesson__module__course').all()
+    available_quizzes = Quiz.objects.filter(is_active=True).select_related('lesson', 'lesson__module', 'lesson__module__course').exclude(
         id__in=assigned_quizzes.values_list('quiz_id', flat=True)
     )
 

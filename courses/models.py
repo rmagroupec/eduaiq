@@ -26,15 +26,13 @@ logger = logging.getLogger(__name__)
 class EncryptionManager:
     """Manages encryption/decryption for quiz data using Fernet (256-bit AES)."""
     
-    ENCRYPTION_KEY = os.getenv('QUIZ_ENCRYPTION_KEY', 'generate_secure_key')
+    # In a real world application, this fallback should be kept secret.
+    # It ensures the key remains consistent across server restarts if not in .env.
+    ENCRYPTION_KEY = os.getenv('QUIZ_ENCRYPTION_KEY', 'BoxfOmSpCWAh9f91RJfwt-hEx7_UHNWvJ1EnjtOxpmM=')
     
     @classmethod
     def get_or_create_key(cls):
-        """Get encryption key from environment or generate a new one."""
-        if cls.ENCRYPTION_KEY == 'generate_secure_key':
-            key = Fernet.generate_key()
-            logger.warning(f"No QUIZ_ENCRYPTION_KEY found. Add to .env: QUIZ_ENCRYPTION_KEY={key.decode()}")
-            return key
+        """Get encryption key from environment or default."""
         return cls.ENCRYPTION_KEY.encode() if isinstance(cls.ENCRYPTION_KEY, str) else cls.ENCRYPTION_KEY
     
     @classmethod
@@ -545,10 +543,41 @@ class QuizAttempt(models.Model):
         total_marks = 0
         obtained_marks = 0
         
+        def _norm(val):
+            if not val:
+                return ''
+            s = str(val).strip().lower()
+            if s.startswith('option_'):
+                s = s[7:].strip()
+            elif s.startswith('option '):
+                s = s[7:].strip()
+            return s
+
         for question in self.quiz.questions.filter(is_active=True):
             total_marks += question.marks
             student_answer = responses.get(str(question.id))
-            if student_answer == question.correct_option:
+            correct_answer = question.correct_option
+            
+            s_norm = _norm(student_answer)
+            c_norm = _norm(correct_answer)
+            
+            is_match = False
+            if s_norm and c_norm and s_norm == c_norm:
+                is_match = True
+            elif c_norm in ['all', 'all of the above'] and s_norm in ['all', 'all of the above']:
+                is_match = True
+            elif c_norm in ['none', 'none of the above', 'none of these'] and s_norm in ['none', 'none of the above', 'none of these']:
+                is_match = True
+            elif s_norm in ['a', 'b', 'c', 'd']:
+                opt_map = {'a': question.option_a, 'b': question.option_b, 'c': question.option_c, 'd': question.option_d}
+                if _norm(opt_map.get(s_norm)) == c_norm or s_norm == c_norm:
+                    is_match = True
+            elif c_norm in ['a', 'b', 'c', 'd']:
+                opt_map = {'a': question.option_a, 'b': question.option_b, 'c': question.option_c, 'd': question.option_d}
+                if _norm(opt_map.get(c_norm)) == s_norm:
+                    is_match = True
+
+            if is_match:
                 obtained_marks += question.marks
         
         if total_marks > 0:

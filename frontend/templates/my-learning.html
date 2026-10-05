@@ -200,56 +200,130 @@
     border-color: #fdba74 !important;
   }
 
-  /* Hero Banner Buttons Hover Effects */
-  .btn-hero-catalog {
-    background: #ffffff;
-    color: #ea580c;
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.25);
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    display: inline-flex;
+  /* ==========================================================================
+     Hero Action Buttons — Ultra-Premium SaaS Design & Micro-interactions
+     ========================================================================== */
+  .hero-action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
     align-items: center;
   }
 
-  .btn-hero-catalog:hover {
-    transform: translateY(-3px) scale(1.03);
-    box-shadow: 0 12px 28px rgba(249, 115, 22, 0.45);
-    color: #c2410c;
+  .btn-hero-profile {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fde68a 100%);
+    color: #92400e !important;
+    border: 1.5px solid rgba(245, 158, 11, 0.45);
+    border-radius: 50rem;
+    padding: 9px 20px;
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+  }
+
+  .btn-hero-profile:hover {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+    color: #78350f !important;
+    transform: translateY(-2.5px);
+    box-shadow: 0 10px 24px -2px rgba(245, 158, 11, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    border-color: #f59e0b;
+  }
+
+  .btn-hero-profile:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+  }
+
+  .btn-hero-profile i {
+    color: #d97706;
+    transition: transform 0.25s ease;
+  }
+
+  .btn-hero-profile:hover i {
+    transform: scale(1.15) rotate(-8deg);
+  }
+
+  .btn-hero-catalog {
     background: #ffffff;
+    color: #ea580c !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.95);
+    border-radius: 50rem;
+    padding: 9px 22px;
+    font-size: 13.5px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.28), inset 0 1px 0 #ffffff;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+  }
+
+  .btn-hero-catalog:hover {
+    background: #ffffff;
+    color: #c2410c !important;
+    transform: translateY(-2.5px);
+    box-shadow: 0 12px 28px rgba(249, 115, 22, 0.45), 0 3px 10px rgba(0, 0, 0, 0.08);
+    border-color: #fdba74;
+  }
+
+  .btn-hero-catalog:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
   }
 
   .btn-hero-catalog i {
+    color: #f59e0b;
     transition: transform 0.3s ease;
   }
 
   .btn-hero-catalog:hover i {
-    transform: scale(1.2) rotate(10deg);
+    transform: scale(1.2) rotate(12deg);
   }
 
   .btn-hero-syllabus {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    color: #ffffff;
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    color: #f8fafc !important;
+    border-radius: 50rem;
+    padding: 9px 20px;
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
     display: inline-flex;
     align-items: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
   }
 
   .btn-hero-syllabus:hover {
-    transform: translateY(-3px) scale(1.03);
-    background: rgba(249, 115, 22, 0.25);
-    border-color: rgba(249, 115, 22, 0.6);
-    box-shadow: 0 10px 25px rgba(249, 115, 22, 0.35);
-    color: #ffffff;
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #ffffff !important;
+    transform: translateY(-2.5px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  .btn-hero-syllabus:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
   .btn-hero-syllabus i {
-    transition: transform 0.3s ease;
+    color: #f87171;
+    transition: transform 0.25s ease;
   }
 
   .btn-hero-syllabus:hover i {
-    transform: translateY(-2px);
+    transform: scale(1.15) translateY(-1px);
   }
 
   /* All Card Buttons Hover Effects */
@@ -526,15 +600,15 @@
         </div>
       </div>
 
-      <div class="d-flex flex-wrap gap-2 justify-content-center">
-        <a href="/edit-profile/" class="btn btn-warning rounded-pill px-4 py-2.5 fw-bold shadow-sm text-dark">
+      <div class="hero-action-buttons justify-content-center justify-content-md-end">
+        <a href="/edit-profile/" class="btn btn-hero-profile">
           <i class="fas fa-user-edit me-2"></i> Edit Profile
         </a>
-        <a href="/olympiad-entrance/" class="btn btn-hero-catalog rounded-pill px-4 py-2.5 fw-bold shadow-sm">
-          <i class="fas fa-trophy me-2 text-warning"></i> Entrance Catalog
+        <a href="/olympiad-entrance/" class="btn btn-hero-catalog">
+          <i class="fas fa-trophy me-2"></i> Entrance Catalog
         </a>
-        <a href="/olympiad-curriculum/" class="btn btn-hero-syllabus rounded-pill px-4 py-2.5 fw-bold">
-          <i class="fas fa-file-pdf me-2 opacity-75"></i> Olympiad Syllabus
+        <a href="/olympiad-curriculum/" class="btn btn-hero-syllabus">
+          <i class="fas fa-file-pdf me-2"></i> Olympiad Syllabus
         </a>
       </div>
     </div>

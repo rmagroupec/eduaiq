@@ -123,6 +123,68 @@
   </div>
 </div>
 
+<!-- Edit Lesson Modal -->
+<div class="modal fade" id="editLessonModal" tabindex="-1" aria-labelledby="editLessonModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="editLessonModalLabel">Edit Lesson</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editLessonForm" onsubmit="submitEditLesson(event)" enctype="multipart/form-data">
+          <input type="hidden" id="editLessonId" name="lesson_id">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="editLesTitle" class="form-label fw-semibold">Lesson Title <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="editLesTitle" name="title" required>
+            </div>
+            <div class="col-md-6">
+              <label for="editLesType" class="form-label fw-semibold">Content Type <span class="text-danger">*</span></label>
+              <select class="form-select" id="editLesType" name="content_type" onchange="onEditContentTypeChange()" required>
+                <option value="video">🎥 Video (YouTube / Upload)</option>
+                <option value="pdf">📄 PDF Document</option>
+                <option value="text">📖 Text/Article Read</option>
+                <option value="quiz">❓ Quiz</option>
+                <option value="assignment">📝 Assignment</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="editLesDuration" class="form-label fw-semibold">Duration (Minutes) <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" id="editLesDuration" name="duration_minutes" min="1" required>
+            </div>
+            <div class="col-md-6">
+              <label for="editLesOrder" class="form-label fw-semibold">Order <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" id="editLesOrder" name="order" min="1" required>
+            </div>
+            
+            <div class="col-12" id="editUrlFieldContainer">
+              <label for="editLesUrl" class="form-label fw-semibold">Content URL (Video Link)</label>
+              <input type="url" class="form-control" id="editLesUrl" name="content_url" placeholder="https://www.youtube.com/watch?v=...">
+            </div>
+            <div class="col-12 d-none" id="editFileFieldContainer">
+              <label for="editLesFile" class="form-label fw-semibold" id="editFileLabel">Upload / Replace PDF File</label>
+              <input type="file" class="form-control" id="editLesFile" name="content_file">
+              <div id="editCurrentFileStatus" class="mt-1 text-xs text-muted"></div>
+            </div>
+
+            <div class="col-12">
+              <label for="editLesDesc" class="form-label fw-semibold">Description / Reading Content</label>
+              <textarea class="form-control" id="editLesDesc" name="description" rows="4" placeholder="Provide details or paste the text content here..."></textarea>
+            </div>
+          </div>
+          <div class="text-end mt-4">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary btn-sm" id="updateLessonBtn">
+              <i class="ri-check-line me-1"></i> Update Lesson
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   const API_BASE_URL = window.location.origin;
   let selectedModuleId = '';
@@ -257,7 +319,9 @@
         return;
       }
 
-      tbody.innerHTML = lessons.map(l => `
+      tbody.innerHTML = lessons.map(l => {
+        const safeTitle = (l.title || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        return `
         <tr>
           <td><span class="badge bg-primary-100 text-primary-600 fw-bold"># ${l.order}</span></td>
           <td>${l.id}</td>
@@ -267,16 +331,23 @@
           <td>
             ${l.content_type === 'video' ? `<a href="${l.content_url || l.content_file}" target="_blank" class="text-info text-sm"><i class="ri-youtube-line"></i> Play Video</a>` : ''}
             ${l.content_type === 'pdf' ? `<a href="${l.content_file}" target="_blank" class="text-success text-sm"><i class="ri-file-pdf-line"></i> Open PDF</a>` : ''}
-            ${l.content_type === 'text' ? `<span class="text-muted text-sm">Read Article</span>` : ''}
+            ${l.content_type === 'text' ? `<span class="text-muted text-sm"><i class="ri-article-line"></i> Read Article</span>` : ''}
             ${l.content_type === 'assignment' ? `<span class="text-primary text-sm"><i class="ri-file-edit-line"></i> Assignment</span>` : ''}
+            ${l.content_type === 'quiz' ? `<a href="/quiz/?id=${l.id}" target="_blank" class="text-warning text-sm fw-semibold"><i class="ri-question-line"></i> View Quiz</a>` : ''}
           </td>
           <td>
-            <button class="btn btn-sm btn-outline-danger" onclick="deleteLesson(${l.id}, '${l.title}')">
-              <i class="ri-delete-bin-line"></i> Delete
-            </button>
+            <div class="d-flex align-items-center gap-2">
+              <button class="btn btn-sm btn-outline-primary" onclick="openEditLessonModal(${l.id})">
+                <i class="ri-edit-line"></i> Edit
+              </button>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteLesson(${l.id}, '${safeTitle}')">
+                <i class="ri-delete-bin-line"></i> Delete
+              </button>
+            </div>
           </td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
     } catch (e) {
       console.error(e);
       tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Failed to load lessons.</td></tr>`;
@@ -315,6 +386,136 @@
     } catch (err) {
       console.error(err);
       showToast('Error saving lesson.', 'error');
+    }
+  }
+
+  let editingLessonId = null;
+
+  function onEditContentTypeChange() {
+    const type = document.getElementById('editLesType').value;
+    const urlContainer = document.getElementById('editUrlFieldContainer');
+    const fileContainer = document.getElementById('editFileFieldContainer');
+    const urlLabel = document.querySelector('#editUrlFieldContainer label');
+    const fileLabel = document.getElementById('editFileLabel');
+    const fileInput = document.getElementById('editLesFile');
+    const urlInput = document.getElementById('editLesUrl');
+
+    if (type === 'video') {
+      urlContainer.classList.remove('d-none');
+      fileContainer.classList.remove('d-none');
+      if (urlLabel) urlLabel.innerHTML = 'Video Link (YouTube, Vimeo, Drive, or Direct URL)';
+      if (urlInput) urlInput.placeholder = 'https://www.youtube.com/watch?v=...';
+      if (fileLabel) fileLabel.innerHTML = 'Or Upload / Replace Video File (.mp4, .webm, .mov)';
+      if (fileInput) fileInput.setAttribute('accept', 'video/mp4,video/webm,video/ogg,video/quicktime,video/*');
+    } else if (type === 'pdf') {
+      urlContainer.classList.add('d-none');
+      fileContainer.classList.remove('d-none');
+      if (fileLabel) fileLabel.innerHTML = 'Upload / Replace PDF Document';
+      if (fileInput) fileInput.setAttribute('accept', 'application/pdf,.pdf');
+    } else if (type === 'assignment') {
+      urlContainer.classList.add('d-none');
+      fileContainer.classList.remove('d-none');
+      if (fileLabel) fileLabel.innerHTML = 'Upload / Replace Assignment File (Optional)';
+      if (fileInput) fileInput.removeAttribute('accept');
+    } else {
+      urlContainer.classList.add('d-none');
+      fileContainer.classList.add('d-none');
+    }
+  }
+
+  async function openEditLessonModal(id) {
+    editingLessonId = id;
+    const form = document.getElementById('editLessonForm');
+    form.reset();
+    document.getElementById('editLessonId').value = id;
+    document.getElementById('editCurrentFileStatus').innerHTML = '';
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/courses/lessons/${id}/`, {
+        headers: { 'Accept': 'application/json' },
+        credentials: 'include'
+      });
+      if (!response.ok) {
+        showToast('Failed to fetch lesson details.', 'error');
+        return;
+      }
+      const data = await response.json();
+      const l = data.lesson;
+      if (!l) {
+        showToast('Lesson data not found.', 'error');
+        return;
+      }
+
+      document.getElementById('editLesTitle').value = l.title || '';
+      document.getElementById('editLesType').value = l.content_type || 'video';
+      document.getElementById('editLesDuration').value = l.duration_minutes || 10;
+      document.getElementById('editLesOrder').value = l.order || 1;
+      document.getElementById('editLesUrl').value = l.content_url || '';
+      document.getElementById('editLesDesc').value = l.description || '';
+
+      const currentFileStatus = document.getElementById('editCurrentFileStatus');
+      if (l.content_file) {
+        currentFileStatus.innerHTML = `<span class="text-success"><i class="ri-file-line"></i> Current file: <a href="${l.content_file}" target="_blank" class="text-decoration-underline text-success">View current file</a></span> <span class="text-muted">(Leave blank to keep current file)</span>`;
+      } else {
+        currentFileStatus.innerHTML = `<span class="text-muted">No file currently uploaded.</span>`;
+      }
+
+      onEditContentTypeChange();
+
+      const modalEl = document.getElementById('editLessonModal');
+      const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+      modal.show();
+    } catch (err) {
+      console.error(err);
+      showToast('Error opening edit lesson modal.', 'error');
+    }
+  }
+
+  async function submitEditLesson(e) {
+    e.preventDefault();
+    if (!editingLessonId) return;
+
+    const form = document.getElementById('editLessonForm');
+    const formData = new FormData(form);
+
+    const fileInput = document.getElementById('editLesFile');
+    if (!fileInput.files || fileInput.files.length === 0) {
+      formData.delete('content_file');
+    }
+
+    const submitBtn = document.getElementById('updateLessonBtn');
+    const originalBtnHtml = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="ri-loader-4-line ri-spin me-1"></i> Updating...';
+
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+      const response = await fetch(`${API_BASE_URL}/courses/lessons/${editingLessonId}/`, {
+        method: 'PUT',
+        headers: {
+          'X-CSRFToken': csrfToken
+        },
+        body: formData,
+        credentials: 'include'
+      });
+
+      const resData = await response.json();
+      if (response.ok && (resData.success || resData.lesson)) {
+        showToast('Lesson updated successfully!', 'success');
+        const modalEl = document.getElementById('editLessonModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+        loadAdminLessons();
+      } else {
+        const errMsg = resData.errors ? JSON.stringify(resData.errors) : (resData.error || 'Failed to update lesson');
+        showToast(errMsg, 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Error updating lesson.', 'error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnHtml;
     }
   }
 

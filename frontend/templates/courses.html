@@ -522,8 +522,7 @@ level.{% endblock %}
 
       grid.innerHTML = results.map(course => {
         const isFree = parseFloat(course.price) === 0;
-        const isBook = course.pdf_file && course.pdf_file !== '';
-        const targetUrl = isBook ? `/book-reader/${course.slug}/` : `/course/?slug=${course.slug}`;
+        const targetUrl = `/lesson/?course=${course.slug}`;
 
         return `
         <div class="col-sm-6 col-lg-4 inner-course">
@@ -541,13 +540,13 @@ level.{% endblock %}
               
               <div class="price-delivery">
                 <span class="course-price">${isFree ? 'FREE' : '₹' + course.price}</span>
-                <span class="delivery-mode">${course.delivery_mode.replace('_', ' ')}</span>
+                <span class="delivery-mode">${(course.delivery_mode || '').replace('_', ' ')}</span>
               </div>
               
               <div class="entry-meta">
                 ${course.is_accessible ? `
                   <a href="${targetUrl}" class="stretched-link" onclick="event.stopPropagation();">
-                    VIEW ${isBook ? 'BOOK' : 'COURSE'}
+                    VIEW COURSE
                     <i class="fas fa-long-arrow-alt-right"></i>
                   </a>
                 ` : (isFree ? `

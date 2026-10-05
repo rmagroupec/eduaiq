@@ -267,7 +267,7 @@
               <label class="form-label text-sm fw-semibold text-primary-light">Base Salary (₹)</label>
               <div class="input-group">
                 <span class="input-group-text bg-neutral-100 text-xs font-semibold">₹</span>
-                <input type="number" class="form-control radius-8 fw-semibold" id="modalBaseSalary" min="0" step="500" value="35000">
+                <input type="number" class="form-control radius-8 fw-semibold" id="modalBaseSalary" min="0" step="500" value="0">
               </div>
             </div>
             <div class="col-md-3">
@@ -411,7 +411,7 @@
               resp.data.forEach(function(emp, idx) {
                 var sl = String(idx + 1).padStart(2, '0');
                 var empCode = emp.employee_id || ('EMP-' + emp.id);
-                var baseSal = emp.basic_salary ? Number(emp.basic_salary) : 35000;
+                var baseSal = (emp.basic_salary !== undefined && emp.basic_salary !== null && emp.basic_salary !== '') ? Number(emp.basic_salary) : 0;
                 var daysWorked = 28; // Default 28 payable days out of 30
                 var calc = calcSalaryDetails(baseSal, daysWorked);
 
@@ -511,7 +511,7 @@
           var totalCut = 0;
           employeeRosterData.forEach(function(e) {
             var $r = $('#empRow-' + e.id);
-            var b = $r.length ? (Number($r.find('.base-sal-input').val()) || 35000) : (e.basic_salary ? Number(e.basic_salary) : 35000);
+            var b = $r.length ? (Number($r.find('.base-sal-input').val()) || 0) : ((e.basic_salary !== undefined && e.basic_salary !== null && e.basic_salary !== '') ? Number(e.basic_salary) : 0);
             var c = calcSalaryDetails(b, days);
             totalBase += c.base;
             totalNet += c.netSal;
@@ -551,7 +551,7 @@
           var selectedOpt = $('#payTargetStaff option:selected');
           var empId = selectedVal;
           var $r = $('#empRow-' + empId);
-          var b = $r.length ? (Number($r.find('.base-sal-input').val()) || 35000) : (Number(selectedOpt.data('sal')) || 35000);
+          var b = $r.length ? (Number($r.find('.base-sal-input').val()) || 0) : (Number(selectedOpt.data('sal')) || 0);
           $('#modalBaseSalary').val(b);
         }
         updateModalCalculation();
@@ -601,7 +601,7 @@
         var empid = $(this).data('empid') || 'EMP-001';
         var dept = $(this).data('dept') || 'CRM & Sales';
         var role = $(this).data('role') || 'Staff';
-        var baseSal = Number($(this).data('base')) || 35000;
+        var baseSal = Number($(this).data('base')) || 0;
         var days = Number($(this).data('days')) || 28;
 
         var calc = calcSalaryDetails(baseSal, days);

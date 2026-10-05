@@ -135,10 +135,10 @@
       
       <!-- Compact Modal Footer -->
       <div class="modal-footer bg-light py-2.5 px-4 border-0 d-flex justify-content-between align-items-center">
-        <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 rounded-pill fw-bold text-xs" onclick="document.getElementById('resultsModal').style.display='none'">
+        <button type="button" class="btn btn-sm btn-scorecard-close" onclick="document.getElementById('resultsModal').style.display='none'">
           <i class="fas fa-times me-1"></i> Close
         </button>
-        <button class="btn btn-sm btn-brand-orange px-4 py-1.5 rounded-pill fw-extrabold text-xs" onclick="location.href='/my-learning/'">
+        <button class="btn btn-sm btn-scorecard-dashboard" onclick="location.href='/my-learning/'">
           <i class="fas fa-graduation-cap me-1.5"></i> Dashboard
         </button>
       </div>
@@ -285,6 +285,13 @@
   .scorecard-hero-panel {
     background: linear-gradient(135deg, #f8fafc 0%, #fff7ed 100%);
     border: 1px solid #fed7aa;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .scorecard-hero-panel:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -4px rgba(253, 126, 20, 0.14), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+    border-color: #fdba74;
   }
 
   .score-circle-pill {
@@ -299,6 +306,12 @@
     background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
     border: 2px solid #fd7e14;
     color: #ea580c;
+    transition: all 0.3s ease;
+  }
+
+  .score-circle-pill:hover {
+    transform: scale(1.06);
+    box-shadow: 0 4px 14px rgba(253, 126, 20, 0.3);
   }
 
   .score-circle-pill.pass {
@@ -324,18 +337,31 @@
   .mini-stat-chip {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 7px;
-    padding: 3px 9px;
+    border-radius: 8px;
+    padding: 4px 10px;
+    transition: all 0.25s ease;
+  }
+
+  .mini-stat-chip:hover {
+    transform: translateY(-1px);
+    border-color: #cbd5e1;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
   }
 
   .feedback-ribbon {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 14px;
+    padding: 9px 14px;
     border-radius: 9px;
     font-size: 12.5px;
     font-weight: 700;
+    transition: all 0.25s ease;
+  }
+
+  .feedback-ribbon:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
 
   .feedback-ribbon.pass {
@@ -351,13 +377,15 @@
   }
 
   .explanations-scroll-container {
-    max-height: 195px;
+    max-height: 230px;
     overflow-y: auto;
     padding-right: 4px;
+    padding-top: 2px;
+    padding-bottom: 2px;
   }
 
   .explanations-scroll-container::-webkit-scrollbar {
-    width: 4px;
+    width: 5px;
   }
 
   .explanations-scroll-container::-webkit-scrollbar-track {
@@ -377,22 +405,94 @@
   .explanation-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-left: 3.5px solid #fd7e14;
-    border-radius: 8px;
-    padding: 8px 12px;
-    margin-bottom: 7px;
+    border-left: 4px solid #fd7e14;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 9px;
     font-size: 12.5px;
     line-height: 1.45;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    cursor: default;
+  }
+
+  .explanation-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -2px rgba(15, 23, 42, 0.09), 0 3px 7px -1px rgba(0, 0, 0, 0.04);
   }
 
   .explanation-card.is-correct {
     border-left-color: #10b981;
-    background: #fafdfb;
+    background: #fcfdfd;
+  }
+
+  .explanation-card.is-correct:hover {
+    border-color: #86efac;
+    border-left-color: #10b981;
+    background: #f0fdf4;
+    box-shadow: 0 8px 20px -2px rgba(16, 185, 129, 0.16);
   }
 
   .explanation-card.is-incorrect {
     border-left-color: #ea580c;
     background: #fffdfb;
+  }
+
+  .explanation-card.is-incorrect:hover {
+    border-color: #fdba74;
+    border-left-color: #ea580c;
+    background: #fff7ed;
+    box-shadow: 0 8px 20px -2px rgba(234, 88, 12, 0.16);
+  }
+
+  /* Premium Buttons for Scorecard Modal */
+  .btn-scorecard-close {
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #475569 !important;
+    border-radius: 50rem !important;
+    padding: 7px 20px !important;
+    font-weight: 700 !important;
+    font-size: 12.5px !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .btn-scorecard-close:hover {
+    background: #f8fafc !important;
+    border-color: #94a3b8 !important;
+    color: #0f172a !important;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.1) !important;
+    transform: translateY(-2px) !important;
+  }
+
+  .btn-scorecard-close:active {
+    transform: translateY(0) !important;
+  }
+
+  .btn-scorecard-dashboard {
+    background: linear-gradient(135deg, #fd7e14 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 50rem !important;
+    padding: 7px 24px !important;
+    font-weight: 800 !important;
+    font-size: 12.5px !important;
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.4) !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    letter-spacing: 0.2px !important;
+  }
+
+  .btn-scorecard-dashboard:hover {
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+    box-shadow: 0 10px 25px rgba(234, 88, 12, 0.55), 0 3px 8px rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-2px) scale(1.02) !important;
+    color: #ffffff !important;
+  }
+
+  .btn-scorecard-dashboard:active {
+    transform: translateY(0) scale(1) !important;
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4) !important;
   }
 
   /* Mobile Responsiveness for Quiz Player & Scorecard */
@@ -452,7 +552,8 @@
 <script>
   const API_BASE_URL = window.location.origin;
   let urlParams = new URLSearchParams(window.location.search);
-  let quizId = urlParams.get('id');
+  let quizId = urlParams.get('id') || '{{ quiz_id|default:"" }}';
+  let courseSlug = urlParams.get('course') || urlParams.get('slug') || '{{ course_slug|default:"" }}';
   let attemptId = null;
   let answers = {};
   let questions = [];
@@ -462,16 +563,40 @@
 
   async function startQuiz() {
     try {
-      // If quizId is missing, fetch first active quiz from API
+      // If quizId is missing, resolve dynamically by courseSlug or active quiz
+      if (!quizId && courseSlug) {
+        try {
+          const cRes = await fetch(`${API_BASE_URL}/courses/courses/${encodeURIComponent(courseSlug)}/`, { credentials: 'include' });
+          const cData = await cRes.json();
+          if (cData && cData.course && cData.course.quizzes && cData.course.quizzes.length > 0) {
+            quizId = cData.course.quizzes[0].id;
+          }
+        } catch (err) {
+          console.warn('Could not resolve quiz from course:', err);
+        }
+      }
+
       if (!quizId) {
-        const cRes = await fetch(`${API_BASE_URL}/courses/courses/?page=1&page_size=10`);
+        try {
+          const qRes = await fetch(`${API_BASE_URL}/courses/admin/quizzes/`, { credentials: 'include' });
+          const qData = await qRes.json();
+          if (qData && qData.results && qData.results.length > 0) {
+            quizId = qData.results[0].id;
+          }
+        } catch (err) {}
+      }
+
+      if (!quizId) {
+        const cRes = await fetch(`${API_BASE_URL}/courses/courses/?page=1&page_size=20`, { credentials: 'include' });
         const cData = await cRes.json();
-        const activeCourse = (cData.courses || []).find(c => c.quizzes && c.quizzes.length > 0);
+        const activeCourse = (cData.courses || cData.results || []).find(c => c.quizzes && c.quizzes.length > 0);
         if (activeCourse && activeCourse.quizzes[0]) {
           quizId = activeCourse.quizzes[0].id;
-        } else {
-          quizId = 2; // Default quiz ID fallback
         }
+      }
+
+      if (!quizId) {
+        quizId = 8; // Working quiz fallback
       }
 
       const response = await fetch(`${API_BASE_URL}/courses/quizzes/${quizId}/start/`, {
@@ -529,9 +654,9 @@
     const selectedKey = answers[question.id];
 
     optionsContainer.innerHTML = Object.entries(question.options || {}).map(([key, rawValue]) => {
-      const optionValStr = `option_${key}`;
-      const isSelected = (selectedKey === optionValStr);
       const letter = key.toUpperCase();
+      const optionValStr = letter;
+      const isSelected = (selectedKey === letter || selectedKey === `option_${key}` || selectedKey === key);
 
       let displayValue = (rawValue || '').trim();
       const regexPrefix = new RegExp(`^${key}\\s*[\\).\\s]*`, 'i');
@@ -543,7 +668,7 @@
       }
 
       return `
-        <div class="option-card-row ${isSelected ? 'selected' : ''}" onclick="selectOptionCard(${question.id}, '${optionValStr}', this)">
+        <div class="option-card-row ${isSelected ? 'selected' : ''}" onclick="selectOptionCard(${question.id}, '${letter}', this)">
           <div class="option-left-content">
             <div class="option-letter-badge">${letter}</div>
             <p class="option-text-label">${displayValue}</p>
@@ -675,10 +800,16 @@
     const statusPill = document.getElementById('statusPillBadge');
     if (statusPill) {
       if (isPass) {
-        statusPill.className = 'badge bg-success-subtle text-success-emphasis border border-success-subtle px-2.5 py-1 rounded-pill fw-bold mb-1';
+        statusPill.className = 'badge px-2.5 py-1 rounded-pill fw-bold mb-1';
+        statusPill.style.background = '#ecfdf5';
+        statusPill.style.color = '#047857';
+        statusPill.style.border = '1px solid #a7f3d0';
         statusPill.innerHTML = '<i class="fas fa-check-circle me-1"></i> Passed Assessment';
       } else {
-        statusPill.className = 'badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2.5 py-1 rounded-pill fw-bold mb-1';
+        statusPill.className = 'badge px-2.5 py-1 rounded-pill fw-bold mb-1';
+        statusPill.style.background = '#fff7ed';
+        statusPill.style.color = '#c2410c';
+        statusPill.style.border = '1px solid #fed7aa';
         statusPill.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i> Needs Revision';
       }
     }
@@ -717,7 +848,9 @@
           <span class="text-xs fw-bold text-dark text-uppercase">
             <i class="fas fa-lightbulb text-warning me-1.5"></i> Solution Insights (${feedbackEntries.length})
           </span>
-          <span class="text-muted text-xxs"><i class="fas fa-info-circle me-1"></i>Scroll to view all</span>
+          <span class="badge bg-light text-secondary border px-2.5 py-1 rounded-pill text-xxs fw-bold">
+            <i class="fas fa-clipboard-check text-primary me-1"></i>Detailed Breakdown
+          </span>
         </div>
         <div class="explanations-scroll-container">
       `;

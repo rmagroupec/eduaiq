@@ -107,6 +107,7 @@
         </div>
         <div class="card-body p-24">
           <div class="row gy-3">
+            {% if request.user.role not in 'institution,institution_admin,school,college,coaching,institute' %}
             <div class="col-md-4">
               <label class="text-sm fw-semibold text-primary-light mb-8" for="institution_id">Select Institution</label>
               <select class="form-control form-select radius-8" id="institution_id" name="institution_id">
@@ -119,6 +120,7 @@
                 <option value="">-- No Specific Batch / General --</option>
               </select>
             </div>
+            {% endif %}
             <div class="col-md-4">
               <label class="text-sm fw-semibold text-primary-light mb-8" for="admission_no">Admission Number <span class="text-danger-600">*</span></label>
               <input type="text" class="form-control radius-8" id="admission_no" name="admission_no" placeholder="e.g. ADM2026001" required>
@@ -158,6 +160,7 @@
       </div>
     </div>
 
+    {% if request.user.role not in 'institution,institution_admin,school,college,coaching,institute' %}
     <!-- Section 3: Personal & Background Details -->
     <div class="col-lg-12">
       <div class="shadow-1 radius-12 bg-base h-100 overflow-hidden border border-neutral-200">
@@ -272,6 +275,7 @@
         </div>
       </div>
     </div>
+    {% endif %}
 
     <!-- Section 6: Course Enrollment Checklist -->
     <div class="col-lg-12">
@@ -310,7 +314,7 @@
     <!-- Submit Action -->
     <div class="col-12 text-end">
       <button type="submit" class="btn btn-primary-600 px-32 py-12 radius-8 fw-bold">
-        <i class="ri-user-add-line me-2"></i> Create Student Account & Assign Courses
+        <i class="ri-user-add-line me-2"></i> Create Student
       </button>
     </div>
 
@@ -408,8 +412,8 @@
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value.trim();
       const admission_no = document.getElementById('admission_no').value.trim();
-      const batchId = document.getElementById('batch_id').value;
-      const selectedInstId = document.getElementById('institution_id').value;
+      const batchId = document.getElementById('batch_id') ? document.getElementById('batch_id').value : '';
+      const selectedInstId = document.getElementById('institution_id') ? document.getElementById('institution_id').value : '';
 
       const selectedCourses = Array.from(document.querySelectorAll('input[name="course_ids"]:checked')).map(cb => cb.value);
 
@@ -474,19 +478,26 @@
         const data = await response.json();
 
         if (data.success) {
-          document.getElementById('alertContainer').innerHTML = `
-            <div class="alert alert-success radius-12 p-16 d-flex align-items-center justify-content-between mb-24">
-              <div>
-                <strong><i class="ri-checkbox-circle-fill me-2"></i> Student Account Created Successfully!</strong><br>
-                <span>Username: <code>${data.student_username}</code> | Batch: <strong>${data.batch_name || 'None'}</strong> | Courses Enrolled: ${data.enrolled_courses.join(', ') || 'None'}</span>
-              </div>
-              <a href="/admin-panel/student-list/" class="btn btn-sm btn-success">View Student List</a>
-            </div>
-          `;
+          Swal.fire({
+            title: 'Success!',
+            html: `<strong>Student Account Created Successfully!</strong><br><br>
+                   <span>Username: <code>${data.student_username}</code></span><br>
+                   <span>Batch: <strong>${data.batch_name || 'None'}</strong></span><br>`,
+            icon: 'success',
+            confirmButtonText: 'View Student List',
+            confirmButtonColor: '#3b82f6',
+            showCancelButton: true,
+            cancelButtonText: 'Add Another'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = '/admin-panel/student-list/';
+            }
+          });
+          
+          document.getElementById('alertContainer').innerHTML = '';
           document.getElementById('addInstitutionStudentForm').reset();
           if (photoPreview) photoPreview.src = defaultStudentAvatar;
           if (removeBtn) removeBtn.classList.add('d-none');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
           document.getElementById('alertContainer').innerHTML = `
             <div class="alert alert-danger radius-12 p-16 mb-24">
@@ -619,7 +630,7 @@
           courseContainer.innerHTML = regularCourses.map(c => `
             <div class="col-md-6 col-lg-4">
               <div class="form-check p-16 border radius-8 bg-neutral-50 d-flex align-items-center gap-3">
-                <input class="form-check-input flex-shrink-0" type="checkbox" name="course_ids" value="${c.id}" id="course_${c.id}" checked>
+                <input class="form-check-input flex-shrink-0" type="checkbox" name="course_ids" value="${c.id}" id="course_${c.id}">
                 <label class="form-check-label w-100 cursor-pointer mb-0" for="course_${c.id}">
                   <span class="fw-bold text-dark d-block text-sm">${c.title}</span>
                   <span class="text-xs text-secondary-light">${c.category_name || 'Course'} • ₹${c.price}</span>
@@ -637,7 +648,7 @@
           bookContainer.innerHTML = aiBooks.map(c => `
             <div class="col-md-6 col-lg-4">
               <div class="form-check p-16 border radius-8 bg-neutral-50 d-flex align-items-center gap-3" style="border-color: #e9d5ff; background-color: #faf5ff;">
-                <input class="form-check-input flex-shrink-0" type="checkbox" name="course_ids" value="${c.id}" id="book_${c.id}" checked>
+                <input class="form-check-input flex-shrink-0" type="checkbox" name="course_ids" value="${c.id}" id="book_${c.id}">
                 <label class="form-check-label w-100 cursor-pointer mb-0" for="book_${c.id}">
                   <span class="fw-bold text-dark d-block text-sm"><i class="ri-book-read-line me-1" style="color: #9333ea;"></i> ${c.title}</span>
                   <span class="text-xs text-secondary-light">${c.category_name || 'AI Book'} • ₹${c.price}</span>

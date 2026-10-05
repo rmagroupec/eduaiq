@@ -67,12 +67,119 @@
             position: relative;
             user-select: none;
             -webkit-user-select: none;
+            background: #f8fafc;
+            min-height: 480px;
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        #contentViewer.bg-dark {
+            background: #090D16 !important;
         }
 
         #contentViewer iframe, #contentViewer video {
             width: 100%;
             height: 480px;
             border: none;
+        }
+
+        /* Modern Quiz Assessment View inside Player */
+        .quiz-hero-card {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            width: 100%;
+            min-height: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 24px;
+        }
+
+        .quiz-icon-circle {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: #fff7ed;
+            border: 2.5px solid #fdba74;
+            color: #ea580c;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.22);
+            margin-bottom: 16px;
+        }
+
+        .quiz-stats-grid {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            max-width: 600px;
+            width: 100%;
+            margin: 20px auto 28px auto;
+        }
+
+        .quiz-stat-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 18px;
+            min-width: 120px;
+            flex: 1 1 120px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease;
+        }
+
+        .quiz-stat-box:hover {
+            transform: translateY(-2px);
+            border-color: #f97316;
+            box-shadow: 0 4px 14px rgba(249, 115, 22, 0.12);
+        }
+
+        .quiz-stat-box i {
+            font-size: 18px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .quiz-stat-val {
+            font-size: 15px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+
+        .quiz-stat-lbl {
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-top: 3px;
+        }
+
+        .quiz-start-btn {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+            border: none !important;
+            color: #ffffff !important;
+            padding: 12px 36px !important;
+            font-size: 16px !important;
+            border-radius: 50px !important;
+            box-shadow: 0 8px 24px rgba(234, 88, 12, 0.35) !important;
+            transition: all 0.25s ease !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.3px;
+        }
+
+        .quiz-start-btn:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 12px 28px rgba(234, 88, 12, 0.5) !important;
+            color: #ffffff !important;
         }
 
         /* High-Grade Anti-Piracy & DRM-Grade Protection */
@@ -203,46 +310,171 @@
         }
 
         .sidebar-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: 16px;
             background: #ffffff;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
             overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sidebar-card:hover {
+            box-shadow: 0 14px 34px -4px rgba(15, 23, 42, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+            border-color: #cbd5e1;
         }
 
         .sidebar-header {
-            background: var(--eduaiq-navy);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: #ffffff;
             padding: 14px 18px;
-            font-weight: 700;
+            font-weight: 800;
+            font-size: 14.5px;
+            letter-spacing: 0.2px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 2px solid var(--eduaiq-orange);
+            border-bottom: 2.5px solid #fd7e14;
+        }
+
+        .sidebar-header .curriculum-badge {
+            background: rgba(245, 158, 11, 0.18);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            padding: 4px 11px;
+            border-radius: 50rem;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.3px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-header .curriculum-badge:hover {
+            background: rgba(245, 158, 11, 0.3);
+            transform: scale(1.05);
+        }
+
+        .sidebar-module-header {
+            background: #f8fafc;
+            color: #475569;
+            padding: 9px 16px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .sidebar-lesson-item {
-            font-size: 13.5px;
-            padding: 12px 16px;
+            font-size: 13px;
+            padding: 11px 16px;
             border-bottom: 1px solid #f1f5f9;
             text-decoration: none;
             color: #334155;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: relative;
+            background: #ffffff;
+            border-left: 4px solid transparent;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sidebar-lesson-item .les-icon-pill {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13.5px;
+            background: #f1f5f9;
+            transition: all 0.25s ease;
+        }
+
+        .sidebar-lesson-item .les-title {
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .sidebar-lesson-item .les-duration-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: #64748b;
+            font-family: monospace;
             transition: all 0.2s ease;
         }
 
-        .sidebar-lesson-item:hover {
+        /* Hover Effect for Inactive Lesson */
+        .sidebar-lesson-item:hover:not(.active) {
             background-color: #f8fafc;
-            color: var(--eduaiq-orange);
+            color: #ea580c;
+            padding-left: 20px;
+            border-left-color: #fdba74;
         }
 
+        .sidebar-lesson-item:hover:not(.active) .les-icon-pill {
+            background-color: #ffedd5;
+            transform: scale(1.1);
+        }
+
+        .sidebar-lesson-item:hover:not(.active) .les-title {
+            color: #ea580c;
+            font-weight: 600;
+        }
+
+        .sidebar-lesson-item:hover:not(.active) .les-duration-badge {
+            background-color: #e2e8f0;
+            color: #0f172a;
+        }
+
+        /* Active Lesson Item */
         .sidebar-lesson-item.active {
-            background-color: #fff7ed;
-            color: var(--eduaiq-orange-dark);
+            background: linear-gradient(90deg, #fff7ed 0%, #ffffff 100%);
+            color: #ea580c;
             font-weight: 700;
-            border-left: 4px solid var(--eduaiq-orange);
+            border-left-color: #fd7e14;
+        }
+
+        .sidebar-lesson-item.active .les-icon-pill {
+            background: #fed7aa;
+            transform: scale(1.05);
+            box-shadow: 0 2px 6px rgba(253, 126, 20, 0.25);
+        }
+
+        .sidebar-lesson-item.active .les-title {
+            color: #c2410c;
+            font-weight: 700;
+        }
+
+        .sidebar-lesson-item.active .les-duration-badge {
+            background: #ffedd5;
+            color: #c2410c;
+            font-weight: 700;
+        }
+
+        .sidebar-lesson-item.active:hover {
+            background: linear-gradient(90deg, #ffedd5 0%, #fff7ed 100%);
+            padding-left: 18px;
+        }
+
+        #sidebarModulesList::-webkit-scrollbar {
+            width: 5px;
+        }
+        #sidebarModulesList::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+        #sidebarModulesList::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        #sidebarModulesList::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
 
         .assignment-banner-skip {
@@ -337,7 +569,7 @@
             <h6 id="topCourseTitle" class="mb-0 text-white fw-bold d-none d-md-inline">EduAiQ Course</h6>
         </div>
 
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 pe-2">
             <span class="text-xs text-secondary-light me-1 d-none d-sm-inline">Progress:</span>
             <div class="progress" style="width: 120px; height: 8px; background: rgba(255,255,255,0.2);">
                 <div id="topProgressBar" class="progress-bar bg-warning" role="progressbar" style="width: 0%;"></div>
@@ -356,11 +588,11 @@
                     <div class="main-player-card">
                         
                         <!-- Content Display Window (Video / PDF / Text / Quiz / Assignment) -->
-                        <div id="contentViewer" class="bg-dark text-white position-relative w-100" style="min-height: 480px;">
-                            <div class="d-flex align-items-center justify-content-center w-100 text-center p-5" style="min-height: 480px;">
+                        <div id="contentViewer" class="position-relative w-100" style="min-height: 480px;">
+                            <div class="d-flex align-items-center justify-content-center w-100 text-center p-5 text-muted" style="min-height: 480px;">
                                 <div>
                                     <i class="fas fa-spinner fa-spin fa-3x mb-3 text-warning"></i>
-                                    <p class="fw-bold">Loading chapter content...</p>
+                                    <p class="fw-bold text-dark mb-0">Loading chapter content...</p>
                                 </div>
                             </div>
                         </div>
@@ -386,7 +618,7 @@
 
                             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                                 <button id="markCompleteBtn" class="btn btn-success px-4 py-2 fw-bold radius-8" onclick="markAsComplete()">
-                                    <i class="fas fa-check-circle me-1"></i> Mark as Complete
+                                    <i class="fas fa-check-circle me-1"></i> Complete & Take Quiz →
                                 </button>
                                 
                                 <div class="d-flex gap-2">
@@ -407,7 +639,7 @@
                     <div class="sidebar-card sticky-top" style="top: 80px;">
                         <div class="sidebar-header">
                             <span><i class="fas fa-list-ul me-2 text-warning"></i> Course Curriculum</span>
-                            <span id="sidebarTotalLessons" class="badge bg-warning text-dark">0 Items</span>
+                            <span id="sidebarTotalLessons" class="curriculum-badge">0 Items</span>
                         </div>
                         <div class="list-group list-group-flush" id="sidebarModulesList" style="max-height: 580px; overflow-y: auto;">
                             <p class="p-4 text-center text-muted">Loading curriculum...</p>
@@ -520,11 +752,12 @@
 
     <script>
         const API_BASE_URL = window.location.origin;
-        const lessonId = new URLSearchParams(window.location.search).get('id');
+        const urlParams = new URLSearchParams(window.location.search);
+        let lessonId = urlParams.get('id') || '{{ lesson_id|default:"" }}';
+        let courseSlug = urlParams.get('course') || urlParams.get('slug') || '';
         let currentLesson = null;
         let allCourseLessons = [];
         let userEnrollment = null;
-        let courseSlug = null;
         let assignmentData = null;
         let activeVideoSource = 'file';
 
@@ -661,9 +894,59 @@
         document.addEventListener('DOMContentLoaded', loadLessonPlayer);
 
         async function loadLessonPlayer() {
+            if (!lessonId && courseSlug) {
+                try {
+                    const cRes = await fetch(`${API_BASE_URL}/courses/courses/${encodeURIComponent(courseSlug)}/`, { credentials: 'include' });
+                    const cData = await cRes.json();
+                    if (cData && cData.course && cData.course.modules) {
+                        for (const mod of cData.course.modules) {
+                            if (mod.lessons && mod.lessons.length > 0) {
+                                lessonId = mod.lessons[0].id;
+                                break;
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.error('Failed to resolve course lesson:', err);
+                }
+            }
+
             if (!lessonId) {
-                alert('No lesson specified!');
-                window.location.href = '/my-learning/';
+                try {
+                    const eRes = await fetch(`${API_BASE_URL}/courses/my-enrollments/`, { credentials: 'include' });
+                    const eData = await eRes.json();
+                    if (eData && eData.results && eData.results.length > 0) {
+                        const firstCourse = eData.results[0].course;
+                        if (firstCourse && firstCourse.slug) {
+                            const cRes = await fetch(`${API_BASE_URL}/courses/courses/${encodeURIComponent(firstCourse.slug)}/`, { credentials: 'include' });
+                            const cData = await cRes.json();
+                            if (cData && cData.course && cData.course.modules) {
+                                for (const mod of cData.course.modules) {
+                                    if (mod.lessons && mod.lessons.length > 0) {
+                                        lessonId = mod.lessons[0].id;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.error('Failed to resolve enrollment lesson:', err);
+                }
+            }
+
+            if (!lessonId) {
+                const viewer = document.getElementById('contentViewer');
+                if (viewer) {
+                    viewer.innerHTML = `
+                        <div class="p-5 text-center bg-white text-dark rounded w-100">
+                            <i class="fas fa-book-reader fa-3x text-warning mb-3"></i>
+                            <h4 class="fw-bold">No Content Available Yet</h4>
+                            <p class="text-muted">No lessons or learning videos have been added to this course yet.</p>
+                            <a href="/courses/" class="btn btn-primary px-4 py-2 rounded-pill">Browse Other Courses</a>
+                        </div>
+                    `;
+                }
                 return;
             }
 
@@ -689,6 +972,10 @@
                 typeBadge.textContent = currentLesson.content_type;
                 if (currentLesson.content_type === 'assignment') {
                     typeBadge.className = 'badge badge-assignment text-uppercase px-2.5 py-1.5 mb-2';
+                } else if (currentLesson.content_type === 'quiz') {
+                    typeBadge.className = 'badge bg-warning text-dark text-uppercase px-2.5 py-1.5 mb-2 fw-bold';
+                } else {
+                    typeBadge.className = 'badge bg-primary text-uppercase px-2.5 py-1.5 mb-2';
                 }
 
                 const courseId = currentLesson.module.course_id;
@@ -799,6 +1086,7 @@
                           (url && url.toLowerCase().endsWith('.pdf'))));
 
             if (isPdf) {
+                viewer.classList.remove('bg-dark');
                 // Update badge to PDF
                 const typeBadge = document.getElementById('lessonTypeBadge');
                 if (typeBadge) {
@@ -834,6 +1122,7 @@
             }
 
             if (contentType === 'video' || fileUrl.match(/\.(mp4|webm|ogg|mov|mkv|m4v)$/i) || url.match(/\.(mp4|webm|ogg|mov|mkv|m4v)$/i) || extractYouTubeId(url) || extractVimeoId(url) || extractDrivePreviewUrl(url)) {
+                viewer.classList.add('bg-dark');
                 // Update badge to Video
                 const typeBadge = document.getElementById('lessonTypeBadge');
                 if (typeBadge) {
@@ -1056,27 +1345,100 @@
                     viewer.innerHTML = `<div class="p-5 text-center bg-white text-dark rounded w-100"><h5>No PDF File Uploaded</h5></div>`;
                 }
             } else if (currentLesson.content_type === 'text') {
+                viewer.classList.remove('bg-dark');
                 viewer.innerHTML = `
-                    <div class="p-4 text-dark bg-white w-100 h-100 rounded" style="overflow-y: auto; max-height: 480px;">
-                        <h4 class="fw-bold text-primary mb-3">${currentLesson.title}</h4>
-                        <div class="lh-lg text-secondary" style="font-size: 15px;">
+                    <div class="p-4 p-md-5 text-dark bg-white w-100 rounded" style="overflow-y: auto; min-height: 480px; max-height: 520px;">
+                        <span class="badge bg-primary-subtle text-primary px-3 py-1.5 rounded-pill text-uppercase fw-bold mb-3" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; font-size: 11px;">
+                            <i class="fas fa-book-reader me-1"></i> Reading Material
+                        </span>
+                        <h3 class="fw-bold text-dark mb-3">${currentLesson.title}</h3>
+                        <div class="lh-lg text-secondary" style="font-size: 15.5px; line-height: 1.8;">
                             ${currentLesson.description || 'No reading material text provided for this lesson.'}
                         </div>
                     </div>
                 `;
             } else if (currentLesson.content_type === 'quiz') {
+                viewer.classList.remove('bg-dark');
+
+                let quizData = null;
+                try {
+                    const qRes = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/quiz/`);
+                    const qJson = await qRes.json();
+                    quizData = qJson.quiz;
+                } catch (e) {
+                    console.warn('Could not load quiz details:', e);
+                }
+
+                const duration = quizData?.time_limit_minutes || currentLesson.duration_minutes || 15;
+                const passingPct = quizData?.passing_score_pct || 40;
+                const qCount = quizData?.question_count || null;
+
                 viewer.innerHTML = `
-                    <div class="text-center p-5 bg-white text-dark w-100 rounded shadow-sm">
-                        <i class="fas fa-question-circle fa-4x mb-3 text-warning"></i>
-                        <h4 class="fw-bold">Practice Quiz Ready</h4>
-                        <p class="text-muted">Test your understanding of this module's topics.</p>
-                        <button class="btn btn-warning btn-lg mt-3 px-4 fw-bold rounded-pill text-dark" onclick="goToQuiz()">
-                            Start Quiz Attempt <i class="fas fa-arrow-right ms-2"></i>
+                    <div class="quiz-hero-card">
+                        <div class="quiz-icon-circle">
+                            <i class="fas fa-question"></i>
+                        </div>
+
+                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning px-3 py-1.5 rounded-pill text-uppercase fw-bold mb-2" style="font-size: 11px; letter-spacing: 0.5px;">
+                            <i class="fas fa-award me-1"></i> Module Evaluation Quiz
+                        </span>
+
+                        <h3 class="fw-bolder text-dark mb-2">${currentLesson.title}</h3>
+                        <p class="text-secondary mb-2 mx-auto" style="max-width: 580px; font-size: 14.5px; line-height: 1.6;">
+                            ${currentLesson.description || "Test your understanding of this module's topics. Answer the questions to test your skills and advance to the next chapter."}
+                        </p>
+
+                        <!-- Quiz Key Parameters Grid -->
+                        <div class="quiz-stats-grid">
+                            <div class="quiz-stat-box">
+                                <i class="far fa-clock text-warning"></i>
+                                <div class="quiz-stat-val">${duration} Mins</div>
+                                <div class="quiz-stat-lbl">Time Limit</div>
+                            </div>
+                            ${qCount ? `
+                            <div class="quiz-stat-box">
+                                <i class="fas fa-list-ol text-primary"></i>
+                                <div class="quiz-stat-val">${qCount} Questions</div>
+                                <div class="quiz-stat-lbl">Evaluation Items</div>
+                            </div>
+                            ` : ''}
+                            <div class="quiz-stat-box">
+                                <i class="fas fa-bullseye text-success"></i>
+                                <div class="quiz-stat-val">${passingPct}%</div>
+                                <div class="quiz-stat-lbl">Passing Score</div>
+                            </div>
+                            <div class="quiz-stat-box">
+                                <i class="fas fa-bolt text-info"></i>
+                                <div class="quiz-stat-val">Instant</div>
+                                <div class="quiz-stat-lbl">Score & Analysis</div>
+                            </div>
+                        </div>
+
+                        <!-- Main Action CTA Button -->
+                        <button class="btn btn-warning btn-lg quiz-start-btn" onclick="goToQuiz()">
+                            <span>Start Quiz Attempt</span> <i class="fas fa-arrow-right ms-2"></i>
                         </button>
                     </div>
                 `;
+
+                // Update bottom complete button for quiz
+                const markBtn = document.getElementById('markCompleteBtn');
+                if (markBtn) {
+                    markBtn.innerHTML = '<i class="fas fa-play me-1"></i> Start Module Quiz';
+                    markBtn.className = 'btn btn-warning px-4 py-2 fw-bold radius-8 text-dark';
+                    markBtn.onclick = goToQuiz;
+                }
             } else {
-                viewer.innerHTML = `<div class="p-5 text-center bg-dark text-white rounded"><p>Lesson ready (${currentLesson.content_type}).</p></div>`;
+                viewer.innerHTML = `<div class="p-5 text-center bg-white text-dark rounded w-100" style="min-height: 480px;"><p>Lesson ready (${currentLesson.content_type}).</p></div>`;
+            }
+
+            if (currentLesson.content_type !== 'quiz') {
+                const markBtn = document.getElementById('markCompleteBtn');
+                if (markBtn) {
+                    markBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i> Complete & Next →';
+                    markBtn.className = 'btn btn-success px-4 py-2 fw-bold radius-8 text-white';
+                    markBtn.onclick = () => markAsComplete();
+                }
             }
         }
 
@@ -1159,7 +1521,7 @@
 
             course.modules.forEach(mod => {
                 const header = document.createElement('div');
-                header.className = 'list-group-item bg-light fw-bold py-2.5 text-xs text-uppercase text-secondary';
+                header.className = 'sidebar-module-header';
                 header.textContent = mod.title;
                 list.appendChild(header);
 
@@ -1181,12 +1543,12 @@
                         }
 
                         item.innerHTML = `
-                            <div class="d-flex align-items-center gap-2 text-truncate" style="max-width: 80%;">
-                                <span>${icon}</span>
-                                <span class="text-truncate">${les.title}</span>
+                            <div class="d-flex align-items-center gap-2 text-truncate" style="max-width: 78%;">
+                                <span class="les-icon-pill">${icon}</span>
+                                <span class="text-truncate les-title">${les.title}</span>
                                 ${typeTag}
                             </div>
-                            <small class="text-muted">${les.duration_minutes}m</small>
+                            <span class="les-duration-badge">${les.duration_minutes || 0}m</span>
                         `;
                         list.appendChild(item);
                     });
@@ -1217,54 +1579,92 @@
         }
 
         async function markAsComplete(fromAssignment = false) {
-            if (!userEnrollment) {
-                alert('You must be enrolled in this course to save progress!');
-                return;
+            const btn = document.getElementById('markCompleteBtn');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Opening Quiz...';
             }
 
-            const currentIndex = allCourseLessons.findIndex(l => l.id == lessonId);
-            if (currentIndex === -1) return;
+            // Ensure enrollment if not already enrolled
+            if (!userEnrollment && courseSlug) {
+                try {
+                    const enrRes = await fetch(`${API_BASE_URL}/courses/courses/${encodeURIComponent(courseSlug)}/enroll/`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        credentials: 'include',
+                        body: JSON.stringify({ covered_by_plan: true, amount_paid: 0 })
+                    });
+                    const enrData = await enrRes.json();
+                    if (enrData && enrData.enrollment) userEnrollment = enrData.enrollment;
+                } catch (e) {}
+            }
 
-            const progress = Math.min(100, Math.round(((currentIndex + 1) / allCourseLessons.length) * 100));
+            if (!userEnrollment) {
+                try {
+                    const eRes = await fetch(`${API_BASE_URL}/courses/my-enrollments/`, { credentials: 'include' });
+                    const eData = await eRes.json();
+                    userEnrollment = (eData.results || []).find(e => e.course?.slug === courseSlug || e.course?.id === (currentLesson?.module?.course_id));
+                } catch (e) {}
+            }
 
+            // Save progress if enrollment exists
+            if (userEnrollment) {
+                try {
+                    await fetch(`${API_BASE_URL}/courses/enrollments/${userEnrollment.id}/progress/`, {
+                        method: 'PATCH',
+                        headers: {'Content-Type': 'application/json'},
+                        credentials: 'include',
+                        body: JSON.stringify({ progress_pct: 100 })
+                    });
+                } catch (e) {
+                    console.warn('Progress update warning:', e);
+                }
+            }
+
+            // Find quiz for this course or lesson
+            let targetQuizId = null;
+
+            // 1. Check current lesson quiz
             try {
-                const response = await fetch(`${API_BASE_URL}/courses/enrollments/${userEnrollment.id}/progress/`, {
-                    method: 'PATCH',
-                    headers: {'Content-Type': 'application/json'},
-                    credentials: 'include',
-                    body: JSON.stringify({ progress_pct: progress })
-                });
-
-                const data = await response.json();
-
-                // Update UI progress bar
-                if (data.enrollment) {
-                    const curPct = Math.round(parseFloat(data.enrollment.progress_pct || 0));
-                    document.getElementById('topProgressBar').style.width = `${curPct}%`;
-                    document.getElementById('topProgressText').textContent = `${curPct}%`;
+                const qRes = await fetch(`${API_BASE_URL}/courses/lessons/${lessonId}/quiz/`, { credentials: 'include' });
+                const qData = await qRes.json();
+                if (qData && qData.quiz && qData.quiz.id) {
+                    targetQuizId = qData.quiz.id;
                 }
+            } catch (err) {}
 
-                // Check Mandatory Assignments Enforcement
-                if (data.all_chapters_completed && !data.all_assignments_completed) {
-                    // Show Mandatory Assignments Modal
-                    renderMandatoryAssignmentsModal(data.pending_assignments);
-                    return;
+            // 2. Check course quizzes
+            if (!targetQuizId && courseSlug) {
+                try {
+                    const cRes = await fetch(`${API_BASE_URL}/courses/courses/${encodeURIComponent(courseSlug)}/`, { credentials: 'include' });
+                    const cData = await cRes.json();
+                    if (cData && cData.course && cData.course.quizzes && cData.course.quizzes.length > 0) {
+                        targetQuizId = cData.course.quizzes[0].id;
+                    }
+                } catch (err) {}
+            }
+
+            // 3. Check any lesson in allCourseLessons that has content_type quiz
+            if (!targetQuizId && allCourseLessons && allCourseLessons.length > 0) {
+                const quizLesson = allCourseLessons.find(l => l.content_type === 'quiz');
+                if (quizLesson) {
+                    try {
+                        const qRes = await fetch(`${API_BASE_URL}/courses/lessons/${quizLesson.id}/quiz/`, { credentials: 'include' });
+                        const qData = await qRes.json();
+                        if (qData && qData.quiz && qData.quiz.id) {
+                            targetQuizId = qData.quiz.id;
+                        }
+                    } catch (err) {}
                 }
+            }
 
-                if (data.is_completed && data.all_assignments_completed) {
-                    handleCourseCompletionUI(data);
-                    return;
-                }
-
-                if (!fromAssignment && currentIndex < allCourseLessons.length - 1) {
-                    window.location.href = `/lesson/?id=${allCourseLessons[currentIndex + 1].id}`;
-                } else if (!fromAssignment) {
-                    alert('Chapter marked complete! Course progress updated to ' + progress + '%');
-                }
-
-            } catch (e) {
-                console.error(e);
-                alert('Error updating progress.');
+            // Redirect immediately to Quiz Assessment page
+            if (targetQuizId) {
+                window.location.href = `/quiz/?id=${targetQuizId}&course=${encodeURIComponent(courseSlug)}`;
+            } else if (courseSlug) {
+                window.location.href = `/quiz/?course=${encodeURIComponent(courseSlug)}`;
+            } else {
+                window.location.href = '/quiz/';
             }
         }
 

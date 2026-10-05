@@ -6,14 +6,74 @@
 {% block description %}Modern Education Admin Dashboard for schools, colleges, universities, and eLearning platforms. Includes student and course management, attendance, exams, payments, analytics, and a fully responsive clean UI—ideal for LMS, coaching centers, and academic admin systems.{% endblock %}
 
 {% block content %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+  /* Premium Select2 Styling */
+  .select2-container--default .select2-selection--multiple {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    min-height: 48px !important;
+    padding: 0 8px 8px 8px !important;
+    background-color: #fff !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+  .select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  }
+  .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #f3f4f6 !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 6px !important;
+    padding: 2px 8px !important;
+    margin-top: 8px !important;
+    font-size: 14px;
+    color: #374151;
+  }
+  .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #ef4444 !important;
+    border: none !important;
+    background: none !important;
+    font-size: 18px !important;
+    font-weight: 500 !important;
+    margin-right: 5px !important;
+  }
+  .select2-container--default .select2-selection--multiple .select2-search.select2-search--inline .select2-search__field {
+    margin-top: 8px !important;
+    font-size: 14px !important;
+    font-family: inherit !important;
+    color: #4b5563 !important;
+    height: 30px !important;
+    line-height: 30px !important;
+  }
+  .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+    background-color: #3b82f6 !important;
+    color: white !important;
+  }
+  .select2-dropdown {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+    overflow: hidden;
+  }
+</style>
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
   <div>
+    {% if request.user.role in 'institution institution_admin school college coaching' %}
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Add New Teacher</h1>
+    <div>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/employee-list/"> / Teacher List</a>
+      <span class="text-secondary-light">/ Add New Teacher</span>
+    </div>
+    {% else %}
     <h1 class="fw-semibold mb-4 h6 text-primary-light">Add New Employee</h1>
     <div>
       <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
       <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/employee-list/"> / Employee List</a>
       <span class="text-secondary-light">/ Add New Employee</span>
     </div>
+    {% endif %}
   </div>
 </div>
 
@@ -89,6 +149,16 @@
 <label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeDesignation">Designation</label>
 <select class="form-control form-select" id="employeeDesignation">
 <option disabled="" selected="" value="">Select a Designation</option>
+{% if request.user.role == 'institution' or request.user.role == 'institution_admin' or request.user.role == 'school' or request.user.role == 'college' or request.user.role == 'coaching' or request.user.role == 'institute' %}
+<option value="Senior Teacher">Senior Teacher</option>
+<option value="Assistant Teacher">Assistant Teacher</option>
+<option value="Professor">Professor</option>
+<option value="Lecturer">Lecturer</option>
+<option value="Guest Faculty">Guest Faculty</option>
+<option value="HOD">Head of Department (HOD)</option>
+<option value="Academic Coordinator">Academic Coordinator</option>
+<option value="Class Teacher">Class Teacher</option>
+{% else %}
 <option value="CRM Manager">CRM Manager</option>
 <option value="Sales Executive">Sales Executive</option>
 <option value="Admission Counselor">Admission Counselor</option>
@@ -100,6 +170,7 @@
 <option value="Team Lead">Team Lead</option>
 <option value="Accountant">Accountant</option>
 <option value="HR Manager">HR Manager</option>
+{% endif %}
 </select>
 </div>
 </div>
@@ -379,20 +450,18 @@
 </div>
 <div class="card-body p-20">
 <div class="row gy-3">
-<div class="col-md-6">
+<input type="hidden" id="employeeRole" value="{% if request.user.role in 'institution institution_admin school college coaching' %}teacher{% else %}employee{% endif %}">
+{% if request.user.role == 'institution' or request.user.role == 'institution_admin' or request.user.role == 'school' or request.user.role == 'college' or request.user.role == 'coaching' or request.user.role == 'institute' %}
+<div class="col-md-12">
 <div class="">
-<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="employeeRole">System Access Level / Role <span class="text-danger-600">*</span></label>
-<select class="form-control form-select" id="employeeRole">
-<option value="teacher">Faculty / Educator Access (Teaching & Academic)</option>
-<option value="sales" selected>Sales & CRM Executive (Portal Access)</option>
-<option value="employee">Staff Employee (Restricted Portal)</option>
-<option value="crm">CRM Manager / Team Lead</option>
-<option value="admin">HR / Operational Admin</option>
+<label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="assignedStudents">Assign Students</label>
+<select class="form-control form-select" id="assignedStudents" name="assignedStudents" multiple>
 </select>
-<span class="text-xs text-secondary-light mt-4 d-block">Defines sidebar menu permissions & system access level.</span>
+<span class="text-xs text-secondary-light mt-4 d-block">Select students assigned to this teacher. Hold Ctrl (or Cmd) to select multiple.</span>
 </div>
 </div>
-<div class="col-md-6">
+{% else %}
+<div class="col-md-12">
 <div class="">
 <label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="reportingManager">Assign Under / Reporting Manager</label>
 <select class="form-control form-select" id="reportingManager">
@@ -402,6 +471,8 @@
 <span class="text-xs text-secondary-light mt-4 d-block">Select the supervisor/manager under whom this employee will report.</span>
 </div>
 </div>
+{% endif %}
+
 <div class="col-sm-6">
 <div class="">
 <label class="text-sm fw-semibold text-primary-light d-inline-block mb-8" for="myEmail">Login Email <span class="text-danger-600">*</span></label>
@@ -439,6 +510,7 @@
 
 {% block js %}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
 
     // ================== Profile Image Upload Preview ==================
@@ -525,6 +597,10 @@
 
     // ========================== AJAX Form Submit Handler ===========================
     $(document).ready(function() {
+        if ($('#assignedStudents').length) $('#assignedStudents').select2({ placeholder: 'Select Students', width: '100%' });
+        if ($('#assignedCourses').length) $('#assignedCourses').select2({ placeholder: 'Select Courses', width: '100%' });
+        if ($('#assignedBooks').length) $('#assignedBooks').select2({ placeholder: 'Select AI Books', width: '100%' });
+
         // Clear any stored drafts completely
         localStorage.removeItem('eduaiq_add_employee_draft');
 
@@ -619,11 +695,63 @@
                     $select.html('<option value="">Direct Super Admin / Top Management</option>');
                     resp.data.forEach(function(emp) {
                         if (editEmpId && (emp.id == editEmpId || emp.employee_id == editEmpId)) return;
+                        if (emp.role === 'teacher') return; // Exclude teachers
                         $select.append(`<option value="${emp.id}">${emp.full_name} (${emp.designation || emp.role.toUpperCase()})</option>`);
                     });
                     if (pendingReportingManagerId) {
                         setDropdownValue($select, pendingReportingManagerId);
                     }
+                }
+            }
+        });
+
+        // Fetch students for institution
+        if ($('#assignedStudents').length) {
+            $.ajax({
+                url: '/api/students/?page_size=500',
+                type: 'GET',
+                success: function(resp) {
+                    var list = resp.results || resp.data || resp;
+                    var $stSelect = $('#assignedStudents');
+                    if (Array.isArray(list)) {
+                        list.forEach(function(s) {
+                            var name = s.student_name || (s.user ? (s.user.first_name + ' ' + (s.user.last_name || '')) : (s.first_name ? (s.first_name + ' ' + (s.last_name || '')) : 'Student'));
+                            var identifier = s.admission_number || s.enrollment_number || (s.user ? s.user.email || s.user.username : (s.email || s.username || ''));
+                            $stSelect.append(`<option value="${s.id}">${name} (${identifier})</option>`);
+                        });
+                        $stSelect.trigger('change');
+                    }
+                }
+            });
+        }
+
+        // Fetch courses and AI books
+        $.ajax({
+            url: '/courses/courses/?page_size=200&exclude_books=false',
+            type: 'GET',
+            success: function(resp) {
+                var list = resp.results || resp;
+                if (Array.isArray(list)) {
+                    var $courseSelect = $('#assignedCourses');
+                    var $bookSelect = $('#assignedBooks');
+                    list.forEach(function(c) {
+                        const titleUpper = (c.title || '').trim().toUpperCase();
+                        const catSlug = c.category_slug || (c.category ? c.category.slug : '');
+                        const catName = c.category_name || (c.category ? c.category.name : '');
+                        const isBook = catSlug === 'ai-books' || catName === 'AI Books & Guides' || titleUpper === 'AI-GUIDE';
+                        
+                        if (isBook) {
+                            if ($bookSelect.length) {
+                                $bookSelect.append(`<option value="${c.id}">${c.title}</option>`);
+                            }
+                        } else {
+                            if ($courseSelect.length) {
+                                $courseSelect.append(`<option value="${c.id}">${c.title}</option>`);
+                            }
+                        }
+                    });
+                    if ($bookSelect.length) $bookSelect.trigger('change');
+                    if ($courseSelect.length) $courseSelect.trigger('change');
                 }
             }
         });
@@ -667,9 +795,17 @@
             formData.append('fullName', fullNameVal);
             formData.append('employeeID', ($('#employeeID').val() || '').trim());
             formData.append('employeeDepartment', $('#employeeDepartment').val() || '');
-            formData.append('employeeDesignation', $('#employeeDesignation').val() || '');
-            formData.append('employeeRole', $('#employeeRole').val() || 'sales');
+            const defaultRole = {% if request.user.role in 'institution institution_admin school college coaching' %}'teacher'{% else %}'employee'{% endif %};
+            formData.append('employeeRole', $('#employeeRole').val() || defaultRole);
             formData.append('reportingManager', $('#reportingManager').val() || '');
+            
+            var aS = $('#assignedStudents').val();
+            if (aS) formData.append('assignedStudents', JSON.stringify(aS));
+            var aC = $('#assignedCourses').val();
+            if (aC) formData.append('assignedCourses', JSON.stringify(aC));
+            var aB = $('#assignedBooks').val();
+            if (aB) formData.append('assignedBooks', JSON.stringify(aB));
+
             formData.append('gender', $('#gender').val() || '');
             formData.append('dateOfBirth', $('#dateOfBirth').val() || '');
             formData.append('fathersName', ($('#fathersName').val() || '').trim());

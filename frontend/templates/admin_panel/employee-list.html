@@ -9,39 +9,97 @@ for LMS, coaching centers, and academic admin systems.{% endblock %}
 
 {% block content %}
 <style>
-    /* Force DataTables wrapper to stay within the card width */
-    .dataTables_wrapper {
-        width: 100%;
-        max-width: 100%;
-    }
-    
-    /* Ensure table fits perfectly on 100% zoom screens without overflowing the card */
-    #dataTable th, #dataTable td {
-        padding: 10px 14px !important;
-        font-size: 14px !important;
-    }
-    
-    .dataTables_wrapper .table-responsive {
+    /* Table responsive & DataTables styling */
+    .table-responsive {
         width: 100%;
         max-width: 100%;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+    .table-responsive::-webkit-scrollbar {
+        height: 6px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 4px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background-color: #94a3b8;
+    }
+    
+    #dataTable {
+        width: 100% !important;
+        margin: 0 !important;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    #dataTable th, #dataTable td {
+        padding: 10px 12px !important;
+        font-size: 13px !important;
+        vertical-align: middle !important;
+        white-space: nowrap;
+    }
+    #dataTable th {
+        font-weight: 600;
+        color: #475569;
+        background-color: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    #dataTable td.col-dept, #dataTable td.col-desig {
+        font-size: 12.5px;
+        color: #334155;
+    }
+    #dataTable td.col-email, #dataTable td.col-phone, #dataTable td.col-date {
+        font-size: 12.5px;
+        color: #64748b;
+    }
+    
+    /* Hide duplicate DataTables controls */
+    .dataTables_filter, .dataTables_length {
+        display: none !important;
+    }
+    .dataTables_wrapper {
+        padding: 0 !important;
+        width: 100%;
+        max-width: 100%;
+    }
+    .dataTables_info, .dataTables_paginate {
+        padding: 12px 20px !important;
+        font-size: 13px;
+    }
+    .dataTables_paginate .paginate_button {
+        padding: 4px 10px !important;
+        border-radius: 6px !important;
     }
 </style>
 <div class="breadcrumb d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
   <div class="">
+    {% if request.user.role == 'institution' or request.user.role == 'institution_admin' or request.user.role == 'school' or request.user.role == 'college' or request.user.role == 'coaching' %}
+    <h1 class="fw-semibold mb-4 h6 text-primary-light">Teacher List</h1>
+    <div class="">
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
+      <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/employee-list/"> / Institution</a>
+      <span class="text-secondary-light">/ Teacher List</span>
+    </div>
+    {% else %}
     <h1 class="fw-semibold mb-4 h6 text-primary-light">Employee List</h1>
     <div class="">
       <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/dashboard/">Dashboard </a>
       <a class="text-secondary-light hover-text-primary hover-underline" href="/admin-panel/employee-list/"> / HRM</a>
       <span class="text-secondary-light">/ Employee List</span>
     </div>
+    {% endif %}
   </div>
   <a class="btn btn-primary-600 d-flex align-items-center gap-6" href="/admin-panel/add-new-employee/">
     <span class="d-flex text-md">
       <i class="ri-add-large-line"></i>
     </span>
+    {% if request.user.role == 'institution' or request.user.role == 'institution_admin' or request.user.role == 'school' or request.user.role == 'college' or request.user.role == 'coaching' %}
+    Add Teacher
+    {% else %}
     Add Employee
+    {% endif %}
   </a>
 </div>
 
@@ -79,10 +137,10 @@ for LMS, coaching centers, and academic admin systems.{% endblock %}
             </ul>
           </div>
           {% endif %}
-          <form class="navbar-search dt-search m-0">
+          <form class="navbar-search dt-search m-0" onsubmit="event.preventDefault();">
             {% csrf_token %}
             <input aria-controls="dataTable" class="dt-input bg-transparent radius-4" name="search"
-              placeholder="Search..." type="text" />
+              placeholder="Search..." type="text" autocomplete="off" />
             <iconify-icon class="icon" icon="ion:search-outline"></iconify-icon>
           </form>
           <div class="dropdown">
@@ -95,15 +153,15 @@ for LMS, coaching centers, and academic admin systems.{% endblock %}
             <div class="dropdown-menu border bg-base shadow dropdown-menu-lg p-0">
               <div class="d-flex align-items-center justify-content-between border-bottom py-8 px-16">
                 <span class="fw-semibold text-lg text-primary-light">Filter</span>
-                <button type="button"><i class="ri-close-large-line"></i></button>
+                <button type="button" class="border-0 bg-transparent" data-bs-dismiss="dropdown"><i class="ri-close-large-line"></i></button>
               </div>
-              <form action="#" class="p-16">
+              <form id="filterDropdownForm" action="#" class="p-16">
                 {% csrf_token %}
                 <div class="row g-3">
                   <div class="col-12">
                     <label class="text-sm fw-semibold text-primary-light d-inline-block mb-8"
-                      for="department">Department</label>
-                    <select class="form-control form-select" id="department">
+                      for="filterDepartment">Department</label>
+                    <select class="form-control form-select" id="filterDepartment">
                       <option value="Select">Select Department</option>
                       <option value="CRM & Sales">CRM & Sales</option>
                       <option value="Admissions & Counseling">Admissions & Counseling</option>
@@ -115,15 +173,15 @@ for LMS, coaching centers, and academic admin systems.{% endblock %}
                   </div>
                   <div class="col-12">
                     <label class="text-sm fw-semibold text-primary-light d-inline-block mb-8"
-                      for="status">Status</label>
-                    <select class="form-control form-select" id="status">
+                      for="filterStatus">Status</label>
+                    <select class="form-control form-select" id="filterStatus">
                       <option value="Select">Select Status</option>
                       <option value="Active">Active</option>
                       <option value="Inactive">Inactive</option>
                     </select>
                   </div>
                   <div class="col-6">
-                    <button class="btn btn-danger-200 text-danger-600 w-100" type="reset">Reset</button>
+                    <button class="btn btn-danger-200 text-danger-600 w-100" id="resetFilterBtn" type="button">Reset</button>
                   </div>
                   <div class="col-6">
                     <button class="btn btn-primary-600 w-100" type="submit">Apply</button>
@@ -146,25 +204,25 @@ for LMS, coaching centers, and academic admin systems.{% endblock %}
           </div>
         </div>
       </div>
-      <div class="p-0">
-        <table class="table bordered-table mb-0 data-table" data-page-length="10" id="dataTable">
+      <div class="table-responsive p-0">
+        <table class="table bordered-table align-middle mb-0" data-page-length="10" id="dataTable" style="min-width: 1020px; width: 100%;">
           <thead>
             <tr>
-              <th scope="col">
-                <div class="form-check style-check d-flex align-items-center">
-                  <input class="form-check-input" type="checkbox" />
-                  <label class="form-check-label">S.L</label>
+              <th scope="col" style="width: 50px;" class="text-center">
+                <div class="form-check style-check d-flex align-items-center justify-content-center">
+                  <input class="form-check-input" type="checkbox" id="selectAllEmployees" />
+                  <label class="form-check-label ms-1">S.L</label>
                 </div>
               </th>
-              <th scope="col">ID</th>
-              <th scope="col">Name</th>
-              <th scope="col">Department</th>
-              <th scope="col">Designation</th>
-              <th scope="col">Email</th>
-              <th scope="col">Phone Number</th>
-              <th scope="col">Join Date</th>
-              <th scope="col">Status</th>
-              <th scope="col">Action</th>
+              <th scope="col" style="width: 85px;">ID</th>
+              <th scope="col" style="width: 180px;">Name</th>
+              <th scope="col" style="width: 140px;">Department</th>
+              <th scope="col" style="width: 130px;">Designation</th>
+              <th scope="col" style="width: 170px;">Email</th>
+              <th scope="col" style="width: 120px;">Phone Number</th>
+              <th scope="col" style="width: 100px;">Join Date</th>
+              <th scope="col" style="width: 85px;" class="text-center">Status</th>
+              <th scope="col" style="width: 60px;" class="text-center">Action</th>
             </tr>
           </thead>
           <tbody id="employeeTableBody">
@@ -235,6 +293,8 @@ for LMS, coaching centers, and academic admin systems.{% endblock %}
   $(document).ready(function () {
     let dataTableInstance = null;
 
+    const isTeacherView = {% if request.user.role in 'institution institution_admin school college coaching' %}true{% else %}false{% endif %};
+
     function fetchEmployees() {
       $.ajax({
         url: '/accounts/api/employee/onboard/',
@@ -248,61 +308,75 @@ for LMS, coaching centers, and academic admin systems.{% endblock %}
           tbody.empty();
 
           if (resp.status === 'success' && resp.data && resp.data.length > 0) {
-            resp.data.forEach(function (emp, index) {
-              const sl = String(index + 1).padStart(2, '0');
-              const avatarNum = (index % 6) + 1;
-              const avatarUrl = emp.profile_image || ("{% static 'admin_assets/images/thumbs/teacher-avatar-img' %}" + avatarNum + ".png");
+            const displayList = resp.data.filter(emp => isTeacherView ? (emp.role === 'teacher' || (emp.designation && emp.designation.toLowerCase().includes('teacher'))) : emp.role !== 'teacher');
+            if (displayList.length > 0) {
+              displayList.forEach(function (emp, index) {
+                const sl = String(index + 1).padStart(2, '0');
+                const avatarNum = (index % 6) + 1;
+                const avatarUrl = emp.profile_image || ("{% static 'admin_assets/images/thumbs/teacher-avatar-img' %}" + avatarNum + ".png");
 
-              const statusBadge = (emp.status === 'Active' || emp.status === 'active') ?
-                '<span class="bg-success-100 text-success-600 px-24 py-4 radius-4 fw-medium text-sm">Active</span>' :
-                '<span class="bg-danger-100 text-danger-600 px-24 py-4 radius-4 fw-medium text-sm">Inactive</span>';
+                const statusBadge = (emp.status === 'Active' || emp.status === 'active') ?
+                  '<span class="bg-success-100 text-success-600 px-12 py-3 radius-4 fw-semibold text-xs d-inline-block">Active</span>' :
+                  '<span class="bg-danger-100 text-danger-600 px-12 py-3 radius-4 fw-semibold text-xs d-inline-block">Inactive</span>';
 
-              const viewUrl = `/admin-panel/view-profile/?user_id=${emp.user_id || emp.id}&emp_id=${emp.id}`;
+                const viewUrl = `/admin-panel/view-profile/?user_id=${emp.user_id || emp.id}&emp_id=${emp.id}`;
 
-              const rowHtml = `
-                        <tr>
-                            <td>
-                                <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input" type="checkbox"/>
-                                    <label class="form-check-label">${sl}</label>
-                                </div>
-                            </td>
-                            <td><span class="text-primary-600 fw-bold">${emp.employee_id}</span></td>
-                            <td>
-                                <a href="${viewUrl}" class="d-flex align-items-center cursor-pointer text-decoration-none">
-                                    <img alt="${emp.full_name}" class="flex-shrink-0 me-12 radius-8" src="${avatarUrl}" width="40" height="40"/>
-                                    <div>
-                                        <h6 class="text-md mb-0 fw-medium flex-grow-1 text-neutral-800 hover-text-primary">${emp.full_name}</h6>
-                                    </div>
-                                </a>
-                            </td>
-                            <td>${emp.department || 'CRM & Sales'}</td>
-                            <td>${emp.designation || 'Sales Executive'}</td>
-                            <td>${emp.email || 'N/A'}</td>
-                            <td>${emp.phone || 'N/A'}</td>
-                            <td>${emp.joining_date || '-'}</td>
-                            <td>${statusBadge}</td>
-                            <td>
-                                <button class="text-primary-light text-xl global-action-btn border-0 bg-transparent" 
-                                    data-id="${emp.id}" 
-                                    data-name="${emp.full_name}" 
-                                    data-view="${viewUrl}" 
-                                    data-edit="/admin-panel/add-new-employee/?user_id=${emp.user_id || ''}&emp_id=${emp.id}"
-                                    data-username="${emp.email || emp.username || emp.employee_id}"
-                                    data-password="${emp.password || 'Employee@123'}"
-                                    data-role="${emp.designation || emp.role || 'Employee'}">
-                                    <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
-                                </button>
-                            </td>
-                        </tr>`;
-              tbody.append(rowHtml);
-            });
+                const rowHtml = `
+                          <tr>
+                              <td class="text-center">
+                                  <div class="form-check style-check d-flex align-items-center justify-content-center">
+                                      <input class="form-check-input employee-row-check" type="checkbox"/>
+                                      <label class="form-check-label ms-1">${sl}</label>
+                                  </div>
+                              </td>
+                              <td><span class="text-primary-600 fw-bold">${emp.employee_id || '-'}</span></td>
+                              <td>
+                                  <a href="${viewUrl}" class="d-flex align-items-center cursor-pointer text-decoration-none" title="${emp.full_name}">
+                                      <img alt="${emp.full_name}" class="flex-shrink-0 me-10 radius-50 object-fit-cover" src="${avatarUrl}" width="34" height="34"/>
+                                      <div>
+                                          <h6 class="text-sm mb-0 fw-semibold text-neutral-800 hover-text-primary text-truncate" style="max-width: 140px;">${emp.full_name}</h6>
+                                      </div>
+                                  </a>
+                              </td>
+                              <td class="col-dept text-truncate" style="max-width: 140px;">${emp.department || (isTeacherView ? 'Academic & Faculty' : 'CRM & Sales')}</td>
+                              <td class="col-desig text-truncate" style="max-width: 130px;">${emp.designation || (isTeacherView ? 'Teacher' : 'Sales Executive')}</td>
+                              <td class="col-email text-truncate" style="max-width: 170px;"><a href="mailto:${emp.email}" class="text-secondary-light hover-text-primary text-decoration-none">${emp.email || 'N/A'}</a></td>
+                              <td class="col-phone">${emp.phone || 'N/A'}</td>
+                              <td class="col-date">${emp.joining_date || '-'}</td>
+                              <td class="text-center">${statusBadge}</td>
+                              <td class="text-center">
+                                  <button class="text-primary-light text-xl global-action-btn border-0 bg-transparent p-4" 
+                                      data-id="${emp.id}" 
+                                      data-name="${emp.full_name}" 
+                                      data-view="${viewUrl}" 
+                                      data-edit="/admin-panel/add-new-employee/?user_id=${emp.user_id || ''}&emp_id=${emp.id}"
+                                      data-username="${emp.email || emp.username || emp.employee_id}"
+                                      data-password="${emp.password || 'Employee@123'}"
+                                      data-role="${emp.designation || emp.role || (isTeacherView ? 'Teacher' : 'Employee')}">
+                                      <iconify-icon icon="tabler:dots-vertical"></iconify-icon>
+                                  </button>
+                              </td>
+                          </tr>`;
+                tbody.append(rowHtml);
+              });
+            } else {
+              const emptyText = isTeacherView ? 'No registered teachers found. Click "Add Teacher" to create one.' : 'No registered employees found. Click "Add Employee" to create one.';
+              tbody.html(`
+                          <tr>
+                              <td colspan="10" class="text-center py-40 text-secondary-light">
+                                  <i class="ri-user-unfollow-line text-xxl d-block mb-8"></i>
+                                  ${emptyText}
+                              </td>
+                          </tr>
+                      `);
+            }
           } else {
+            const emptyText = isTeacherView ? 'No registered teachers found. Click "Add Teacher" to create one.' : 'No registered employees found. Click "Add Employee" to create one.';
             tbody.html(`
                         <tr>
                             <td colspan="10" class="text-center py-40 text-secondary-light">
                                 <i class="ri-user-unfollow-line text-xxl d-block mb-8"></i>
-                                No registered employees found. Click "Add Employee" to create one.
+                                ${emptyText}
                             </td>
                         </tr>
                     `);
@@ -315,7 +389,11 @@ for LMS, coaching centers, and academic admin systems.{% endblock %}
               searching: true,
               paging: true,
               info: false,
-              lengthChange: false
+              lengthChange: false,
+              dom: 't<"d-flex align-items-center justify-content-between p-16 flex-wrap gap-2"ip>',
+              columnDefs: [
+                { orderable: false, targets: [0, 9] }
+              ]
             });
           }
         },
@@ -334,18 +412,44 @@ for LMS, coaching centers, and academic admin systems.{% endblock %}
 
     fetchEmployees();
 
+    // Select all checkboxes in table
+    $(document).on('change', '#selectAllEmployees', function () {
+      $('.employee-row-check').prop('checked', $(this).is(':checked'));
+    });
+
     // Search input handler
-    $('.dt-search .dt-input').on('keyup', function () {
+    $('input[name="search"]').on('input keyup', function () {
       if (dataTableInstance) {
-        dataTableInstance.search(this.value).draw();
+        dataTableInstance.search($(this).val()).draw();
       }
     });
 
     // Page length change handler
-    $('.dt-length .dt-input').on('change', function () {
+    $('select[name="dataTable_length"]').on('change', function () {
       if (dataTableInstance) {
-        dataTableInstance.page.len($(this).val()).draw();
+        dataTableInstance.page.len(parseInt($(this).val(), 10)).draw();
       }
+    });
+
+    // Department & Status Filter
+    function applyFilter() {
+      if (!dataTableInstance) return;
+      const dept = $('#filterDepartment').val();
+      const status = $('#filterStatus').val();
+      dataTableInstance.column(3).search(dept && dept !== 'Select' ? dept : '', true, false);
+      dataTableInstance.column(8).search(status && status !== 'Select' ? status : '', true, false);
+      dataTableInstance.draw();
+    }
+
+    $('#filterDropdownForm').on('submit', function (e) {
+      e.preventDefault();
+      applyFilter();
+    });
+
+    $('#resetFilterBtn').on('click', function () {
+      $('#filterDepartment').val('Select');
+      $('#filterStatus').val('Select');
+      applyFilter();
     });
 
     // Global Action Menu Logic

@@ -131,14 +131,31 @@
             <select name="quiz_id" class="form-select radius-8" required>
               <option value="">-- Choose Quiz from Course Bank --</option>
               {% for qz in available_quizzes %}
-                <option value="{{ qz.id }}">{{ qz.lesson.title }} ({{ qz.questions.count }} Questions)</option>
+                <option value="{{ qz.id }}">{% if qz.lesson.module.course %}[{{ qz.lesson.module.course.title }}] {% endif %}{{ qz.lesson.title }} ({{ qz.questions.count }} Questions)</option>
               {% endfor %}
             </select>
           </div>
 
+          <div class="mb-16">
+            <label class="form-label fw-bold">Target Class (Class-wise Quiz)</label>
+            <select name="target_class" class="form-select radius-8">
+              <option value="">-- All Classes (Common Quiz) --</option>
+              <option value="Class 4th">Class 4th</option>
+              <option value="Class 5th">Class 5th</option>
+              <option value="Class 6th">Class 6th</option>
+              <option value="Class 7th">Class 7th</option>
+              <option value="Class 8th">Class 8th</option>
+              <option value="Class 9th">Class 9th</option>
+              <option value="Class 10th">Class 10th</option>
+              <option value="Class 11th">Class 11th</option>
+              <option value="Class 12th">Class 12th</option>
+            </select>
+            <small class="text-neutral-500">Optionally assign this quiz specifically to a particular class grade.</small>
+          </div>
+
           <div class="mb-20">
-            <label class="form-label fw-bold">Custom Section Name</label>
-            <input type="text" name="section_name" class="form-control radius-8" placeholder="e.g. Section A - Logical Reasoning">
+            <label class="form-label fw-bold">Custom Section Name (Optional)</label>
+            <input type="text" name="section_name" class="form-control radius-8" placeholder="e.g. Mathematics & Logical Reasoning">
           </div>
 
           <button type="submit" class="btn btn-success-600 w-100 radius-8 fw-bold">
@@ -208,9 +225,18 @@
             {% for oq in assigned_quizzes %}
               <div class="p-16 border radius-8 bg-white d-flex justify-content-between align-items-center">
                 <div>
-                  <span class="badge bg-success-100 text-success-600 radius-50 text-xs mb-1">{{ oq.section_name|default:"Section Quiz" }}</span>
+                  {% if '[' in oq.section_name and ']' in oq.section_name %}
+                    <span class="badge bg-primary-100 text-primary-700 radius-50 text-xs mb-1 fw-bold">
+                      <i class="ri-graduation-cap-line me-1"></i>{{ oq.section_name }}
+                    </span>
+                  {% else %}
+                    <span class="badge bg-success-100 text-success-600 radius-50 text-xs mb-1">{{ oq.section_name|default:"General Section Quiz" }}</span>
+                  {% endif %}
                   <h6 class="fw-bold mb-1 text-sm">{{ oq.quiz.lesson.title }}</h6>
-                  <small class="text-neutral-500 text-xs">{{ oq.quiz.questions.count }} Questions in this Quiz</small>
+                  <small class="text-neutral-500 text-xs">
+                    {% if oq.quiz.lesson.module.course %}Course: {{ oq.quiz.lesson.module.course.title }} | {% endif %}
+                    {{ oq.quiz.questions.count }} Questions in this Quiz
+                  </small>
                 </div>
                 <form method="post" onsubmit="return confirm('Remove quiz from this exam?');">
                   {% csrf_token %}

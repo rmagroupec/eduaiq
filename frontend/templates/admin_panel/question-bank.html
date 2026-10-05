@@ -113,6 +113,9 @@
                 <option value="B">Option B</option>
                 <option value="C">Option C</option>
                 <option value="D">Option D</option>
+                <option value="All of the above">All of the above</option>
+                <option value="None of the above">None of the above</option>
+                <option value="None of these">None of these</option>
               </select>
             </div>
             <div class="col-md-3">
@@ -236,23 +239,43 @@
         return;
       }
 
-      tbody.innerHTML = results.map(q => `
+      tbody.innerHTML = results.map(q => {
+        const optA = q.option_a ?? (q.options ? (q.options.a ?? q.options.A ?? '') : '');
+        const optB = q.option_b ?? (q.options ? (q.options.b ?? q.options.B ?? '') : '');
+        const optC = q.option_c ?? (q.options ? (q.options.c ?? q.options.C ?? '') : '');
+        const optD = q.option_d ?? (q.options ? (q.options.d ?? q.options.D ?? '') : '');
+        const corr = (q.correct_option || '').trim();
+        const isAll = corr === 'ALL' || corr.toLowerCase() === 'all' || corr.toLowerCase() === 'all of the above';
+        const isNone = corr === 'NONE' || corr.toLowerCase() === 'none' || corr.toLowerCase() === 'none of the above' || corr.toLowerCase() === 'none of these';
+
+        let correctBadge = `Option ${corr}`;
+        if (isAll) {
+          correctBadge = 'All of the above';
+        } else if (corr.toLowerCase() === 'none of these') {
+          correctBadge = 'None of these';
+        } else if (isNone) {
+          correctBadge = 'None of the above';
+        } else if (corr.startsWith('Option ')) {
+          correctBadge = corr;
+        }
+
+        return `
         <tr>
           <td class="text-center font-monospace">${q.order}</td>
           <td>
-            <div class="fw-semibold text-dark mb-1">${q.question_text}</div>
+            <div class="fw-semibold text-dark mb-1">${q.question_text || ''}</div>
             ${q.explanation ? `<div class="text-muted text-xs"><i class="ri-information-line me-1"></i>${q.explanation}</div>` : ''}
           </td>
           <td>
             <ul class="list-unstyled mb-0 text-xs">
-              <li class="${q.correct_option === 'A' ? 'text-success fw-bold' : 'text-secondary'}"><strong>A:</strong> ${q.option_a}</li>
-              <li class="${q.correct_option === 'B' ? 'text-success fw-bold' : 'text-secondary'}"><strong>B:</strong> ${q.option_b}</li>
-              <li class="${q.correct_option === 'C' ? 'text-success fw-bold' : 'text-secondary'}"><strong>C:</strong> ${q.option_c}</li>
-              <li class="${q.correct_option === 'D' ? 'text-success fw-bold' : 'text-secondary'}"><strong>D:</strong> ${q.option_d}</li>
+              <li class="${(corr === 'A' || corr === 'a' || isAll) ? 'text-success fw-bold' : 'text-secondary'}"><strong>A:</strong> ${optA}</li>
+              <li class="${(corr === 'B' || corr === 'b' || isAll) ? 'text-success fw-bold' : 'text-secondary'}"><strong>B:</strong> ${optB}</li>
+              <li class="${(corr === 'C' || corr === 'c' || isAll) ? 'text-success fw-bold' : 'text-secondary'}"><strong>C:</strong> ${optC}</li>
+              <li class="${(corr === 'D' || corr === 'd' || isAll) ? 'text-success fw-bold' : 'text-secondary'}"><strong>D:</strong> ${optD}</li>
             </ul>
           </td>
           <td class="text-center">
-            <span class="badge bg-success-focus text-success-main font-monospace">Option ${q.correct_option}</span>
+            <span class="badge bg-success-focus text-success-main font-monospace">${correctBadge}</span>
           </td>
           <td class="text-center font-monospace">${q.marks}</td>
           <td class="text-center">
@@ -271,7 +294,8 @@
             </div>
           </td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
     } catch (e) {
       console.error(e);
       tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Failed to load questions.</td></tr>`;
@@ -286,12 +310,27 @@
       const data = await response.json();
       const q = data.question;
 
-      document.getElementById('editQuestionText').value = q.question_text;
-      document.getElementById('editOptionA').value = q.option_a;
-      document.getElementById('editOptionB').value = q.option_b;
-      document.getElementById('editOptionC').value = q.option_c;
-      document.getElementById('editOptionD').value = q.option_d;
-      document.getElementById('editCorrectOption').value = q.correct_option;
+      document.getElementById('editQuestionText').value = q.question_text || '';
+      document.getElementById('editOptionA').value = q.option_a ?? (q.options ? (q.options.a ?? q.options.A ?? '') : '');
+      document.getElementById('editOptionB').value = q.option_b ?? (q.options ? (q.options.b ?? q.options.B ?? '') : '');
+      document.getElementById('editOptionC').value = q.option_c ?? (q.options ? (q.options.c ?? q.options.C ?? '') : '');
+      document.getElementById('editOptionD').value = q.option_d ?? (q.options ? (q.options.d ?? q.options.D ?? '') : '');
+
+      let corr = (q.correct_option || '').trim();
+      const corrEl = document.getElementById('editCorrectOption');
+      corrEl.value = corr;
+      if (!corrEl.value && corr) {
+        for (let opt of corrEl.options) {
+          if (opt.value.toLowerCase() === corr.toLowerCase()) {
+            corrEl.value = opt.value;
+            break;
+          }
+        }
+        if (!corrEl.value) {
+          if (corr.toUpperCase() === 'ALL') corrEl.value = 'All of the above';
+          else if (corr.toUpperCase() === 'NONE') corrEl.value = 'None of the above';
+        }
+      }
       document.getElementById('editMarks').value = q.marks;
       document.getElementById('editOrder').value = q.order;
       document.getElementById('editDifficulty').value = q.difficulty;

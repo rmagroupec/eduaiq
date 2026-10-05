@@ -302,6 +302,114 @@
             color: #ffffff;
         }
 
+        /* Top Bar Zoom Control Pill */
+        .zoom-ctrl-pill {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 20px;
+            padding: 3px 6px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            transition: all 0.2s ease;
+        }
+
+        .zoom-ctrl-pill:hover {
+            border-color: rgba(249, 115, 22, 0.6);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .zoom-sub-btn {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .zoom-sub-btn:hover:not(:disabled) {
+            background: var(--eduaiq-gradient);
+            color: #ffffff;
+            transform: scale(1.1);
+        }
+
+        .zoom-sub-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .zoom-val-text {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #fdba74;
+            min-width: 42px;
+            text-align: center;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+
+        .zoom-val-text:hover {
+            background: rgba(249, 115, 22, 0.25);
+            text-decoration: underline;
+        }
+
+        /* Bottom Dock Zoom Section */
+        .dock-zoom-section {
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            padding-left: 8px;
+            margin-left: 4px;
+        }
+
+        .dock-btn-sm {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.2s ease;
+        }
+
+        .dock-btn-sm:hover:not(:disabled) {
+            background: var(--eduaiq-gradient);
+            border-color: transparent;
+            color: #ffffff;
+        }
+
+        .dock-btn-sm:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .dock-zoom-badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: #f97316;
+            min-width: 38px;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .dock-zoom-badge:hover {
+            text-decoration: underline;
+        }
+
         /* Main Workspace Layout */
         .reader-workspace {
             flex-grow: 1;
@@ -405,10 +513,63 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            padding: 16px 20px 75px 20px;
+            padding: 0;
         }
 
-        /* Elegant Proportional Open Book Frame with Interactive 3D Hover Effect */
+        /* Scrollable Viewport & Zoom Wrapper for Book Reading */
+        .flipbook-viewport {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 16px 20px 80px 20px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(249, 115, 22, 0.4) rgba(15, 23, 42, 0.6);
+            touch-action: pan-x pan-y;
+        }
+
+        .flipbook-viewport::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+
+        .flipbook-viewport::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 4px;
+        }
+
+        .flipbook-viewport::-webkit-scrollbar-thumb {
+            background: rgba(249, 115, 22, 0.5);
+            border-radius: 4px;
+        }
+
+        .flipbook-viewport::-webkit-scrollbar-thumb:hover {
+            background: #f97316;
+        }
+
+        .flipbook-viewport.can-pan {
+            cursor: grab;
+        }
+
+        .flipbook-viewport.is-panning {
+            cursor: grabbing !important;
+            user-select: none;
+        }
+
+        .flipbook-zoom-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+            padding: 20px;
+            transform-origin: center center;
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), margin 0.22s ease;
+        }
+
+        /* Elegant Proportional Open Book Frame with Interactive 3D Effect */
         .flipbook-wrap {
             position: relative;
             border-radius: 8px;
@@ -416,11 +577,11 @@
             overflow: hidden;
             border: 1px solid var(--book-outer-border);
             box-shadow: var(--book-outer-shadow);
-            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+            transition: box-shadow 0.35s ease, border-color 0.35s ease;
+            flex-shrink: 0;
         }
 
         .flipbook-wrap:hover {
-            transform: translateY(-4px) scale(1.008);
             box-shadow: 0 24px 55px rgba(0, 0, 0, 0.55), 0 0 20px rgba(249, 115, 22, 0.18);
             border-color: rgba(249, 115, 22, 0.5);
         }
@@ -742,6 +903,20 @@
                 <span class="d-none d-md-inline">All Pages</span>
             </button>
 
+            <!-- Book Zoom In / Zoom Out Controls -->
+            <div class="zoom-ctrl-pill" title="Zoom Book Controls">
+                <button class="zoom-sub-btn" id="btnZoomOut" title="Zoom Out (-)">
+                    <i class="fas fa-search-minus"></i>
+                </button>
+                <span class="zoom-val-text" id="zoomLevelText" title="Click to Reset Zoom (100%)">100%</span>
+                <button class="zoom-sub-btn" id="btnZoomIn" title="Zoom In (+)">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+                <button class="zoom-sub-btn reset-icon d-none d-sm-flex" id="btnZoomReset" title="Reset Zoom to 100%">
+                    <i class="fas fa-compress-arrows-alt"></i>
+                </button>
+            </div>
+
             <!-- Theme Cycle -->
             <button class="action-pill" id="btnThemeToggle" title="Change Theme (Light / Sepia / Dark)">
                 <i class="fas fa-sun" id="themeIcon"></i>
@@ -788,62 +963,67 @@
                 <span class="text-xs text-secondary-light" id="loaderStatusText">Optimizing high-resolution text clarity</span>
             </div>
 
-            <!-- 3D Dual-Page FlipBook Container (100% UNBLOCKED & CLEAN) -->
-            <div class="flipbook-wrap" id="flipbookWrap" title="Click or drag corners to flip pages">
-                <div class="ribbon-bookmark" title="EduAiQ Interactive Bookmark"></div>
-                
-                <div id="flipBook">
-                    <!-- Default digital pages if no PDF is uploaded -->
-                    <div class="page">
-                        <div class="page-content">
-                            <div class="d-flex justify-content-between border-bottom pb-2 mb-3 text-xs fw-bold text-muted">
-                                <span>EduAiQ Publication</span>
-                                <span>Page 1 (Left)</span>
+            <!-- Scrollable Viewport & Zoom Container for Book Reading -->
+            <div class="flipbook-viewport" id="flipbookViewport">
+                <div class="flipbook-zoom-wrapper" id="flipbookZoomWrapper">
+                    <!-- 3D Dual-Page FlipBook Container (100% UNBLOCKED & CLEAN) -->
+                    <div class="flipbook-wrap" id="flipbookWrap" title="Click or drag corners to flip pages">
+                        <div class="ribbon-bookmark" title="EduAiQ Interactive Bookmark"></div>
+                        
+                        <div id="flipBook">
+                            <!-- Default digital pages if no PDF is uploaded -->
+                            <div class="page">
+                                <div class="page-content">
+                                    <div class="d-flex justify-content-between border-bottom pb-2 mb-3 text-xs fw-bold text-muted">
+                                        <span>EduAiQ Publication</span>
+                                        <span>Page 1 (Left)</span>
+                                    </div>
+                                    <h3 class="fw-bold mb-3" style="font-family: 'Cinzel', serif;">{{ book.title }}</h3>
+                                    <p class="mb-3">{{ book.description|default:"Welcome to this interactive AI book. This e-book provides practical, hands-on learning topics and guided exercises." }}</p>
+                                    <div class="mt-auto border-top pt-2 text-xs text-muted">EduAiQ Digital Reader</div>
+                                </div>
                             </div>
-                            <h3 class="fw-bold mb-3" style="font-family: 'Cinzel', serif;">{{ book.title }}</h3>
-                            <p class="mb-3">{{ book.description|default:"Welcome to this interactive AI book. This e-book provides practical, hands-on learning topics and guided exercises." }}</p>
-                            <div class="mt-auto border-top pt-2 text-xs text-muted">EduAiQ Digital Reader</div>
-                        </div>
-                    </div>
 
-                    <div class="page">
-                        <div class="page-content">
-                            <div class="d-flex justify-content-between border-bottom pb-2 mb-3 text-xs fw-bold text-muted">
-                                <span>Table of Contents</span>
-                                <span>Page 2 (Right)</span>
+                            <div class="page">
+                                <div class="page-content">
+                                    <div class="d-flex justify-content-between border-bottom pb-2 mb-3 text-xs fw-bold text-muted">
+                                        <span>Table of Contents</span>
+                                        <span>Page 2 (Right)</span>
+                                    </div>
+                                    <h4 class="fw-bold mb-3">Chapters & Topics</h4>
+                                    <ul class="ps-3 text-sm" style="line-height: 2;">
+                                        <li>1. Introduction & Overview</li>
+                                        <li>2. Core Foundations & Data Flow</li>
+                                        <li>3. Hands-on Lab Exercises</li>
+                                        <li>4. Summary & Verification</li>
+                                    </ul>
+                                    <div class="mt-auto border-top pt-2 text-xs text-muted">EduAiQ Digital Reader</div>
+                                </div>
                             </div>
-                            <h4 class="fw-bold mb-3">Chapters & Topics</h4>
-                            <ul class="ps-3 text-sm" style="line-height: 2;">
-                                <li>1. Introduction & Overview</li>
-                                <li>2. Core Foundations & Data Flow</li>
-                                <li>3. Hands-on Lab Exercises</li>
-                                <li>4. Summary & Verification</li>
-                            </ul>
-                            <div class="mt-auto border-top pt-2 text-xs text-muted">EduAiQ Digital Reader</div>
-                        </div>
-                    </div>
 
-                    <div class="page">
-                        <div class="page-content">
-                            <div class="d-flex justify-content-between border-bottom pb-2 mb-3 text-xs fw-bold text-muted">
-                                <span>Chapter 1</span>
-                                <span>Page 3 (Left)</span>
+                            <div class="page">
+                                <div class="page-content">
+                                    <div class="d-flex justify-content-between border-bottom pb-2 mb-3 text-xs fw-bold text-muted">
+                                        <span>Chapter 1</span>
+                                        <span>Page 3 (Left)</span>
+                                    </div>
+                                    <h4 class="fw-bold mb-3">Core Foundations</h4>
+                                    <p>Understand standard architecture, parameters, and tensor operations tailored for modern AI applications.</p>
+                                    <div class="mt-auto border-top pt-2 text-xs text-muted">EduAiQ Digital Reader</div>
+                                </div>
                             </div>
-                            <h4 class="fw-bold mb-3">Core Foundations</h4>
-                            <p>Understand standard architecture, parameters, and tensor operations tailored for modern AI applications.</p>
-                            <div class="mt-auto border-top pt-2 text-xs text-muted">EduAiQ Digital Reader</div>
-                        </div>
-                    </div>
 
-                    <div class="page">
-                        <div class="page-content">
-                            <div class="d-flex justify-content-between border-bottom pb-2 mb-3 text-xs fw-bold text-muted">
-                                <span>Chapter 2</span>
-                                <span>Page 4 (Right)</span>
+                            <div class="page">
+                                <div class="page-content">
+                                    <div class="d-flex justify-content-between border-bottom pb-2 mb-3 text-xs fw-bold text-muted">
+                                        <span>Chapter 2</span>
+                                        <span>Page 4 (Right)</span>
+                                    </div>
+                                    <h4 class="fw-bold mb-3">Hands-on Exercises</h4>
+                                    <p>Apply your skills through step-by-step challenges and interactive notebooks in the EduAiQ Lab.</p>
+                                    <div class="mt-auto border-top pt-2 text-xs text-muted">EduAiQ Digital Reader</div>
+                                </div>
                             </div>
-                            <h4 class="fw-bold mb-3">Hands-on Exercises</h4>
-                            <p>Apply your skills through step-by-step challenges and interactive notebooks in the EduAiQ Lab.</p>
-                            <div class="mt-auto border-top pt-2 text-xs text-muted">EduAiQ Digital Reader</div>
                         </div>
                     </div>
                 </div>
@@ -881,6 +1061,17 @@
                         <option value="12000">12s (Relaxed)</option>
                         <option value="4000">4s (Fast)</option>
                     </select>
+                </div>
+
+                <!-- Quick Bottom Dock Zoom Section -->
+                <div class="dock-zoom-section d-flex align-items-center gap-1">
+                    <button class="dock-btn-sm" id="dockZoomOutBtn" title="Zoom Out (-)">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <span class="dock-zoom-badge" id="dockZoomText" title="Click to Reset Zoom (100%)">100%</span>
+                    <button class="dock-btn-sm" id="dockZoomInBtn" title="Zoom In (+)">
+                        <i class="fas fa-plus"></i>
+                    </button>
                 </div>
             </div>
         </main>
@@ -1425,13 +1616,25 @@
         document.getElementById('floatArrowNext')?.addEventListener('click', () => pageFlip?.flipNext());
         document.getElementById('floatArrowPrev')?.addEventListener('click', () => pageFlip?.flipPrev());
 
-        // Keyboard Arrow Keys & Spacebar
+        // Keyboard Arrow Keys, Spacebar & Zoom Keys
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === 'PageDown') pageFlip?.flipNext();
             if (e.key === 'ArrowLeft' || e.key === 'PageUp') pageFlip?.flipPrev();
-            if (e.key === ' ') {
+            if (e.key === ' ' && !e.target.matches('input, textarea')) {
                 e.preventDefault();
                 toggleAutoPlay();
+            }
+            if ((e.key === '+' || e.key === '=') && !e.target.matches('input, textarea')) {
+                e.preventDefault();
+                setBookZoom(currentBookZoom + ZOOM_STEP);
+            }
+            if ((e.key === '-' || e.key === '_') && !e.target.matches('input, textarea')) {
+                e.preventDefault();
+                setBookZoom(currentBookZoom - ZOOM_STEP);
+            }
+            if ((e.key === '0' && (e.ctrlKey || e.metaKey)) || (e.key === 'Escape' && currentBookZoom !== 1.0)) {
+                e.preventDefault();
+                setBookZoom(1.0);
             }
         });
 
@@ -1518,6 +1721,119 @@
                 document.exitFullscreen();
             }
         });
+
+        // ==========================================
+        // 3. INTERACTIVE BOOK ZOOM IN / ZOOM OUT ENGINE
+        // ==========================================
+        let currentBookZoom = 1.0;
+        const ZOOM_MIN = 0.65;
+        const ZOOM_MAX = 2.0;
+        const ZOOM_STEP = 0.15;
+
+        function setBookZoom(zoom) {
+            currentBookZoom = Math.min(Math.max(zoom, ZOOM_MIN), ZOOM_MAX);
+            currentBookZoom = Math.round(currentBookZoom * 100) / 100;
+
+            const pct = `${Math.round(currentBookZoom * 100)}%`;
+            const zoomWrapper = document.getElementById('flipbookZoomWrapper');
+            const viewport = document.getElementById('flipbookViewport');
+
+            if (zoomWrapper) {
+                zoomWrapper.style.transform = `scale(${currentBookZoom})`;
+
+                if (currentBookZoom > 1.0) {
+                    const extraW = Math.max(0, (zoomWrapper.offsetWidth * (currentBookZoom - 1)) / 2);
+                    const extraH = Math.max(0, (zoomWrapper.offsetHeight * (currentBookZoom - 1)) / 2);
+                    zoomWrapper.style.margin = `${Math.max(20, extraH + 20)}px ${Math.max(20, extraW + 20)}px`;
+                    if (viewport) viewport.classList.add('can-pan');
+                } else {
+                    zoomWrapper.style.margin = 'auto';
+                    if (viewport) {
+                        viewport.classList.remove('can-pan');
+                        viewport.scrollLeft = 0;
+                        viewport.scrollTop = 0;
+                    }
+                }
+            }
+
+            const displayTop = document.getElementById('zoomLevelText');
+            const displayDock = document.getElementById('dockZoomText');
+            if (displayTop) displayTop.textContent = pct;
+            if (displayDock) displayDock.textContent = pct;
+
+            const isMin = currentBookZoom <= ZOOM_MIN + 0.01;
+            const isMax = currentBookZoom >= ZOOM_MAX - 0.01;
+
+            ['btnZoomOut', 'dockZoomOutBtn'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) btn.disabled = isMin;
+            });
+            ['btnZoomIn', 'dockZoomInBtn'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) btn.disabled = isMax;
+            });
+        }
+
+        // Zoom Click Handlers
+        document.getElementById('btnZoomIn')?.addEventListener('click', () => setBookZoom(currentBookZoom + ZOOM_STEP));
+        document.getElementById('btnZoomOut')?.addEventListener('click', () => setBookZoom(currentBookZoom - ZOOM_STEP));
+        document.getElementById('btnZoomReset')?.addEventListener('click', () => setBookZoom(1.0));
+        document.getElementById('zoomLevelText')?.addEventListener('click', () => setBookZoom(1.0));
+
+        document.getElementById('dockZoomInBtn')?.addEventListener('click', () => setBookZoom(currentBookZoom + ZOOM_STEP));
+        document.getElementById('dockZoomOutBtn')?.addEventListener('click', () => setBookZoom(currentBookZoom - ZOOM_STEP));
+        document.getElementById('dockZoomText')?.addEventListener('click', () => setBookZoom(1.0));
+
+        // Pan with mouse drag & Ctrl+Wheel zoom when reading
+        (function initPanAndWheel() {
+            const vp = document.getElementById('flipbookViewport');
+            if (!vp) return;
+
+            let isDragging = false;
+            let startMouseX = 0, startMouseY = 0;
+            let startScrollX = 0, startScrollY = 0;
+
+            vp.addEventListener('mousedown', (e) => {
+                if (currentBookZoom <= 1.0) return;
+                if (e.button !== 0) return; // Only primary mouse click
+                if (e.target.closest('button, select, input, a, .arrow-nav')) return;
+
+                isDragging = true;
+                startMouseX = e.pageX;
+                startMouseY = e.pageY;
+                startScrollX = vp.scrollLeft;
+                startScrollY = vp.scrollTop;
+                vp.classList.add('is-panning');
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const deltaX = e.pageX - startMouseX;
+                const deltaY = e.pageY - startMouseY;
+                vp.scrollLeft = startScrollX - deltaX;
+                vp.scrollTop = startScrollY - deltaY;
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    vp.classList.remove('is-panning');
+                }
+            });
+
+            // Ctrl + Mouse Wheel for Zoom In / Zoom Out
+            vp.addEventListener('wheel', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    if (e.deltaY < 0) {
+                        setBookZoom(currentBookZoom + ZOOM_STEP);
+                    } else {
+                        setBookZoom(currentBookZoom - ZOOM_STEP);
+                    }
+                }
+            }, { passive: false });
+        })();
     </script>
     {% endif %}
 </body>
