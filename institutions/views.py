@@ -261,7 +261,7 @@ def serialize_institution(inst, detailed=False):
             'admin_user': {
                 'id': inst.admin_user.id,
                 'username': inst.admin_user.username,
-                'email': inst.admin_user.email or 'info@eduaiq.co.in',
+                'email': inst.admin_user.email or '',
             } if inst.admin_user else None,
             'onboarded_by_partner_id': inst.onboarded_by_partner_id or '',
             'total_students': inst.students.count(),
@@ -278,11 +278,15 @@ def serialize_student_public(s):
     name = s.user.get_full_name().strip() if s.user_id else ''
     if s.user_id and not name:
         name = s.user.username
+    phone = (s.user.phone if s.user_id else '') or s.emergency_contact_phone or s.guardian_phone or ''
         
     return {
         'id': s.id,
         'user_id': s.user_id,
         'student_name': name or None,
+        'email': s.user.email if s.user_id else '',
+        'phone': phone,
+        'admission_no': s.admission_no,
         'institution_id': s.institution_id,
         'institution_name': s.institution.name if s.institution_id else None,
         'batch_id': s.batch_id,
@@ -305,6 +309,8 @@ def serialize_student_full(s, request=None):
     if s.user_id and not name:
         name = s.user.username
         
+    phone = (s.user.phone if s.user_id else '') or s.emergency_contact_phone or s.guardian_phone or ''
+
     return {
         'id': s.id,
         'user_id': s.user_id,
@@ -312,7 +318,7 @@ def serialize_student_full(s, request=None):
         'first_name': s.user.first_name if s.user_id else '',
         'last_name': s.user.last_name if s.user_id else '',
         'email': s.user.email if s.user_id else '',
-        'phone': s.user.phone if s.user_id else '',
+        'phone': phone,
         'student_name': name or None,
         'institution_id': s.institution_id,
         'institution_name': s.institution.name if s.institution_id else None,
@@ -613,7 +619,8 @@ def student_list(request, institution_pk=None):
                 Q(admission_no__icontains=search) |
                 Q(user__first_name__icontains=search) |
                 Q(user__last_name__icontains=search) |
-                Q(user__username__icontains=search)
+                Q(user__username__icontains=search) |
+                Q(user__phone__icontains=search)
             )
 
         qs = qs.order_by('-created_at')

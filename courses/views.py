@@ -254,8 +254,8 @@ def serialize_course(c, detailed=False, request=None):
             'id': c.created_by.id if c.created_by else None,
             'name': c.author if c.author else (c.created_by.get_full_name() or c.created_by.username if c.created_by else 'EduAiQ Team'),
             'username': c.author if c.author else (c.created_by.get_full_name() or c.created_by.username if c.created_by else 'EduAiQ Team'),
-            'email': c.created_by.email if (c.created_by and c.created_by.email) else 'info@eduaiq.co.in',
-            'phone': '+91 7985267620',
+            'email': c.created_by.email if (c.created_by and c.created_by.email) else '',
+            'phone': getattr(c.created_by, 'phone', '') if c.created_by else '',
         },
         'price': str(c.price),
         'status': c.status,
@@ -436,7 +436,8 @@ def serialize_enrollment(e, request=None):
         student_obj = {
             'id': e.student.id,
             'username': e.student.username,
-            'email': getattr(e.student, 'email', '') or 'info@eduaiq.co.in',
+            'email': getattr(e.student, 'email', '') or '',
+            'phone': getattr(e.student, 'phone', '') or '',
             'full_name': full_name,
         }
 
@@ -448,8 +449,8 @@ def serialize_enrollment(e, request=None):
             'id': c.id,
             'title': c.title,
             'slug': c.slug,
-            'category': c.category.name if c.category else 'General',
-            'instructor': c.created_by.username if c.created_by else 'N/A',
+            'category': c.category.name if c.category else '',
+            'instructor': c.created_by.username if c.created_by else '',
             'thumbnail': thumbnail_url,
         },
         'progress_pct': str(e.progress_pct),
@@ -1254,7 +1255,7 @@ def enroll_course(request, slug):
             'student': {
                 'id': student.id,
                 'username': student.username,
-                'email': student.email or 'info@eduaiq.co.in',
+                'email': student.email or '',
             },
             'course': {
                 'id': course.id,
@@ -1323,17 +1324,25 @@ def admin_enrollments(request):
             Q(course__title__icontains=search_q)
         )
 
+    # Deduplicate so that duplicate student enrollments (same student name) do not repeat
+    seen_student_ids = set()
+    unique_enrollments = []
+    for e in qs:
+        if e.student_id not in seen_student_ids:
+            seen_student_ids.add(e.student_id)
+            unique_enrollments.append(e)
+
     try:
         page = max(int(request.GET.get('page', 1)), 1)
         page_size = min(max(int(request.GET.get('page_size', 50)), 1), 200)
     except ValueError:
         page, page_size = 1, 50
 
-    count = qs.count()
+    count = len(unique_enrollments)
     import math
-    total_pages = math.ceil(count / page_size)
+    total_pages = math.ceil(count / page_size) if count > 0 else 1
     start = (page - 1) * page_size
-    results = qs[start:start + page_size]
+    results = unique_enrollments[start:start + page_size]
 
     return JsonResponse({
         'count': count,

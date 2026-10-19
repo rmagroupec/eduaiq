@@ -308,7 +308,7 @@ for LMS, coaching centers, and academic admin systems.{% endblock %}
           tbody.empty();
 
           if (resp.status === 'success' && resp.data && resp.data.length > 0) {
-            const displayList = resp.data.filter(emp => isTeacherView ? (emp.role === 'teacher' || (emp.designation && emp.designation.toLowerCase().includes('teacher'))) : emp.role !== 'teacher');
+            const displayList = isTeacherView ? resp.data.filter(emp => (emp.role === 'teacher' || (emp.designation && emp.designation.toLowerCase().includes('teacher')))) : resp.data;
             if (displayList.length > 0) {
               displayList.forEach(function (emp, index) {
                 const sl = String(index + 1).padStart(2, '0');

@@ -95,6 +95,7 @@
           <tr class="bg-neutral-50">
             <th scope="col">Student Name</th>
             <th scope="col">Admission No</th>
+            <th scope="col">Contact No</th>
             <th scope="col">Class & Section</th>
             <th scope="col">Status</th>
             <th scope="col" class="text-center">Action</th>
@@ -102,7 +103,7 @@
         </thead>
         <tbody id="studentTableBody">
           <tr>
-            <td colspan="8" class="text-center py-40 text-secondary-light">
+            <td colspan="6" class="text-center py-40 text-secondary-light">
               <i class="ri-loader-4-line ri-spin text-xxl d-block mb-8"></i>
               Loading students...
             </td>
@@ -217,7 +218,7 @@ $(document).ready(function() {
     // Show loading
     $('#studentTableBody').html(`
       <tr>
-        <td colspan="7" class="text-center py-40">
+        <td colspan="6" class="text-center py-40">
           <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
@@ -259,7 +260,7 @@ $(document).ready(function() {
         console.error('Error fetching students:', err);
         $('#studentTableBody').html(`
           <tr>
-            <td colspan="7" class="text-center py-40 text-danger-600">
+            <td colspan="6" class="text-center py-40 text-danger-600">
               <i class="ri-error-warning-line text-xxl d-block mb-8"></i>
               Error loading student roster. Please check permissions or select a valid institution.
             </td>
@@ -277,7 +278,7 @@ $(document).ready(function() {
     if (!data.results || data.results.length === 0) {
       tbody.html(`
         <tr>
-          <td colspan="7" class="text-center py-40 text-secondary-light">
+          <td colspan="6" class="text-center py-40 text-secondary-light">
             <i class="ri-folder-open-line text-xxl d-block mb-8"></i>
             No students found matching the filter criteria.
           </td>
@@ -291,8 +292,9 @@ $(document).ready(function() {
       const admissionNo = student.admission_no || '-';
       const secText = student.section ? `(${student.section})` : '';
       const classSecText = `${student.class_grade || '-'} ${secText}`;
-      const name = student.student_name || 'Unnamed Student';
+      const name = student.student_name || student.username || '-';
       const email = student.email || '';
+      const phone = student.phone || student.contact || student.mobile || student.emergency_contact_phone || student.guardian_phone || '';
       const photo = student.profile_photo || student.profile_image || '{% static "admin_assets/images/thumbs/leave-request-img2.png" %}';
       const defaultImg = '{% static "admin_assets/images/thumbs/leave-request-img2.png" %}';
 
@@ -325,6 +327,11 @@ $(document).ready(function() {
             </div>
           </td>
           <td>${admissionNo}</td>
+          <td>
+            <div class="text-sm font-medium text-neutral-800">
+              ${phone ? `<i class="ri-phone-line text-primary me-1 align-middle"></i>${phone}` : '<span class="text-secondary-light">-</span>'}
+            </div>
+          </td>
           <td>${classSecText}</td>
           <td>${statusBadge}</td>
           <td class="text-center">

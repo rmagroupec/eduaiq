@@ -2080,6 +2080,43 @@ def olympiad_entrance_attempt(request, pk):
     })
 
 
+def _normalize_olympiad_ans(val):
+    if val is None:
+        return ""
+    s = str(val).strip()
+    while (s.startswith("'") and s.endswith("'")) or (s.startswith('"') and s.endswith('"')):
+        s = s[1:-1].strip()
+    s = s.lower()
+    if s.startswith('option_'):
+        s = s[7:].strip()
+    elif s.startswith('option '):
+        s = s[7:].strip()
+    while (s.startswith("'") and s.endswith("'")) or (s.startswith('"') and s.endswith('"')):
+        s = s[1:-1].strip()
+    return s
+
+
+def _check_olympiad_ans_match(user_val, correct_val, question=None):
+    u = _normalize_olympiad_ans(user_val)
+    c = _normalize_olympiad_ans(correct_val)
+    if not u or not c:
+        return False
+    if u == c:
+        return True
+    if question:
+        opt_map = {
+            'a': _normalize_olympiad_ans(getattr(question, 'option_a', '')),
+            'b': _normalize_olympiad_ans(getattr(question, 'option_b', '')),
+            'c': _normalize_olympiad_ans(getattr(question, 'option_c', '')),
+            'd': _normalize_olympiad_ans(getattr(question, 'option_d', '')),
+        }
+        if u in opt_map and opt_map[u] and opt_map[u] == c:
+            return True
+        if c in opt_map and opt_map[c] and opt_map[c] == u:
+            return True
+    return False
+
+
 @login_required(login_url='/login/')
 def olympiad_entrance_submit(request, pk):
     """
@@ -2105,26 +2142,30 @@ def olympiad_entrance_submit(request, pk):
     # Grade direct questions
     for q in exam.questions.all():
         total_marks += q.marks
-        user_ans = str(submitted_responses.get(f"direct_{q.id}", "")).strip().lower()
-        correct_ans = str(q.correct_option).strip().lower()
+        user_ans = submitted_responses.get(f"direct_{q.id}", "")
+        correct_ans = q.correct_option
 
-        if q.question_type == 'mcq':
-            if user_ans == correct_ans:
+        if q.question_type == 'mcq' or not q.question_type:
+            if _check_olympiad_ans_match(user_ans, correct_ans, q):
                 obtained_marks += q.marks
         elif q.question_type == 'true_false':
-            if user_ans == correct_ans:
+            if _check_olympiad_ans_match(user_ans, correct_ans, q):
                 obtained_marks += q.marks
         elif q.question_type == 'multi_select':
-            user_set = set([x.strip() for x in user_ans.split(',') if x.strip()])
-            correct_set = set([x.strip() for x in correct_ans.split(',') if x.strip()])
+            u_clean = _normalize_olympiad_ans(user_ans)
+            c_clean = _normalize_olympiad_ans(correct_ans)
+            user_set = set([_normalize_olympiad_ans(x) for x in u_clean.split(',') if _normalize_olympiad_ans(x)])
+            correct_set = set([_normalize_olympiad_ans(x) for x in c_clean.split(',') if _normalize_olympiad_ans(x)])
             if user_set and user_set == correct_set:
                 obtained_marks += q.marks
         elif q.question_type == 'numerical':
+            u_clean = _normalize_olympiad_ans(user_ans)
+            c_clean = _normalize_olympiad_ans(correct_ans)
             try:
-                if float(user_ans) == float(correct_ans):
+                if float(u_clean) == float(c_clean):
                     obtained_marks += q.marks
             except ValueError:
-                if user_ans == correct_ans:
+                if u_clean == c_clean:
                     obtained_marks += q.marks
 
     # Grade assigned quiz questions
@@ -2132,9 +2173,9 @@ def olympiad_entrance_submit(request, pk):
     for oq in assigned_quizzes:
         for q in oq.quiz.questions.filter(is_active=True):
             total_marks += q.marks
-            user_ans = str(submitted_responses.get(f"quiz_{q.id}", "")).strip().lower()
-            correct_ans = str(q.correct_option or '').strip().lower()
-            if user_ans and user_ans == correct_ans:
+            user_ans = submitted_responses.get(f"quiz_{q.id}", "")
+            correct_ans = q.correct_option
+            if _check_olympiad_ans_match(user_ans, correct_ans, q):
                 obtained_marks += q.marks
 
     score_pct = (obtained_marks / total_marks * 100) if total_marks > 0 else 0
@@ -2166,8 +2207,37 @@ def olympiad_entrance_result(request, pk):
     registration = get_object_or_404(OlympiadRegistration, olympiad=exam, student=request.user)
     attempt = get_object_or_404(OlympiadAttempt, registration=registration)
 
-    # Guarantee total_marks > 0 for accurate score and percentage display
-    if not attempt.total_marks or float(attempt.total_marks) <= 0:
+    # Detailed Question Review Breakdown
+    review_questions = []
+    submitted_responses = {}
+    if attempt.responses_json:
+        try:
+            submitted_responses = json.loads(attempt.responses_json)
+        except Exception:
+            submitted_responses = {}
+
+    # Recalculate and guarantee accurate score & pass status using normalized answer checking
+    if submitted_responses:
+        recalc_total = 0
+        recalc_obtained = 0
+        for q in exam.questions.all():
+            recalc_total += q.marks
+            u_ans = submitted_responses.get(f"direct_{q.id}", "")
+            if _check_olympiad_ans_match(u_ans, q.correct_option, q):
+                recalc_obtained += q.marks
+        for oq in exam.olympiad_quizzes.select_related('quiz').all():
+            for q in oq.quiz.questions.filter(is_active=True):
+                recalc_total += q.marks
+                u_ans = submitted_responses.get(f"quiz_{q.id}", "")
+                if _check_olympiad_ans_match(u_ans, q.correct_option, q):
+                    recalc_obtained += q.marks
+        if recalc_total > 0:
+            attempt.total_marks = recalc_total
+            attempt.raw_score = recalc_obtained
+            attempt.score_pct = round((recalc_obtained / recalc_total) * 100, 1)
+            attempt.passed = (attempt.score_pct >= 40.0)
+            attempt.save()
+    elif not attempt.total_marks or float(attempt.total_marks) <= 0:
         tot_marks = sum(q.marks for q in exam.questions.all())
         for oq in exam.olympiad_quizzes.select_related('quiz').all():
             tot_marks += sum(q.marks for q in oq.quiz.questions.filter(is_active=True))
@@ -2229,61 +2299,42 @@ def olympiad_entrance_result(request, pk):
         medal_badge = "📜 Participant"
         medal_class = "badge bg-warning text-dark fs-6"
 
-    # Detailed Question Review Breakdown
-    review_questions = []
-    submitted_responses = {}
-    if attempt.responses_json:
-        try:
-            submitted_responses = json.loads(attempt.responses_json)
-        except Exception:
-            submitted_responses = {}
-
-    is_perfect = (attempt.total_marks > 0 and attempt.raw_score >= attempt.total_marks) or (attempt.score_pct >= 90.0)
-
     # Direct Questions
     for q in exam.questions.all():
-        u_ans = str(submitted_responses.get(f"direct_{q.id}", "")).strip().lower()
-        c_ans = str(q.correct_option or "").strip().lower()
+        u_ans = submitted_responses.get(f"direct_{q.id}", "")
+        c_ans = q.correct_option or ""
+        u_clean = _normalize_olympiad_ans(u_ans)
+        c_clean = _normalize_olympiad_ans(c_ans)
         
-        if is_perfect:
-            is_corr = True
-            u_ans_disp = c_ans.upper() if c_ans else "A"
-        elif not u_ans:
-            is_corr = True if attempt.passed else False
-            u_ans_disp = c_ans.upper() if is_corr else "Not Attempted"
-        else:
-            is_corr = (u_ans == c_ans or u_ans.replace('option_', '') == c_ans.replace('option_', ''))
-            u_ans_disp = u_ans.upper()
+        is_corr = _check_olympiad_ans_match(u_ans, c_ans, q)
+        u_ans_disp = u_clean.upper() if u_clean else "Not Attempted"
+        c_ans_disp = c_clean.upper() if c_clean else "A"
 
         review_questions.append({
             'text': q.question_text,
             'user_ans': u_ans_disp,
-            'correct_ans': c_ans.upper() if c_ans else "A",
+            'correct_ans': c_ans_disp,
             'is_correct': is_corr,
-            'explanation': q.explanation or 'Plants take in Carbon Dioxide from the air to perform photosynthesis.',
+            'explanation': q.explanation or 'Standard choice question.',
             'marks': q.marks,
         })
 
     # Assigned Quiz Questions
     for oq in exam.olympiad_quizzes.select_related('quiz').all():
         for q in oq.quiz.questions.filter(is_active=True):
-            u_ans = str(submitted_responses.get(f"quiz_{q.id}", "")).strip().lower()
-            c_ans = str(q.correct_option or "").strip().lower()
+            u_ans = submitted_responses.get(f"quiz_{q.id}", "")
+            c_ans = q.correct_option or ""
+            u_clean = _normalize_olympiad_ans(u_ans)
+            c_clean = _normalize_olympiad_ans(c_ans)
             
-            if is_perfect:
-                is_corr = True
-                u_ans_disp = c_ans.upper() if c_ans else "A"
-            elif not u_ans:
-                is_corr = True if attempt.passed else False
-                u_ans_disp = c_ans.upper() if is_corr else "Not Attempted"
-            else:
-                is_corr = (u_ans == c_ans or u_ans.replace('option_', '') == c_ans.replace('option_', ''))
-                u_ans_disp = u_ans.upper()
+            is_corr = _check_olympiad_ans_match(u_ans, c_ans, q)
+            u_ans_disp = u_clean.upper() if u_clean else "Not Attempted"
+            c_ans_disp = c_clean.upper() if c_clean else "A"
 
             review_questions.append({
                 'text': q.question_text,
                 'user_ans': u_ans_disp,
-                'correct_ans': c_ans.upper() if c_ans else "A",
+                'correct_ans': c_ans_disp,
                 'is_correct': is_corr,
                 'explanation': getattr(q, 'explanation', 'Standard choice question.'),
                 'marks': q.marks,

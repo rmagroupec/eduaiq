@@ -695,7 +695,6 @@
                     $select.html('<option value="">Direct Super Admin / Top Management</option>');
                     resp.data.forEach(function(emp) {
                         if (editEmpId && (emp.id == editEmpId || emp.employee_id == editEmpId)) return;
-                        if (emp.role === 'teacher') return; // Exclude teachers
                         $select.append(`<option value="${emp.id}">${emp.full_name} (${emp.designation || emp.role.toUpperCase()})</option>`);
                     });
                     if (pendingReportingManagerId) {

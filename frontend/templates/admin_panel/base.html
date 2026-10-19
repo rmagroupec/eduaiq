@@ -1061,7 +1061,7 @@
       $(document).on('click', '[data-bs-target="#exampleModalDelete"], .delete-row-btn', function(e) {
         e.preventDefault();
         const $btn = $(this);
-        if ($btn.hasClass('delete-lead-btn') || $btn.hasClass('delete-inquiry-btn') || $btn.hasClass('delete-opp-btn')) {
+        if ($btn.hasClass('delete-lead-btn') || $btn.hasClass('delete-inquiry-btn') || $btn.hasClass('delete-opp-btn') || window.location.pathname.indexOf('fees-collect') !== -1) {
           return; // Allow page-specific API handlers to process their custom AJAX calls
         }
         const $row = $btn.closest('tr');

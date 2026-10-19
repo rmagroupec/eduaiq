@@ -73,6 +73,8 @@ class User(AbstractUser):
         INACTIVE = 'inactive', _('Inactive')
 
     # Authentication Fields (extending AbstractUser)
+    REQUIRED_FIELDS = ['email', 'phone']
+
     phone = models.CharField(
         _('Phone'),
         max_length=15,
@@ -135,7 +137,8 @@ class User(AbstractUser):
     role = models.CharField(
         _('Role'),
         max_length=100,
-        blank=False
+        blank=True,
+        default='admin'
     )
     qualification = models.CharField(
         _('Qualification'),

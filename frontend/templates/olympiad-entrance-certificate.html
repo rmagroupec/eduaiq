@@ -448,8 +448,13 @@
     </div>
 
     <div class="cert-body-text">
+      {% if attempt.passed %}
       for outstanding performance and successfully qualifying in the <strong>{{ exam.name }}</strong> 
       under Candidate Roll Number <strong>{{ registration.roll_number }}</strong>. 
+      {% else %}
+      for active participation in the <strong>{{ exam.name }}</strong> 
+      under Candidate Roll Number <strong>{{ registration.roll_number }}</strong>. 
+      {% endif %}
       <br>
       Awarded: <strong style="color: #ea580c;">{{ award_title }}</strong> with an accuracy percentage of <strong>{{ attempt.score_pct|floatformat:1 }}%</strong>.
     </div>

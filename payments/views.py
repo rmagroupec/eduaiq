@@ -134,6 +134,40 @@ def fee_collections_api(request):
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
+    elif request.method == 'DELETE':
+        try:
+            fee_id = request.GET.get('id')
+            if not fee_id and request.body:
+                try:
+                    b_data = json.loads(request.body)
+                    fee_id = b_data.get('id')
+                except Exception:
+                    pass
+            if fee_id:
+                fc = FeeCollection.objects.filter(id=fee_id).first()
+                if fc:
+                    fc.delete()
+                    return JsonResponse({'status': 'success', 'message': 'Fee collection deleted successfully.'})
+                return JsonResponse({'status': 'error', 'message': 'Record not found.'}, status=404)
+            return JsonResponse({'status': 'error', 'message': 'Fee Collection ID required.'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@login_required
+def fee_collection_detail_api(request, pk):
+    """API for deleting or managing a single FeeCollection record"""
+    try:
+        fc = FeeCollection.objects.filter(id=pk).first()
+        if not fc:
+            return JsonResponse({'status': 'error', 'message': 'Record not found.'}, status=404)
+        if request.method in ['DELETE', 'POST']:
+            fc.delete()
+            return JsonResponse({'status': 'success', 'message': 'Fee collection deleted successfully.'})
+        return JsonResponse({'status': 'error', 'message': 'Method not allowed.'}, status=405)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
 
 @login_required
 def transactions_api(request):

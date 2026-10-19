@@ -26,6 +26,7 @@
           <tr>
             <th>Enrollment ID</th>
             <th>Student</th>
+            <th>Contact No</th>
             <th>Course Title</th>
             <th>Category</th>
             <th>Price Paid</th>
@@ -36,7 +37,7 @@
         </thead>
         <tbody id="enrollmentsTableBody">
           <tr>
-            <td colspan="8" class="text-center py-5 text-muted">
+            <td colspan="9" class="text-center py-5 text-muted">
               <i class="ri-loader-4-line ri-spin align-middle me-2"></i> Loading enrollments...
             </td>
           </tr>
@@ -60,32 +61,60 @@
       const results = data.results || [];
 
       if (results.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No student enrollments found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-muted">No student enrollments found.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = results.map(e => {
-        const studentName = typeof e.student === 'object' ? (e.student.full_name || e.student.username) : `Student #${e.student}`;
+      // Deduplicate students so the same student name/id is not repeated
+      const seenStudentKeys = new Set();
+      const uniqueResults = [];
+      results.forEach(e => {
+        const studentId = typeof e.student === 'object' ? (e.student.id || e.student.email || e.student.username) : e.student;
+        const studentName = typeof e.student === 'object' ? (e.student.full_name || e.student.username) : '';
+        const key = studentId || studentName;
+        if (key && seenStudentKeys.has(key)) {
+          return;
+        }
+        if (key) {
+          seenStudentKeys.add(key);
+        }
+        uniqueResults.push(e);
+      });
+
+      tbody.innerHTML = uniqueResults.map(e => {
+        const studentName = typeof e.student === 'object' ? (e.student.full_name || e.student.username || '') : (e.student ? `Student #${e.student}` : '');
         const studentEmail = typeof e.student === 'object' ? (e.student.email || '') : '';
+        const studentPhone = typeof e.student === 'object' ? (e.student.phone || '') : '';
+        const courseTitle = e.course?.title || '';
+        const courseCategory = e.course?.category || '';
+        const amountPaid = e.amount_paid || '0.00';
+        const progressPct = Math.round(e.progress_pct || 0);
+        const enrolledDate = e.enrollment_date ? new Date(e.enrollment_date).toLocaleDateString() : '';
+
         return `
         <tr>
           <td>#${e.id}</td>
           <td>
-            <div class="fw-semibold text-dark">${studentName}</div>
-            <div class="text-xs text-muted">${studentEmail}</div>
+            <div class="fw-semibold text-dark">${studentName || '-'}</div>
+            ${studentEmail ? `<div class="text-xs text-muted">${studentEmail}</div>` : ''}
           </td>
-          <td class="fw-semibold text-dark">${e.course?.title || 'Unknown Course'}</td>
-          <td><span class="badge bg-neutral-100 text-secondary-light px-8 py-4 radius-4">${e.course?.category || 'General'}</span></td>
-          <td class="fw-bold">₹${e.amount_paid || '0.00'}</td>
+          <td>
+            <div class="text-sm font-medium text-dark">
+              ${studentPhone ? `<i class="ri-phone-line text-primary me-1 align-middle"></i>${studentPhone}` : '<span class="text-muted">-</span>'}
+            </div>
+          </td>
+          <td class="fw-semibold text-dark">${courseTitle || '-'}</td>
+          <td>${courseCategory ? `<span class="badge bg-neutral-100 text-secondary-light px-8 py-4 radius-4">${courseCategory}</span>` : '-'}</td>
+          <td class="fw-bold">₹${amountPaid}</td>
           <td>
             <div class="d-flex align-items-center gap-10">
               <div class="progress" style="width: 100px; height: 8px;">
-                <div class="progress-bar bg-success" role="progressbar" style="width: ${e.progress_pct}%" aria-valuenow="${e.progress_pct}" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-success" role="progressbar" style="width: ${progressPct}%" aria-valuenow="${progressPct}" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
-              <span class="text-sm font-semibold text-primary-light">${Math.round(e.progress_pct)}%</span>
+              <span class="text-sm font-semibold text-primary-light">${progressPct}%</span>
             </div>
           </td>
-          <td class="text-muted text-sm">${new Date(e.enrollment_date).toLocaleDateString()}</td>
+          <td class="text-muted text-sm">${enrolledDate || '-'}</td>
           <td>
             <span class="badge ${e.is_completed ? 'bg-success' : 'bg-warning text-dark'}">
               ${e.is_completed ? 'Completed' : 'Ongoing'}
@@ -97,7 +126,7 @@
       console.error(e);
       document.getElementById('enrollmentsTableBody').innerHTML = `
         <tr>
-          <td colspan="8" class="text-center py-4 text-danger">Failed to load enrollments.</td>
+          <td colspan="9" class="text-center py-4 text-danger">Failed to load enrollments.</td>
         </tr>
       `;
     }
